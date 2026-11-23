@@ -1,0 +1,162 @@
+{
+  "case": "adaptive",
+  "arguments": [
+    "-SILENT",
+    "-LOG_FILE",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\owner-native-convergence\\adaptive\\native.log",
+    "-AUTO_SAVE",
+    "OFF",
+    "-NO_TIMESTAMP",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\owner-native-convergence\\adaptive\\moving.ply",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\owner-native-convergence\\adaptive\\fixed.ply",
+    "-ICP",
+    "-OVERLAP",
+    "15",
+    "-MIN_ERROR_DIFF",
+    "1e-6",
+    "-RANDOM_SAMPLING_LIMIT",
+    "20000",
+    "-MAX_TCOUNT",
+    "2"
+  ],
+  "durationSeconds": 162.761,
+  "deadlineSeconds": 600,
+  "error": null,
+  "observations": [
+    {
+      "elapsedSeconds": 10.003,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 20.007,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 30.01,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 40.015,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 50.017,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 60.019,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 70.025,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 80.028,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 90.034,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 100.041,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 110.044,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 120.049,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 130.052,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 140.054,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 150.056,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    },
+    {
+      "elapsedSeconds": 160.059,
+      "lastLines": [
+        "[08:14:19] [ICP]",
+        "[08:14:19] [ICP][Partial overlap] Selecting 24969 points out of 50035 (49%) for registration",
+        "[08:14:19] [ICP] Will use 2 threads"
+      ]
+    }
+  ],
+  "executableSha256": "6f79a0e283b06c48e618df145c0a26d0da39c798b19d08c3e934c07e6212172c",
+  "inputHashes": {
+    "moving.ply": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+    "fixed.ply": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+  }
+}

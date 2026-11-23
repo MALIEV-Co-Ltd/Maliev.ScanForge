@@ -1,0 +1,32 @@
+[08:11:55] [SET LOG FILE] finished in 0.00 s.
+[08:11:55] [AUTO SAVE STATE]
+[08:11:55] Auto-save is disabled
+[08:11:55] [AUTO SAVE STATE] finished in 0.00 s.
+[08:11:55] [CHANGE CLOUD OUTPUT FORMAT]
+[08:11:55] Output export format (clouds) set to: ASC
+[08:11:55] [CHANGE CLOUD OUTPUT FORMAT] finished in 0.00 s.
+[08:11:55] [NO TIMESTAMP]
+[08:11:55] [NO TIMESTAMP] finished in 0.00 s.
+[08:11:55] [LOAD]
+[08:11:55] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\insufficient-overlap-control\native-first\moving.ply'
+[08:11:55] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\insufficient-overlap-control\native-first\moving.ply' loaded successfully
+[08:11:55] Found one cloud with 1386 points
+[08:11:55] [LOAD] finished in 0.01 s.
+[08:11:55] [LOAD]
+[08:11:55] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\insufficient-overlap-control\native-first\fixed.ply'
+[08:11:55] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\insufficient-overlap-control\native-first\fixed.ply' loaded successfully
+[08:11:55] Found one cloud with 693 points
+[08:11:55] [LOAD] finished in 0.01 s.
+[08:11:55] [ICP]
+[08:11:55] [ICP] Will use 2 threads
+[08:11:55] Entity 'moving - Cloud' has been registered
+[08:11:55] RMS: 59.7134
+[08:11:55] Number of points used for final step: 1386
+[08:11:55] [ICP] finished in 0.01 s.
+[08:11:55] [SAVE CLOUDS]
+[08:11:55] [SAVING]
+[08:11:55] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/alignment/insufficient-overlap-control/native-first/moving_REGISTERED.asc' saved successfully
+[08:11:55] [SAVING]
+[08:11:55] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/alignment/insufficient-overlap-control/native-first/fixed.asc' saved successfully
+[08:11:55] [SAVE CLOUDS] finished in 0.00 s.
+[08:11:55] Processed finished in 0.04 s.

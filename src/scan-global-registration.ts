@@ -19,6 +19,7 @@ export interface GlobalRegistrationOptions {
   /** Environmental replay only; ordinary execution uses the native clock route. */
   clock?: () => number;
   onProgress?: (fraction: number, stage: string) => void;
+  onPose?: (pass: number, ordered: readonly GlobalOuterState[]) => void;
   onPass?: (pass: number, ordered: readonly GlobalOuterState[]) => void;
 }
 /** Connect verified scene/query/outer numerics to complete staged scan setters.

@@ -1,0 +1,354 @@
+Window: "CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 2]", App: CloudCompare.exe.
+	0 window (settable, string) CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 2] Secondary Actions: Raise ID: MainWindow
+		2279 window (settable, string) Error Secondary Actions: Raise
+			2280 title bar (settable, string) Value: Error
+				2281 menu bar System ID: MenuBar
+					2282 menu item System
+				2283 button Close
+			2284 image
+			2285 text Registration failed! (points are all aligned?)
+			2286 group (settable, string)
+				2287 button (settable, string) OK
+		2032 window (settable, string) Point list picking Secondary Actions: Raise ID: MainWindow.pointPairRegistrationDlg
+			2033 check box (settable, string) show 'to be aligned' entities ID: MainWindow.pointPairRegistrationDlg.showAlignedCheckBox
+			2034 button (settable, string) ID: MainWindow.pointPairRegistrationDlg.unstackAlignToolButton
+			2035 button (settable, string) ID: MainWindow.pointPairRegistrationDlg.typeAlignToolButton
+			2036 check box (settable, string) ID: MainWindow.pointPairRegistrationDlg.useSphereToolButton
+			2037 spinner (disabled, settable, float) Value: 20 ID: MainWindow.pointPairRegistrationDlg.radiusDoubleSpinBox
+			2038 spinner (disabled, settable, float) Value: 10 ID: MainWindow.pointPairRegistrationDlg.maxRmsSpinBox
+			2039 table (settable, string) ID: MainWindow.pointPairRegistrationDlg.alignedPointsTableWidget
+				2040 pane (settable, string)
+				2041 header (settable, string) X
+				2042 header (settable, string) Y
+				2043 header (settable, string) Z
+				2044 header (settable, string) Delta X
+				2045 header (settable, string) Delta Y
+				2046 header (settable, string) Delta Z
+				2047 header (settable, string) Error
+				2048 header (settable, string)
+				2117 header (settable, string) A0
+				2118 item (settable, string) 0.000000
+				2119 item (settable, string) 0.000000
+				2120 item (settable, string) 0.000000
+				2121 item (settable, string)
+				2122 item (settable, string)
+				2123 item (settable, string)
+				2124 item (settable, string)
+				2125 item (settable, string)
+				2189 header (settable, string) A1
+				2190 item (settable, string) 1.000000
+				2191 item (settable, string) 0.000000
+				2192 item (settable, string) 0.000000
+				2193 item (settable, string)
+				2194 item (settable, string)
+				2195 item (settable, string)
+				2196 item (settable, string)
+				2197 item (settable, string)
+				2249 header (settable, string) A2
+				2250 item (settable, string) 2.000000
+				2251 item (settable, string) 0.000000
+				2252 item (settable, string) 0.000000
+				2253 item (settable, string)
+				2254 item (settable, string)
+				2255 item (settable, string)
+				2256 item (settable, string)
+				2257 item (settable, string)
+			2049 check box (settable, string) show 'reference' entities ID: MainWindow.pointPairRegistrationDlg.showReferenceCheckBox
+			2050 button (settable, string) ID: MainWindow.pointPairRegistrationDlg.unstackRefToolButton
+			2051 button (settable, string) ID: MainWindow.pointPairRegistrationDlg.typeRefToolButton
+			2052 table (settable, string) ID: MainWindow.pointPairRegistrationDlg.refPointsTableWidget
+				2053 pane (settable, string)
+				2054 header (settable, string) X
+				2055 header (settable, string) Y
+				2056 header (settable, string) Z
+				2057 header (settable, string) Delta X
+				2058 header (settable, string) Delta Y
+				2059 header (settable, string) Delta Z
+				2060 header (settable, string) Error
+				2061 header (settable, string)
+				2153 header (settable, string) R0
+				2154 item (settable, string) 1.000000
+				2155 item (settable, string) 0.000000
+				2156 item (settable, string) 0.000000
+				2157 item (settable, string)
+				2158 item (settable, string)
+				2159 item (settable, string)
+				2160 item (settable, string)
+				2161 item (settable, string)
+				2219 header (settable, string) R1
+				2220 item (settable, string) 2.000000
+				2221 item (settable, string) 0.000000
+				2222 item (settable, string) 0.000000
+				2223 item (settable, string)
+				2224 item (settable, string)
+				2225 item (settable, string)
+				2226 item (settable, string)
+				2227 item (settable, string)
+				2288 header (settable, string) R2
+				2289 item (settable, string) 3.000000
+				2290 item (settable, string) 0.000000
+				2291 item (settable, string) 0.000000
+				2292 item (settable, string)
+				2293 item (settable, string)
+				2294 item (settable, string)
+				2295 item (settable, string)
+				2296 item (settable, string)
+			2062 check box (settable, string) adjust scale ID: MainWindow.pointPairRegistrationDlg.adjustScaleCheckBox
+			2063 text Rotation ID: MainWindow.pointPairRegistrationDlg.label
+			2064 combo box (settable, string) Value: XYZ ID: MainWindow.pointPairRegistrationDlg.rotComboBox
+				2065 list (settable, string)
+					2066 list item (selectable, settable, string) XYZ
+					2067 list item (selectable, settable, string) X
+					2068 list item (selectable, settable, string) Y
+					2069 list item (selectable, settable, string) Z
+					2070 list item (selectable, settable, string) NONE
+			2071 check box (settable, string) Tx ID: MainWindow.pointPairRegistrationDlg.TxCheckBox
+			2072 check box (settable, string) Ty ID: MainWindow.pointPairRegistrationDlg.TyCheckBox
+			2073 check box (settable, string) Tz ID: MainWindow.pointPairRegistrationDlg.TzCheckBox
+			2074 check box (settable, string) auto update zoom ID: MainWindow.pointPairRegistrationDlg.autoZoomCheckBox
+			2075 button (settable, string) align ID: MainWindow.pointPairRegistrationDlg.alignToolButton
+			2076 button (disabled, settable, string) reset ID: MainWindow.pointPairRegistrationDlg.resetToolButton
+			2077 button (disabled, settable, string) to cloud Description: Convert list to new cloud (and close dialog) ID: MainWindow.pointPairRegistrationDlg.validToolButton
+			2078 button (settable, string) stop ID: MainWindow.pointPairRegistrationDlg.cancelToolButton
+		1 title bar (settable, string) Value: CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 2]
+			2 menu bar System ID: MenuBar
+				3 menu item System
+			4 button Minimize
+			5 button Maximize
+			6 button Close
+		7 menu bar (disabled, settable, string) ID: MainWindow.menubar
+			8 menu item (disabled, settable, string) File
+			9 menu item (disabled, settable, string) Edit
+			10 menu item (disabled, settable, string) Tools
+			11 menu item (disabled, settable, string) Display
+			12 menu item (settable, string) Plugins
+			13 menu item (disabled, settable, string) 3D Views
+			14 menu item (disabled, settable, string) Help
+		15 window (disabled, settable, string) DB Tree Secondary Actions: Raise ID: MainWindow.DockableDBTree
+			16 group (disabled, settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents
+				17 tree (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents.dbTreeView
+					2297 tree item (settable, string) pair.bin (C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028/fixtures)
+					2298 tree item (settable, string) fixed - Cloud
+					2299 tree item (settable, string) moving - Cloud.registered
+			21 button (disabled, settable, string) Float ID: MainWindow.DockableDBTree.qt_dockwidget_floatbutton
+		22 status bar ID: MainWindow.statusBar
+			23 thumb (settable, string)
+		24 tool bar (settable, string) ID: MainWindow.toolBarView
+			25 button (settable, string) Display settings
+			26 button (settable, string) Camera settings
+			27 button (settable, string) Global Zoom
+			28 button (settable, string) Pick rotation center
+			29 check box (settable, string) Auto-pick rotation center
+			30 button (disabled, settable, string) Level
+			31 button (disabled, settable, string) ZoomCenter
+			32 button (settable, string) Top View
+			33 button (settable, string) Front View
+			34 button (settable, string) Left Side View
+			35 button (settable, string) Back View
+			36 button (settable, string) Right Side View
+			37 button (settable, string) Bottom View
+			38 button (settable, string) Iso 1
+			39 button (settable, string) Iso 2
+			40 check box (settable, string) actionEnableStereo
+			41 button (settable, string)
+			42 button (settable, string)
+		43 window (settable, string) Console Secondary Actions: Raise ID: MainWindow.DockableConsole
+			44 group (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2
+				45 list (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2.consoleWidget
+					2082 list item (selectable, settable, string) [15:35:04] [3D View 2] Shaders available
+					2083 list item (selectable, settable, string) [15:35:04] [3D View 2] GL filters available
+					2084 list item (selectable, settable, string) [15:35:04] [3D View 2] Color ramp shader loaded successfully
+					2085 list item (selectable, settable, string) [15:35:04] [3D View 2] Stereo mode: not supported
+					2086 list item (selectable, settable, string) [15:35:04] [ccGLWindow] 3D view initialized
+					2087 list item (selectable, settable, string) [15:35:04] [ccGLWindow] Succesfully initialized PBO for faster depth picking
+			52 button (settable, string) Close ID: MainWindow.DockableConsole.qt_dockwidget_closebutton
+			53 button (settable, string) Float ID: MainWindow.DockableConsole.qt_dockwidget_floatbutton
+		54 tool bar (disabled, settable, string) ID: MainWindow.toolBarMainTools
+			55 check box (disabled, settable, string) ID: MainWindow.toolBarMainTools.qt_toolbar_ext_button
+			56 button (disabled, settable, string) Open
+			57 button (disabled, settable, string) Save
+			58 button (disabled, settable, string) Save project (BIN)
+			59 group (disabled, settable, string)
+			60 button (disabled, settable, string) Point picking
+			61 button (disabled, settable, string) Point list picking
+			62 button (disabled, settable, string) Trace Polyline
+			63 button (disabled, settable, string) Clone
+			64 button (disabled, settable, string) Merge
+			65 button (disabled, settable, string) Delete
+			66 group (disabled, settable, string)
+			67 button (disabled, settable, string) Align (point pairs picking)
+			68 button (disabled, settable, string) Fine registration (ICP)
+			69 button (disabled, settable, string) Subsample
+			70 button (disabled, settable, string) Sample points
+			71 button (disabled, settable, string) Cloud/Cloud Dist
+			72 button (disabled, settable, string) Cloud/Mesh Dist
+			73 button (disabled, settable, string) Cloud/Primitive Dist
+			74 button (disabled, settable, string) Label Connected Comp.
+			75 button (disabled, settable, string) Primitive factory
+			76 button (disabled, settable, string) Rasterize (and contour plot)
+		77 tool bar (disabled, settable, string) ID: MainWindow.toolBarSFTools
+			78 check box (disabled, settable, string) ID: MainWindow.toolBarSFTools.qt_toolbar_ext_button
+			79 button (disabled, settable, string) Show histogram
+		80 window (settable, string) Properties Secondary Actions: Raise ID: MainWindow.DockableProperties
+			81 group (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4
+				82 tree (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4.propertiesTreeView
+			83 button (settable, string) Float ID: MainWindow.DockableProperties.qt_dockwidget_floatbutton
+		84 tool bar (disabled, settable, string) Plugins ID: MainWindow.Main Plugin Toolbar
+			85 button (disabled, settable, string) Animation
+			86 button (disabled, settable, string) CEA Virtual Broom
+			87 button (disabled, settable, string) Compass
+			88 button (disabled, settable, string) Cork
+			89 button (disabled, settable, string) CSF Filter
+			90 button (disabled, settable, string) Hough Normals Computation
+			91 button (disabled, settable, string) Hidden Point Removal
+			92 button (disabled, settable, string) M3C2 Distance
+			93 button (disabled, settable, string) Mesh Boolean
+			94 button (disabled, settable, string) PCV / ShadeVis
+			95 button (disabled, settable, string) PoissonRecon
+			96 button (disabled, settable, string) RANSAC Shape Detection
+			97 button (disabled, settable, string) AutoSeg
+			98 button (disabled, settable, string) Cloud layers
+			99 button (disabled, settable, string) Ellipse marking
+			100 check box (disabled, settable, string) Json RPC (Standard Plugin)
+			101 button (disabled, settable, string) ManualSeg
+			102 button (disabled, settable, string) MPlane
+			103 button (disabled, settable, string) TreeIso
+		104 tool bar (settable, string) GL Filters ID: MainWindow.GL Plugin Toolbar
+			105 button (disabled, settable, string) Remove Filter
+			106 check box (settable, string) EDL Shader
+			107 check box (settable, string) SSAO Shader
+		108 custom (settable, string)
+			109 window (disabled, settable, string) 3D View 1 Secondary Actions: Raise
+				110 group (disabled, settable, string)
+			2088 window (settable, string) 3D View 2 Secondary Actions: Raise
+				2089 group (settable, string)
+		111 tool bar (disabled, settable, string) CANUPO toolbar ID: MainWindow.CANUPO
+			112 check box (disabled, settable, string) ID: MainWindow.CANUPO.qt_toolbar_ext_button
+			113 button (disabled, settable, string) Train classifier
+		114 tool bar (disabled, settable, string) Facet/fracture detection toolbar ID: MainWindow.Facet/fracture detection
+			115 check box (disabled, settable, string) ID: MainWindow.Facet/fracture detection.qt_toolbar_ext_button
+			116 button (disabled, settable, string) Extract facets (Kd-tree)
+		117 tool bar (disabled, settable, string) PCL wrapper toolbar ID: MainWindow.PCL wrapper
+			118 check box (disabled, settable, string) ID: MainWindow.PCL wrapper.qt_toolbar_ext_button
+			119 button (disabled, settable, string) Fast Global Registration, by Zhou et al.
+		120 tool bar (disabled, settable, string) Surface of Revolution Analysis toolbar ID: MainWindow.Surface of Revolution Analysis
+			121 check box (disabled, settable, string) ID: MainWindow.Surface of Revolution Analysis.qt_toolbar_ext_button
+			122 button (disabled, settable, string) Load profile
+		123 tool bar (disabled, settable, string) 3DMASC toolbar ID: MainWindow.3DMASC
+			124 check box (disabled, settable, string) ID: MainWindow.3DMASC.qt_toolbar_ext_button
+			125 button (disabled, settable, string) Train classifier
+		126 tool bar (disabled, settable, string) Colorimetric Segmenter toolbar ID: MainWindow.Colorimetric Segmenter
+			127 check box (disabled, settable, string) ID: MainWindow.Colorimetric Segmenter.qt_toolbar_ext_button
+			128 button (disabled, settable, string) Filter RGB
+		2279 window (settable, string) Error Secondary Actions: Raise
+			2280 title bar (settable, string) Value: Error
+				2281 menu bar System ID: MenuBar
+					2282 menu item System
+				2283 button Close
+			2284 image
+			2285 text Registration failed! (points are all aligned?)
+			2286 group (settable, string)
+				2287 button (settable, string) OK
+		2032 window (settable, string) Point list picking Secondary Actions: Raise ID: MainWindow.pointPairRegistrationDlg
+			2033 check box (settable, string) show 'to be aligned' entities ID: MainWindow.pointPairRegistrationDlg.showAlignedCheckBox
+			2034 button (settable, string) ID: MainWindow.pointPairRegistrationDlg.unstackAlignToolButton
+			2035 button (settable, string) ID: MainWindow.pointPairRegistrationDlg.typeAlignToolButton
+			2036 check box (settable, string) ID: MainWindow.pointPairRegistrationDlg.useSphereToolButton
+			2037 spinner (disabled, settable, float) Value: 20 ID: MainWindow.pointPairRegistrationDlg.radiusDoubleSpinBox
+			2038 spinner (disabled, settable, float) Value: 10 ID: MainWindow.pointPairRegistrationDlg.maxRmsSpinBox
+			2039 table (settable, string) ID: MainWindow.pointPairRegistrationDlg.alignedPointsTableWidget
+				2040 pane (settable, string)
+				2041 header (settable, string) X
+				2042 header (settable, string) Y
+				2043 header (settable, string) Z
+				2044 header (settable, string) Delta X
+				2045 header (settable, string) Delta Y
+				2046 header (settable, string) Delta Z
+				2047 header (settable, string) Error
+				2048 header (settable, string)
+				2117 header (settable, string) A0
+				2118 item (settable, string) 0.000000
+				2119 item (settable, string) 0.000000
+				2120 item (settable, string) 0.000000
+				2121 item (settable, string)
+				2122 item (settable, string)
+				2123 item (settable, string)
+				2124 item (settable, string)
+				2125 item (settable, string)
+				2189 header (settable, string) A1
+				2190 item (settable, string) 1.000000
+				2191 item (settable, string) 0.000000
+				2192 item (settable, string) 0.000000
+				2193 item (settable, string)
+				2194 item (settable, string)
+				2195 item (settable, string)
+				2196 item (settable, string)
+				2197 item (settable, string)
+				2249 header (settable, string) A2
+				2250 item (settable, string) 2.000000
+				2251 item (settable, string) 0.000000
+				2252 item (settable, string) 0.000000
+				2253 item (settable, string)
+				2254 item (settable, string)
+				2255 item (settable, string)
+				2256 item (settable, string)
+				2257 item (settable, string)
+			2049 check box (settable, string) show 'reference' entities ID: MainWindow.pointPairRegistrationDlg.showReferenceCheckBox
+			2050 button (settable, string) ID: MainWindow.pointPairRegistrationDlg.unstackRefToolButton
+			2051 button (settable, string) ID: MainWindow.pointPairRegistrationDlg.typeRefToolButton
+			2052 table (settable, string) ID: MainWindow.pointPairRegistrationDlg.refPointsTableWidget
+				2053 pane (settable, string)
+				2054 header (settable, string) X
+				2055 header (settable, string) Y
+				2056 header (settable, string) Z
+				2057 header (settable, string) Delta X
+				2058 header (settable, string) Delta Y
+				2059 header (settable, string) Delta Z
+				2060 header (settable, string) Error
+				2061 header (settable, string)
+				2153 header (settable, string) R0
+				2154 item (settable, string) 1.000000
+				2155 item (settable, string) 0.000000
+				2156 item (settable, string) 0.000000
+				2157 item (settable, string)
+				2158 item (settable, string)
+				2159 item (settable, string)
+				2160 item (settable, string)
+				2161 item (settable, string)
+				2219 header (settable, string) R1
+				2220 item (settable, string) 2.000000
+				2221 item (settable, string) 0.000000
+				2222 item (settable, string) 0.000000
+				2223 item (settable, string)
+				2224 item (settable, string)
+				2225 item (settable, string)
+				2226 item (settable, string)
+				2227 item (settable, string)
+				2288 header (settable, string) R2
+				2289 item (settable, string) 3.000000
+				2290 item (settable, string) 0.000000
+				2291 item (settable, string) 0.000000
+				2292 item (settable, string)
+				2293 item (settable, string)
+				2294 item (settable, string)
+				2295 item (settable, string)
+				2296 item (settable, string)
+			2062 check box (settable, string) adjust scale ID: MainWindow.pointPairRegistrationDlg.adjustScaleCheckBox
+			2063 text Rotation ID: MainWindow.pointPairRegistrationDlg.label
+			2064 combo box (settable, string) Value: XYZ ID: MainWindow.pointPairRegistrationDlg.rotComboBox
+				2065 list (settable, string)
+					2066 list item (selectable, settable, string) XYZ
+					2067 list item (selectable, settable, string) X
+					2068 list item (selectable, settable, string) Y
+					2069 list item (selectable, settable, string) Z
+					2070 list item (selectable, settable, string) NONE
+			2071 check box (settable, string) Tx ID: MainWindow.pointPairRegistrationDlg.TxCheckBox
+			2072 check box (settable, string) Ty ID: MainWindow.pointPairRegistrationDlg.TyCheckBox
+			2073 check box (settable, string) Tz ID: MainWindow.pointPairRegistrationDlg.TzCheckBox
+			2074 check box (settable, string) auto update zoom ID: MainWindow.pointPairRegistrationDlg.autoZoomCheckBox
+			2075 button (settable, string) align ID: MainWindow.pointPairRegistrationDlg.alignToolButton
+			2076 button (disabled, settable, string) reset ID: MainWindow.pointPairRegistrationDlg.resetToolButton
+			2077 button (disabled, settable, string) to cloud Description: Convert list to new cloud (and close dialog) ID: MainWindow.pointPairRegistrationDlg.validToolButton
+			2078 button (settable, string) stop ID: MainWindow.pointPairRegistrationDlg.cancelToolButton
+
+The focused UI element is 2037 spinner (disabled, settable, float) Value: 20 ID: MainWindow.pointPairRegistrationDlg.radiusDoubleSpinBox.

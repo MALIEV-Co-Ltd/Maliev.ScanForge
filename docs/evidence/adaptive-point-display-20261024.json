@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "connectedMeshSelection": true,
+  "rectangleSelection": 182,
+  "deletedPoints": 3,
+  "reducedPoints": 100,
+  "selectionOnlyMcpSmoothing": true,
+  "normalsPreserved": true,
+  "pointDisplayGuiMcpParity": true,
+  "adaptiveDisplay": {
+    "autoPixels": 633,
+    "fullPixels": 10826,
+    "farDensity": {
+      "entityId": "dense",
+      "autoDensity": true,
+      "density": 10,
+      "eligiblePoints": 10000,
+      "sampleFraction": 0.0256,
+      "estimatedDisplayedPoints": 256
+    },
+    "nearDensity": {
+      "entityId": "dense",
+      "autoDensity": true,
+      "density": 50,
+      "eligiblePoints": 10000,
+      "sampleFraction": 1,
+      "estimatedDisplayedPoints": 10000
+    },
+    "sourcePoints": 10000
+  },
+  "errors": []
+}

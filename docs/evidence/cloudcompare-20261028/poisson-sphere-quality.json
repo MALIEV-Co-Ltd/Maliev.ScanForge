@@ -1,0 +1,72 @@
+{
+  "scope": "Native CloudCompare 2.13.2 Poisson reconstruction of 1200 outward-normal samples on an origin-centered radius-10-mm sphere. Independent PLY export analysis; no ScanForge reconstruction code used.",
+  "inputSha256": "52b2b0c89ee6d49e80d87c17b7a38b46850bec83e0228a12bda98775ba317ad7",
+  "outputSha256": "dd7a685fc82a4c3210d8f87ccc2f9ea80305c2141a6f0f03583f1b5d10f398ed",
+  "settings": {
+    "octreeDepth": 8,
+    "boundary": "Neumann",
+    "pointWeight": 2,
+    "samplesPerNode": 1.5,
+    "linearFit": false,
+    "outputDensity": false,
+    "threads": 2
+  },
+  "topology": {
+    "vertices": 3992,
+    "usedVertices": 3992,
+    "triangles": 7980,
+    "edges": 11970,
+    "components": 1,
+    "boundaryEdges": 0,
+    "nonManifoldEdges": 0,
+    "inconsistentEdges": 0,
+    "degenerateTriangles": 0,
+    "duplicateTriangles": 0,
+    "eulerCharacteristic": 2
+  },
+  "radialError": {
+    "vertices": {
+      "samples": 3992,
+      "meanSignedMm": 0.002831527304680788,
+      "rmsMm": 0.006501552598168617,
+      "meanAbsoluteMm": 0.005433005249316088,
+      "p95AbsoluteMm": 0.012510560212893651,
+      "maximumAbsoluteMm": 0.017023679705733485,
+      "minimumSignedMm": -0.017023679705733485,
+      "maximumSignedMm": 0.015772429076083228
+    },
+    "faceCentroids": {
+      "samples": 7980,
+      "meanSignedMm": -0.005475994999930316,
+      "rmsMm": 0.008573989005206773,
+      "meanAbsoluteMm": 0.006475817374839283,
+      "p95AbsoluteMm": 0.01901697630933441,
+      "maximumAbsoluteMm": 0.02619885373275288,
+      "minimumSignedMm": -0.02619885373275288,
+      "maximumSignedMm": 0.011395460737094965
+    },
+    "continuousMeshToSphere": {
+      "minimumRadiusMm": 9.971688526559976,
+      "maximumRadiusMm": 10.015772429076083,
+      "maximumDistanceMm": 0.028311473440023605,
+      "method": "For each filled triangle, minimum norm is the closest point to the origin and maximum norm is at a vertex. Distance to the true sphere is absolute radial error. This is mesh-to-sphere only, not symmetric Hausdorff distance."
+    }
+  },
+  "orientation": {
+    "outwardFaces": 7980,
+    "inwardFaces": 0,
+    "outwardNormals": 3992,
+    "inwardNormals": 0,
+    "zeroNormals": 0
+  },
+  "surfaceAreaMm2": 1255.8621847619306,
+  "analyticSphereAreaMm2": 1256.6370614359173,
+  "signedVolumeMm3": 4182.363516793801,
+  "analyticSphereVolumeMm3": 4188.790204786391,
+  "limitations": [
+    "One synthetic closed sphere and one parameter configuration; not a general Poisson quality certificate.",
+    "No self-intersection test or full vertex-link manifold certification was performed.",
+    "Vertex and face-centroid RMS weight their respective samples equally, not surface area.",
+    "Density was disabled; open-surface trimming and holes were not exercised."
+  ]
+}

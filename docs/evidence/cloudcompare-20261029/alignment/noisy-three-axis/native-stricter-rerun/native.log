@@ -1,0 +1,32 @@
+[08:11:52] [SET LOG FILE] finished in 0.00 s.
+[08:11:52] [AUTO SAVE STATE]
+[08:11:52] Auto-save is disabled
+[08:11:52] [AUTO SAVE STATE] finished in 0.00 s.
+[08:11:52] [CHANGE CLOUD OUTPUT FORMAT]
+[08:11:52] Output export format (clouds) set to: ASC
+[08:11:52] [CHANGE CLOUD OUTPUT FORMAT] finished in 0.00 s.
+[08:11:52] [NO TIMESTAMP]
+[08:11:52] [NO TIMESTAMP] finished in 0.00 s.
+[08:11:52] [LOAD]
+[08:11:52] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\noisy-three-axis\native-stricter-rerun\moving.ply'
+[08:11:52] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\noisy-three-axis\native-stricter-rerun\moving.ply' loaded successfully
+[08:11:52] Found one cloud with 693 points
+[08:11:52] [LOAD] finished in 0.01 s.
+[08:11:52] [LOAD]
+[08:11:52] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\noisy-three-axis\native-stricter-rerun\fixed.ply'
+[08:11:52] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\noisy-three-axis\native-stricter-rerun\fixed.ply' loaded successfully
+[08:11:52] Found one cloud with 693 points
+[08:11:52] [LOAD] finished in 0.01 s.
+[08:11:52] [ICP]
+[08:11:52] [ICP] Will use 2 threads
+[08:11:52] Entity 'moving - Cloud' has been registered
+[08:11:52] RMS: 0.0122457
+[08:11:52] Number of points used for final step: 693
+[08:11:52] [ICP] finished in 0.00 s.
+[08:11:52] [SAVE CLOUDS]
+[08:11:52] [SAVING]
+[08:11:52] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/alignment/noisy-three-axis/native-stricter-rerun/moving_REGISTERED.asc' saved successfully
+[08:11:52] [SAVING]
+[08:11:52] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/alignment/noisy-three-axis/native-stricter-rerun/fixed.asc' saved successfully
+[08:11:52] [SAVE CLOUDS] finished in 0.00 s.
+[08:11:52] Processed finished in 0.02 s.

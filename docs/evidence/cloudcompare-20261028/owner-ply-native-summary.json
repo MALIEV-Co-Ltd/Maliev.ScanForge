@@ -1,0 +1,98 @@
+{
+  "evidenceType": "native CloudCompare 2.13.2 command-line execution on staged owner mesh copies",
+  "moving": "ply-2.ply: 1375494 vertices / 2697877 faces",
+  "fixed": "ply-1.ply: 140113 vertices / 274154 faces",
+  "runs": [
+    {
+      "overlapPercent": 15,
+      "invocation": {
+        "pid": 4512,
+        "startedUtc": "2026-10-28T08:37:21.4386372Z",
+        "arguments": [
+          "-SILENT",
+          "-LOG_FILE",
+          "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap15\\native.log",
+          "-AUTO_SAVE",
+          "OFF",
+          "-NO_TIMESTAMP",
+          "-O",
+          "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap15\\moving.ply",
+          "-O",
+          "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap15\\fixed.ply",
+          "-ICP",
+          "-OVERLAP",
+          "15",
+          "-MIN_ERROR_DIFF",
+          "1e-6",
+          "-RANDOM_SAMPLING_LIMIT",
+          "20000",
+          "-MAX_TCOUNT",
+          "2"
+        ],
+        "timeoutSeconds": 120
+      },
+      "exit": {
+        "status": "timeout",
+        "timeoutSeconds": 120,
+        "ownedPid": 4512,
+        "termination": "Process.Kill after 120 seconds",
+        "endedUtc": "2026-10-28T08:39:47.0531656Z",
+        "outputs": "No registration matrix was produced before timeout"
+      },
+      "nativeReportedRmsMm": null,
+      "nativeFinalStepPoints": null
+    },
+    {
+      "overlapPercent": 85,
+      "invocation": {
+        "pid": 25952,
+        "startedUtc": "2026-10-28T08:39:47.1396438Z",
+        "arguments": [
+          "-SILENT",
+          "-LOG_FILE",
+          "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap85\\native.log",
+          "-AUTO_SAVE",
+          "OFF",
+          "-NO_TIMESTAMP",
+          "-O",
+          "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap85\\moving.ply",
+          "-O",
+          "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap85\\fixed.ply",
+          "-ICP",
+          "-OVERLAP",
+          "85",
+          "-MIN_ERROR_DIFF",
+          "1e-6",
+          "-RANDOM_SAMPLING_LIMIT",
+          "20000",
+          "-MAX_TCOUNT",
+          "2"
+        ],
+        "timeoutSeconds": 120
+      },
+      "exit": {
+        "status": "exited",
+        "exitCode": 0,
+        "endedUtc": "2026-10-28T08:40:28.9262488Z",
+        "timeoutSeconds": 120
+      },
+      "nativeReportedRmsMm": "0.77982",
+      "nativeFinalStepPoints": "19999",
+      "transform": [
+        0.999999701977, -0.00023477638, 0.000757883128, 1.365176558495,
+        0.000234505977, 0.999999880791, 0.000356846082, -0.792845726013,
+        -0.000757966831, -0.000356668257, 0.999999642372, -2.214140892029, 0, 0,
+        0, 1
+      ],
+      "translationLengthMm": 2.71932551763784
+    }
+  ],
+  "limits": [
+    "REA Windows process capture unavailable; these are direct native shell process logs and saved matrices, not REA runtime-capture Evidence IDs.",
+    "Each native process was bounded to 120 seconds; overlap15 timed out with no transform, which is not a numerical failure diagnosis.",
+    "No original PLY was modified. Staged post-run input hashes match original hashes recorded before the runs and rechecked afterward.",
+    "Both input PLYs load as meshes. CloudCompare logs include mesh registration sampling; this is not a comparison of identical sampled point sets against ScanForge.",
+    "Native RMS is reported by CloudCompare on final fitting points and is not independent full-source validation. No ground truth is known for owner PLY scans.",
+    "GUI process39088 was left running; no GUI interaction occurred during these CLI runs."
+  ]
+}

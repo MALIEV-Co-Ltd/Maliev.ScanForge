@@ -1,0 +1,33 @@
+[08:15:44] [SET LOG FILE] finished in 0.00 s.
+[08:15:44] [AUTO SAVE STATE]
+[08:15:44] Auto-save is disabled
+[08:15:44] [AUTO SAVE STATE] finished in 0.00 s.
+[08:15:44] [NO TIMESTAMP]
+[08:15:44] [NO TIMESTAMP] finished in 0.00 s.
+[08:15:44] [LOAD]
+[08:15:44] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\rerun200\moving.ply'
+[08:15:44] [PLY][Comment] File generated
+[08:15:45] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\rerun200\moving.ply' loaded successfully
+[08:15:45] Found one mesh with 2697877 faces and 1375494 vertices: 'Mesh'
+[08:15:45] [LOAD] finished in 0.35 s.
+[08:15:45] [APPLY TRANSFORMATION]
+[08:15:45] Transformation:
+0.999999821186 0.000024147375 -0.000636075507 -0.149212867022
+-0.000023923867 0.999999940395 0.000351390074 0.071075461805
+0.000636083947 -0.000351374794 0.999999761581 -0.077591970563
+0.000000000000 0.000000000000 0.000000000000 1.000000000000
+[08:15:45] [APPLY TRANSFORMATION] finished in 0.15 s.
+[08:15:45] [LOAD]
+[08:15:45] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\rerun200\fixed.ply'
+[08:15:45] [PLY][Comment] File generated
+[08:15:45] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\rerun200\fixed.ply' loaded successfully
+[08:15:45] Found one mesh with 274154 faces and 140113 vertices: 'Mesh'
+[08:15:45] [LOAD] finished in 0.04 s.
+[08:15:45] [ICP]
+[08:15:45] [ICP][Partial overlap] Selecting 24986 points out of 49929 (50%) for registration
+[08:15:45] [ICP] Will use 2 threads
+[08:15:53] Entity 'Mesh_TRANSFORMED' has been registered
+[08:15:53] RMS: 0.0258302
+[08:15:53] Number of points used for final step: 7489
+[08:15:53] [ICP] finished in 8.15 s.
+[08:15:53] Processed finished in 8.69 s.

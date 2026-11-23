@@ -12,7 +12,7 @@ function dispose(group: THREE.Group): void {
 
 for (const perspective of [false, true]) {
   for (const size of [0.1, 4000]) {
-    it(`keeps the origin dot six CSS pixels across at ${size}mm (${perspective ? "perspective" : "orthographic"})`, () => {
+    it(`keeps origin guides readable and the dot six CSS pixels across at ${size}mm (${perspective ? "perspective" : "orthographic"})`, () => {
       const group = createOriginGeometry(undefined, false);
       const marker = group.children.find(
         (child) => child.userData.originMarker,
@@ -29,6 +29,21 @@ for (const perspective of [false, true]) {
           camera.updateProjectionMatrix();
           for (const height of [300, 1000]) {
             updateOriginMarker(group, camera, height);
+            group.updateMatrixWorld(true);
+            const axes = group.children.find(
+              (child) => child instanceof THREE.AxesHelper,
+            )!;
+            const worldHeight =
+              (2 * (perspective ? camera.position.length() : 1)) /
+              Math.abs(camera.projectionMatrix.elements[5]);
+            expect((35 * axes.scale.x * height) / worldHeight).toBeCloseTo(
+              60,
+              8,
+            );
+            const plane = group.children.find(
+              (child) => child.userData.originPlane,
+            )!;
+            expect(plane.scale.x).toBeCloseTo(axes.scale.x, 10);
             const radius = marker.geometry.parameters.radius * marker.scale.x;
             const right = new THREE.Vector3(1, 0, 0).applyQuaternion(
               camera.quaternion,

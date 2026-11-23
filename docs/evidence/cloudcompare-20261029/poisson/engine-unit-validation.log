@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 C:/repo/Maliev.ScanForge
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  08:10:31
+   Duration  148ms (transform 70%, import 17%, tests 7%, worker 6%)
+

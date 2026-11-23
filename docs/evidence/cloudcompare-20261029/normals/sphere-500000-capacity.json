@@ -1,0 +1,23 @@
+{
+  "pointCount": 500000,
+  "minimumNormalDot": 0.9999988586976252,
+  "elapsedMs": 4873.111000000001,
+  "arrayBufferBytes": 75025667,
+  "diagnostics": {
+    "mode": "estimate-outward",
+    "pointCount": 500000,
+    "neighbors": 24,
+    "components": 1,
+    "orientationAnchors": 0,
+    "invalidOrientationAnchors": 0,
+    "orientationAssumption": "Graph-consistent orientation assumes each component is a closed surface; aggregate radial flux selects its outward sign."
+  },
+  "scope": "All 500000 analytical sphere samples processed; no sampling. Coordinates and normals are compared against the independently authored unit sphere.",
+  "preprocessorSha256": "55b406065c0cc9578d9b035676baebabb9bad0f5ce22c8f67cea45afe06419b0",
+  "inputSha256": "220d992f40629b9729b6b3e509a766865ae67ed6fd03c3ac9cfdc94876df3ff0",
+  "outputNormalsSha256": "c057ed7b39a8c1e2e343a2f92091af3f874bb49530b19e8f872b62e5a981d8a3",
+  "settings": {
+    "mode": "estimate-outward",
+    "neighbors": 24
+  }
+}

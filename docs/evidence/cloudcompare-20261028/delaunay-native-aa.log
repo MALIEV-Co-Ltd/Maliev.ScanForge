@@ -1,0 +1,24 @@
+[15:31:21] [SET LOG FILE] finished in 0.00 s.
+[15:31:21] [AUTO SAVE STATE]
+[15:31:21] Auto-save is disabled
+[15:31:21] [AUTO SAVE STATE] finished in 0.00 s.
+[15:31:21] [CHANGE MESH OUTPUT FORMAT]
+[15:31:21] Output export format (meshes) set to: PLY
+[15:31:21] [CHANGE MESH OUTPUT FORMAT] finished in 0.00 s.
+[15:31:21] [NO TIMESTAMP]
+[15:31:21] [NO TIMESTAMP] finished in 0.00 s.
+[15:31:21] [LOAD]
+[15:31:21] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\fixed.ply'
+[15:31:21] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\fixed.ply' loaded successfully
+[15:31:21] Found one cloud with 437 points
+[15:31:21] [LOAD] finished in 0.00 s.
+[15:31:21] [DELAUNAY TRIANGULATION]
+[15:31:21] Axis aligned: yes
+[15:31:21] 	Processing cloud fixed - Cloud
+[15:31:21] 	Resulting mesh: #772 faces, 437 vertices
+[15:31:21] [DELAUNAY TRIANGULATION] finished in 0.00 s.
+[15:31:21] [SAVE MESHES]
+[15:31:21] [SAVING]
+[15:31:21] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028/fixtures/fixed.ply' saved successfully
+[15:31:21] [SAVE MESHES] finished in 0.00 s.
+[15:31:21] Processed finished in 0.02 s.

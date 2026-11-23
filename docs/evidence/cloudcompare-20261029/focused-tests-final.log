@@ -1,0 +1,16 @@
+
+> scanforge@0.1.0 test
+> vitest run --maxWorkers=1 --exclude **/.resources/** tests/point-cloud-poisson-api.test.ts tests/point-cloud-poisson-input.test.ts tests/point-cloud-poisson-ui.test.ts tests/point-cloud-mesh-command.test.ts tests/point-cloud-meshing-api.test.ts tests/point-cloud-meshing-worker.test.ts tests/poisson-mesh-cleanup.test.ts tests/point-cloud-normals.test.ts tests/poisson-reconstruction.test.ts tests/poisson-quality-analyzer.test.ts
+
+
+ RUN  v5.0.3 C:/repo/Maliev.ScanForge
+
+
+ Test Files  10 passed (10)
+      Tests  27 passed (27)
+   Start at  09:05:11
+   Duration  3.31s (tests 53%, transform 25%, import 21%, worker 1%)
+
+    Isolate  10 workers spawned · ~78ms startup each (spawn + environment, per file)
+             at least ~704ms faster with isolate: false — reuses workers across files instead of one per file
+

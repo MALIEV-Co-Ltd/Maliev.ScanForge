@@ -1,0 +1,125 @@
+{
+  "evidenceType": "Every source vertex independently queried against complete reference triangles using three-mesh-bvh",
+  "inputs": {
+    "ply-2.ply": {
+      "bytes": 68084515,
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f"
+    },
+    "ply-1.ply": {
+      "bytes": 6926970,
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+    }
+  },
+  "sourcePoints": 1375494,
+  "targetPoints": 140113,
+  "targetTriangles": 274154,
+  "sample": {
+    "count": 1375494,
+    "selection": "all source vertices; no source decimation",
+    "fittingSamples": 20000,
+    "maxIterations": 3
+  },
+  "initial": {
+    "evaluatedPoints": 1375494,
+    "wholeSourceRmsMm": 1.6742069391093468,
+    "closest15PercentRmsMm": 0.02411410786465069,
+    "closest85PercentRmsMm": 1.3713001364034583,
+    "compatibleWithin10mm": 447169,
+    "required15PercentPoints": 206325,
+    "compatible15PercentSatisfied": true,
+    "compatible15PercentRmsMm": 0.024298829008560407,
+    "compatible85PercentAvailableSubsetRmsMm": 0.7393106916566184
+  },
+  "native": {
+    "case": "rerun-adaptive",
+    "independentlyMeasured": {
+      "evaluatedPoints": 1375494,
+      "wholeSourceRmsMm": 1.6415116047364713,
+      "closest15PercentRmsMm": 0.022364957068846655,
+      "closest85PercentRmsMm": 1.3509923641207193,
+      "compatibleWithin10mm": 436209,
+      "required15PercentPoints": 206325,
+      "compatible15PercentSatisfied": true,
+      "compatible15PercentRmsMm": 0.02251892906628713,
+      "compatible85PercentAvailableSubsetRmsMm": 0.7215075082066208
+    },
+    "initialTransform": {
+      "rotation": [
+        1, 0.000188192847, -0.000003157171, -0.000188192076, 0.999999940395,
+        0.000245817471, 0.000003203432, -0.00024581686, 0.999999940395
+      ],
+      "translation": [0.071020916104, 0.019262721762, -0.129797875881]
+    },
+    "transform": {
+      "rotation": [
+        1, -0.000016976652, -0.000038403814, 0.000016976306, 1, -0.000008978363,
+        0.000038403967, 0.000008977711, 1
+      ],
+      "translation": [-0.010442860425, -0.005857261829, -0.002604768611]
+    }
+  },
+  "scanforge15": {
+    "independentlyMeasured": {
+      "evaluatedPoints": 1375494,
+      "wholeSourceRmsMm": 1.6741369336710532,
+      "closest15PercentRmsMm": 0.024058961780530828,
+      "closest85PercentRmsMm": 1.3712672391624494,
+      "compatibleWithin10mm": 447120,
+      "required15PercentPoints": 206325,
+      "compatible15PercentSatisfied": true,
+      "compatible15PercentRmsMm": 0.02424398789402557,
+      "compatible85PercentAvailableSubsetRmsMm": 0.7392651001679538
+    },
+    "registration": {
+      "transform": {
+        "rotation": [
+          0.9999999996188025, 0.000024843011282790673, -0.000012050718909611637,
+          -0.000024843122312274234, 0.9999999996489658,
+          -0.000009213453156064219, 0.000012050490015460713,
+          0.000009213752530035897, 0.9999999998849463
+        ],
+        "translation": [
+          -0.004128449929929445, -0.002736370913236641, -0.0007373201999598678
+        ]
+      },
+      "rms": 1.6741365464548732,
+      "wholeCloudRms": 1.6741365464548732,
+      "overlapRms": 0.024244137216378706,
+      "overlapPoints": 206325,
+      "requiredOverlapPoints": 206325,
+      "overlapSatisfied": true,
+      "rejectedNormalPoints": 929281,
+      "maxError": 3.5083930213008374,
+      "pairs": 1375494,
+      "evaluatedPoints": 1375494,
+      "targetPoints": 140113,
+      "rejectedPoints": 929281,
+      "overlapFraction": 0.3244019966644711,
+      "inlierPairs": 206325,
+      "inlierRms": 0.024244137216378706,
+      "iterations": 1,
+      "converged": true,
+      "targetRms": 0.5,
+      "targetReached": true,
+      "terminationReason": "targetReached",
+      "matching": "fullTargetSurface",
+      "normalCompatibility": true,
+      "applied": true,
+      "targetRmsBasis": "overlap",
+      "overlapPercent": 15,
+      "sampleSize": 20000,
+      "fittingSamples": 20000
+    }
+  },
+  "limits": [
+    "Full-source metrics; physical correspondence truth unknown. This is not an accuracy or global convergence certificate.",
+    "Owner scan correspondence truth is unknown; nearest-surface residual improvement does not prove correct physical registration.",
+    "Native mesh surface sampling, normals ignored and stopping differ from ScanForge vertex sampling with orientation gating; both request 15 percent.",
+    "three-mesh-bvh verification is independent of ScanForge solver target query and RMS; compatible-subset metrics describe available matches even when requested85 percent coverage is not present.",
+    "Source metrics use every authored vertex; density-weighted, not area-weighted.",
+    "Independent BVH and solver normal-compatible counts differ by a few points; nearest-triangle/normal handling is a possible explanation that was not adjudicated."
+  ],
+  "fitDurationMs": 0.002299999999195279,
+  "cachedScanForgeAndInitialMetricsFrom": "docs/evidence/cloudcompare-20261029/alignment/owner-ply-full-source-comparison-20.json",
+  "durationMs": 25269.535
+}

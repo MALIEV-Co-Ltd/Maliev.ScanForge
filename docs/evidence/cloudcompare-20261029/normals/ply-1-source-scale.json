@@ -1,0 +1,73 @@
+{
+  "scope": "Independent Three.js / three-mesh-bvh comparison against the complete original PLY triangle topology. The original scan is an exchange reference, not physical ground truth.",
+  "source": {
+    "path": "C:/repo/alignment-example-files/ply-1.ply",
+    "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "bytes": 6926970,
+    "topology": {
+      "vertices": 140113,
+      "usedVertices": 140113,
+      "triangles": 274154,
+      "edges": 414268,
+      "components": 23,
+      "boundaryEdges": 6074,
+      "nonManifoldEdges": 0,
+      "inconsistentWindingEdges": 0,
+      "nonManifoldVertices": 13,
+      "duplicateVertices": 2,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 4,
+      "eulerCharacteristic": -1,
+      "surfaceArea": 8239.89807684384,
+      "signedVolume": 345447.81145978585,
+      "bbox": {
+        "min": [-32.87358474731445, -38.4989128112793, -331.615234375],
+        "max": [72.72367095947266, 72.85503387451172, -261.84112548828125],
+        "diagonal": 168.57908567269624
+      },
+      "edgeLength": {
+        "samples": 414268,
+        "minimum": 0,
+        "mean": 0.2788827740358787,
+        "rms": 0.28506222769093004,
+        "p50": 0.24958317430550966,
+        "p90": 0.3511506344182171,
+        "p95": 0.37032984722453827,
+        "p99": 0.4178975343476733,
+        "maximum": 0.6462065644395631
+      },
+      "minimumIncidentEdgeLength": {
+        "samples": 140113,
+        "minimum": 0,
+        "mean": 0.2227176765093016,
+        "rms": 0.22645477839838596,
+        "p50": 0.2404683406850866,
+        "p90": 0.2435638254414807,
+        "p95": 0.24644085874677712,
+        "p99": 0.2643193926833794,
+        "maximum": 0.3571558583469266
+      },
+      "suppliedNormals": {
+        "count": 140113,
+        "invalidOrZero": 2
+      }
+    }
+  },
+  "predeclaredAcceptance": {
+    "method": "No arbitrary distance thresholds. Compare full-cloud distance distributions in source coordinate units with the source incident-edge spacing and edge-length distributions, measured before reconstruction. Topological defects and incomplete self-intersection analysis are reported explicitly.",
+    "sourceScaleMeasuredBeforeOutput": true
+  },
+  "limitations": [
+    "Distances are exact point-to-triangle queries at every source vertex, output vertex, and output face centroid; these finite sample sets are not a continuous symmetric Hausdorff certificate.",
+    "Source coordinate units are preserved and are not independently certified as millimetres.",
+    "Vertex-link manifold classification follows retained indices; coincident unmerged vertices are separately reported.",
+    "The original scan may contain holes, noise and normal defects. Agreement with it does not establish physical accuracy."
+  ],
+  "acceptance": {
+    "path": "docs/evidence/cloudcompare-20261029/normals/ply-1-quality-acceptance.json",
+    "sha256": "897784b58bf121793556193d9112d848680ebcfb937323738afa77b6cc32673c",
+    "checks": [],
+    "passed": null
+  },
+  "analyzerSha256": "94dcaf39432c4d71699e4bdf3115751d475d9f3379dffbc85059b5cb2bb006f6"
+}

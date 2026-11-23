@@ -51,16 +51,15 @@ it("uses active picking and processing state ahead of the underlying edit mode",
   expect(activeToolGuidance({ ...base, reference: "cylinder" })).toContain(
     "Left-click picks cylinder",
   );
-  expect(activeToolGuidance({ ...base, landmarkSide: "fixed" })).toContain(
-    "adds fixed landmark",
+  expect(activeToolGuidance({ ...base, landmarkAlignment: true })).toContain(
+    "fixed points",
   );
   expect(
     activeToolGuidance({
       ...base,
-      landmarkSide: "moving",
-      landmarkPreview: true,
+      landmarkAlignment: true,
     }),
-  ).toContain("Choose moving/fixed picking");
+  ).toContain("deselect");
 });
 for (const [tool, action] of [
   ["brush", "filled selection"],
@@ -156,4 +155,11 @@ it("shows Interactive handle and cancellation guidance instead of ordinary selec
   expect(compactToolGuidance(context)).toBe(
     "Left-drag handles · Escape cancels",
   );
+});
+
+it("keeps both canvas roles and readable separators in the landmark hint", () => {
+  const hint = activeToolGuidance({ mode: "inspect", landmarkAlignment: true });
+  expect(hint).toContain("Top-right: pick fixed points");
+  expect(hint).toContain("Bottom-right: pick moving points");
+  expect(hint).not.toContain(String.fromCodePoint(0xfffd));
 });

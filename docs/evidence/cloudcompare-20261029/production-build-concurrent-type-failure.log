@@ -1,0 +1,22 @@
+
+> scanforge@0.1.0 prebuild
+> node scripts/resource-check.mjs && node scripts/verify-poisson.mjs && node scripts/prepare-kernel.mjs
+
+Resource admission: 13577 MiB available; 1536 MiB required.
+{"passed":true,"upstreamCommit":"262b0f539d404057d1f36e1adc07fc9388678899","wasmSha256":"fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425","verifiedFiles":5,"requiresEmsdk":false}
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 27 modules transformed.
+rendering chunks...
+computing gzip size...
+public/kernel/sketch-backend.js  118.75 kB │ gzip: 22.62 kB
+✓ built in 180ms
+Local CAD kernel prepared at C:\repo\Maliev.ScanForge\public\kernel\
+
+> scanforge@0.1.0 build
+> tsc --noEmit && vite build
+
+src/global-alignment-initialization.ts(55,20): error TS2339: Property 'byteLength' does not exist on type 'Positions'.
+  Property 'byteLength' does not exist on type 'number[]'.
+src/global-alignment-initialization.ts(56,21): error TS2339: Property 'byteLength' does not exist on type 'number[] | Uint32Array<ArrayBufferLike>'.
+  Property 'byteLength' does not exist on type 'number[]'.

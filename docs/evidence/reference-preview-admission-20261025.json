@@ -1,0 +1,140 @@
+{
+  "date": "2026-10-25",
+  "scope": "Reciprocal reference preview admission through shared application API and GUI producers",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "uncommitted; not a shipped or pushed candidate"
+  },
+  "sources": [
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "e577ee1fe7b385bdc9518c414a30b61307fbdc6eeb966adb5053c10d35467e40"
+    },
+    {
+      "path": "src/ui/App.tsx",
+      "sha256": "43dc77a542eb8a8e62095a8394845061782731f708159b3a234930b6c11d4313"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "26f8c5051311de9f7b9546408222c3b66a805801ef259d839d82b5bc9cc184ef"
+    },
+    {
+      "path": "tests/reference-preview-admission.test.ts",
+      "sha256": "349340ea8d235056690a9638378448cc79ed5bf25a38dbbbf9d08eb9228bb744"
+    },
+    {
+      "path": "tests/create-sketch-dialog.test.tsx",
+      "sha256": "b4fc6f4864707267ddaf5718c2ab5b6ca87b8c0f43da6355847f14da6b741602"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "0143811d7e8bad332793f8b9c95fdcc8fdb11adbdb17a97304bf545b1e35a153"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "f9c3524d49262650ca46eb307d47da3d9a83b0be54d7cddc67e2ddb537a16b7a"
+    }
+  ],
+  "behavior": [
+    "Shared admission inspects registry and renderer ownership, including pending failed retirement.",
+    "Executor rejects alignment, global alignment, landmark, interactive begin and scan-create preview work before handler/job admission.",
+    "GUI scan, surface, landmark, section and datum preview producers use the same admission boundary.",
+    "Owner-scoped clearing, reads, selection and existing cancellation routes are preserved.",
+    "Expired/stale ownership retires before another preview; failed cleanup continues to block until retirement succeeds.",
+    "Retrying a rejected request retains its BUSY receipt; release permits a fresh request ID."
+  ],
+  "mcp": {
+    "catalogChanged": false,
+    "publicReferenceConstruction": false,
+    "sharedCoverage": "Existing ApplicationApi executor and actual App host callback use one admission method; no separate agent implementation.",
+    "schemaChanges": null
+  },
+  "validation": {
+    "red": {
+      "result": "Five preview command starts reached handlers despite an active reference owner; missing direct admission method also reproduced.",
+      "testInputCorrection": "An empty datum constraint array was invalid; subsequent runs use a valid point constraint."
+    },
+    "build": {
+      "command": "npm run build",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 34.310244099993724,
+        "childPeakJobMemoryBytes": 2497208320,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "identitySha256": "af8725b8fe91d398ba7c51252e53fa8b78e44883226edf3fdac94f1a336cd3a8"
+    },
+    "focused": {
+      "command": "vitest run --maxWorkers=1 --exclude **/.resources/** with seven absolute test paths",
+      "passed": 141,
+      "failed": 0,
+      "files": 7,
+      "newAdmissionTests": 13,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 3.6951479999697767,
+        "childPeakJobMemoryBytes": 388739072,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    },
+    "full": {
+      "command": "vitest run --dir tests --maxWorkers=1 --exclude **/.resources/**",
+      "passed": 48890,
+      "skipped": 64,
+      "failed": 0,
+      "files": 680,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 271.5955356999766,
+        "childPeakJobMemoryBytes": 988069888,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "priorFailure": "First full run found an existing extracted-App-function test missing its new callback dependency. Updated injection and added a denial/no-side-effects assertion; all original section capture assertions retained."
+    },
+    "realAppBrowser": {
+      "fixture": "Production App source relocated by module specifier, hook wrapper only captures the real shared gateway; synthetic mesh seeded through the isolated host.",
+      "guiAlignBlocked": true,
+      "guiError": "Finish or discard the reference construction preview before starting another preview.",
+      "uiSetErrorCode": "BUSY",
+      "globalPreviewErrorCode": "BUSY",
+      "datumDisplayGuard": true,
+      "referenceOwnerPreserved": true,
+      "historyPreserved": true,
+      "revisionPreserved": true,
+      "alignmentPanelAfterRelease": true,
+      "errors": [],
+      "warnings": [],
+      "failedResponses": [],
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 3.9964189999736845,
+        "childPeakJobMemoryBytes": 606457856,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "fixtureCorrection": "First browser attempt sampled its baseline immediately after fixture insertion. Fresh run samples after two animation frames; no application source changed between attempts.",
+      "screenshotSha256": "e2dbc14b7b13a1b59dd3d267faa925d097937a23150c0244dc665c3107b1103d"
+    },
+    "format": {
+      "exitCode": 0,
+      "elapsedSeconds": 0.7140099999960512,
+      "childPeakJobMemoryBytes": 168501248,
+      "rootExited": true,
+      "childJobActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "limits": [
+    "No native geometry semantics changed or newly verified.",
+    "Public reference construction sessions/editor, source admission and dependency publication remain incomplete and undiscoverable.",
+    "This checkpoint proves reciprocal admission for the existing entry points; it does not complete the full construction milestone.",
+    "Native three-scan reconstruction comparison is still unavailable; user confirmed there is no matched native export."
+  ]
+}

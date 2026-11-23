@@ -1,0 +1,29 @@
+[08:19:13] [SET LOG FILE] finished in 0.00 s.
+[08:19:13] [AUTO SAVE STATE]
+[08:19:13] Auto-save is disabled
+[08:19:13] [AUTO SAVE STATE] finished in 0.00 s.
+[08:19:13] [NO TIMESTAMP]
+[08:19:13] [NO TIMESTAMP] finished in 0.00 s.
+[08:19:13] [LOAD]
+[08:19:13] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\rerun-adaptive\moving.ply'
+[08:19:13] [PLY][Comment] File generated
+[08:19:13] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\rerun-adaptive\moving.ply' loaded successfully
+[08:19:13] Found one mesh with 2697877 faces and 1375494 vertices: 'Mesh'
+[08:19:13] [LOAD] finished in 0.35 s.
+[08:19:13] [APPLY TRANSFORMATION]
+[08:19:13] Transformation:
+1.000000000000 0.000188192847 -0.000003157171 0.071020916104
+-0.000188192076 0.999999940395 0.000245817471 0.019262721762
+0.000003203432 -0.000245816860 0.999999940395 -0.129797875881
+0.000000000000 0.000000000000 0.000000000000 1.000000000000
+[08:19:14] [APPLY TRANSFORMATION] finished in 0.14 s.
+[08:19:14] [LOAD]
+[08:19:14] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\rerun-adaptive\fixed.ply'
+[08:19:14] [PLY][Comment] File generated
+[08:19:14] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\rerun-adaptive\fixed.ply' loaded successfully
+[08:19:14] Found one mesh with 274154 faces and 140113 vertices: 'Mesh'
+[08:19:14] [LOAD] finished in 0.04 s.
+[08:19:14] [ICP]
+[08:19:14] Invalid number of iterations! (adaptive)
+[08:19:14] [ICP] finished in 0.00 s.
+[08:19:14] Processed finished in 0.54 s.

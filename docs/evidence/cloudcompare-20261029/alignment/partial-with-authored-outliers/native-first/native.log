@@ -1,0 +1,32 @@
+[08:12:10] [SET LOG FILE] finished in 0.00 s.
+[08:12:10] [AUTO SAVE STATE]
+[08:12:10] Auto-save is disabled
+[08:12:10] [AUTO SAVE STATE] finished in 0.00 s.
+[08:12:10] [CHANGE CLOUD OUTPUT FORMAT]
+[08:12:10] Output export format (clouds) set to: ASC
+[08:12:10] [CHANGE CLOUD OUTPUT FORMAT] finished in 0.00 s.
+[08:12:10] [NO TIMESTAMP]
+[08:12:10] [NO TIMESTAMP] finished in 0.00 s.
+[08:12:10] [LOAD]
+[08:12:10] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\partial-with-authored-outliers\native-first\moving.ply'
+[08:12:10] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\partial-with-authored-outliers\native-first\moving.ply' loaded successfully
+[08:12:10] Found one cloud with 866 points
+[08:12:10] [LOAD] finished in 0.01 s.
+[08:12:10] [LOAD]
+[08:12:10] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\partial-with-authored-outliers\native-first\fixed.ply'
+[08:12:10] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\partial-with-authored-outliers\native-first\fixed.ply' loaded successfully
+[08:12:10] Found one cloud with 693 points
+[08:12:10] [LOAD] finished in 0.01 s.
+[08:12:10] [ICP]
+[08:12:10] [ICP] Will use 2 threads
+[08:12:10] Entity 'moving - Cloud' has been registered
+[08:12:10] RMS: 1.51517e-07
+[08:12:10] Number of points used for final step: 692
+[08:12:10] [ICP] finished in 0.00 s.
+[08:12:10] [SAVE CLOUDS]
+[08:12:10] [SAVING]
+[08:12:10] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/alignment/partial-with-authored-outliers/native-first/moving_REGISTERED.asc' saved successfully
+[08:12:10] [SAVING]
+[08:12:10] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/alignment/partial-with-authored-outliers/native-first/fixed.asc' saved successfully
+[08:12:10] [SAVE CLOUDS] finished in 0.00 s.
+[08:12:10] Processed finished in 0.02 s.

@@ -231,6 +231,20 @@ it.each(["identity", "settings", "history", "locked", "hidden", "indexed"])(
     expect(h.host.commit).not.toHaveBeenCalled();
   },
 );
+it("retains preview when derived viewport grid and scale measurements change", async () => {
+  const h = harness();
+  h.state.settings.effectiveGridSpacing = 20;
+  h.state.settings.scale = { distanceMm: 20, widthPx: 60 };
+  const preview = (await h.ops.global_alignment_preview({}, h.context)) as any;
+  h.state.settings.effectiveGridSpacing = 10;
+  h.state.settings.scale = { distanceMm: 10, widthPx: 80 };
+  expect(validateGlobalAlignmentPreview(h.host)).toBe(true);
+  await h.ops.global_alignment_apply(
+    { previewId: preview.previewId },
+    h.context,
+  );
+  expect(h.host.commit).toHaveBeenCalledOnce();
+});
 it("rejects a competing preview without replacing staged output", async () => {
   const h = harness();
   await h.ops.global_alignment_preview({}, h.context);
@@ -309,4 +323,104 @@ it("reports nonconvergence explicitly while preserving a reviewable preview", as
   });
   expect(h.host.commit).not.toHaveBeenCalled();
   releaseGlobalAlignmentPreview(h.host);
+});
+
+vi.mock("../src/global-alignment-initialization", () => ({
+  initializeGlobalAlignment: async (entities: Entity[]) => ({
+    entities,
+    anchorId: entities[0].id,
+    fits: entities.map((e) => ({
+      id: e.id,
+      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      rms: 0,
+      ambiguous: false,
+    })),
+  }),
+  refineGlobalSurfaceAlignment: async (entities: Entity[]) => ({
+    entities,
+    anchorId: entities[0].id,
+    fits: entities.map((e) => ({
+      id: e.id,
+      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      rms: 0,
+      ambiguous: false,
+    })),
+  }),
+}));
+it("publishes real provisional poses to GUI and MCP without authoring or retaining mutable snapshots", async () => {
+  const h = harness();
+  h.host.showGlobalAlignmentProgress = vi.fn();
+  let observed: any;
+  native.refine.mockImplementation(async (_input, _entities, options) => {
+    const ordered = outerResult(false).states;
+    ordered[0].matrix[3] = 0.125;
+    options.onPose(1, ordered);
+    observed = inspectGlobalAlignmentPreview(h.host);
+    expect(h.state.history).toHaveLength(0);
+    expect(h.state.entities[0].positions[0]).toBe(0);
+    observed.progress.poses[0].matrix[3] = 100;
+    expect(
+      inspectGlobalAlignmentPreview(h.host).progress!.poses[0].matrix[3],
+    ).toBe(0.125);
+    return {
+      entities: h.output,
+      outer: outerResult(false),
+      diagnostics: { localResults: [] },
+    };
+  });
+  const ready = (await h.ops.global_alignment_preview({}, h.context)) as any;
+  expect(observed.progress).toMatchObject({ phase: "refining", pass: 1 });
+  expect(h.host.showGlobalAlignmentProgress).toHaveBeenCalledWith(
+    expect.arrayContaining([
+      expect.objectContaining({
+        entityId: "a",
+        matrix: expect.arrayContaining([0.125]),
+      }),
+    ]),
+  );
+  expect(h.host.showGlobalAlignmentProgress).toHaveBeenLastCalledWith(null);
+  expect(ready.settings.initialization).toBe("automatic");
+  expect(ready.initialization.anchorId).toBe("a");
+  expect(ready.progress).toBeUndefined();
+  expect(h.state.history).toHaveLength(0);
+});
+it("cancels live pose display and rejects late solver frames without modifying originals", async () => {
+  const h = harness();
+  h.host.showGlobalAlignmentProgress = vi.fn();
+  const original = h.state.entities;
+  let late: ((pass: number, states: any[]) => void) | undefined;
+  native.refine.mockImplementation(async (_input, _entities, options) => {
+    late = options.onPose;
+    options.onPose(0, outerResult().states);
+    h.controller.abort();
+    options.check();
+  });
+  await expect(h.ops.global_alignment_preview({}, h.context)).rejects.toThrow();
+  expect(h.host.showGlobalAlignmentProgress).toHaveBeenLastCalledWith(null);
+  expect(h.state.entities).toBe(original);
+  expect(h.state.history).toHaveLength(0);
+  expect(() => late!(1, outerResult().states)).toThrow();
+  expect(inspectGlobalAlignmentPreview(h.host).state).toBe("idle");
+});
+it("keeps the explicit refinement-only workflow available", async () => {
+  const h = harness();
+  const state = (await h.ops.global_alignment_preview(
+    { initialization: "current" },
+    h.context,
+  )) as any;
+  expect(state.settings.initialization).toBe("current");
+  expect(state.initialization).toBeUndefined();
+});
+
+it("releases preview ownership before notifying history subscribers on Apply", async () => {
+  const h = harness();
+  const staged = (await h.ops.global_alignment_preview({}, h.context)) as any;
+  h.host.commit = vi.fn(() => {
+    expect(inspectGlobalAlignmentPreview(h.host).state).toBe("idle");
+  });
+  await h.ops.global_alignment_apply(
+    { previewId: staged.previewId },
+    h.context,
+  );
+  expect(h.host.commit).toHaveBeenCalledOnce();
 });

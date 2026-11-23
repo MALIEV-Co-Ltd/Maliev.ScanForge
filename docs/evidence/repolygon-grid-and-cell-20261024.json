@@ -1,0 +1,176 @@
+{
+  "status": "grid-and-cell-arithmetic-ported-in-private",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 3,
+  "newInstructionAddressesIndependentlyDecoded": 277,
+  "targetExecuted": false,
+  "liveProcessOpened": false,
+  "nativeRuntimeParity": false,
+  "findings": [
+    "Grid-frame arithmetic snaps a Float32 midpoint onto the resolution lattice with floor, then grows a frame extent by powers of two, preserving Float32 sum and bound rounding.",
+    "Corner reduction preserves source order, ignores absent-distance sentinels and prefers interior contributions over boundary contributions.",
+    "The native accumulator initializer copies another mutable global vector. Its value and complete write history are not established by the retained image.",
+    "Corner lookup quantizes coordinates into integer keys and uses lexicographic lookup; child creation assigns eight bounds and increments depth. These paths remain untranslated."
+  ],
+  "privatePorts": [
+    {
+      "name": "grid-frame",
+      "testsPassed": 10,
+      "testsFailed": 0,
+      "redFailuresObserved": 10,
+      "sources": [
+        {
+          "name": "repolygon-grid-frame-r1.mjs",
+          "sha256": "e31cd84df26aa6873ba870f554efdf8e19460ec6e60f7e9c3189f9d8c234e957"
+        },
+        {
+          "name": "test-repolygon-grid-frame-r1.mjs",
+          "sha256": "44a01256c57bf05f1bdaa41ae2e197e034028b6809feaa6cf9474b5207f3803e"
+        }
+      ]
+    },
+    {
+      "name": "corner-reduction",
+      "testsPassed": 12,
+      "testsFailed": 0,
+      "redFailuresObserved": 12,
+      "sources": [
+        {
+          "name": "repolygon-corner-reduction-r1.mjs",
+          "sha256": "bb91b5610ee0e1b31a3188609c82d5abd4b49a44422f161dca26ea7c35aea7dd"
+        },
+        {
+          "name": "test-repolygon-corner-reduction-r1.mjs",
+          "sha256": "160c0da90646e07f952adf88ad32ea218543f70f98f3365481f35716e798f703"
+        }
+      ]
+    },
+    {
+      "name": "cell",
+      "testsPassed": 8,
+      "testsFailed": 0,
+      "redFailuresObserved": 8,
+      "sources": [
+        {
+          "name": "repolygon-cell-r1.mjs",
+          "sha256": "91d2a51fe368f2f7aeec4797ee14dfd49c1a07ad1b0112345f1c5796930545db"
+        },
+        {
+          "name": "test-repolygon-cell-r1.mjs",
+          "sha256": "8660cbbfeb1dd04faffc0ea539f350d590b81473d97ba66a9afd0141e7eb9606"
+        },
+        {
+          "name": "repolygon-triangle-sample-r1.mjs",
+          "sha256": "c04e6b92550eb1ecf1d75234711c4458b4aca90a86bacd794a81c44cba4d7066"
+        },
+        {
+          "name": "repolygon-segment-sample-r1.mjs",
+          "sha256": "d29449e6ddc116cc1fe73995b6d4f8213df02cf763e988b42e925350b9466286"
+        },
+        {
+          "name": "repolygon-corner-reduction-r1.mjs",
+          "sha256": "bb91b5610ee0e1b31a3188609c82d5abd4b49a44422f161dca26ea7c35aea7dd"
+        },
+        {
+          "name": "repolygon-edge-position-r1.mjs",
+          "sha256": "67991c43b6624d8427855a97247df428dc12248efaaa2654aca0915e0e770eb6"
+        },
+        {
+          "name": "repolygon-case-tables-r1.json",
+          "sha256": "93dff260ddea85eaa60e663c29fe8b04e472d73cbda4aa1bf97bc3263dfdb9de"
+        }
+      ]
+    }
+  ],
+  "integrationControls": {
+    "scope": "One-cell position extraction from selected supplied triangle sources, with explicit zero vector initializer",
+    "casesPassed": 8,
+    "planarAxes": ["X", "Y", "Z"],
+    "twoSourceFusionChecked": true,
+    "caseWindingChecked": true,
+    "zeroDistanceBoundaryChecked": true,
+    "analyticPlanarDisplacement": 0,
+    "sourceAdmissionIncluded": false,
+    "sourceNormalPreparationIncluded": false,
+    "globalInitializerProven": false,
+    "crossCellVertexDeduplicationIncluded": false,
+    "fullOriginalInputsIncluded": false
+  },
+  "boundedJobs": [
+    {
+      "receipt": "project-index-validation-repolygon-grid-data-r1-full.receipt.json",
+      "sha256": "64d73dfeb7375c227987703fe78feaefa5032be8ace51b9772c426b7883b6ebc",
+      "expectedExitCode": 0,
+      "peakBytes": 882561024,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-grid-frame-r1-red-full.receipt.json",
+      "sha256": "cd3380e3e108c9928ad4e5c99e4625388b92bb2273c42247b62ff628ed218c34",
+      "expectedExitCode": 1,
+      "peakBytes": 33181696,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-grid-frame-r1-green-full.receipt.json",
+      "sha256": "287c661198bc3da6289e71679d2a988669cadf31dadffac7c96385db481d54af",
+      "expectedExitCode": 0,
+      "peakBytes": 32960512,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-corner-reduction-r1-red-full.receipt.json",
+      "sha256": "5c5ba87984f560551a0a6ce3b8378fc6e95bd1e6e8a9b530f901043f19716718",
+      "expectedExitCode": 1,
+      "peakBytes": 33095680,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-corner-reduction-r1-green-full.receipt.json",
+      "sha256": "b92d03486974dd709638a66273e6708d0a8d317b4d665a7f0e434a82ead27944",
+      "expectedExitCode": 0,
+      "peakBytes": 32894976,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-cell-r1-red-full.receipt.json",
+      "sha256": "2eba79185eb6bb3a4763bb2b871f053940d71e1d333ec9606009305ef57f252e",
+      "expectedExitCode": 1,
+      "peakBytes": 33087488,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-cell-r1-green-full.receipt.json",
+      "sha256": "1699dbeee99e46f9a30719dd4a6c204452c076e90396b9baff1ddd6dde0eb271",
+      "expectedExitCode": 0,
+      "peakBytes": 34041856,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "applicationChanged": false,
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false,
+    "pointCloudReconstructionImplemented": false
+  },
+  "remaining": [
+    "Resolve initializer value and source-normal/boundary preparation.",
+    "Translate complete ordered sparse admission, corner keying, child selection and vertex deduplication.",
+    "Integrate through the shared GUI/MCP operation and validate complete original inputs, project lifecycle, topology and native output."
+  ],
+  "limitations": [
+    "The grid port is limited to finite Float32 bounds and positive spacing above Float32 epsilon; its private guard is not a native GUI admission rule.",
+    "Corner tests make the initializer explicit; zero-initializer integration fixtures do not prove the native global value.",
+    "Selected-cell arithmetic omits spatial admission, complete native emitter behavior and full-output topology.",
+    "Historical captured code only; function extents and types remain inferred."
+  ],
+  "privateProofSha256": "5b289072c3d28a228c35672366c6668deafb517e59d19c826fa7fd35cf3b33dd"
+}

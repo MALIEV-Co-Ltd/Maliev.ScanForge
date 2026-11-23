@@ -47,6 +47,7 @@ function setup() {
     undo: vi.fn(),
     redo: vi.fn(),
     view: vi.fn(),
+    present: vi.fn(async () => {}),
     settings: vi.fn(),
     busy: () => false,
     activity: vi.fn(),
@@ -154,6 +155,11 @@ it("restores complete backup history through the shared import operation and kee
     });
     expect(started.ok).toBe(true);
     await vi.waitFor(() => expect(host.replace).toHaveBeenCalledTimes(1));
+    await vi.waitFor(() => expect(host.view).toHaveBeenCalledWith("fit"));
+    expect(host.present).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(host.view).mock.invocationCallOrder[0]).toBeGreaterThan(
+      vi.mocked(host.replace).mock.invocationCallOrder[0],
+    );
     expect(state).toMatchObject({
       projectId: "existing",
       name: "Recovered",

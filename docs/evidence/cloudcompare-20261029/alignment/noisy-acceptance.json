@@ -1,0 +1,6 @@
+{
+  "correspondingRmsMm": 0.02,
+  "translationErrorMm": 0.002,
+  "rotationFrobeniusError": 0.001,
+  "rerunDisplacementRmsMm": 0.00001
+}

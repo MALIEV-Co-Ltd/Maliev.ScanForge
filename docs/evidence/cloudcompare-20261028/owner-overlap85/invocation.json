@@ -1,0 +1,26 @@
+{
+  "pid": 25952,
+  "startedUtc": "2026-10-28T08:39:47.1396438Z",
+  "arguments": [
+    "-SILENT",
+    "-LOG_FILE",
+    "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap85\\native.log",
+    "-AUTO_SAVE",
+    "OFF",
+    "-NO_TIMESTAMP",
+    "-O",
+    "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap85\\moving.ply",
+    "-O",
+    "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap85\\fixed.ply",
+    "-ICP",
+    "-OVERLAP",
+    "85",
+    "-MIN_ERROR_DIFF",
+    "1e-6",
+    "-RANDOM_SAMPLING_LIMIT",
+    "20000",
+    "-MAX_TCOUNT",
+    "2"
+  ],
+  "timeoutSeconds": 120
+}

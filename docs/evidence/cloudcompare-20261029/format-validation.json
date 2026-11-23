@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "files": 96,
+  "scope": "All completion evidence JSON formatted with canonical parsed-value and array-order SHA256 equality before/after."
+}

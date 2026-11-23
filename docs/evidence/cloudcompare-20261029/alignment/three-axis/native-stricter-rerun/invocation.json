@@ -1,0 +1,34 @@
+{
+  "arguments": [
+    "-SILENT",
+    "-LOG_FILE",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\three-axis\\native-stricter-rerun\\native.log",
+    "-AUTO_SAVE",
+    "OFF",
+    "-C_EXPORT_FMT",
+    "ASC",
+    "-NO_TIMESTAMP",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\three-axis\\native-stricter-rerun\\moving.ply",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\three-axis\\native-stricter-rerun\\fixed.ply",
+    "-ICP",
+    "-OVERLAP",
+    "100",
+    "-MIN_ERROR_DIFF",
+    "1e-8",
+    "-RANDOM_SAMPLING_LIMIT",
+    "693",
+    "-MAX_TCOUNT",
+    "2",
+    "-SAVE_CLOUDS"
+  ],
+  "durationMs": 1809.1394,
+  "deadlineMs": 120000,
+  "movingSha256": "38978007188f97c8cad9822492e77ee1599abb62dfa338c56547423e721fee38",
+  "fixedSha256": "6872459d015f9b542ffaeaaf4f5254738118ff14261edeacc41393a57cc2a9ac",
+  "transform": {
+    "rotation": [1, 0, 0, 0, 1, 0, 0, 0, 1],
+    "translation": [0, 0, 0]
+  }
+}

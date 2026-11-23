@@ -1,0 +1,650 @@
+{
+  "origin": "http://127.0.0.1:5191",
+  "startedAt": "2026-10-29T01:34:31.269Z",
+  "passed": true,
+  "checks": [
+    "A hidden whole cloud is refused through public MCP before worker construction without history/revision mutation",
+    "Actual GUI/public-MCP Poisson geometry identical, source preserved, one history step and exact Undo/Redo",
+    "Successful GUI reconstruction retains truthful success status and worker closes",
+    "Missing normals and invalid viewpoint fail without publication; explicit outward estimation succeeds",
+    "Density trimming entire surface fails without revision/history mutation",
+    "Three cancellations during actual native solve preserve source/revision/history; retry receipts launch no worker; fresh successor succeeds",
+    "500001-point Poisson input rejected before worker construction",
+    "Clean Poisson successor succeeds after over-capacity rejection",
+    "Full140113-point owner PLY1 reconstructed through public MCP with explicit estimate-provided normals; original source preserved; one new mesh/history and exact Undo/Redo; independent exported-mesh quality gates passed"
+  ],
+  "scope": "Actual browser worker/WASM, public MCP and GUI; isolated scene. Worker observers do not alter native results or delay execution.",
+  "hiddenObjectAdmission": {
+    "status": "failed",
+    "noWorkerCreated": true,
+    "revision": 2
+  },
+  "workerClosureChecks": [
+    {
+      "poissonIds": [1],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 3],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": [
+        {
+          "id": 4,
+          "kinds": ["report"]
+        }
+      ]
+    },
+    {
+      "poissonIds": [1, 3, 5],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 3, 5],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 3, 5, 6],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 3, 5, 6, 8],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 3, 5, 6, 8, 9],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 3, 5, 6, 8, 9, 10],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 3, 5, 6, 8, 9, 10, 11],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 3, 5, 6, 8, 9, 10, 11, 13],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 3, 5, 6, 8, 9, 10, 11, 13, 15],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    }
+  ],
+  "guiMcp": {
+    "diagnostics": {
+      "algorithm": "upstream-screened-poisson-18.76",
+      "engineCommit": "262b0f539d404057d1f36e1adc07fc9388678899",
+      "sourcePoints": 1200,
+      "depth": 8,
+      "pointWeight": 2,
+      "samplesPerNode": 1.5,
+      "densityThreshold": 0,
+      "femDegree": 2,
+      "boundary": "Neumann",
+      "scale": 1.1,
+      "threads": 1,
+      "vertices": 3990,
+      "triangles": 7976,
+      "untrimmedVertices": 3990,
+      "untrimmedTriangles": 7976,
+      "trimmedTriangles": 0,
+      "mergedVertices": 0,
+      "removedDegenerateTriangles": 0,
+      "removedDuplicateTriangles": 0,
+      "densityMinimum": 3.9932403564453125,
+      "densityMedian": 4.144710540771484,
+      "densityP95": 4.202810287475586,
+      "densityMaximum": 4.2873311042785645,
+      "wasmHeapBytes": 67108864,
+      "warnings": "",
+      "summary": "Created 7976 general 3D Poisson triangles; source cloud preserved.",
+      "normalMode": "provided",
+      "normalNeighbors": 0,
+      "normalComponents": 0,
+      "normalOrientationAnchors": 1200,
+      "normalInvalidOrientationAnchors": 0,
+      "normalOrientationAssumption": "Caller asserts supplied normals are consistently oriented; validation checks finite nonzero vectors only."
+    },
+    "geometrySha256": "a8d666088f506facb91e99a2311fbcdc75a370c3fbc53c6b71a82deb0a46844d"
+  },
+  "cancellations": [
+    {
+      "attempt": 0,
+      "workerId": 8,
+      "stagesBeforeCancel": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface"
+      ],
+      "resultBeforeCancel": false,
+      "terminalStatus": "cancelled",
+      "revision": 12,
+      "workerClosed": "2026-10-29T01:34:44.789Z",
+      "during": "Solving general 3D screened Poisson surface"
+    },
+    {
+      "attempt": 1,
+      "workerId": 9,
+      "stagesBeforeCancel": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface"
+      ],
+      "resultBeforeCancel": false,
+      "terminalStatus": "cancelled",
+      "revision": 12,
+      "workerClosed": "2026-10-29T01:34:47.863Z",
+      "during": "Solving general 3D screened Poisson surface"
+    },
+    {
+      "attempt": 2,
+      "workerId": 10,
+      "stagesBeforeCancel": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface"
+      ],
+      "resultBeforeCancel": false,
+      "terminalStatus": "cancelled",
+      "revision": 12,
+      "workerClosed": "2026-10-29T01:34:50.825Z",
+      "during": "Solving general 3D screened Poisson surface"
+    }
+  ],
+  "probes": [
+    {
+      "id": 1,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface",
+        "Validating Poisson mesh and density",
+        "General 3D Poisson reconstruction complete",
+        "Preparing mesh display"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    },
+    {
+      "id": 2,
+      "kinds": ["report"],
+      "stages": [],
+      "terminated": true,
+      "result": false,
+      "error": null
+    },
+    {
+      "id": 3,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface",
+        "Validating Poisson mesh and density",
+        "General 3D Poisson reconstruction complete",
+        "Preparing mesh display"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    },
+    {
+      "id": 4,
+      "kinds": ["report"],
+      "stages": [],
+      "terminated": true,
+      "result": false,
+      "error": null
+    },
+    {
+      "id": 5,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface",
+        "Validating Poisson mesh and density"
+      ],
+      "terminated": true,
+      "result": false,
+      "error": "Normalization or density trimming removed the entire Poisson surface; lower densityThreshold or inspect the cloud."
+    },
+    {
+      "id": 6,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface",
+        "Validating Poisson mesh and density",
+        "General 3D Poisson reconstruction complete",
+        "Preparing mesh display"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    },
+    {
+      "id": 7,
+      "kinds": ["report"],
+      "stages": [
+        "Checking saved mesh topology",
+        "Welding vertices",
+        "Building topology",
+        "Finding connected components",
+        "Checking vertex surface fans",
+        "Topology complete",
+        "Saving mesh topology cache",
+        "Verifying saved mesh topology",
+        "Reusing mesh topology"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    },
+    {
+      "id": 8,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface"
+      ],
+      "terminated": true,
+      "result": false,
+      "error": null
+    },
+    {
+      "id": 9,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface"
+      ],
+      "terminated": true,
+      "result": false,
+      "error": null
+    },
+    {
+      "id": 10,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface"
+      ],
+      "terminated": true,
+      "result": false,
+      "error": null
+    },
+    {
+      "id": 11,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface",
+        "Validating Poisson mesh and density",
+        "General 3D Poisson reconstruction complete",
+        "Preparing mesh display"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    },
+    {
+      "id": 12,
+      "kinds": ["report"],
+      "stages": [
+        "Checking saved mesh topology",
+        "Welding vertices",
+        "Building topology",
+        "Finding connected components",
+        "Checking vertex surface fans",
+        "Topology complete",
+        "Saving mesh topology cache",
+        "Verifying saved mesh topology",
+        "Reusing mesh topology"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    },
+    {
+      "id": 13,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface",
+        "Validating Poisson mesh and density",
+        "General 3D Poisson reconstruction complete",
+        "Preparing mesh display"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    },
+    {
+      "id": 14,
+      "kinds": ["report"],
+      "stages": [
+        "Checking saved mesh topology",
+        "Verifying saved mesh topology",
+        "Restoring saved mesh topology",
+        "Reusing mesh topology"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    },
+    {
+      "id": 15,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface",
+        "Validating Poisson mesh and density",
+        "General 3D Poisson reconstruction complete",
+        "Preparing mesh display"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    }
+  ],
+  "realScan": {
+    "sourcePath": "C:/repo/alignment-example-files/ply-1.ply",
+    "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "sourcePoints": 140113,
+    "sourceGeometrySha256": "a61ffba8d8ca0c9c0ac96adc654cbf27f7885e76747c8e3f509806d564c34987",
+    "operation": {
+      "kind": "pointCloudPoisson",
+      "normalMode": "estimate-provided",
+      "normalNeighbors": 24,
+      "depth": 9,
+      "pointWeight": 2,
+      "samplesPerNode": 1.5,
+      "densityThreshold": 7
+    },
+    "diagnostics": {
+      "algorithm": "upstream-screened-poisson-18.76",
+      "engineCommit": "262b0f539d404057d1f36e1adc07fc9388678899",
+      "sourcePoints": 140113,
+      "depth": 9,
+      "pointWeight": 2,
+      "samplesPerNode": 1.5,
+      "densityThreshold": 7,
+      "femDegree": 2,
+      "boundary": "Neumann",
+      "scale": 1.1,
+      "threads": 1,
+      "vertices": 249999,
+      "triangles": 495378,
+      "untrimmedVertices": 268097,
+      "untrimmedTriangles": 536234,
+      "trimmedTriangles": 40852,
+      "mergedVertices": 2,
+      "removedDegenerateTriangles": 4,
+      "removedDuplicateTriangles": 0,
+      "densityMinimum": 4.355195045471191,
+      "densityMedian": 8.691302299499512,
+      "densityP95": 8.772478103637695,
+      "densityMaximum": 9.03261947631836,
+      "wasmHeapBytes": 200474624,
+      "warnings": "",
+      "summary": "Created 495378 general 3D Poisson triangles; source cloud preserved.",
+      "normalMode": "estimate-provided",
+      "normalNeighbors": 24,
+      "normalComponents": 7,
+      "normalOrientationAnchors": 140111,
+      "normalInvalidOrientationAnchors": 2,
+      "normalOrientationAssumption": "PCA estimates every point; graph-consistent component signs follow aggregate agreement with valid supplied normal anchors. Invalid anchors are counted and do not remove points."
+    },
+    "elapsedIncludingExportAndQualityMs": 52912,
+    "vertices": 249999,
+    "triangles": 495378,
+    "exactCoordinatesVsNode": true,
+    "exactTopologyVsNode": true,
+    "quality": {
+      "path": "docs/evidence/cloudcompare-20261029/normals/ply-1-quality-acceptance.json",
+      "sha256": "897784b58bf121793556193d9112d848680ebcfb937323738afa77b6cc32673c",
+      "checks": [
+        {
+          "name": "sourceVerticesToMesh.p95",
+          "actual": 0.027849594797685413,
+          "maximum": 0.4809366813701732,
+          "passed": true
+        },
+        {
+          "name": "sourceVerticesToMesh.p99",
+          "actual": 0.04390483850841201,
+          "maximum": 0.9618733627403464,
+          "passed": true
+        },
+        {
+          "name": "meshVerticesToSourceTopology.p95",
+          "actual": 0.44727702189472285,
+          "maximum": 0.4809366813701732,
+          "passed": true
+        },
+        {
+          "name": "meshVerticesToSourceTopology.p99",
+          "actual": 0.7869007265483353,
+          "maximum": 0.9618733627403464,
+          "passed": true
+        },
+        {
+          "name": "meshFaceCentroidsToSourceTopology.p95",
+          "actual": 0.3861677489511825,
+          "maximum": 0.4809366813701732,
+          "passed": true
+        },
+        {
+          "name": "meshFaceCentroidsToSourceTopology.p99",
+          "actual": 0.7061536932972821,
+          "maximum": 0.9618733627403464,
+          "passed": true
+        },
+        {
+          "name": "nonManifoldEdges",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "nonManifoldVertices",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "inconsistentWindingEdges",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "degenerateTriangles",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "duplicateTriangles",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "nonAdjacentIntersectingTrianglePairs",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "selfIntersectionAnalysisComplete",
+          "actual": true,
+          "required": true,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "meshPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\browser\\ply-1-public-mcp-mesh.ply",
+    "qualityPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\browser\\ply-1-public-mcp-quality.json"
+  },
+  "errors": [],
+  "workers": [
+    {
+      "id": 1,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:33.398Z",
+      "closed": "2026-10-29T01:34:34.345Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 2,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:34.690Z",
+      "closed": "2026-10-29T01:34:34.891Z",
+      "requestKinds": ["report"],
+      "terminateObserved": true
+    },
+    {
+      "id": 3,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:35.260Z",
+      "closed": "2026-10-29T01:34:36.885Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 4,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:37.216Z",
+      "closed": "2026-10-29T01:34:37.392Z",
+      "requestKinds": ["report"],
+      "terminateObserved": true
+    },
+    {
+      "id": 5,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:37.501Z",
+      "closed": "2026-10-29T01:34:39.034Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 6,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:39.690Z",
+      "closed": "2026-10-29T01:34:41.323Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 7,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:41.646Z",
+      "closed": "2026-10-29T01:34:42.070Z",
+      "requestKinds": ["report"],
+      "terminateObserved": true
+    },
+    {
+      "id": 8,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:42.550Z",
+      "closed": "2026-10-29T01:34:44.789Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 9,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:45.651Z",
+      "closed": "2026-10-29T01:34:47.863Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 10,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:48.608Z",
+      "closed": "2026-10-29T01:34:50.825Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 11,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:51.579Z",
+      "closed": "2026-10-29T01:34:53.109Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 12,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:53.458Z",
+      "closed": "2026-10-29T01:34:54.190Z",
+      "requestKinds": ["report"],
+      "terminateObserved": true
+    },
+    {
+      "id": 13,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:54.974Z",
+      "closed": "2026-10-29T01:34:56.518Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 14,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:34:56.922Z",
+      "closed": "2026-10-29T01:34:58.703Z",
+      "requestKinds": ["report"],
+      "terminateObserved": true
+    },
+    {
+      "id": 15,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:35:00.750Z",
+      "closed": "2026-10-29T01:35:17.606Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    }
+  ],
+  "finishedAt": "2026-10-29T01:35:53.774Z"
+}

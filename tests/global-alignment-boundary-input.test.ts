@@ -3,38 +3,43 @@ import native from "./fixtures/alignment-adjacency-global.json";
 import { executeGlobalAlignmentInputPreparation } from "../src/global-alignment-input-core";
 import { nativeGlobalPrepareScene } from "../src/scan-native-global-scene";
 
-it.each(native.cases)("prepares native source exclusion flags: $name", (c) => {
-  const vertices = Float32Array.from(c.vertices.flat());
-  const triangles = Uint32Array.from(c.triangles);
-  const before = [vertices.slice(), triangles.slice()];
-  const expected = new Uint32Array(vertices.length / 3);
-  c.neighbors.forEach((neighbor, slot) => {
-    if (neighbor >= 0) return;
-    const face = Math.floor(slot / 3) * 3;
-    const edge = slot % 3;
-    expected[triangles[face + edge]] = 1;
-    expected[triangles[face + ((edge + 1) % 3)]] = 1;
-  });
-  const result = executeGlobalAlignmentInputPreparation({
-    vertices,
-    triangles,
-  });
-  expect(result.flags).toEqual(expected);
-  expect(vertices).toEqual(before[0]);
-  expect(triangles).toEqual(before[1]);
-});
+it.each(native.cases)(
+  "keeps group-command source vertices eligible: $name",
+  (c) => {
+    const vertices = Float32Array.from(c.vertices.flat());
+    const triangles = Uint32Array.from(c.triangles);
+    const before = [vertices.slice(), triangles.slice()];
+    const expected = new Uint32Array(vertices.length / 3);
+    const result = executeGlobalAlignmentInputPreparation({
+      vertices,
+      triangles,
+    });
+    expect(result.flags).toEqual(expected);
+    expect(vertices).toEqual(before[0]);
+    expect(triangles).toEqual(before[1]);
+  },
+);
 
-it("rejects adjacency scratch before exceeding its supplied storage admission", () => {
+it("rejects returned flags before exceeding supplied storage admission", () => {
   expect(() =>
     executeGlobalAlignmentInputPreparation({
       vertices: Float32Array.of(0, 0, 0, 1, 0, 0, 0, 1, 0),
       triangles: Uint32Array.of(0, 1, 2),
-      storage: { limit: 100, reserved: 80 },
+      storage: { limit: 100, reserved: 90 },
     }),
   ).toThrow(/storage admission/);
 });
 
-it("uses prepared boundary flags in the command's source sampler", () => {
+it("does not allocate boundary adjacency for the group command", () => {
+  const result = executeGlobalAlignmentInputPreparation({
+    vertices: Float32Array.of(0, 0, 0, 1, 0, 0, 0, 1, 0),
+    triangles: Uint32Array.of(0, 1, 2),
+    storage: { limit: 100, reserved: 88 },
+  });
+  expect(result.flags).toEqual(new Uint32Array(3));
+});
+
+it("retains boundary vertices in the command's source sampler", () => {
   // Each scan needs at least 100 normals in a source bin before sampling.
   const size = 16;
   const vertices = Float32Array.from(
@@ -69,12 +74,12 @@ it("uses prepared boundary flags in the command's source sampler", () => {
       radius: 0.5,
       spacing: 12,
       budget: 1000,
-      mask: 1,
+      mask: 0,
       clock: () => 123,
     },
   );
   const selected = scene.selected.flat(2);
-  expect(selected.length).toBeGreaterThan(0);
+  expect(new Set(selected).size).toBe(size * size);
   expect(selected.every((id) => mesh.flags[id] === 0)).toBe(true);
-  expect(mesh.flags.some((flag) => flag === 1)).toBe(true);
+  expect(mesh.flags.some((flag) => flag !== 0)).toBe(false);
 });

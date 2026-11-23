@@ -179,6 +179,7 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -293,6 +294,189 @@ try {
   await mutate("ui_set", { settingsOpen: false });
   assert.equal((await call("application_inspect")).result.settingsOpen, false);
   const first = await capture("viewport");
+  // Origin guides must remain readable through both semantic and mouse zoom.
+  await mutate("object_update", {
+    entityId: created.entityIds[0],
+    patch: { visible: false },
+  });
+  await mutate("settings_set", {
+    patch: {
+      floorGrid: true,
+      automaticGrid: false,
+      gridSpacing: 10,
+      originVisible: false,
+      theme: "dark",
+    },
+  });
+  await mutate("viewport_control", {
+    action: "camera",
+    projection: "orthographic",
+    position: [0, 0, 1000],
+    target: [0, 0, 0],
+    up: [0, 1, 0],
+    zoom: 0.1,
+  });
+  const gridShot = await capture("viewport");
+  await writeFile(new URL("grid-soft-fade.png", artifactDir), gridShot.bytes);
+  const fade = await page.evaluate(async (data) => {
+    const image = new Image();
+    image.src = `data:image/png;base64,${data}`;
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(image, 0, 0);
+    const { data: pixels } = ctx.getImageData(
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+    );
+    const background = pixels[(5 * canvas.width + 5) * 4];
+    const centerX = Math.floor(canvas.width / 2),
+      centerY = Math.floor(canvas.height / 2);
+    const profile = [];
+    // Follow the central grid line; take the brightest of its antialiased rows.
+    for (let x = centerX + 8; x < canvas.width - 8; x++) {
+      let contrast = 0;
+      for (let y = centerY - 2; y <= centerY + 2; y++)
+        contrast = Math.max(
+          contrast,
+          Math.abs(pixels[(y * canvas.width + x) * 4] - background),
+        );
+      profile.push(contrast);
+    }
+    const peak = Math.max(...profile);
+    const lastAbove = (threshold) =>
+      profile.findLastIndex((value) => value >= peak * threshold);
+    const core = lastAbove(0.9),
+      edge = lastAbove(0.1);
+    return { peak, core, edge, transitionRatio: (edge - core) / (edge + 8) };
+  }, gridShot.image.data);
+  assert(fade.peak > 10 && fade.edge > 30, JSON.stringify(fade));
+  assert(
+    fade.transitionRatio > 0.25,
+    `Grid fade is too narrow: ${JSON.stringify(fade)}`,
+  );
+  await page
+    .getByRole("button", { name: "Show floor grid", exact: true })
+    .click();
+  const noGrid = await capture("viewport");
+  assert(!noGrid.bytes.equals(gridShot.bytes));
+  await page
+    .getByRole("button", { name: "Show floor grid", exact: true })
+    .click();
+  assert(
+    (await capture("viewport")).bytes.equals(gridShot.bytes),
+    "GUI/MCP grid pixels differ",
+  );
+  ledger.gridFade = { ...fade, guiMcpPixelsMatch: true };
+  await mutate("viewport_control", {
+    action: "camera",
+    projection: "perspective",
+    position: [140, -180, 140],
+    target: [0, 0, 0],
+    up: [0, 0, 1],
+    zoom: 1,
+  });
+  await writeFile(
+    new URL("grid-soft-fade-perspective.png", artifactDir),
+    (await capture("viewport")).bytes,
+  );
+  await mutate("settings_set", {
+    patch: { automaticGrid: true, theme: "light" },
+  });
+  await mutate("settings_set", { patch: { originVisible: true } });
+  async function originAxisPixels() {
+    const shot = await capture("viewport");
+    await writeFile(new URL("origin-zoom.png", artifactDir), shot.bytes);
+    return page.evaluate(async (data) => {
+      const image = new Image();
+      image.src = `data:image/png;base64,${data}`;
+      await image.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = image.width;
+      canvas.height = image.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(image, 0, 0);
+      const { data: pixels } = ctx.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height,
+      );
+      let minY = Infinity,
+        maxY = -Infinity;
+      for (
+        let y = Math.floor(canvas.height / 2 - 140);
+        y < canvas.height / 2 + 140;
+        y++
+      )
+        for (
+          let x = Math.floor(canvas.width / 2 - 140);
+          x < canvas.width / 2 + 140;
+          x++
+        ) {
+          const i = (y * canvas.width + x) * 4;
+          if (pixels[i + 2] > 150 && pixels[i] < 80 && pixels[i + 1] < 80) {
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+          }
+        }
+      return maxY - minY + 1;
+    }, shot.image.data);
+  }
+  for (const projection of ["orthographic", "perspective"]) {
+    const lengths = [];
+    for (const scale of [0.1, 1, 100]) {
+      await mutate("viewport_control", {
+        action: "camera",
+        projection,
+        position: [1000 * scale, -1000 * scale, 1000 * scale],
+        target: [0, 0, 0],
+        up: [0, 0, 1],
+        zoom: projection === "orthographic" ? 1 / scale : 1,
+      });
+      lengths.push(await originAxisPixels());
+    }
+    assert(
+      lengths.every((length) => length >= 40 && length <= 60),
+      JSON.stringify({ projection, lengths }),
+    );
+    assert(Math.max(...lengths) - Math.min(...lengths) <= 2);
+    // Exercise wheel zoom within the navigation distance limits established by fit.
+    await mutate("viewport_control", {
+      action: "camera",
+      projection,
+      position: [100, -100, 100],
+      target: [0, 0, 0],
+      up: [0, 0, 1],
+      zoom: 1,
+    });
+    const rect = await page.locator("canvas").first().boundingBox();
+    await page.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
+    const before = (await call("viewport_get")).result;
+    await page.mouse.wheel(0, 600);
+    await page.waitForTimeout(250);
+    const after = (await call("viewport_get")).result;
+    assert(
+      JSON.stringify(before.position) !== JSON.stringify(after.position) ||
+        before.zoom !== after.zoom,
+    );
+    assert(Math.abs((await originAxisPixels()) - lengths[0]) <= 2);
+    ledger.originZoom ??= [];
+    ledger.originZoom.push({ projection, lengths, mouseZoom: true });
+  }
+  await mutate("object_update", {
+    entityId: created.entityIds[0],
+    patch: { visible: true },
+  });
+  await mutate("viewport_control", {
+    action: "projection",
+    projection: "orthographic",
+  });
+  await mutate("viewport_control", { action: "fit" });
   await mutate("viewport_control", {
     action: "rotate",
     direction: "left",
@@ -566,6 +750,8 @@ try {
     "camera rotation changes image and absolute perspective pose",
     "compact discovery/session recovery/history/project rename",
     "display settings parity",
+    "broad rendered grid fade and identical GUI/MCP floor pixels",
+    "origin axis pixel size across MCP camera scales and mouse zoom in both projections",
     "middle double-click fit, world-Z orbit and GUI/MCP rectangle zoom with cancellation in both projections",
     "right drag pans, middle drag rotates, click menu and MCP pose parity in both projections",
   ];

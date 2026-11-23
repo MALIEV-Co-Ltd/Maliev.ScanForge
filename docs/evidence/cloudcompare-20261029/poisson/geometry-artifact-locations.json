@@ -1,0 +1,98 @@
+[
+  {
+    "name": "ply-1-depth10-density6-normalized-mesh.json",
+    "sha256": "b6a591ce5ac32998bb889397381395bdbd179ede713de571a1a4ccd59d9ea0d0",
+    "bytes": 29907946,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth10-density6-normalized-mesh.json",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth10-density6-normalized-mesh.json",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth10-density6-normalized-mesh.ply",
+    "sha256": "71ab35ec14de05e7d65c406a7ca185f3d1e0188f381daf4f439ed3df7ac6c1e3",
+    "bytes": 14228671,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth10-density6-normalized-mesh.ply",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth10-density6-normalized-mesh.ply",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth8-density6-mesh.json",
+    "sha256": "002183934f0529acb2d824cb9f81f9484b60b6348df0464ad91664e9a8c873c5",
+    "bytes": 7647308,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth8-density6-mesh.json",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth8-density6-mesh.json",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth8-density6-mesh.ply",
+    "sha256": "cddc43778e646db326aa31b7c419b8940909a0396cd1398192ca8e2c58702baa",
+    "bytes": 3780799,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth8-density6-mesh.ply",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth8-density6-mesh.ply",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth8-mesh.json",
+    "sha256": "2adb86b3fb2eca1d96b0ef927b0afadebf07eda31ed60495e2eb9e41427cba5a",
+    "bytes": 8135745,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth8-mesh.json",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth8-mesh.json",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth8-mesh.ply",
+    "sha256": "9a655e590cc7318b00ffd6cc69058867997dae270e48dde186a449031de63aa1",
+    "bytes": 4028219,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth8-mesh.ply",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth8-mesh.ply",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth9-density6-normalized-mesh.json",
+    "sha256": "cd12be2b7ca30c41600c559b38b45fd852ec5db97e7ea577b6d79d313fd8594b",
+    "bytes": 29746049,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth9-density6-normalized-mesh.json",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth9-density6-normalized-mesh.json",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth9-density6-normalized-mesh.ply",
+    "sha256": "e47a8421f522dcbc3eff5cd08ae072a33555796a000bc36793ade0dd8e5884c2",
+    "bytes": 14153351,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth9-density6-normalized-mesh.ply",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth9-density6-normalized-mesh.ply",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth9-density7-normalized-mesh.json",
+    "sha256": "21f415b13173f38548bac828e291605c140f6806f3bf431d02db32f5ef3ab63e",
+    "bytes": 28237811,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth9-density7-normalized-mesh.json",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth9-density7-normalized-mesh.json",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth9-density7-normalized-mesh.ply",
+    "sha256": "4bcad273eaf6cff61fd07469f71a1b7277c69c49e0a4c87a369fa03fbda2206b",
+    "bytes": 13440225,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth9-density7-normalized-mesh.ply",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth9-density7-normalized-mesh.ply",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth9-density7-native-normalized-mesh.json",
+    "sha256": "1386c429355476e8d7da1bc17c79fe6db43efed2e991f96e162c2ee7cf158f15",
+    "bytes": 28237765,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth9-density7-native-normalized-mesh.json",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\.resources\\poisson-quality\\ply-1-depth9-density7-native-normalized-mesh.json",
+    "retainedInDocs": false
+  },
+  {
+    "name": "ply-1-depth9-density7-native-normalized-mesh.ply",
+    "sha256": "3d5ba2aecdf608cde76fbb7c5d061fdce2cb4c3cf16b0b2592ad9c51f43f0dd6",
+    "bytes": 13440212,
+    "originalPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth9-density7-native-normalized-mesh.ply",
+    "currentPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth9-density7-native-normalized-mesh.ply",
+    "retainedInDocs": true
+  }
+]

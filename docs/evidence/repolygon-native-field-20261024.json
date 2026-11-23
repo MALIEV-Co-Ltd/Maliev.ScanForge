@@ -1,0 +1,117 @@
+{
+  "status": "native-field-contract-under-investigation",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newNativeFunctions": 9,
+  "newInstructionAddressesIndependentlyDecoded": 1987,
+  "targetExecuted": false,
+  "targetMappedExecutable": false,
+  "nativeRuntimeParity": false,
+  "findings": [
+    "The candidate source encoder consumes triangle records containing three vertex pointers, with edge boundary flags. Its earlier iterator branch does not establish point-cloud support.",
+    "Grid setup uses an eight-child spatial tree; its rounding import and complete admission behavior remain unresolved.",
+    "Triangle admission visits overlapping cells and keeps the nearer absolute signed-distance result per source at a corner.",
+    "Corner reduction prefers non-boundary source contributions when present, otherwise uses boundary contributions; signed distances are averaged and the combined direction is normalized. Initialization and normalization edge cases require further trace.",
+    "Leaf extraction uses strict negative-distance sign masks and standard Marching Cubes connectivity.",
+    "Edge position arithmetic uses endpoint surface projections: choose the nearer endpoint when its absolute distance is strictly below one quarter of the largest cell dimension, otherwise average projections, with final Float32 coordinates."
+  ],
+  "tableComparison": {
+    "cases": 256,
+    "crossingMasksMatchIndependentCornerTest": true,
+    "crossingMasksMatchThree": true,
+    "exactTriangleRows": 221,
+    "orientedTriangleSetsMatch": 256,
+    "differingCases": [],
+    "referenceThreeVersion": "0.180.0",
+    "nativeTableEvidenceSha256": "93dff260ddea85eaa60e663c29fe8b04e472d73cbda4aa1bf97bc3263dfdb9de",
+    "librarySha256": "fe9c6ace2c079bf540befd164ce492de98c820d8b86a722b1060833d42ad9c80",
+    "nativeRuntimeExecuted": false,
+    "scope": "Static lookup comparison only; does not verify scalar field, vertex positions, topology repair or full native output"
+  },
+  "privateArithmeticPort": {
+    "scope": "Position calculation only; not integrated into the application",
+    "testsPassed": 12,
+    "testsFailed": 0,
+    "redFailuresObserved": 12,
+    "analyticPlaneOffset": 0,
+    "wholeSurfaceOrNativeRuntimeAcceptance": false,
+    "sources": [
+      {
+        "name": "repolygon-edge-position-r1.mjs",
+        "sha256": "67991c43b6624d8427855a97247df428dc12248efaaa2654aca0915e0e770eb6"
+      },
+      {
+        "name": "test-repolygon-edge-position-r1.mjs",
+        "sha256": "79624e34293bc58c4502725a83dd30bc1b1460fe785113f826b7a39c13284c7a"
+      }
+    ]
+  },
+  "boundedJobs": [
+    {
+      "receipt": "project-index-validation-repolygon-helpers-r1-full.receipt.json",
+      "sha256": "544e1035c7328d05a039ae66b57b2beed051a9ba9acc0474eefbb242e7a03787",
+      "expectedExitCode": 0,
+      "peakBytes": 756666368,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-leaves-r1-full.receipt.json",
+      "sha256": "c603fa2b34d41dd0dd9a8d507fcaad83613688c94e691199176c70ed83c80677",
+      "expectedExitCode": 0,
+      "peakBytes": 753094656,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-field-r1-full.receipt.json",
+      "sha256": "e6dc5e4c5d4a07e88190c3d3d2e4352283abfc256213a0df898b7640f9e82623",
+      "expectedExitCode": 0,
+      "peakBytes": 739647488,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-edge-position-r1-red-full.receipt.json",
+      "sha256": "47a4b863834fddb55a565e65665e5b3aff9479602648b47c93b9f2199805fcfe",
+      "expectedExitCode": 1,
+      "peakBytes": 32817152,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-edge-position-r1-green-full.receipt.json",
+      "sha256": "ce307dbd84762b147afd43f4ce6474077d950ac8c29d301a5e6b4dc33015218b",
+      "expectedExitCode": 0,
+      "peakBytes": 33042432,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-case-tables-r1-full.receipt.json",
+      "sha256": "6f4d57091c0e9704c08dbf37d2885d553392b3706d988647b1b36442f038fc6c",
+      "expectedExitCode": 0,
+      "peakBytes": 44298240,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "applicationChanged": false,
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "pointCloudReconstructionImplemented": false
+  },
+  "remaining": [
+    "Resolve triangle-box admission, signed-distance classification and degenerate cases.",
+    "Bind spatial rounding and vector normalization helpers before translating their arithmetic.",
+    "Preserve native corner/edge/triangle ordering and implement shared ownership, cancellation and history in the full GUI/MCP reconstruction path.",
+    "Compare full original inputs, surface deviation, components, self-intersections and project lifecycle before native acceptance."
+  ],
+  "limitations": [
+    "Historical archived image only; no new native execution or numerical output capture.",
+    "Function boundaries and local types are inferred; some helper bodies include shared tail fragments.",
+    "Standard connectivity does not establish identical triangle ordering, vertex interpolation or full-output topology.",
+    "Private analytic controls cover isolated position arithmetic only."
+  ],
+  "privateProofSha256": "330599484b390c566c78e51b3481b4d0a0eb755c503bfb91d5e256f0a3198481"
+}

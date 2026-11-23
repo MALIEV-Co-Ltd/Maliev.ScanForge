@@ -1,0 +1,201 @@
+{
+  "date": "2026-10-25",
+  "scope": "Offline TypeScript port validation against owner-supplied original PLY files. No original executable, REA, native UI, browser, GUI operation, or MCP operation was executed in this validation.",
+  "inputs": {
+    "source": {
+      "file": "C:/repo/alignment-example-files/ply-2.ply",
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "vertices": 1375494,
+      "triangles": 2697877
+    },
+    "target": {
+      "file": "C:/repo/alignment-example-files/ply-1.ply",
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "vertices": 140113,
+      "triangles": 274154
+    },
+    "hashProvenance": "Original file SHA-256 and topology counts were verified by the existing owner-example test suite in this session; metadata is retained in tests/fixtures/alignment-user-ply-source.json and alignment-user-ply-2-source.json."
+  },
+  "productionMath": {
+    "entryPoint": "src/fine-registration.ts registerFineAlignment",
+    "script": "C:/Users/Shoung/AppData/Local/Temp/scanforge-ply-production-check.cjs",
+    "basis": "All 1375494 source vertices evaluated against the complete target triangle surface; stored source normals gate nearest-surface correspondences at dot >= 0.5. Required overlap is a fraction of all evaluated source vertices. Overlap RMS uses the closest required number of compatible points, or all available compatible points when insufficient. Whole RMS includes all source vertices.",
+    "options": {
+      "sourcePositions": "original PLY vertices",
+      "sourceNormals": "stored PLY normals",
+      "targetSurface": "original target PLY vertices and triangles",
+      "targetNormals": "stored target PLY normals",
+      "sampleSize": 20000,
+      "maxIterations": 3,
+      "targetRmsMm": 0.5,
+      "maxDistanceMm": 10
+    },
+    "results": [
+      {
+        "overlapPercent": 85,
+        "elapsedMs": 64343.7226,
+        "applied": false,
+        "terminationReason": "insufficientOverlap",
+        "targetReached": false,
+        "iterations": 0,
+        "evaluatedPoints": 1375494,
+        "overlapPoints": 446255,
+        "requiredOverlapPoints": 1169170,
+        "overlapSatisfied": false,
+        "overlapFraction": 0.3244325311488091,
+        "rejectedNormalPoints": 929239,
+        "overlapRmsMm": 0.7341857604714875,
+        "wholeCloudRmsMm": 1.6742065485597397,
+        "transform": {
+          "rotation": [1, 0, 0, 0, 1, 0, 0, 0, 1],
+          "translation": [0, 0, 0]
+        }
+      },
+      {
+        "overlapPercent": 15,
+        "elapsedMs": 134828.06220000001,
+        "applied": true,
+        "terminationReason": "targetReached",
+        "targetReached": true,
+        "iterations": 1,
+        "evaluatedPoints": 1375494,
+        "overlapPoints": 206325,
+        "requiredOverlapPoints": 206325,
+        "overlapSatisfied": true,
+        "overlapFraction": 0.3244019966644711,
+        "rejectedNormalPoints": 929281,
+        "overlapRmsMm": 0.024244137216378706,
+        "wholeCloudRmsMm": 1.6741365464548732,
+        "transform": {
+          "rotation": [
+            0.9999999996188025, 0.000024843011282790673,
+            -0.000012050718909611637, -0.000024843122312274234,
+            0.9999999996489658, -0.000009213453156064219,
+            0.000012050490015460713, 0.000009213752530035897, 0.9999999998849463
+          ],
+          "translation": [
+            -0.004128449929929445, -0.002736370913236641, -0.0007373201999598678
+          ]
+        }
+      },
+      {
+        "overlapPercent": 25,
+        "elapsedMs": 128978.0191,
+        "applied": true,
+        "terminationReason": "targetReached",
+        "targetReached": true,
+        "iterations": 1,
+        "evaluatedPoints": 1375494,
+        "overlapPoints": 343874,
+        "requiredOverlapPoints": 343874,
+        "overlapSatisfied": true,
+        "overlapFraction": 0.32436419206481454,
+        "rejectedNormalPoints": 929333,
+        "overlapRmsMm": 0.08709610191670726,
+        "wholeCloudRmsMm": 1.6740114804686526,
+        "transform": {
+          "rotation": [
+            0.9999999971041347, 0.000007528110520272627, 0.00007573016652272627,
+            -0.000007532211491965065, 0.9999999985053982,
+            0.00005415227933594379, -0.00007572975874519605,
+            -0.00005415284959475666, 0.9999999956662362
+          ],
+          "translation": [
+            0.027557931270997926, 0.0174617429434889, 0.0030307286050970106
+          ]
+        }
+      }
+    ],
+    "immutability": {
+      "method": "SHA-256 of each positions, stored normals, and triangle-index buffer before and after each completed case",
+      "sourceUnchangedEveryCase": true,
+      "targetUnchangedEveryCase": true,
+      "originalFilesWritten": false
+    },
+    "resources": {
+      "nodeOldSpaceLimitMiB": 768,
+      "nodeSemiSpaceLimitMiB": 16,
+      "observedProcessResidentBytes": [380137472, 388067328],
+      "resourceFailure": false,
+      "note": "Successful cases performed two full-source evaluations. Optional PLY 3 cases were stopped before completion; no PLY 3 production result is claimed."
+    }
+  },
+  "boundedDiagnostics": {
+    "basis": "Sampled diagnostics, not full-source production results. Coordinates and normals come from the same original PLY files.",
+    "scripts": [
+      "C:/Users/Shoung/AppData/Local/Temp/scanforge-ply-quality.cjs",
+      "C:/Users/Shoung/AppData/Local/Temp/scanforge-ply-normal-starts.cjs",
+      "C:/Users/Shoung/AppData/Local/Temp/scanforge-ply-overlap-coverage.cjs"
+    ],
+    "sampling": {
+      "sourceVertexCountN": 1375494,
+      "fitting": "20000 source vertices at floor(i*N/20000), i=0..19999; complete target vertex set retained",
+      "evaluation": "10000 separate source vertices at floor((i+0.37)*N/10000), i=0..9999",
+      "units": "mm"
+    },
+    "legacyApproximateDense85": {
+      "method": "Existing point-to-point solver on the 20000-point source subset, without normal gating; 85% trim, radius 10, target RMS 0.5, maxIterations 100",
+      "iterations": 73,
+      "sampledPointOverlapRmsMm": 0.7863241725263009,
+      "translation": [
+        1.1809646074327438, -0.772142996172038, -2.204302388846219
+      ],
+      "separateEvaluationSurfaceOverlap85RmsMm": 0.7730005674850523,
+      "separateEvaluationWholeSurfaceRmsMm": 1.138882086183341,
+      "normalCountsAfterPose": {
+        "dotAboveHalf": 1626,
+        "dotBelowMinusHalf": 5446,
+        "dotNegative": 7054
+      },
+      "normalCountsAtRawIdentity": {
+        "dotAboveHalf": 3264,
+        "dotBelowMinusHalf": 3088,
+        "dotNegative": 3890
+      },
+      "interpretation": "The ungated 85% objective lowers its aggregate distance while increasing opposite-facing correspondences. This is evidence of wrong-surface matching, not visual proof of final edge alignment."
+    },
+    "rawIdentityDistributedOverlap": {
+      "closest15Percent": {
+        "points": 1500,
+        "surfaceRmsMm": 0.024597907829039013,
+        "dotAboveHalf": 1495,
+        "dotBelowMinusHalf": 1,
+        "boundsMin": [
+          -30.888275146484375, -36.59770965576172, -329.6344299316406
+        ],
+        "boundsMax": [71.92273712158203, 72.76792907714844, -262.4326477050781],
+        "zBandCounts": [320, 329, 464, 387]
+      },
+      "zBands": [
+        "z < -315",
+        "-315 <= z < -300",
+        "-300 <= z < -285",
+        "z >= -285"
+      ],
+      "closest25PercentSurfaceRmsMm": 0.07236549658726285,
+      "closest40PercentSurfaceRmsMm": 0.36986501615937756,
+      "closest85PercentSurfaceRmsMm": 1.3645286619451629,
+      "compatibleWithinHalfMm": {
+        "points": 2535,
+        "boundsMin": [
+          -33.024085998535156, -37.94184112548828, -329.80145263671875
+        ],
+        "boundsMax": [71.92273712158203, 72.90828704833984, -262.3072814941406],
+        "zBandCounts": [601, 490, 749, 695]
+      },
+      "interpretation": "Tight, same-facing overlap is distributed across the part despite insufficient coverage for an 85% requirement. These sample fractions do not establish an exact physical overlap percentage."
+    }
+  },
+  "nativeReferenceScope": {
+    "testFile": "tests/scan-native-alignment-user-examples.test.ts",
+    "environment": "SCANFORGE_ALIGNMENT_EXAMPLES=C:/repo/alignment-example-files",
+    "passed": 10,
+    "total": 10,
+    "durationSeconds": 43.5,
+    "scope": "Port replay matched retained serial and two-lane parameters, matrices, objectives, flags, source normals/sampling hashes, target topology/queries, and adapter output exactly.",
+    "fixtureImageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "fixtureNativeUiCapture": false,
+    "fixtureFullConstructorExecuted": false,
+    "qualification": "Retained older-image numerical subpath captures are reference evidence only. No fresh original-process execution, current native Fine Alignment UI equivalence, GUI/MCP parity, or visual edge-alignment proof is claimed here."
+  }
+}

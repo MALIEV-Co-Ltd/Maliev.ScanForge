@@ -1,0 +1,44 @@
+{
+  "scope": "Independent analysis of a deterministic333-point real ASC1 surface patch, XZ projection, max3Dedge0.35mm. Source file hash and original line indices are reverified; selected Float32 positions and original normals match the browser source exactly.",
+  "sourceSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+  "meshGeometrySha256": "f7c96646d7b67c321dba7c10ff8d0ee9334d2e266eb910cbcd80e0ba8f8cb3d7",
+  "sourcePoints": 140113,
+  "selectedPoints": 333,
+  "selectedFraction": 0.002376653129973664,
+  "originalSelectedSamplesPreserved": true,
+  "maxCoordinateFloat32QuantizationErrorMm": 0.000015136718729991117,
+  "projectionPlane": "xz",
+  "maxEdgeLimitMm": 0.35,
+  "topology": {
+    "storedVertices": 333,
+    "usedVertices": 237,
+    "unusedVertices": 96,
+    "triangles": 275,
+    "edges": 509,
+    "components": 11,
+    "boundaryEdges": 193,
+    "boundaryEdgeComponents": 13,
+    "closedBoundaryLoops": 10,
+    "branchingBoundaryComponents": 3,
+    "nonManifoldEdges": 0,
+    "nonManifoldVertices": 10,
+    "inconsistentEdges": 0,
+    "degenerateTriangles": 0,
+    "duplicateTriangles": 0,
+    "eulerCharacteristicUsedComplex": 3
+  },
+  "geometry": {
+    "areaMm2": 7.9642620926029215,
+    "projectedAreaMm2": 7.701581270986935,
+    "maximum3dEdgeMm": 0.3499691891852785,
+    "minimumTriangleAngleDegrees": 21.33958539042546,
+    "positiveProjectionWinding": 275,
+    "negativeProjectionWinding": 0
+  },
+  "limitations": [
+    "Small selected patch, not full real-scan or general3D reconstruction acceptance.",
+    "Pruning leaves disconnected strips, holes and unused samples; filled area is not a recovered surface-coverage certificate.",
+    "Boundary loops are closed connected edge components whose boundary vertices all have degree2; branched/touching boundary components are reported separately.",
+    "Vertex-link checks are combinatorial only; no physical scanner accuracy or self-intersection claim."
+  ]
+}

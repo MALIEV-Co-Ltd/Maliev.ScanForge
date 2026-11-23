@@ -1,0 +1,107 @@
+{
+  "name": "baseline-counted",
+  "count": 10000,
+  "instrument": true,
+  "preparationMs": 457.8337999999999,
+  "queryMs": 775.3926999999994,
+  "queriesPerSecond": 12896.69092835154,
+  "rms": 1.6779535349239683,
+  "counters": {
+    "nodes": 1877804,
+    "leaves": 8118137,
+    "evaluations": 5772811,
+    "duplicates": 3356000
+  },
+  "top": [
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 162
+    },
+    {
+      "function": "noiseTriangleDistance",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 131
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 70
+    },
+    {
+      "function": "(garbage collector)",
+      "url": "",
+      "hits": 38
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 21
+    },
+    {
+      "function": "",
+      "url": "",
+      "hits": 21
+    },
+    {
+      "function": "noiseTriangleDistance",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 12
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 11
+    },
+    {
+      "function": "",
+      "url": "",
+      "hits": 8
+    },
+    {
+      "function": "",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 7
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 5
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 4
+    },
+    {
+      "function": "alongV",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 4
+    },
+    {
+      "function": "",
+      "url": "",
+      "hits": 3
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 2
+    },
+    {
+      "function": "alongU",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 2
+    },
+    {
+      "function": "alongU",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 2
+    },
+    {
+      "function": "alongV",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 2
+    }
+  ]
+}

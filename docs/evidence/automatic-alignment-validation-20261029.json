@@ -1,0 +1,365 @@
+{
+  "date": "2026-10-29",
+  "status": "CAD setup and workflows passed; registration passes assumed 0.5 mm overlap target with disclosed scan-1 regression",
+  "reviewUrl": "http://127.0.0.1:5174/",
+  "productionBuild": "scanforge-01814a83ed2603df",
+  "fullSizeGeometryBuild": "scanforge-c5f2629f3d7e98c8",
+  "buildScope": "Final change after full-size geometry run only moves command actions into a fixed footer. Final production browser validates that footer and the same registration and CAD operations.",
+  "relatedTests": {
+    "passed": 21953,
+    "failed": 0,
+    "skipped": 28,
+    "filesPassed": 99,
+    "filesSkipped": 12
+  },
+  "enabledOwnerReplays": {
+    "files": 8,
+    "tests": 13,
+    "job": {
+      "command": [
+        "node",
+        "--max-old-space-size=3072",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "--exclude",
+        "**/.resources/**",
+        "tests/original-global-preparation.test.ts",
+        "tests/scan-global-apply-stages-owner.test.ts",
+        "tests/scan-global-prepared-owner.test.ts",
+        "tests/scan-native-global-full-outer-owner.test.ts",
+        "tests/scan-native-global-live-post-owner.test.ts",
+        "tests/scan-native-global-point-owner.test.ts",
+        "tests/scan-native-global-query-owner.test.ts",
+        "tests/scan-native-global-scene-owner.test.ts"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 818290688,
+      "totalProcesses": 15,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 51.20733689999997
+    }
+  },
+  "fullSizeBrowser": {
+    "passed": true,
+    "liveFrames": 150,
+    "elapsedMs": 159235,
+    "checks": [
+      "full-buffer original preservation; cached global Apply; exact Undo/Redo and unchanged topology",
+      "full-size GUI CAD Apply; same preview frame; exact combined two-step Undo/Redo",
+      "all automatic/global/datum worker termination requests observed"
+    ],
+    "errors": [],
+    "warnings": [],
+    "job": {
+      "command": [
+        "node",
+        "--max-old-space-size=768",
+        "tests/owner-global-alignment-live-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 3198164992,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 196.11738719999994
+    }
+  },
+  "coordinates": {
+    "valuesVerified": 64692996,
+    "method": "Input import through shared parser verified against browser baseline hashes; independently coded literal Float32 stage arithmetic verified every expanded/indexed coordinate against committed MCP hashes. Independent surface measurement consumes the emitted full indexed meshes.",
+    "cadBounds": {
+      "min": [-60.584632873535156, -58.0131721496582, -5.684341886080802e-14],
+      "max": [60.584632873535156, 58.0131721496582, 12.664339065551758]
+    },
+    "job": {
+      "command": [
+        "node",
+        "--max-old-space-size=1536",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "--exclude",
+        "**/.resources/**",
+        "tests/original-stl-alignment-coordinate-validation.test.ts"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1437573120,
+      "totalProcesses": 8,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 16.489031500000237
+    }
+  },
+  "quality": {
+    "passed": true,
+    "acceptance": {
+      "mode": "explicitRmsTarget",
+      "rmsTargetMm": 0.5,
+      "groupMustImprove": true,
+      "tradeoffs": ["scan-1.stl"],
+      "failures": []
+    },
+    "manifestPath": "C:/Users/Shoung/AppData/Local/Temp/scanforge-owner-global-7f8f2fc2-913d-487f-8e8a-6c8f654ad669/quality-inputs/manifest.json",
+    "evaluatedScans": ["scan-1.stl", "scan-2.stl", "scan-3.stl"],
+    "scope": "Every indexed vertex against complete triangle surfaces of both other scans. No application registration/query code, sampling or normal filters. Fixed support is the same coarse-stage vertex IDs within 0.5 mm. Baseline import is verified separately against public MCP hashes.",
+    "scans": [
+      {
+        "name": "scan-1.stl",
+        "vertices": 139338,
+        "triangles": 273139,
+        "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+      },
+      {
+        "name": "scan-2.stl",
+        "vertices": 1299033,
+        "triangles": 2547403,
+        "inputSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad"
+      },
+      {
+        "name": "scan-3.stl",
+        "vertices": 1683605,
+        "triangles": 3326910,
+        "inputSha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e"
+      }
+    ],
+    "rows": [
+      {
+        "stage": "coarse",
+        "name": "scan-1.stl",
+        "vertices": 139338,
+        "rms": 1.3382020939369332,
+        "p95": 2.7946168357562966,
+        "max": 5.4279241435698005,
+        "elapsedMs": 4010
+      },
+      {
+        "stage": "coarse",
+        "name": "scan-2.stl",
+        "vertices": 1299033,
+        "rms": 0.7820536901591639,
+        "p95": 1.8442985006338586,
+        "max": 3.637492050112121,
+        "elapsedMs": 18180
+      },
+      {
+        "stage": "coarse",
+        "name": "scan-3.stl",
+        "vertices": 1683605,
+        "rms": 0.7260392708094632,
+        "p95": 1.7066901123964446,
+        "max": 3.4303440949247888,
+        "elapsedMs": 20493
+      },
+      {
+        "stage": "global",
+        "name": "scan-1.stl",
+        "vertices": 139338,
+        "rms": 1.5014793885607771,
+        "p95": 3.108189707511954,
+        "max": 5.885623109954311,
+        "elapsedMs": 3789,
+        "fixedOverlapVertices": 62968,
+        "fixedOverlapRmsBefore": 0.2859127047353137,
+        "fixedOverlapRmsAfter": 0.35912845897118173
+      },
+      {
+        "stage": "global",
+        "name": "scan-2.stl",
+        "vertices": 1299033,
+        "rms": 0.2985417581316288,
+        "p95": 0.6750831485813426,
+        "max": 2.915668012173081,
+        "elapsedMs": 13502,
+        "fixedOverlapVertices": 874966,
+        "fixedOverlapRmsBefore": 0.1690009035273791,
+        "fixedOverlapRmsAfter": 0.11064137445192607
+      },
+      {
+        "stage": "global",
+        "name": "scan-3.stl",
+        "vertices": 1683605,
+        "rms": 0.49953549914875023,
+        "p95": 1.3420663086712346,
+        "max": 2.8454612189295077,
+        "elapsedMs": 17267,
+        "fixedOverlapVertices": 1180903,
+        "fixedOverlapRmsBefore": 0.17391551907929292,
+        "fixedOverlapRmsAfter": 0.09934020577979806
+      }
+    ],
+    "fixedOverlap": {
+      "vertices": 2118837,
+      "rmsBefore": 0.17629843800647282,
+      "rmsAfter": 0.11994995544640082
+    },
+    "controls": [
+      {
+        "stage": "coarse",
+        "name": "scan-1.stl",
+        "slot": 0,
+        "distance": 0.3722236599886056,
+        "boundsChecked": 5874313,
+        "trianglesChecked": 4094,
+        "error": 1.4432899320127035e-14
+      },
+      {
+        "stage": "coarse",
+        "name": "scan-1.stl",
+        "slot": 69669,
+        "distance": 0.3015591227144806,
+        "boundsChecked": 5874313,
+        "trianglesChecked": 1157,
+        "error": 2.9976021664879227e-15
+      },
+      {
+        "stage": "coarse",
+        "name": "scan-2.stl",
+        "slot": 0,
+        "distance": 0.9676871300954902,
+        "boundsChecked": 3600049,
+        "trianglesChecked": 2064,
+        "error": 0
+      },
+      {
+        "stage": "coarse",
+        "name": "scan-2.stl",
+        "slot": 649516,
+        "distance": 0.01054564958025316,
+        "boundsChecked": 3600049,
+        "trianglesChecked": 1334,
+        "error": 1.1587952819525071e-15
+      },
+      {
+        "stage": "coarse",
+        "name": "scan-3.stl",
+        "slot": 0,
+        "distance": 0.035208874521367964,
+        "boundsChecked": 2820542,
+        "trianglesChecked": 1516,
+        "error": 6.827871601444713e-15
+      },
+      {
+        "stage": "coarse",
+        "name": "scan-3.stl",
+        "slot": 841802,
+        "distance": 0.31345750139333844,
+        "boundsChecked": 2820542,
+        "trianglesChecked": 266,
+        "error": 9.2148511043888e-15
+      },
+      {
+        "stage": "global",
+        "name": "scan-1.stl",
+        "slot": 0,
+        "distance": 0.7263053296322611,
+        "boundsChecked": 5874313,
+        "trianglesChecked": 4373,
+        "error": 1.5543122344752192e-15
+      },
+      {
+        "stage": "global",
+        "name": "scan-1.stl",
+        "slot": 69669,
+        "distance": 0.5156327544329847,
+        "boundsChecked": 5874313,
+        "trianglesChecked": 1079,
+        "error": 5.773159728050814e-15
+      },
+      {
+        "stage": "global",
+        "name": "scan-2.stl",
+        "slot": 0,
+        "distance": 0.021488775256823685,
+        "boundsChecked": 3600049,
+        "trianglesChecked": 2241,
+        "error": 3.5110803153770576e-15
+      },
+      {
+        "stage": "global",
+        "name": "scan-2.stl",
+        "slot": 649516,
+        "distance": 0.010412890422959092,
+        "boundsChecked": 3600049,
+        "trianglesChecked": 1372,
+        "error": 8.951173136040325e-16
+      },
+      {
+        "stage": "global",
+        "name": "scan-3.stl",
+        "slot": 0,
+        "distance": 0.026596964457942095,
+        "boundsChecked": 2820542,
+        "trianglesChecked": 1565,
+        "error": 7.657069422961627e-15
+      },
+      {
+        "stage": "global",
+        "name": "scan-3.stl",
+        "slot": 841802,
+        "distance": 0.007816308996689003,
+        "boundsChecked": 2820542,
+        "trianglesChecked": 352,
+        "error": 1.9827889330414905e-15
+      }
+    ],
+    "analyticControls": 4,
+    "elapsedMs": 104880
+  },
+  "qualityJob": {
+    "command": [
+      "node",
+      "--expose-gc",
+      "--max-old-space-size=1536",
+      "tests/original-stl-alignment-quality.mjs",
+      "C:/Users/Shoung/AppData/Local/Temp/scanforge-owner-global-7f8f2fc2-913d-487f-8e8a-6c8f654ad669/quality-inputs/manifest.json"
+    ],
+    "jobLimitBytes": 4294967296,
+    "leaseSeconds": 900,
+    "exitCode": 0,
+    "peakJobBytes": 691568640,
+    "totalProcesses": 2,
+    "activeAfter": 0,
+    "passed": true,
+    "elapsedSeconds": 105.0279242000006
+  },
+  "mcp": {
+    "discovery": "All catalog entries accepted by standard MCP SDK listTools schema",
+    "operations": [
+      "global_alignment_preview",
+      "global_alignment_state",
+      "global_alignment_apply",
+      "global_alignment_cancel",
+      "alignment_preview",
+      "alignment_apply",
+      "history_undo",
+      "history_redo",
+      "project_export",
+      "project_import"
+    ],
+    "parity": "GUI and MCP use shared operations; production browser covers preview frame parity, cancellation, exact buffers, history and project reopen"
+  },
+  "limits": [
+    "0.5 mm acceptance target is assumed from the existing Fine Alignment default, not a newly confirmed user requirement.",
+    "Strict requirement that every scan improves failed: scan-1 fixed-overlap RMS increases from 0.285913 to 0.359128 mm; retained failed receipts record this.",
+    "Overlap metric uses fixed coarse-stage vertex IDs within 0.5 mm; non-overlap distances, P95 and maxima remain in the independent report.",
+    "Native convergence flags remain false. Measured registration improvement and passing the test target do not establish metrology accuracy or native CloudCompare equivalence.",
+    "28 opt-in cases remain skipped in the related suite; 13 enabled full-file preparation/native replay cases passed separately."
+  ],
+  "evidenceDirectory": ".resources/alignment-live-validation-20261029",
+  "reviewServer": {
+    "url": "http://127.0.0.1:5174/",
+    "restartedAfterObservedStopped": true,
+    "userBrowserNavigated": false,
+    "validationUsesDisposableWorkspaces": true,
+    "dependencyReoptimizationRequired": true,
+    "automaticCadBrowserPassed": true
+  }
+}

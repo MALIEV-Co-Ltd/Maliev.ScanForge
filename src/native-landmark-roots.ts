@@ -1,4 +1,5 @@
 import { datumEntityDependencies } from "./datum-dependencies";
+import { isReferenceEntity } from "./reference-entity";
 import type { Entity } from "./types";
 
 export interface NativeLandmarkRoot {
@@ -82,7 +83,9 @@ export function publishedLandmarkRoots(entities: readonly Entity[]): string[] {
       supported: true,
       excludedInterface:
         !entity.kernelId && ["mesh", "pointcloud"].includes(entity.kind),
-      exempt: ["plane", "cylinder", "cone", "sphere"].includes(entity.kind),
+      exempt:
+        isReferenceEntity(entity) ||
+        ["plane", "cylinder", "cone", "sphere"].includes(entity.kind),
       level: levels.get(entity.id)!,
       ready: true,
       consumers: consumers.get(entity.id)!,

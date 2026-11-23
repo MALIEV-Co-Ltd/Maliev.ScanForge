@@ -1,0 +1,157 @@
+Window: "CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]", App: CloudCompare.exe.
+	0 window (settable, string) CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1] Secondary Actions: Raise ID: MainWindow
+		1 title bar (settable, string) Value: CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]
+			2 menu bar System ID: MenuBar
+				3 menu item System
+			4 button Minimize
+			5 button Maximize
+			6 button Close
+		7 menu bar (settable, string) ID: MainWindow.menubar
+			8 menu item (settable, string) File
+			9 menu item (settable, string) Edit
+				2563 menu (settable, string) ID: MainWindow.menubar.menuEdit
+					2564 menu item (settable, string) Colors
+					2565 menu item (settable, string) Normals
+					2566 menu item (settable, string) Octree
+					2567 menu item (settable, string) Grid
+					2568 menu item (settable, string) Cloud
+					2569 menu item (settable, string) Mesh
+					2570 menu item (settable, string) Polyline
+					2571 menu item (settable, string) Plane
+					2572 menu item (settable, string) Sensors
+					2573 menu item (settable, string) Scalar fields
+					2574 menu item (settable, string) Waveform
+					2575 separator (disabled, settable, string)
+					2576 menu item (disabled, settable, string) Clone ID: MainWindow.actionClone
+					2577 menu item (disabled, settable, string) Merge ID: MainWindow.actionMerge
+					2578 menu item (disabled, settable, string) Subsample ID: MainWindow.actionSubsample
+					2579 menu item (disabled, settable, string) Apply transformation ID: MainWindow.actionApplyTransformation
+					2580 menu item (disabled, settable, string) Multiply/Scale ID: MainWindow.actionApplyScale
+					2581 separator (disabled, settable, string)
+					2582 menu item (disabled, settable, string) Translate/Rotate ID: MainWindow.actionTranslateRotate
+					2583 menu item (disabled, settable, string) Segment ID: MainWindow.actionSegment
+					2584 menu item (disabled, settable, string) Crop ID: MainWindow.actionCrop
+					2585 separator (disabled, settable, string)
+					2586 menu item (disabled, settable, string) Edit global shift and scale ID: MainWindow.actionEditGlobalShiftAndScale
+					2587 separator (disabled, settable, string)
+					2588 menu item (settable, string) Toggle (recursive)
+					2589 separator (disabled, settable, string)
+					2590 menu item (disabled, settable, string) Delete ID: MainWindow.actionDelete
+			10 menu item (settable, string) Tools
+			11 menu item (settable, string) Display
+			12 menu item (settable, string) Plugins
+			13 menu item (settable, string) 3D Views
+			14 menu item (settable, string) Help
+		15 window (settable, string) DB Tree Secondary Actions: Raise ID: MainWindow.DockableDBTree
+			16 group (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents
+				17 tree (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents.dbTreeView
+					2591 tree item (settable, string) pair.bin (C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028/fixtures)
+					2592 tree item (settable, string) fixed - Cloud
+					2593 tree item (settable, string) moving - Cloud.registered
+			21 button (settable, string) Float ID: MainWindow.DockableDBTree.qt_dockwidget_floatbutton
+		22 status bar ID: MainWindow.statusBar
+			23 thumb (settable, string)
+		24 tool bar (settable, string) ID: MainWindow.toolBarView
+			25 button (settable, string) Display settings
+			26 button (settable, string) Camera settings
+			27 button (settable, string) Global Zoom
+			28 button (settable, string) Pick rotation center
+			29 check box (settable, string) Auto-pick rotation center
+			30 button (disabled, settable, string) Level
+			31 button (disabled, settable, string) ZoomCenter
+			32 button (settable, string) Top View
+			33 button (settable, string) Front View
+			34 button (settable, string) Left Side View
+			35 button (settable, string) Back View
+			36 button (settable, string) Right Side View
+			37 button (settable, string) Bottom View
+			38 button (settable, string) Iso 1
+			39 button (settable, string) Iso 2
+			40 check box (settable, string) actionEnableStereo
+			41 button (settable, string)
+			42 button (settable, string)
+		43 window (settable, string) Console Secondary Actions: Raise ID: MainWindow.DockableConsole
+			44 group (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2
+				45 list (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2.consoleWidget
+					2536 list item (selectable, settable, string) [15:45:00] [PointPairRegistration] Scale: fixed (1.0)
+					2540 list item (selectable, settable, string) [15:45:20] [PointPairRegistration] Transformation to global coordinates:
+					2541 list item (selectable, settable, string) [15:45:20] 1.000000000000 0.000000000000 0.000000000000 1.000000000000 0.000000000000 1.000000000000 0.000000000000 0.000000000000 0.000000000000 0.000000000000 1.000000000000 0.000000000000 0.000000000000 0.000000000000 0.000000000000 1.000000000000
+			52 button (settable, string) Close ID: MainWindow.DockableConsole.qt_dockwidget_closebutton
+			53 button (settable, string) Float ID: MainWindow.DockableConsole.qt_dockwidget_floatbutton
+		54 tool bar (settable, string) ID: MainWindow.toolBarMainTools
+			55 check box (settable, string) ID: MainWindow.toolBarMainTools.qt_toolbar_ext_button
+			56 button (settable, string) Open
+			57 button (disabled, settable, string) Save
+			58 button (settable, string) Save project (BIN)
+			59 group (settable, string)
+			60 button (settable, string) Point picking
+			61 button (disabled, settable, string) Point list picking
+			62 button (settable, string) Trace Polyline
+			63 button (disabled, settable, string) Clone
+			64 button (disabled, settable, string) Merge
+			65 button (disabled, settable, string) Delete
+			66 group (settable, string)
+			67 button (disabled, settable, string) Align (point pairs picking)
+			68 button (disabled, settable, string) Fine registration (ICP)
+			69 button (disabled, settable, string) Subsample
+			70 button (disabled, settable, string) Sample points
+			71 button (disabled, settable, string) Cloud/Cloud Dist
+			72 button (disabled, settable, string) Cloud/Mesh Dist
+			73 button (disabled, settable, string) Cloud/Primitive Dist
+			74 button (disabled, settable, string) Label Connected Comp.
+			75 button (settable, string) Primitive factory
+			76 button (disabled, settable, string) Rasterize (and contour plot)
+		77 tool bar (settable, string) ID: MainWindow.toolBarSFTools
+			78 check box (settable, string) ID: MainWindow.toolBarSFTools.qt_toolbar_ext_button
+			79 button (disabled, settable, string) Show histogram
+		80 window (settable, string) Properties Secondary Actions: Raise ID: MainWindow.DockableProperties
+			81 group (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4
+				82 tree (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4.propertiesTreeView
+			83 button (settable, string) Float ID: MainWindow.DockableProperties.qt_dockwidget_floatbutton
+		84 tool bar (settable, string) Plugins ID: MainWindow.Main Plugin Toolbar
+			85 button (disabled, settable, string) Animation
+			86 button (disabled, settable, string) CEA Virtual Broom
+			87 button (settable, string) Compass
+			88 button (disabled, settable, string) Cork
+			89 button (disabled, settable, string) CSF Filter
+			90 button (disabled, settable, string) Hough Normals Computation
+			91 button (disabled, settable, string) Hidden Point Removal
+			92 button (disabled, settable, string) M3C2 Distance
+			93 button (disabled, settable, string) Mesh Boolean
+			94 button (disabled, settable, string) PCV / ShadeVis
+			95 button (disabled, settable, string) PoissonRecon
+			96 button (disabled, settable, string) RANSAC Shape Detection
+			97 button (settable, string) AutoSeg
+			98 button (disabled, settable, string) Cloud layers
+			99 button (settable, string) Ellipse marking
+			100 check box (settable, string) Json RPC (Standard Plugin)
+			101 button (settable, string) ManualSeg
+			102 button (disabled, settable, string) MPlane
+			103 button (disabled, settable, string) TreeIso
+		104 tool bar (settable, string) GL Filters ID: MainWindow.GL Plugin Toolbar
+			105 button (disabled, settable, string) Remove Filter
+			106 check box (settable, string) EDL Shader
+			107 check box (settable, string) SSAO Shader
+		108 custom (settable, string)
+			109 window (settable, string) 3D View 1 Secondary Actions: Raise
+				110 group (settable, string)
+		111 tool bar (settable, string) CANUPO toolbar ID: MainWindow.CANUPO
+			112 check box (settable, string) ID: MainWindow.CANUPO.qt_toolbar_ext_button
+			113 button (settable, string) Train classifier
+		114 tool bar (settable, string) Facet/fracture detection toolbar ID: MainWindow.Facet/fracture detection
+			115 check box (settable, string) ID: MainWindow.Facet/fracture detection.qt_toolbar_ext_button
+			116 button (disabled, settable, string) Extract facets (Kd-tree)
+		117 tool bar (settable, string) PCL wrapper toolbar ID: MainWindow.PCL wrapper
+			118 check box (settable, string) ID: MainWindow.PCL wrapper.qt_toolbar_ext_button
+			119 button (disabled, settable, string) Fast Global Registration, by Zhou et al.
+		120 tool bar (settable, string) Surface of Revolution Analysis toolbar ID: MainWindow.Surface of Revolution Analysis
+			121 check box (settable, string) ID: MainWindow.Surface of Revolution Analysis.qt_toolbar_ext_button
+			122 button (settable, string) Load profile
+		123 tool bar (settable, string) 3DMASC toolbar ID: MainWindow.3DMASC
+			124 check box (settable, string) ID: MainWindow.3DMASC.qt_toolbar_ext_button
+			125 button (settable, string) Train classifier
+		126 tool bar (settable, string) Colorimetric Segmenter toolbar ID: MainWindow.Colorimetric Segmenter
+			127 check box (settable, string) ID: MainWindow.Colorimetric Segmenter.qt_toolbar_ext_button
+			128 button (disabled, settable, string) Filter RGB
+
+The focused UI element is 0 window (settable, string) CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1] Secondary Actions: Raise ID: MainWindow.

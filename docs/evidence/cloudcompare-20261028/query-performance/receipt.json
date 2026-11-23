@@ -1,0 +1,71 @@
+{
+  "rootCause": "Repeated octree leaf memberships reevaluated the same native triangle multiple times within each query.",
+  "baseline": {
+    "points": 10000,
+    "preparationMs": 454.45550000000003,
+    "queryMs": 557.4528999999993,
+    "instrumentedLeafEvaluations": 5772811,
+    "instrumentedDuplicateEvaluations": 3356000
+  },
+  "after": {
+    "preparationMs": 457.3698999999997,
+    "queryMs": 396.1867000000002,
+    "speedup": 1.4070459710030625
+  },
+  "exactHitOracle": {
+    "points": 10000,
+    "comparison": "distance, closest, normal, openBoundary deep equality against saved pre-fix queries",
+    "passed": true,
+    "baselineHitJsonSha256": "b067f04bbd011f91dfebfe5a225b69857258b223fea16aaf8087c26908cb7700",
+    "afterHitJsonSha256": "b067f04bbd011f91dfebfe5a225b69857258b223fea16aaf8087c26908cb7700"
+  },
+  "correctness": "Native traversal is unchanged. Radius only shrinks; first evaluation of each face suffices. Strict first-winner ties, signed distance, closest-point Float32 arithmetic, hidden filtering and open-boundary handling are unchanged.",
+  "memory": "Two-byte per-face query epochs. Reset before Uint16 rollover; test leaves an old face unvisited through65534 unrelated misses. Parent and both worker copies are conservatively included under the unchanged128MiB pool cap.",
+  "redGreen": {
+    "repeatedEvaluation": "both object/packed cases failed with6evaluations instead of2, then passed",
+    "wraparound": "removing reset made the rollover test return undefined; restoring reset passed",
+    "poolAdmission": "removing stamp accounting admitted a case one byte over128MiB; restoring accounting rejected it"
+  },
+  "focusedVerification": {
+    "tests": 114,
+    "files": [
+      "tests/scan-native-alignment-query-reuse.test.ts",
+      "tests/scan-native-alignment-mesh-query.test.ts",
+      "tests/scan-native-alignment-surface.test.ts",
+      "tests/scan-native-alignment-objective.test.ts",
+      "tests/scan-native-alignment-surface-search.test.ts",
+      "tests/scan-alignment-pool.test.ts",
+      "tests/fine-registration.test.ts"
+    ],
+    "formatting": "passed"
+  },
+  "fullSourceGate": {
+    "command": "$env:SCANFORGE_ALIGNMENT_EXAMPLES='C:\\repo\\alignment-example-files'; npm test -- tests/fine-registration-ply.test.ts",
+    "status": "passed",
+    "durationSeconds": 122.96,
+    "unchangedTestTimeoutMs": 300000,
+    "sourcePoints": 1375494,
+    "overlapRequests": [85, 15],
+    "inputBuffersUnchanged": true,
+    "log": "../full-ply-query-dedup-test.log",
+    "previousFailure": "../full-ply-test-timeout.txt"
+  },
+  "hashes": {
+    "src/scan-native-alignment-mesh-query.ts": "2f406de38599fba89a3515bb2fbaca5aff24cbc831d878b6044a2addecb2c1e9",
+    "src/scan-alignment-pool.ts": "4efad64164c48c2564901e12764f4db1a9cdc226d862f638461732de78252086",
+    "src/scan-noise-octree-query.ts": "f9d7dd028ca3ce65872b0b677981a400b79b3f1bf7336312bfec22307098d8a2",
+    "src/scan-alignment-packed-tree.ts": "1c8385783eda7facce01d456102942b953cf826d08cd560f48e4ed745d6b2f14",
+    "src/scan-noise-deviation.ts": "824042e68cc6b4bef8d505d87e50820d95fff58bc237544bca84aaa0f3f362a3",
+    "tests/fine-registration-ply.test.ts": "bac8853d89c22c96f54c24ca588e0c8ec121979c21ec0c90040405f17e5c5cc3",
+    "docs/evidence/cloudcompare-20261028/query-performance/profile-alignment-query.mjs": "22d4d945e84fa9d45bafdb0003e3cadd10a058b814028e3dcffa0c5a3b9448e9",
+    "C:/repo/alignment-example-files/ply-2.ply": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+    "C:/repo/alignment-example-files/ply-1.ply": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+  },
+  "limitations": [
+    "CPU profile and counted profile are separate runs; instrumentation overhead is not a benchmark result.",
+    "One before/after10000-point profile pair; timings depend on host load. Full test timings were recorded in separate runs.",
+    "Benchmark driver is retained for reproduction from the repository root; original pre-fix timings/profile remain historical evidence.",
+    "Source hashes describe final verified production/test files. No original pre-edit source hash was recorded.",
+    "Passing the full numerical test does not close nativeGUI/controller/globalconvergence equivalence gates."
+  ]
+}

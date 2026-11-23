@@ -78,3 +78,18 @@ it("shares reference filter changes and clearing without retaining stale picks",
   });
   expect(session.fixed).toBe(b);
 });
+
+it("keeps isolated reference markers consistent with the displayed object and rejects foreign bound picks", () => {
+  let unbound = beginLandmarkAlignment(moving, undefined, {
+    scene: [moving, a, b],
+  });
+  unbound = pickLandmark(unbound, b.id, [2, 3, 4]);
+  unbound = pickLandmark(unbound, a.id, [1, 2, 3]);
+  expect(landmarkState(unbound)).toMatchObject({
+    views: {
+      fixed: { entityIds: ["a"], markers: [{ label: "F2", point: [1, 2, 3] }] },
+    },
+  });
+  const bound = beginLandmarkAlignment(moving, a, { scene: [moving, a, b] });
+  expect(() => pickLandmark(bound, b.id, [0, 0, 0])).toThrow(/fixed/i);
+});

@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-24",
+  "scope": "Internal host workspace binding for cached reference-construction sessions",
+  "sources": [
+    {
+      "path": "src/automation/reference-construction-binding.ts",
+      "sha256": "166edf477f2fd97ebf2203dd1766beae384a3e6400e8b3b29ba23da59eb373c1"
+    },
+    {
+      "path": "src/reference-construction-session.ts",
+      "sha256": "cebbefab1fe51d0e8884d0335328fb92565300ea080bbf5ccd13c313addbc19d"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "112b4fd497924761ed5f9556b7a312320f79c902964e8dd54738045bf8f2f7be"
+    },
+    {
+      "path": "tests/reference-construction-binding.test.ts",
+      "sha256": "d08a63dfc59e8872cc90d260eb852cf96fc2c8b511a911e03a1456bbc403c3ed"
+    }
+  ],
+  "behavior": [
+    "Selection/triangle-selection/camera-setting changes preserve the private model token despite API revision changes.",
+    "Entity/carrier replacement, source identity/admission metadata, encoded reference recipe/geometry/state, project identity and history changes invalidate it.",
+    "Named saved-sketch geometry is observed independently of its active editor mirror; standalone legacy sketch changes are observed.",
+    "Invalidation is sticky; invalidation/disposal clears the saved stamp and bound snapshot reader.",
+    "Actual cached-session Apply rejects a changed workspace before invoking its publication callback."
+  ],
+  "ownershipContract": {
+    "scanCarrierBytesCopiedOrHashed": false,
+    "bufferTraversalGuardTest": true,
+    "immutablePublicationRequired": true,
+    "referenceNumbersComparedLosslessly": true,
+    "arbitraryInPlaceScanBufferWritesDetected": false,
+    "nativeSourceAdmissionImplemented": false
+  },
+  "validation": {
+    "red": {
+      "receiptSha256": "4bd415e785d1209d2ffb05036870e9356e541361cc85cecb1098aeb11e2301d4",
+      "exitCode": 1,
+      "elapsedSeconds": 1.0153323000122327,
+      "peakJobMemoryBytes": 333791232
+    },
+    "redReason": "New binding module absent.",
+    "build": {
+      "receiptSha256": "1ee8c8a5058afdecbcb0e03c036cfcca6d530c7b7b095b9412518b854df3f765",
+      "exitCode": 0,
+      "elapsedSeconds": 34.432763999997405,
+      "peakJobMemoryBytes": 2526986240
+    },
+    "focused": {
+      "receiptSha256": "7e247bfaac6c18a8370c60acb5cbb7b539ddbb1dbb158af7eb4b7cf3aad0e8ab",
+      "exitCode": 0,
+      "elapsedSeconds": 1.3705745999759529,
+      "peakJobMemoryBytes": 334299136
+    },
+    "format": {
+      "receiptSha256": "428cad97923e8c369fbf3d73038eab734770477e46cb7c0b4f3a2cb49eb79e56",
+      "exitCode": 0,
+      "elapsedSeconds": 0.2087572000164073,
+      "peakJobMemoryBytes": 105611264
+    },
+    "testsPassed": 113,
+    "newBindingTests": 16,
+    "testFiles": [
+      {
+        "path": "tests/reference-construction-binding.test.ts",
+        "passed": 16
+      },
+      {
+        "path": "tests/reference-construction-evaluation.test.ts",
+        "passed": 33
+      },
+      {
+        "path": "tests/reference-construction-session.test.ts",
+        "passed": 15
+      },
+      {
+        "path": "tests/reference-construction.test.ts",
+        "passed": 49
+      }
+    ],
+    "buildIdentitySha256": "7f421a0086ed33a750a12040b52e0b45fe81643ee958305753f32268e6510b06",
+    "memoryCapBytes": 4294967296,
+    "cpuRate": 2500
+  },
+  "mcp": {
+    "schemaChanged": false,
+    "catalogChanged": false,
+    "publicConstructionActivated": false,
+    "apiBoundaryProof": "ApplicationApi.currentRevision changes on selection while the construction binding remains current; a later carrier change retires cached Apply.",
+    "remaining": [
+      "Host-scoped registry and preview ownership/timers",
+      "GUI/MCP edit/get/apply/discard handlers and retry/context checks",
+      "Source/provider resolution, lock/identity/history publication and rendered lifecycle"
+    ]
+  },
+  "acceptance": {
+    "internalHostBinding": true,
+    "publicSessionWorkflow": false,
+    "renderedSessionWorkflow": false,
+    "nativeLifecycle": false,
+    "completeFeature": false
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "scope": "All 140113 original PLY1 positions, no topology, no point dropping or sampling. Exported normal Float32 buffers exactly match the final unit-normal input supplied to actual application/Node WASM reconstruction.",
+  "sourcePath": "C:/repo/alignment-example-files/ply-1.ply",
+  "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+  "sourcePositionBufferSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+  "pointCount": 140113,
+  "normalPreparation": {
+    "mode": "estimate-provided",
+    "neighbors": 24,
+    "validOrientationAnchors": 140111,
+    "invalidOrientationAnchors": 2,
+    "estimatedNormalsSha256": "8d40594f0433a27c561c4f598de84186225e51dd4ae588aa8aa4d6280626c453",
+    "nativeNormalSha256": "79d975fb0818d0af4a40e0c240440be4b41410c424071587b07923d5262bf955"
+  },
+  "outputPath": "docs/evidence/cloudcompare-20261029/poisson/ply-1-oriented-input.ply",
+  "outputSha256": "98d483766c41107207e5d5d116bcde84005066e06ed7af83456cfc01c9df4656",
+  "bytes": 3362977,
+  "referenceRunPath": "docs/evidence/cloudcompare-20261029/poisson/ply-1-depth9-density7-native-normalized-run.json",
+  "referenceRunSha256": "b372c4b1fbbc3dbb257f94375fec1631cbcb08632169a4ed461313c34163963c",
+  "exporterSha256": "4ccd9bf7b693dd97110b4c0e7bb04247d1138bedc53a61076f7b473797c9a185",
+  "nativeSettings": {
+    "normalMode": "estimate-provided",
+    "normalNeighbors": 24,
+    "depth": 9,
+    "pointWeight": 2,
+    "samplesPerNode": 1.5,
+    "densityThreshold": 7,
+    "femDegree": 2,
+    "boundary": "Neumann",
+    "scale": 1.1,
+    "threads": 1,
+    "outputDensity": true,
+    "linearFit": false
+  },
+  "limitations": [
+    "Native CloudCompare may internally re-normalize normals, apply another FEM degree/default or extraction implementation; observed settings and actual exported output must be recorded.",
+    "The original scanner normals provide orientation anchors, not independent physical truth.",
+    "Density 7 is output trimming, so it must be applied explicitly and reported if the native plugin exports an untrimmed mesh."
+  ]
+}

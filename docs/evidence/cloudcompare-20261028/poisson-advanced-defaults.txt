@@ -1,0 +1,249 @@
+Window: "CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]", App: CloudCompare.exe.
+	0 window (settable, string) CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1] Secondary Actions: Raise ID: MainWindow
+		1123 window (settable, string) Poisson Surface Reconstruction Secondary Actions: Raise ID: MainWindow.PoissonReconParamDialog
+			1124 title bar (settable, string) Value: Poisson Surface Reconstruction
+				1125 button Close
+			1126 custom (settable, string) ID: MainWindow.PoissonReconParamDialog.ResolutionFrame
+				1127 radio button (selectable, settable, string) Octree depth ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.depthRadioButton
+				1128 spinner (settable, float) Value: 8 ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.depthSpinBox
+				1129 radio button (selectable, settable, string) Resolution ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.resolutionRadioButton
+				1130 spinner (disabled, settable, float) Value: 0.173064 ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.resolutionDoubleSpinBox
+			1131 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget
+				1132 custom (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget
+					1416 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced
+						1417 text boundary ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.label_4
+						1418 combo box (settable, string) Value: Neumann ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.boundaryComboBox
+							1419 list (settable, string)
+								1420 list item (selectable, settable, string) Free
+								1421 list item (selectable, settable, string) Dirichlet
+								1422 list item (selectable, settable, string) Neumann
+						1423 text point weight ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.label_5
+						1424 spinner (settable, float) Value: 2 ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.weightDoubleSpinBox
+						1425 check box (settable, string) Linear fit ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.linearFitCheckBox
+						1426 text samples per node ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.label_3
+						1427 spinner (settable, float) Value: 1.5 ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.samplesPerNodeSpinBox
+						1428 text threads ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.label
+						1429 spinner (settable, float) Value: 24 ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.threadSpinBox
+				1137 tab (settable, string) Advanced ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_tabbar
+					1138 tab item (settable, string) Density
+					1139 tab item (settable, string) Advanced
+			1140 group (settable, string) ID: MainWindow.PoissonReconParamDialog.buttonBox
+				1141 button (settable, string) OK
+				1142 button (settable, string) Cancel
+		1 title bar (settable, string) Value: CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]
+			2 menu bar System ID: MenuBar
+				3 menu item System
+			4 button Minimize
+			5 button Restore
+			6 button Close
+		7 menu bar (settable, string) ID: MainWindow.menubar
+			8 menu item (settable, string) File
+			9 menu item (settable, string) Edit
+			10 menu item (settable, string) Tools
+			11 menu item (settable, string) Display
+			12 menu item (settable, string) Plugins
+			13 menu item (settable, string) 3D Views
+			14 menu item (settable, string) Help
+		15 window (settable, string) DB Tree Secondary Actions: Raise ID: MainWindow.DockableDBTree
+			16 group (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents
+				17 tree (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents.dbTreeView
+					1430 tree item (settable, string) spheres.bin (C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028/fixtures)
+					1431 tree item (settable, string) sphere-normals - Cloud
+					1432 tree item (settable, string) sphere-no-normals - Cloud
+			21 button (settable, string) Float ID: MainWindow.DockableDBTree.qt_dockwidget_floatbutton
+		22 status bar ID: MainWindow.statusBar
+		23 tool bar (settable, string) ID: MainWindow.toolBarView
+			24 button (settable, string) Display settings
+			25 button (settable, string) Camera settings
+			26 button (settable, string) Global Zoom
+			27 button (settable, string) Pick rotation center
+			28 check box (settable, string) Auto-pick rotation center
+			29 button (settable, string) Level
+			30 button (settable, string) ZoomCenter
+			31 button (settable, string) Top View
+			32 button (settable, string) Front View
+			33 button (settable, string) Left Side View
+			34 button (settable, string) Back View
+			35 button (settable, string) Right Side View
+			36 button (settable, string) Bottom View
+			37 button (settable, string) Iso 1
+			38 button (settable, string) Iso 2
+			39 check box (settable, string) actionEnableStereo
+			40 button (settable, string)
+			41 button (settable, string)
+		42 window (settable, string) Console Secondary Actions: Raise ID: MainWindow.DockableConsole
+			43 group (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2
+				44 list (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2.consoleWidget
+					46 list item (selectable, settable, string) [15:46:57] [ccGLWindow] Succesfully initialized PBO for faster depth picking
+					47 list item (selectable, settable, string) [15:46:57] [Global Shift] Max abs. coord = 1e+04 / max abs. diag = 1e+06
+					48 list item (selectable, settable, string) [15:46:57] [BIN] Opening file 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\spheres.bin'...
+					49 list item (selectable, settable, string) [15:46:57] [BIN] Version 4.1 (coords: float / scalar: float)
+					50 list item (selectable, settable, string) [15:46:57] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\spheres.bin' loaded successfully
+					513 list item (selectable, settable, string) [15:47:41] Cloud must have normals!
+			51 button (settable, string) Close ID: MainWindow.DockableConsole.qt_dockwidget_closebutton
+			52 button (settable, string) Float ID: MainWindow.DockableConsole.qt_dockwidget_floatbutton
+		53 tool bar (settable, string) ID: MainWindow.toolBarMainTools
+			54 button (settable, string) Open
+			55 button (settable, string) Save
+			56 button (settable, string) Save project (BIN)
+			57 group (settable, string)
+			58 button (settable, string) Point picking
+			59 button (settable, string) Point list picking
+			60 button (settable, string) Trace Polyline
+			61 button (settable, string) Clone
+			62 button (disabled, settable, string) Merge
+			63 button (settable, string) Delete
+			64 group (settable, string)
+			65 button (settable, string) Align (point pairs picking)
+			66 button (disabled, settable, string) Fine registration (ICP)
+			67 button (settable, string) Subsample
+			68 button (disabled, settable, string) Sample points
+			69 button (disabled, settable, string) Cloud/Cloud Dist
+			70 button (disabled, settable, string) Cloud/Mesh Dist
+			71 button (disabled, settable, string) Cloud/Primitive Dist
+			72 button (settable, string) Label Connected Comp.
+			73 button (settable, string) Primitive factory
+			74 button (settable, string) Rasterize (and contour plot)
+			75 button (settable, string) SOR filter
+			76 group (settable, string)
+			77 button (settable, string) Segment
+			78 button (settable, string) Translate/Rotate
+			79 button (settable, string) Cross Section
+			80 button (settable, string) Extract sections / Unfold
+		81 tool bar (settable, string) ID: MainWindow.toolBarSFTools
+			82 button (disabled, settable, string) Show histogram
+			83 button (disabled, settable, string) Compute stat. params
+			84 button (disabled, settable, string) Filter By Value
+			85 button (disabled, settable, string) Delete Scalar Field
+			86 button (settable, string) Add constant SF
+			87 button (disabled, settable, string) SF arithmetic
+			88 button (settable, string) Color Scales Manager
+		89 window (settable, string) Properties Secondary Actions: Raise ID: MainWindow.DockableProperties
+			90 group (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4
+				91 tree (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4.propertiesTreeView
+					1433 header (settable, string) Property
+					1434 header (settable, string) State/Value
+					1435 tree item (settable, string)
+					1436 tree item (settable, string)
+					1437 tree item (settable, string) Name
+					1438 tree item (settable, string) sphere-normals - Cloud
+					1439 tree item (settable, string) Visible
+					1440 tree item (settable, string)
+					1441 tree item (settable, string) Normals
+					1442 tree item (settable, string)
+					1443 tree item (settable, string) Show name (in 3D)
+					1444 tree item (settable, string)
+					1445 tree item (settable, string) Box dimensions
+					1446 tree item (settable, string) X: 19.991 (-9.99267 : 9.99836) Y: 19.9766 (-9.98609 : 9.99052) Z: 19.9833 (-9.99167 : 9.99167)
+					1447 tree item (settable, string) Shifted box center
+					1448 tree item (settable, string) X: 0.00284576 Y: 0.002213 Z: 0
+					1449 tree item (settable, string) Global box center
+					1450 tree item (settable, string) X: 0.002846 Y: 0.002213 Z: 0.000000
+					1451 tree item (settable, string) Info
+					1452 tree item (settable, string) Object ID: 261 - Children: 0
+					1453 tree item (settable, string) Current Display
+					1454 tree item (settable, string)
+					1455 tree item (settable, string)
+					1456 tree item (settable, string)
+					1457 tree item (settable, string) Points
+					1458 tree item (settable, string) 1,200
+					1459 tree item (settable, string) Global shift
+					1460 tree item (settable, string) (0.00;0.00;0.00)
+					1461 tree item (settable, string) Global scale
+					1462 tree item (settable, string) 1.000000
+					1463 tree item (settable, string) Point size
+					1464 tree item (settable, string)
+					1465 tree item (settable, string)
+					1466 tree item (settable, string)
+					1467 tree item (settable, string) Draw
+					1468 tree item (settable, string)
+			92 button (settable, string) Float ID: MainWindow.DockableProperties.qt_dockwidget_floatbutton
+		93 tool bar (settable, string) Plugins ID: MainWindow.Main Plugin Toolbar
+			94 button (disabled, settable, string) Animation
+			95 button (settable, string) CEA Virtual Broom
+			96 button (settable, string) Compass
+			97 button (disabled, settable, string) Cork
+			98 button (settable, string) CSF Filter
+			99 button (settable, string) Hough Normals Computation
+			100 button (settable, string) Hidden Point Removal
+			101 button (disabled, settable, string) M3C2 Distance
+			102 button (disabled, settable, string) Mesh Boolean
+			103 button (settable, string) PCV / ShadeVis
+			104 button (settable, string) PoissonRecon
+			105 button (settable, string) RANSAC Shape Detection
+			106 button (settable, string) AutoSeg
+			107 button (settable, string) Cloud layers
+			108 button (settable, string) Ellipse marking
+			109 check box (settable, string) Json RPC (Standard Plugin)
+			110 button (settable, string) ManualSeg
+			111 button (settable, string) MPlane
+			112 button (settable, string) TreeIso
+		113 tool bar (settable, string) GL Filters ID: MainWindow.GL Plugin Toolbar
+			114 button (disabled, settable, string) Remove Filter
+			115 check box (settable, string) EDL Shader
+			116 check box (settable, string) SSAO Shader
+		117 custom (settable, string)
+			118 window (settable, string) 3D View 1 Secondary Actions: Raise
+				119 group (settable, string)
+		120 tool bar (settable, string) CANUPO toolbar ID: MainWindow.CANUPO
+			121 button (settable, string) Train classifier
+			122 button (settable, string) Classify
+		123 tool bar (settable, string) Facet/fracture detection toolbar ID: MainWindow.Facet/fracture detection
+			124 button (settable, string) Extract facets (Kd-tree)
+			125 button (settable, string) Extract facets (Fast Marching)
+			126 button (settable, string) Export facets (SHP)
+			127 button (settable, string) Export facets info (CSV)
+			128 button (disabled, settable, string) Classify facets by orientation
+			129 button (settable, string) Show stereogram
+		130 tool bar (settable, string) PCL wrapper toolbar ID: MainWindow.PCL wrapper
+			131 button (disabled, settable, string) Fast Global Registration, by Zhou et al.
+			132 button (settable, string) Estimate Normals and Curvature
+			133 button (settable, string) Smooth using MLS, optionally upsample
+		134 tool bar (settable, string) Surface of Revolution Analysis toolbar ID: MainWindow.Surface of Revolution Analysis
+			135 button (settable, string) Load profile
+			136 button (disabled, settable, string) Cloud-SurfRev radial distance
+			137 button (disabled, settable, string) 2D distance map
+		138 tool bar (settable, string) 3DMASC toolbar ID: MainWindow.3DMASC
+			139 button (settable, string) Train classifier
+			140 button (settable, string) Classify
+		141 tool bar (settable, string) Colorimetric Segmenter toolbar ID: MainWindow.Colorimetric Segmenter
+			142 button (disabled, settable, string) Filter RGB
+			143 button (disabled, settable, string) Filter HSV
+			144 button (disabled, settable, string) Filter scalar
+			145 button (disabled, settable, string) Histogram Clustering
+			146 button (disabled, settable, string) Kmeans Clustering
+		1123 window (settable, string) Poisson Surface Reconstruction Secondary Actions: Raise ID: MainWindow.PoissonReconParamDialog
+			1124 title bar (settable, string) Value: Poisson Surface Reconstruction
+				1125 button Close
+			1126 custom (settable, string) ID: MainWindow.PoissonReconParamDialog.ResolutionFrame
+				1127 radio button (selectable, settable, string) Octree depth ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.depthRadioButton
+				1128 spinner (settable, float) Value: 8 ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.depthSpinBox
+				1129 radio button (selectable, settable, string) Resolution ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.resolutionRadioButton
+				1130 spinner (disabled, settable, float) Value: 0.173064 ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.resolutionDoubleSpinBox
+			1131 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget
+				1132 custom (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget
+					1416 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced
+						1417 text boundary ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.label_4
+						1418 combo box (settable, string) Value: Neumann ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.boundaryComboBox
+							1419 list (settable, string)
+								1420 list item (selectable, settable, string) Free
+								1421 list item (selectable, settable, string) Dirichlet
+								1422 list item (selectable, settable, string) Neumann
+						1423 text point weight ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.label_5
+						1424 spinner (settable, float) Value: 2 ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.weightDoubleSpinBox
+						1425 check box (settable, string) Linear fit ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.linearFitCheckBox
+						1426 text samples per node ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.label_3
+						1427 spinner (settable, float) Value: 1.5 ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.samplesPerNodeSpinBox
+						1428 text threads ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.label
+						1429 spinner (settable, float) Value: 24 ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabAdvanced.threadSpinBox
+				1137 tab (settable, string) Advanced ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_tabbar
+					1138 tab item (settable, string) Density
+					1139 tab item (settable, string) Advanced
+			1140 group (settable, string) ID: MainWindow.PoissonReconParamDialog.buttonBox
+				1141 button (settable, string) OK
+				1142 button (settable, string) Cancel
+
+Document text: ```
+8
+0.173064
+```

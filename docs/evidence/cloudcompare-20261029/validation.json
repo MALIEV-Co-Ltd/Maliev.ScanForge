@@ -1,0 +1,62 @@
+{
+  "recordedUtc": "2026-10-29T02:06:52.521Z",
+  "requestedAreas": {
+    "general3dPoisson": "implemented and validated through shared GUI/public MCP",
+    "completeRealScanQuality": "all 140113 source points; all 13 fixed gates pass",
+    "nativeConvergence": "5 authored positives, refusal control and full owner native completion/restart comparison"
+  },
+  "browser": {
+    "passed": true,
+    "receipt": "browser/evidence.json",
+    "capacityReceipt": "browser/completion-evidence.json",
+    "completedMaximumPoints": 500000,
+    "rejectedBeforeWorkerPoints": 500001,
+    "compiledNestedDeployment": "poisson/production-browser.json"
+  },
+  "geometry": {
+    "actualPublicMcp": "browser/ply-1-public-mcp-quality.json",
+    "nativeWithExplicitPostprocess": "poisson/native-cloudcompare/density7-quality.json",
+    "exactNodeMcpArrayParity": "poisson/full-scan-node-mcp-array-parity.json"
+  },
+  "alignment": "alignment/validation-summary.json",
+  "verification": {
+    "productionBuild": {
+      "exitCode": 0,
+      "receipt": "production-build-final.log",
+      "assets": 279,
+      "offlineCache": "scanforge-45d4eb72d2d17bff",
+      "fourPoissonAssetsMatchPublicExactly": true
+    },
+    "provenance": {
+      "passed": true,
+      "upstreamCommit": "262b0f539d404057d1f36e1adc07fc9388678899",
+      "wasmSha256": "fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425",
+      "verifiedFiles": 5,
+      "requiresEmsdk": false
+    },
+    "focused": {
+      "tests": 27,
+      "files": 10,
+      "failed": 0,
+      "receipt": "focused-tests-final.log"
+    },
+    "fullRepository": {
+      "runs": 2,
+      "passed": 49108,
+      "failed": 1,
+      "skipped": 68,
+      "receipt": "test-suite-final.log",
+      "existingFailure": "tests/generated-icons.test.tsx: routes all common UI icons through generated artwork; unrelated MeshOperationResult.tsx directly imports lucide-react",
+      "note": "The late-result test added after full runs is covered by the final focused run. Counts overlap; do not sum."
+    },
+    "freshReview": "No remaining material findings; final loader also reviewed after actual compiled nested-path verification"
+  },
+  "sourceIdentity": "candidate-inputs.json",
+  "excludedClaims": [
+    "Physical ground-truth registration accuracy for owner scans",
+    "Watertight solid or maximum Hausdorff certification",
+    "Exact hidden native algorithm/version equivalence",
+    "Unrelated milestone closure or a green full repository suite"
+  ],
+  "committed": false
+}

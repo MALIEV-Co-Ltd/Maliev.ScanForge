@@ -1,6 +1,7 @@
 import { copyFile, cp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
+import { build } from "vite";
 
 const root = new URL("../", import.meta.url);
 const source = new URL("node_modules/opencascade.js/", root);
@@ -74,4 +75,24 @@ source provenance and rebuild information; it is not a complete corresponding
 source bundle. Preserve the complete third-party notices when redistributing.
 `,
 );
+// Compile the shared TypeScript backend and numeric helpers for the classic
+// worker. Keep one implementation; no manually copied worker arithmetic.
+await build({
+  configFile: false,
+  root: fileURLToPath(root),
+  publicDir: false,
+  build: {
+    target: "es2022",
+    outDir: fileURLToPath(destination),
+    emptyOutDir: false,
+    copyPublicDir: false,
+    minify: false,
+    lib: {
+      entry: fileURLToPath(new URL("src/cad/sketch-backend.ts", root)),
+      name: "ScanForgeSketchBackend",
+      formats: ["iife"],
+      fileName: () => "sketch-backend.js",
+    },
+  },
+});
 console.log(`Local CAD kernel prepared at ${fileURLToPath(destination)}`);

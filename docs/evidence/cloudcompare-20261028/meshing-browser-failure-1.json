@@ -1,0 +1,9 @@
+{
+  "origin": "http://127.0.0.1:5187",
+  "browser": "Browser plugin not available; isolated Playwright Chrome",
+  "startedAt": "2026-10-28T08:37:01.529Z",
+  "passed": false,
+  "checks": [],
+  "error": "page.waitForFunction: Timeout 30000ms exceeded.",
+  "finishedAt": "2026-10-28T08:37:33.798Z"
+}

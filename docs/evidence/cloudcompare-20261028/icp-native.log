@@ -1,0 +1,29 @@
+[15:28:22] [SET LOG FILE] finished in 0.00 s.
+[15:28:22] [AUTO SAVE STATE]
+[15:28:22] Auto-save is disabled
+[15:28:22] [AUTO SAVE STATE] finished in 0.00 s.
+[15:28:22] [LOAD]
+[15:28:22] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\moving.ply'
+[15:28:22] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\moving.ply' loaded successfully
+[15:28:22] Found one cloud with 437 points
+[15:28:22] [LOAD] finished in 0.01 s.
+[15:28:22] [LOAD]
+[15:28:22] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\fixed.ply'
+[15:28:22] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\fixed.ply' loaded successfully
+[15:28:22] Found one cloud with 437 points
+[15:28:22] [LOAD] finished in 0.00 s.
+[15:28:22] [ICP]
+[15:28:22] [ICP] Will use 0 threads
+[15:28:22] Entity 'moving - Cloud' has been registered
+[15:28:22] RMS: 1.30248e-06
+[15:28:22] Number of points used for final step: 437
+[15:28:22] [ICP] finished in 0.01 s.
+[15:28:22] [CHANGE CLOUD OUTPUT FORMAT]
+[15:28:22] Output export format (clouds) set to: ASC
+[15:28:22] [CHANGE CLOUD OUTPUT FORMAT] finished in 0.00 s.
+[15:28:22] [NO TIMESTAMP]
+[15:28:22] [NO TIMESTAMP] finished in 0.00 s.
+[15:28:22] [SAVE CLOUDS]
+[15:28:22] Invalid parameter: specified 1 file names, but there are 2 clouds
+[15:28:22] [SAVE CLOUDS] finished in 0.00 s.
+[15:28:22] Processed finished in 0.03 s.

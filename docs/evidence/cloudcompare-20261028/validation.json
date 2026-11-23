@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-28",
+  "scope": "Focused CloudCompare investigation, fine alignment fixes and projected point-cloud meshing in a checkout with unrelated preexisting changes",
+  "productionBuild": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "offlineAssets": 274,
+    "offlineCache": "scanforge-33cd507097ad8ae5",
+    "licenseAssetsIncluded": true
+  },
+  "focusedChecks": [
+    {
+      "scope": "Continuation: projected meshing core, worker, application contract, command, placement and API behavior",
+      "files": 6,
+      "tests": 47,
+      "failed": 0,
+      "note": "Overlaps earlier focused checks; do not sum test counts."
+    },
+    {
+      "scope": "Continuation: exact query hits, ties, normals, boundaries, epoch rollover and conservative worker admission",
+      "files": 7,
+      "tests": 114,
+      "failed": 0,
+      "receipt": "query-performance/receipt.json"
+    },
+    {
+      "scope": "fine registration, contracts, input binding, publication, GUI markup, triangulator/worker/command, existing cloud edits and reconstruction operations",
+      "files": 12,
+      "tests": 52,
+      "failed": 0
+    },
+    {
+      "scope": "additional meshing API and overlapping fine-operation/worker checks",
+      "files": 3,
+      "tests": 6,
+      "failed": 0,
+      "note": "Overlaps the first run; do not sum test counts."
+    }
+  ],
+  "browser": {
+    "currentCheckoutOrigin": "http://127.0.0.1:5187",
+    "preservedOtherCheckoutOrigin": "http://127.0.0.1:5173",
+    "runner": "Browser plugin unavailable; isolated Playwright Chrome and real public MCP bridge",
+    "fineAlignment": "fine-browser/evidence.json",
+    "meshing": "meshing-browser-evidence.json",
+    "meshingContinuation": "meshing-continuation/evidence.json",
+    "realPatchIndependentQuality": "meshing-continuation/real-surface-quality.json",
+    "continuationScope": "Three real triangulation cancellations and receipt retries, actual worker-close events, 500000-point success, 500001 pre-worker rejection, real333-point patch GUI/MCP/source/history parity and truthful GUI success status",
+    "passed": true
+  },
+  "independentComparisons": [
+    "synthetic-alignment-comparison.json",
+    "owner-ply-sampled-comparison.json",
+    "meshing-native-comparison.json",
+    "poisson-sphere-quality.json"
+  ],
+  "review": {
+    "actionableFindings": 0,
+    "scope": "New meshing core, worker/executor/GUI request bindings, world placement, source/history preservation, schema/limits, 3D edge pruning, winding, shared defaults and insufficient-overlap refusal",
+    "limit": "Read-only source review; no maximum-capacity cancellation stress or additional posed-cloud replay."
+  },
+  "failedGates": [
+    {
+      "scope": "Existing full-source real PLY ScanForge regression",
+      "result": "timeout",
+      "actualSeconds": 371.716,
+      "limitSeconds": 300,
+      "receipt": "full-ply-test-timeout.txt",
+      "resolvedByContinuation": {
+        "command": "$env:SCANFORGE_ALIGNMENT_EXAMPLES='C:\\repo\\alignment-example-files'; npm test -- tests/fine-registration-ply.test.ts",
+        "exitCode": 0,
+        "actualSeconds": 122.96,
+        "unchangedLimitSeconds": 300,
+        "receipt": "full-ply-query-dedup-test.log",
+        "limit": "Full-source regression passed; physical convergence and native parity remain open."
+      }
+    },
+    {
+      "scope": "Native CloudCompare owner scans at 15 percent overlap",
+      "result": "timeout",
+      "limitSeconds": 120,
+      "receipt": "owner-ply-native-summary.json"
+    }
+  ],
+  "remainingGates": [
+    "Physical real-scan convergence and broader performance characterization",
+    "General 3D/Poisson implementation in ScanForge",
+    "Full real-scan reconstruction quality and open-surface Poisson trimming",
+    "Native nonunit scale and preview/cancel comparison",
+    "Broader milestone/native parity"
+  ],
+  "committed": false,
+  "sourceIdentity": "candidate-inputs.json"
+}

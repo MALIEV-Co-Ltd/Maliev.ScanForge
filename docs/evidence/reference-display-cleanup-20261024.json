@@ -1,0 +1,185 @@
+{
+  "date": "2026-10-24",
+  "scope": "Production semantic display disposal and viewport replacement/teardown recovery",
+  "sources": [
+    {
+      "path": "src/reference-display.ts",
+      "sha256": "5e441cc19e59b3953dca2e16f6aeadfa10cbf0296d9eac30e625981ce663f961"
+    },
+    {
+      "path": "src/viewport.ts",
+      "sha256": "0181c6b2283e06c462da6354fff44365739e85a5fb159559c6ea84f92749dcdf"
+    },
+    {
+      "path": "tests/reference-display-cleanup.test.ts",
+      "sha256": "d8a6b73360ca19026fa6bc1678e6a80b03765005c5f238ad7bc10b54a5f1ec24"
+    },
+    {
+      "path": "src/automation/workflow-operations.ts",
+      "sha256": "93c19e70ebde111bf353be4dd9cd411252e352310b5c897660f26fa5720eef76"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "9b67a4c858db3095c99981607b651b991da5bd3958ae65191ee7b14826c4e1a9"
+    }
+  ],
+  "behavior": [
+    "Retiring display is hidden immediately; detach/geometry/material disposal phases are all attempted.",
+    "Successful phases are not repeated; failed phases remain retryable and reentrant disposal is guarded.",
+    "Viewport retains failed display retirements, including unpublished replacement cleanup, until retry succeeds.",
+    "Later scene updates drain pending retirements and recreate displays rather than reuse retired objects.",
+    "Reference cleanup failures do not stop remaining viewport teardown; later disposal retries retained resources."
+  ],
+  "validation": {
+    "red": {
+      "sha256": "d511fe1fcf9e49ce9d9d58d01ad3fcbb5bdc058c3f6dd32e16cb456c364f49ef",
+      "exitCode": 1,
+      "elapsedSeconds": 1.1684624000045005,
+      "peakJobMemoryBytes": 345063424
+    },
+    "redResult": "Six expected cleanup/replacement failures.",
+    "build": {
+      "sha256": "0a4b8d5292c789af440178118a2ccc77c861caee6096d6dea94e7ad9195c24c6",
+      "exitCode": 0,
+      "elapsedSeconds": 34.10699040000327,
+      "peakJobMemoryBytes": 2583384064
+    },
+    "focused": {
+      "sha256": "9b811677677695d2b54fe5b88c3309d56596ceb9b5fcb7a5920c5402e853595d",
+      "exitCode": 0,
+      "elapsedSeconds": 1.8755233000265434,
+      "peakJobMemoryBytes": 358223872
+    },
+    "format": {
+      "sha256": "363115b119c82c4c910ab4c598e839879690883aba28fa3d4379f9811d7564ee",
+      "exitCode": 0,
+      "elapsedSeconds": 0.5122393000056036,
+      "peakJobMemoryBytes": 164179968
+    },
+    "browser": {
+      "sha256": "5af8a3427bdf1bcf9c80e54dfe411cc41a3ca41f40c54b84c2d04d2ab9dbb1e5",
+      "exitCode": 0,
+      "elapsedSeconds": 2.1293726000003517,
+      "peakJobMemoryBytes": 478167040
+    },
+    "testsPassed": 55,
+    "newCleanupTests": 7,
+    "testFiles": [
+      {
+        "path": "tests/reference-construction-edit-publication.test.ts",
+        "passed": 4
+      },
+      {
+        "path": "tests/reference-construction-preview.test.ts",
+        "passed": 25
+      },
+      {
+        "path": "tests/reference-display-cleanup.test.ts",
+        "passed": 7
+      },
+      {
+        "path": "tests/reference-viewport.test.ts",
+        "passed": 12
+      },
+      {
+        "path": "tests/viewport-agent.test.ts",
+        "passed": 7
+      }
+    ],
+    "buildIdentitySha256": "493174572b4d6fe6ee9dfbeab32b9984247eb034f07a173763755a5432c3d6d4",
+    "memoryCapBytes": 4294967296,
+    "cpuRate": 2500
+  },
+  "rendered": {
+    "fixture": "Actual production Viewport/ApplicationApi in isolated semantic scene; owned Chromium/software WebGL.",
+    "checks": [
+      "WebGL renders point and finite line; shared project/object inspection reports semantic entities",
+      "GUI pointer and MCP viewport_pick identify the same semantic point and exact world coordinates",
+      "GUI/MCP finite-line picks agree within 0.02 mm; picks beyond its endpoint do not hit the line",
+      "Locked and hidden semantic point is excluded from object picks",
+      "Production clipping removes the point from WebGL pixels and MCP picks",
+      "MCP fit frames reference-only semantic bounds through production camera controls",
+      "Actual WebGL failed replacement retains and retries its geometry disposal; GUI/API viewport uses the replacement afterward",
+      "Repeated semantic replacement retains geometry count; removing releases reference objects",
+      "Viewport teardown continues after injected reference failure; a second disposal clears the retained geometry without repeating material disposal"
+    ],
+    "replacement": {
+      "before": {
+        "geometries": 2,
+        "referenceCount": 2,
+        "canvasCount": 1
+      },
+      "failure": "AggregateError: Reference display cleanup failed: geometry.",
+      "pending": 1,
+      "after": {
+        "geometries": 2,
+        "referenceCount": 2,
+        "canvasCount": 1
+      },
+      "pendingAfter": 0,
+      "geometry": 2,
+      "material": 1
+    },
+    "disposal": {
+      "before": {
+        "geometries": 2,
+        "referenceCount": 2,
+        "canvasCount": 1
+      },
+      "failure": "AggregateError: Viewport reference cleanup is incomplete; retry disposal.",
+      "pending": 1,
+      "first": {
+        "geometries": 1,
+        "referenceCount": 0,
+        "canvasCount": 0
+      },
+      "after": {
+        "geometries": 0,
+        "referenceCount": 0,
+        "canvasCount": 0
+      },
+      "pendingAfter": 0,
+      "geometry": 2,
+      "material": 1
+    },
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "resultSha256": "693d2eb7e2fb48267fb2d0e5a0b7a9899df61eb42f3a5937813d9d0460fc43df",
+    "driverSha256": "a77926eba1779b27d26c0853a1912352a49931a690b397e004cd35b3b216f31d",
+    "screenshots": [
+      {
+        "artifact": "baseline.png",
+        "sha256": "ea381e63ce305d17074b1b999a88b3caa06f0d9eb49d9d86467768c95c135d0c"
+      },
+      {
+        "artifact": "clipped.png",
+        "sha256": "21060d238c98a5901e29bd1d67925c975cc5d478b1be6c8ab7529433821cab95"
+      }
+    ]
+  },
+  "mcp": {
+    "sharedViewport": true,
+    "schemaChanged": false,
+    "catalogChanged": false,
+    "verified": [
+      "Existing point/finite-line viewport_pick agreement with GUI pointers",
+      "viewport_control Fit and semantic inspection",
+      "Replacement point remains pickable through the API after retry"
+    ],
+    "publicConstructionActivated": false
+  },
+  "acceptance": {
+    "productionDisplayCleanup": true,
+    "rendererResourceCountRecovery": true,
+    "fullPreviewOwnerAdapter": false,
+    "fullGuiMcpConstruction": false,
+    "nativeLifecycle": false,
+    "milestoneComplete": false
+  },
+  "limitations": [
+    "Renderer counters are not a measurement of total GPU/driver memory.",
+    "No original native application execution or rendering comparison.",
+    "Full preview-owner adapter/API/editor/source lifecycle remains unfinished.",
+    "Existing user scene and dev server were preserved."
+  ]
+}

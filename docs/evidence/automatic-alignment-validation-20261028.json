@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-28",
+  "origin": "http://127.0.0.1:5174/",
+  "typecheck": "passed",
+  "focusedTests": {
+    "files": 16,
+    "passed": 248
+  },
+  "browserChecks": {
+    "cad-setup": {
+      "passed": true,
+      "evidence": ".resources\\alignment-live-validation\\cad-setup.json",
+      "errors": [],
+      "warnings": []
+    },
+    "global-live": {
+      "passed": true,
+      "evidence": ".resources\\alignment-live-validation\\global-live.json",
+      "errors": [],
+      "warnings": []
+    },
+    "original-stls": {
+      "passed": true,
+      "evidence": ".resources\\alignment-live-validation\\original-stls.json",
+      "errors": [],
+      "warnings": ["WARNING: Multiple instances of Three.js being imported."]
+    }
+  },
+  "originalStlRun": {
+    "elapsedMs": 23897,
+    "observedLivePoseFrames": 15,
+    "cadSetup": {
+      "referenceEntityId": "525e442b-f24b-4215-876f-b03a8043c29e",
+      "planeTolerance": 0.4997507245761659,
+      "sampleCount": 6000,
+      "planeSupportPercent": 26.13333333333333,
+      "planeRms": 0.20865670669015857,
+      "axes": {
+        "x": [0.8673721561078525, -0.07830683670606667, 0.4914606618376544],
+        "y": [-0.23173862091336894, -0.9374947452741526, 0.2596166677247875],
+        "z": [0.44041202797605983, -0.3390746848534142, -0.8313035568945754]
+      },
+      "origin": [19.113455407059845, 19.072005947711688, -292.41525179171373],
+      "dimensions": [
+        121.91484229087095, 117.56097051989713, 12.659814374648278
+      ],
+      "originMode": "center",
+      "primaryAxis": "X",
+      "warnings": [
+        "Front/back direction and the intended base cannot be inferred uniquely from symmetric scans; review the preview.",
+        "Nearly square footprint: X/Y orientation is ambiguous."
+      ]
+    },
+    "nativeStates": [
+      {
+        "id": "16d322fa-ada8-466b-9499-f1a4c3e1ee3a",
+        "meanMm": 0.08243317333192113,
+        "coveragePercent": 54,
+        "stable": true,
+        "converged": false
+      },
+      {
+        "id": "b70cfe87-2ad0-42c3-b623-c3df88946b67",
+        "meanMm": 0.07485109896565391,
+        "coveragePercent": 60,
+        "stable": true,
+        "converged": false
+      },
+      {
+        "id": "525e442b-f24b-4215-876f-b03a8043c29e",
+        "meanMm": 0.05692206031873602,
+        "coveragePercent": 61,
+        "stable": true,
+        "converged": false
+      }
+    ]
+  },
+  "limits": [
+    "Automatic coarse placement is a scan registration strategy, not a native equivalence claim.",
+    "Original scan native refinement remained stable but not converged.",
+    "No flat supporting face fails explicitly; symmetric front/base orientation requires preview review.",
+    "Original STL browser applied global registration only inside a disposable browser workspace, then previewed CAD setup for all three scans.",
+    "Existing development runtime emits one multiple Three.js instances warning on the original STL import. No application errors were observed."
+  ],
+  "repairedFailures": [
+    "Initial native-only route did not estimate coarse poses.",
+    "Derived viewport effective-grid spacing invalidated completed global previews.",
+    "Global Apply cleared display ownership after notifying React history subscribers, causing nested flushSync cleanup warnings.",
+    "Initial base tolerance rejected these original noisy scans; triangle plane trials and a documented 0.3 percent scale default now find a supported base.",
+    "Compact CAD setup footer initially overflowed; rendered button bounds now assert visibility."
+  ]
+}

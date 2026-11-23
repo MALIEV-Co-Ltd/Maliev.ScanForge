@@ -11,7 +11,7 @@ import { noiseNormals } from "../src/scan-native-noise";
 import type { Entity } from "../src/types";
 import nativeNormals from "./fixtures/noise-normal-kernel.json";
 
-// All indexed scans now require the same disposable normal derivation worker.
+// Legacy indexed scans without stored computed normals use a derivation worker.
 // Model transfer detachment without detaching the authored entity carriers.
 beforeEach(() => {
   vi.stubGlobal(
@@ -164,12 +164,18 @@ it("uses scene order, visible mesh wrappers, command defaults and original unuse
     ],
     { entityIds: ["b", "a"] },
   );
-  expect(result.entities).toEqual([a, b]);
+  expect(result.entities.map((e) => e.id)).toEqual([a.id, b.id]);
+  expect(result.entities[0].positions).toBe(a.positions);
+  expect(result.entities[1].positions).toBe(b.positions);
+  expect(result.entities[0].indexedMesh!.geometryNormals).toBe(
+    result.input.scans[0].geometry.normals,
+  );
+  expect(a.indexedMesh!.geometryNormals).toBeUndefined();
   expect(result.input).toMatchObject({
     radius: 0.5,
     spacing: 12,
     budget: 1000,
-    mask: 1,
+    mask: 0,
   });
   expect(result.input.scans[0].geometry.points).toBe(a.indexedMesh!.vertices);
   expect(result.input.scans[0].geometry.normals).not.toBe(
@@ -179,8 +185,9 @@ it("uses scene order, visible mesh wrappers, command defaults and original unuse
     noiseNormals(a.indexedMesh!),
   );
   expect(result.input.scans[0].geometry.flags).toEqual(
-    Uint32Array.of(1, 1, 1, 0),
+    Uint32Array.of(0, 0, 0, 0),
   );
+  expect(result.summary.mask).toBe(0);
   expect(result.summary.preparation.physicalWorkers).toBe(2);
   expect(result.input.scans[0].geometry.targetMeshes![0].triangles).toBe(
     a.indexedMesh!.triangles,

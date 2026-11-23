@@ -3,12 +3,15 @@ import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { randomUUID, randomBytes } from "node:crypto";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const root = new URL("../", import.meta.url),
   out = new URL("../.resources/defeature-curvature-browser/", import.meta.url);
+const builtRoot = process.env.SCANFORGE_QA_DIST
+  ? new URL("./", pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/index.html`))
+  : new URL("dist/", root);
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -51,10 +54,9 @@ try {
       const name = new URL(req.url, "http://127.0.0.1").pathname;
       const file = new URL(
         name === "/" ? "index.html" : name.slice(1),
-        new URL("dist/", root),
+        builtRoot,
       );
-      if (!file.href.startsWith(new URL("dist/", root).href))
-        throw Error("Invalid path");
+      if (!file.href.startsWith(builtRoot.href)) throw Error("Invalid path");
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
@@ -129,6 +131,10 @@ try {
     }),
     errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (["warning", "error"].includes(message.type()))
+      errors.push(message.text());
+  });
   page.setDefaultTimeout(15000);
   await page.addInitScript(() => {
     window.__defeatureRequests = [];
@@ -161,6 +167,7 @@ try {
   });
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -288,11 +295,12 @@ try {
     position: [0, 0, 45],
     target: [0, 0, 0],
     up: [0, 1, 0],
-    zoom: 4,
+    zoom: 1,
   });
   await mutate("selection_set", { entityId: "panel", triangles: selected });
   const original = await geometry(),
     beforeHistory = await history();
+  const beforeViewport = (await call("viewport_get")).result;
   await page.screenshot({ path: fileURLToPath(new URL("before.png", out)) });
   const canvas = page.locator(".viewport canvas").first(),
     box = await canvas.boundingBox();
@@ -328,6 +336,21 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 100));
   assert.equal(await history(), beforeHistory + 1);
   const gui = await geometry();
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  );
+  const afterViewport = (await call("viewport_get")).result;
+  assert.deepEqual(
+    afterViewport.cameraWorldMatrix,
+    beforeViewport.cameraWorldMatrix,
+  );
+  assert.deepEqual(
+    afterViewport.projectionMatrix,
+    beforeViewport.projectionMatrix,
+  );
   await page.screenshot({ path: fileURLToPath(new URL("after.png", out)) });
   assert.notDeepEqual(gui.positions, original.positions);
   const retained = original.positions.filter(
@@ -349,6 +372,43 @@ try {
   assert.deepEqual((await geometry()).positions, gui.positions);
   await mutate("history_undo", {});
   await mutate("selection_set", { entityId: "panel", triangles: selected });
+  await page.evaluate(() => {
+    window.__pendingResult = null;
+    window.__holdResult = true;
+  });
+  const cancelled = await mutate("mesh_process", {
+    entityId: "panel",
+    selectionOnly: true,
+    operation: { kind: "scanEdit", action: "defeature" },
+  });
+  await page.waitForFunction(() => !!window.__pendingResult);
+  await call("job_cancel", { jobId: cancelled.result.jobId });
+  await job(cancelled, "cancelled");
+  await page.evaluate(() => {
+    window.__pendingResult = null;
+    window.__holdResult = false;
+  });
+  assert.deepEqual((await geometry()).positions, original.positions);
+  assert.equal(await history(), beforeHistory);
+  await mutate("selection_set", {
+    entityId: "panel",
+    triangles: Array.from(
+      { length: positions.length / 9 },
+      (_, index) => index,
+    ),
+  });
+  const rejected = await job(
+    await mutate("mesh_process", {
+      entityId: "panel",
+      selectionOnly: true,
+      operation: { kind: "scanEdit", action: "defeature" },
+    }),
+    "failed",
+  );
+  assert.match(JSON.stringify(rejected.error), /whole|entire|patch|seam/i);
+  assert.deepEqual((await geometry()).positions, original.positions);
+  assert.equal(await history(), beforeHistory);
+  await mutate("selection_set", { entityId: "panel", triangles: selected });
   const mcp = await job(
     await mutate("mesh_process", {
       entityId: "panel",
@@ -360,15 +420,28 @@ try {
   assert.equal(mcp.result.diagnostics.curvatureFallback, "");
   assert.deepEqual((await geometry()).positions, gui.positions);
   assert.equal(await history(), beforeHistory + 1);
+  const saved = await job(await call("project_export", { format: "project" }));
+  await job(
+    await mutate("project_import", {
+      artifactId: saved.result.artifactId,
+      replace: true,
+    }),
+  );
+  assert.deepEqual((await geometry()).positions, gui.positions);
   assert.deepEqual(errors, []);
   ledger.result = {
     defeatureCanvasOnlyStatus: true,
     guiMcpEqual: true,
     undoRedo: true,
     sourcePreserved: true,
+    cancellationRollback: true,
+    failureRollback: true,
+    saveReopen: true,
+    beforeViewport,
+    afterViewport,
     worstDeviation,
     diagnostics: mcp.result.diagnostics,
-    pageErrors: errors,
+    pageErrors: [...errors],
   };
   console.log(JSON.stringify(ledger.result));
 } catch (error) {
@@ -376,10 +449,10 @@ try {
   throw error;
 } finally {
   clearTimeout(deadline);
-  await client?.close().catch(() => {});
-  await transport?.close().catch(() => {});
   await browser?.close().catch(() => {});
   await browserServer?.close().catch(() => {});
+  await client?.close().catch(() => {});
+  await transport?.close().catch(() => {});
   if (reserve?.listening)
     await new Promise((resolve) => reserve.close(resolve));
   if (server?.listening) await new Promise((resolve) => server.close(resolve));

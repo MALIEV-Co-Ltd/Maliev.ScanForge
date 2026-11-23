@@ -51,7 +51,7 @@ function validatePositions(positions: Positions) {
     if (!Number.isFinite(value))
       throw new Error("Registration coordinates must be finite.");
 }
-function validateTransform(transform: RigidTransform) {
+export function validateTransform(transform: RigidTransform) {
   if (
     transform.rotation.length !== 9 ||
     transform.translation.length !== 3 ||
@@ -86,7 +86,7 @@ export function transformPoint(p: Vec3, transform: RigidTransform): Vec3 {
   ];
 }
 /** Compose transforms so the result first applies previous, then increment. */
-function compose(
+export function compose(
   increment: RigidTransform,
   previous: RigidTransform,
 ): RigidTransform {

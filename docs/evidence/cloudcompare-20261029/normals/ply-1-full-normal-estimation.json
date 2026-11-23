@@ -1,0 +1,37 @@
+{
+  "scope": "Every original PLY vertex processed without dropping or sampling. Supplied normal anchors determine graph-consistent component signs. Source normals are a scanner reference, not independent physical truth.",
+  "sourcePath": "C:/repo/alignment-example-files/ply-1.ply",
+  "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+  "preprocessorSha256": "55b406065c0cc9578d9b035676baebabb9bad0f5ce22c8f67cea45afe06419b0",
+  "outputNormalsSha256": "8d40594f0433a27c561c4f598de84186225e51dd4ae588aa8aa4d6280626c453",
+  "diagnostics": {
+    "mode": "estimate-provided",
+    "pointCount": 140113,
+    "neighbors": 24,
+    "components": 7,
+    "orientationAnchors": 140111,
+    "invalidOrientationAnchors": 2,
+    "orientationAssumption": "PCA estimates every point; graph-consistent component signs follow aggregate agreement with valid supplied normal anchors. Invalid anchors are counted and do not remove points."
+  },
+  "invalidSourceNormals": 2,
+  "elapsedMs": 1242.5415,
+  "processArrayBufferBytes": 32965679,
+  "normalAgreement": {
+    "validAnchorSamples": 140111,
+    "minimumSignedDot": -0.8448867470289132,
+    "p05SignedDot": 0.9882242162546941,
+    "medianSignedDot": 0.9997241723154363,
+    "opposedFraction": 0.00010705797546231203,
+    "medianUnsignedAngleDegrees": 1.3457566674106098,
+    "p95UnsignedAngleDegrees": 8.801559797550325
+  },
+  "settings": {
+    "mode": "estimate-provided",
+    "neighbors": 24
+  },
+  "limitations": [
+    "Local PCA changes valid source normals as well as estimating invalid ones.",
+    "The spanning forest aligns nearby tangent estimates; complex touching sheets, outliers and inconsistent source anchors can remain ambiguous.",
+    "A completed preprocessing run is not a reconstructed mesh quality certificate."
+  ]
+}

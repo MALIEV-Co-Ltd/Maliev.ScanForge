@@ -1,0 +1,20 @@
+{
+  "timedOut": false,
+  "arguments": [
+    "-SILENT",
+    "-LOG_FILE",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\native-cloudcompare\\native-export.log",
+    "-AUTO_SAVE",
+    "OFF",
+    "-M_EXPORT_FMT",
+    "PLY",
+    "-PLY_EXPORT_FMT",
+    "BINARY_LE",
+    "-NO_TIMESTAMP",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\native-cloudcompare\\owner-ply1-native-depth9.bin",
+    "-SAVE_MESHES"
+  ],
+  "pid": 30196,
+  "exitCode": 0
+}

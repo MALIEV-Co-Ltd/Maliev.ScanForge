@@ -59,6 +59,30 @@ it("borrows normalized opaque RGBA colors without tinting or mutating authored b
   }
 });
 
+it("changes point size and switches source RGB to solid color without rebuilding geometry", () => {
+  const { view, cloud, points } = setup();
+  const geometry = points.geometry;
+  const position = geometry.getAttribute("position");
+  try {
+    expect(points.material.size).toBe(1);
+    view.setEntities(
+      [{ ...cloud, pointSize: 4, pointColorMode: "solid", color: "#aaff00" }],
+      cloud.id,
+    );
+    expect(points.material.size).toBe(4);
+    expect(points.material.sizeAttenuation).toBe(false);
+    expect(points.material.vertexColors).toBe(false);
+    expect(points.material.color.getHexString()).toBe("aaff00");
+    expect(points.geometry).toBe(geometry);
+    expect(geometry.getAttribute("position")).toBe(position);
+    view.setEntities([cloud], cloud.id);
+    expect(points.material.vertexColors).toBe(true);
+    expect(geometry.getAttribute("color").array).toBe(cloud.pointColors);
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
 it("updates and removes color-only changes without rebuilding points or position buffers", () => {
   const { view, cloud, points } = setup();
   const position = points.geometry.getAttribute("position"),
@@ -102,6 +126,26 @@ it("keeps the deviation overlay while a color-only edit updates its restoration 
     expect(points.material.vertexColors).toBe(true);
     expect(points.material.color.getHex()).toBe(0xffffff);
     expect(nextColors).toEqual(Uint8Array.of(5, 6, 7, 255, 8, 9, 10, 255));
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("restores solid green after changing color mode while deviation is displayed", () => {
+  const { view, cloud, points } = setup();
+  try {
+    view.setDeviation(cloud.id, Float32Array.of(-1, 1), 1);
+    const overlay = points.geometry.getAttribute("color");
+    view.setEntities(
+      [{ ...cloud, pointColorMode: "solid", color: "#aaff00", pointSize: 2.5 }],
+      cloud.id,
+    );
+    expect(points.geometry.getAttribute("color")).toBe(overlay);
+    expect(points.material.size).toBe(2.5);
+    view.setDeviation(cloud.id, null, 1);
+    expect(points.material.vertexColors).toBe(false);
+    expect(points.material.color.getHexString()).toBe("aaff00");
+    expect(cloud.pointColors).toEqual(rgba());
   } finally {
     view.setEntities([], null);
   }

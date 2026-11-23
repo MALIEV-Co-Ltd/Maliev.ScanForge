@@ -1,0 +1,56 @@
+{
+  "evidence": "Native GUI scale-adjusted Align preview followed by Cancel, Save project(BIN), independent native CLI ASCII export of original BIN and saved cancelled BIN",
+  "pointsMoving": [
+    [0, 0, 0],
+    [1, 0, 0],
+    [1, 1, 0]
+  ],
+  "pointsReference": [
+    [1, 0, 0],
+    [3, 0, 0],
+    [3, 2, 0]
+  ],
+  "previewConsole": {
+    "scale": 2,
+    "rms": 1.55096e-7
+  },
+  "coordinateExports": [
+    {
+      "cloudIndex": 0,
+      "sha256": "831d7c53245e7463c5a661693fd3736816c00babc0a0a8e7f2593e1c7e89993e",
+      "bytes": 20208,
+      "identical": true,
+      "points": 437
+    },
+    {
+      "cloudIndex": 1,
+      "sha256": "e5fbd0a58d390ee301831d7a0bfa1207c3e745c0e76b7a09caa9bcbdce57aa7b",
+      "bytes": 20217,
+      "identical": true,
+      "points": 437
+    }
+  ],
+  "original": "docs/evidence/cloudcompare-20261028/fixtures/pair.bin",
+  "cancelled": "pointpair-cancelled.bin",
+  "command": [
+    "CloudCompare.exe",
+    "-SILENT",
+    "-AUTO_SAVE",
+    "OFF",
+    "-C_EXPORT_FMT",
+    "ASC",
+    "-NO_TIMESTAMP",
+    "-O",
+    "before.bin",
+    "-SAVE_CLOUDS",
+    "-CLEAR",
+    "-O",
+    "after.bin",
+    "-SAVE_CLOUDS"
+  ],
+  "limitations": [
+    "Main native viewport captured white; numeric panel and native console rendered/readable. No claim of visual preview movement on this run.",
+    "Native adjusted-scale preview and cancellation verified; nonunit Apply geometry was not observed in this run.",
+    "REA Windows process capture unavailable; native CLI outputs are direct execution evidence."
+  ]
+}

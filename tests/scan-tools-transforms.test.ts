@@ -103,30 +103,27 @@ describe("Scan Data geometric transforms", () => {
     expect(out[3]).toBeCloseTo(1);
     expect(out[7]).toBeCloseTo(4);
   });
-  it("splits triangles crossing the seam instead of producing circumference-spanning faces", () => {
-    const r = 10,
-      points = [
-        [-0.1, 0],
-        [0.1, 0],
-        [0.1, 2],
-      ].flatMap(([a, z]) => [r * Math.cos(a), r * Math.sin(a), z]);
-    const out = unrollScanMesh(points, {
-      center: [0, 0, 0],
-      axis: [0, 0, 1],
-      radius: r,
-    }).positions;
-    expect(out.length).toBeGreaterThan(9);
-    for (let i = 0; i < out.length; i += 9) {
-      const xs = [out[i], out[i + 3], out[i + 6]];
-      expect(Math.max(...xs) - Math.min(...xs)).toBeLessThan(2.01);
-    }
-    const offset = unrollScanMesh(points, {
-      center: [0, 0, 0],
-      axis: [0, 0, 1],
-      radius: r,
-      offsetDegrees: 180,
-    }).positions;
-    expect(offset.length).toBe(9);
+  it("removes seam facets and retains offset facets without splitting", () => {
+    const points = [
+      [-0.1, 0],
+      [0.1, 0],
+      [0.1, 2],
+    ].flatMap(([a, z]) => [10 * Math.cos(a), 10 * Math.sin(a), z]);
+    expect(() =>
+      unrollScanMesh(points, {
+        center: [0, 0, 0],
+        axis: [0, 0, 1],
+        radius: 10,
+      }),
+    ).toThrow(/no triangles/);
+    expect(
+      unrollScanMesh(points, {
+        center: [0, 0, 0],
+        axis: [0, 0, 1],
+        radius: 10,
+        offsetDegrees: 180,
+      }).positions.length,
+    ).toBe(9);
   });
   it("rejects invalid, overflowing and ambiguous geometry", () => {
     expect(() => scaleScanMesh(triangle, { factor: 0 })).toThrow();
@@ -136,20 +133,20 @@ describe("Scan Data geometric transforms", () => {
       mirrorScanMesh(triangle, { center: [0, 0, 0], normal: [0, 0, 0] }),
     ).toThrow();
     expect(() => averageScanMesh(triangle, { targets: [] })).toThrow();
-    expect(() =>
+    expect(
       unrollScanMesh(triangle, {
         center: [0, 0, 0],
         axis: [0, 0, 1],
         radius: 1,
-      }),
-    ).toThrow(/axis/);
-    expect(() =>
+      }).positions.length,
+    ).toBe(9);
+    expect(
       unrollScanMesh([1, 0, 0, -1, 0, 0, 0, 1, 1], {
         center: [0, 0, 0],
         axis: [0, 0, 1],
         radius: 1,
-      }),
-    ).toThrow(/180/);
+      }).positions.length,
+    ).toBe(9);
   });
   it("honors cancellation and reports finite progress", () => {
     const controller = new AbortController();
@@ -162,7 +159,7 @@ describe("Scan Data geometric transforms", () => {
     expect(progress.at(-1)).toBe(1);
     expect(progress.every((f) => f >= 0 && f <= 1)).toBe(true);
   });
-  it("rejects cap-only and mixed sidewall/cap meshes instead of dropping faces", () => {
+  it("retains finite radial residuals on cap facets without silently dropping them", () => {
     const cap = [
       1,
       0,
@@ -180,10 +177,10 @@ describe("Scan Data geometric transforms", () => {
       axis: [0, 0, 1] as Vec3,
       radius: 1,
     };
-    expect(() => unrollScanMesh(cap, options)).toThrow(/cap or collapsed/);
-    expect(() => unrollScanMesh([...sidewall, ...cap], options)).toThrow(
-      /cap or collapsed/,
-    );
+    expect(unrollScanMesh(cap, options).positions.length).toBe(9);
+    expect(
+      unrollScanMesh([...sidewall, ...cap], options).positions.length,
+    ).toBe(18);
     expect(cap.length).toBe(9);
   });
   it("rejects final triangle collapse from an extremely small cylinder radius", () => {

@@ -135,6 +135,7 @@ it("actual App section command admits raw meshes and captures immutable original
     "setMode",
     "setToolPanelOpen",
     "setCreateSketch",
+    "referencePreviewAllowsTools",
     emit(openers[0].getText(source)) + "return openScanSketchCreation;",
   );
   const triangleMask = Uint8Array.from([0, 1]);
@@ -151,6 +152,7 @@ it("actual App section command admits raw meshes and captures immutable original
     mode,
     panel,
     captured,
+    () => true,
   )();
   expect(captured).toHaveBeenCalledOnce();
   const session = captured.mock.calls[0][0];
@@ -172,10 +174,43 @@ it("actual App section command admits raw meshes and captures immutable original
     mode,
     panel,
     captured,
+    () => true,
   )();
   expect(captured).not.toHaveBeenCalled();
   const error = vi.fn();
-  factory(null, false, triangleMask, vi.fn(), error, mode, panel, captured)();
+  factory(
+    null,
+    false,
+    triangleMask,
+    vi.fn(),
+    error,
+    mode,
+    panel,
+    captured,
+    () => true,
+  )();
   expect(error).toHaveBeenCalledOnce();
   expect(captured).not.toHaveBeenCalled();
+  const denied = vi.fn(() => false);
+  const switchTools = vi.fn();
+  const deniedError = vi.fn();
+  mode.mockClear();
+  panel.mockClear();
+  factory(
+    selected,
+    false,
+    triangleMask,
+    switchTools,
+    deniedError,
+    mode,
+    panel,
+    captured,
+    denied,
+  )();
+  expect(denied).toHaveBeenCalledOnce();
+  expect(captured).not.toHaveBeenCalled();
+  expect(mode).not.toHaveBeenCalled();
+  expect(panel).not.toHaveBeenCalled();
+  expect(switchTools).not.toHaveBeenCalled();
+  expect(deniedError).not.toHaveBeenCalled();
 });

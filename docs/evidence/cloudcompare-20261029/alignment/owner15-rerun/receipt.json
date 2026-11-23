@@ -1,0 +1,29 @@
+{
+  "arguments": [
+    "-SILENT",
+    "-LOG_FILE",
+    "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\20261029-owner15\\native.log",
+    "-AUTO_SAVE",
+    "OFF",
+    "-NO_TIMESTAMP",
+    "-O",
+    "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\20261029-owner15\\moving.ply",
+    "-O",
+    "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\20261029-owner15\\fixed.ply",
+    "-ICP",
+    "-OVERLAP",
+    "15",
+    "-MIN_ERROR_DIFF",
+    "1e-6",
+    "-RANDOM_SAMPLING_LIMIT",
+    "20000",
+    "-MAX_TCOUNT",
+    "2"
+  ],
+  "pid": 36328,
+  "startedUtc": "2026-10-29T01:03:55.8625059Z",
+  "elapsedSeconds": 120.101115,
+  "exitCode": -1,
+  "timedOut": true,
+  "deadlineSeconds": 120
+}

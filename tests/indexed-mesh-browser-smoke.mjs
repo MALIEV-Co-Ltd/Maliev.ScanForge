@@ -497,6 +497,7 @@ try {
   await page
     .getByRole("option", { name: fixed.name, exact: true })
     .press("Enter");
+  await page.getByText("Indexed surface refinement", { exact: true }).click();
   await page
     .getByRole("checkbox", { name: fixedExtra.name, exact: true })
     .check();
@@ -549,6 +550,11 @@ try {
     mode: "inspect",
     toolPanelOpen: true,
   });
+  const refinementDetails = page.locator("details").filter({
+    has: page.getByText("Indexed surface refinement", { exact: true }),
+  });
+  if (!(await refinementDetails.evaluate((element) => element.open)))
+    await page.getByText("Indexed surface refinement", { exact: true }).click();
   await page.getByText("Landmark refinement region", { exact: true }).click();
   await page
     .getByRole("textbox", { name: "Source seed vertex IDs", exact: true })

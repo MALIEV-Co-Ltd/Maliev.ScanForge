@@ -35,7 +35,8 @@ describe("complete ribbon artwork", () => {
       expect(markup).not.toContain("<use");
       expect(markup).toContain('data-icon-style="generated-technical"');
       expect(markup).toContain('alt=""');
-      expect(markup).toContain(`/icons/generated/ribbon-${command}.png`);
+      const artwork = command === "surfaceRefinement" ? "fineAlign" : command;
+      expect(markup).toContain(`/icons/generated/ribbon-${artwork}.png`);
     }
   });
   it("distinguishes operations with different geometric results", () => {

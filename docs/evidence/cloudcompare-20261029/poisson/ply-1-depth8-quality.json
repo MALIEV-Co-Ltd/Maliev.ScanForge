@@ -1,0 +1,704 @@
+{
+  "scope": "Independent Three.js / three-mesh-bvh comparison against the complete original PLY triangle topology. The original scan is an exchange reference, not physical ground truth.",
+  "source": {
+    "path": "C:/repo/alignment-example-files/ply-1.ply",
+    "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "bytes": 6926970,
+    "topology": {
+      "vertices": 140113,
+      "usedVertices": 140113,
+      "triangles": 274154,
+      "edges": 414268,
+      "components": 23,
+      "boundaryEdges": 6074,
+      "nonManifoldEdges": 0,
+      "inconsistentWindingEdges": 0,
+      "nonManifoldVertices": 13,
+      "duplicateVertices": 2,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 4,
+      "eulerCharacteristic": -1,
+      "surfaceArea": 8239.89807684384,
+      "signedVolume": 345447.81145978585,
+      "bbox": {
+        "min": [-32.87358474731445, -38.4989128112793, -331.615234375],
+        "max": [72.72367095947266, 72.85503387451172, -261.84112548828125],
+        "diagonal": 168.57908567269624
+      },
+      "edgeLength": {
+        "samples": 414268,
+        "minimum": 0,
+        "mean": 0.2788827740358787,
+        "rms": 0.28506222769093004,
+        "p50": 0.24958317430550966,
+        "p90": 0.3511506344182171,
+        "p95": 0.37032984722453827,
+        "p99": 0.4178975343476733,
+        "maximum": 0.6462065644395631
+      },
+      "minimumIncidentEdgeLength": {
+        "samples": 140113,
+        "minimum": 0,
+        "mean": 0.2227176765093016,
+        "rms": 0.22645477839838596,
+        "p50": 0.2404683406850866,
+        "p90": 0.2435638254414807,
+        "p95": 0.24644085874677712,
+        "p99": 0.2643193926833794,
+        "maximum": 0.3571558583469266
+      },
+      "suppliedNormals": {
+        "count": 140113,
+        "invalidOrZero": 2
+      }
+    }
+  },
+  "predeclaredAcceptance": {
+    "method": "No arbitrary distance thresholds. Compare full-cloud distance distributions in source coordinate units with the source incident-edge spacing and edge-length distributions, measured before reconstruction. Topological defects and incomplete self-intersection analysis are reported explicitly.",
+    "sourceScaleMeasuredBeforeOutput": false
+  },
+  "limitations": [
+    "Distances are exact point-to-triangle queries at every source vertex, output vertex, and output face centroid; these finite sample sets are not a continuous symmetric Hausdorff certificate.",
+    "Source coordinate units are preserved and are not independently certified as millimetres.",
+    "Vertex-link manifold classification follows retained indices; coincident unmerged vertices are separately reported.",
+    "The original scan may contain holes, noise and normal defects. Agreement with it does not establish physical accuracy."
+  ],
+  "settings": {
+    "sha256": "b37d378f0c2c4401ec7f8c2b6de30ec4d719b17c4e2b0a7759190268c824ba1b",
+    "scope": "Actual compiled upstream screened PoissonRecon WASM, full owner PLY1 input, no point dropping, no decimation and no output density trimming; Node execution separate from browser GUI/MCP validation.",
+    "sourcePath": "C:/repo/alignment-example-files/ply-1.ply",
+    "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "sourcePointCount": 140113,
+    "normalReceiptSha256": "0083b4225183b95021cdb84d6c155afef54318a8a08bbbf60b8f3266a8525338",
+    "estimatedNormalsSha256": "8d40594f0433a27c561c4f598de84186225e51dd4ae588aa8aa4d6280626c453",
+    "wasmSha256": "fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425",
+    "loaderSha256": "3bc6f3dda94a446a12b84531b7537f2423e0f6988ce3e8a43995dc4f365bf3d9",
+    "harnessSha256": "5002d50a3dfae43ea8ed16b6149e55de1e77b7025ea8c3ec2425cb79fa48cf1e",
+    "meshPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth8-mesh.ply",
+    "meshSha256": "9a655e590cc7318b00ffd6cc69058867997dae270e48dde186a449031de63aa1",
+    "settings": {
+      "normalMode": "estimate-provided",
+      "normalNeighbors": 24,
+      "depth": 8,
+      "pointWeight": 2,
+      "samplesPerNode": 1.5,
+      "densityThreshold": 0,
+      "femDegree": 2,
+      "boundary": "Neumann",
+      "scale": 1.1,
+      "threads": 1
+    },
+    "vertices": 74581,
+    "triangles": 149202,
+    "elapsedMs": 4125.2555,
+    "wasmHeapBytes": 96665600,
+    "density": {
+      "minimum": 4.365766525268555,
+      "maximum": 8.974189758300781
+    },
+    "warnings": []
+  },
+  "reconstruction": {
+    "path": "docs/evidence/cloudcompare-20261029/poisson/ply-1-depth8-mesh.ply",
+    "sha256": "9a655e590cc7318b00ffd6cc69058867997dae270e48dde186a449031de63aa1",
+    "bytes": 4028219,
+    "topology": {
+      "vertices": 74581,
+      "usedVertices": 74581,
+      "triangles": 149202,
+      "edges": 223803,
+      "components": 1,
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "inconsistentWindingEdges": 0,
+      "nonManifoldVertices": 0,
+      "duplicateVertices": 1,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 2,
+      "eulerCharacteristic": -20,
+      "surfaceArea": 15269.491460462645,
+      "signedVolume": 33804.25777319764,
+      "bbox": {
+        "min": [-33.05723571777344, -38.46324157714844, -331.5878601074219],
+        "max": [72.67967224121094, 72.84355163574219, -261.4762268066406],
+        "diagonal": 168.77540414458247
+      },
+      "edgeLength": {
+        "samples": 223803,
+        "minimum": 0,
+        "mean": 0.4991449340227205,
+        "rms": 0.5699357849009355,
+        "p50": 0.5099602986324311,
+        "p90": 0.6951866471005153,
+        "p95": 0.9618126100445298,
+        "p99": 1.4025618198933787,
+        "maximum": 3.2423678555529976
+      },
+      "minimumIncidentEdgeLength": {
+        "samples": 74581,
+        "minimum": 0,
+        "mean": 0.2223342010523684,
+        "rms": 0.2824888178437913,
+        "p50": 0.19023718090161734,
+        "p90": 0.46876902332112397,
+        "p95": 0.4866133776947143,
+        "p99": 0.8273826302276198,
+        "maximum": 1.9824615435201827
+      },
+      "suppliedNormals": {
+        "count": 74581,
+        "invalidOrZero": 0
+      }
+    }
+  },
+  "distances": {
+    "sourceVerticesToMesh": {
+      "samples": 140113,
+      "minimum": 4.0798261917697187e-8,
+      "mean": 0.024888770299491117,
+      "rms": 0.03838713815367427,
+      "p50": 0.013269551535784397,
+      "p90": 0.06830450375705784,
+      "p95": 0.08998740898784834,
+      "p99": 0.12800065338827724,
+      "maximum": 0.3992879196590995
+    },
+    "meshVerticesToSourceTopology": {
+      "samples": 74581,
+      "minimum": 5.552878352961754e-7,
+      "mean": 0.4601092976149711,
+      "rms": 1.1951747063143778,
+      "p50": 0.01851526680653635,
+      "p90": 1.4935077776038799,
+      "p95": 2.9423866648729704,
+      "p99": 5.27180429317106,
+      "maximum": 9.589160719051527
+    },
+    "meshFaceCentroidsToSourceTopology": {
+      "samples": 149202,
+      "minimum": 7.121976984174875e-7,
+      "mean": 0.4647021654947415,
+      "rms": 1.196010401874482,
+      "p50": 0.021305672219458466,
+      "p90": 1.5110878021602474,
+      "p95": 2.9301985345567605,
+      "p99": 5.285575301160531,
+      "maximum": 9.632550107285493
+    }
+  },
+  "normalAgreement": {
+    "sourceVerticesAgainstClosestReconstructedGeometricFace": {
+      "normalizedSignedDot": {
+        "samples": 140111,
+        "minimum": -0.8285971714087075,
+        "mean": 0.9921553097755577,
+        "rms": 0.9925075593936211,
+        "p50": 0.9988660506203638,
+        "p90": 0.9999028338422721,
+        "p95": 0.9999544201835047,
+        "p99": 0.9999910538567682,
+        "maximum": 0.9999999980170464
+      },
+      "fractionOpposed": 0.00007850918200569548,
+      "invalidOrZero": 2
+    },
+    "outputVertexNormalsAgainstInterpolatedSourceNormals": {
+      "normalizedSignedDot": {
+        "samples": 74581,
+        "minimum": -0.8553047473368783,
+        "mean": 0.9432958327003459,
+        "rms": 0.9580310743232759,
+        "p50": 0.9975814844271939,
+        "p90": 0.9999284327739161,
+        "p95": 0.9999676280237226,
+        "p99": 0.9999941005984121,
+        "maximum": 0.9999999966538111
+      },
+      "fractionOpposed": 0.0074281653504243705,
+      "invalidOrZero": 0
+    },
+    "outputGeometricFaceNormalsAgainstInterpolatedSourceNormals": {
+      "normalizedSignedDot": {
+        "samples": 149200,
+        "minimum": -0.9040698155066762,
+        "mean": 0.9439282421196757,
+        "rms": 0.959099031243818,
+        "p50": 0.9980035382820218,
+        "p90": 0.9998645236471985,
+        "p95": 0.9999384523556331,
+        "p99": 0.999988123390208,
+        "maximum": 0.9999999978368346
+      },
+      "fractionOpposed": 0.007761394101876676,
+      "invalidOrZero": 2
+    }
+  },
+  "selfIntersection": {
+    "complete": true,
+    "candidatePairs": 4540674,
+    "adjacentPairsExcluded": 958066,
+    "nonAdjacentIntersectingTrianglePairs": 13,
+    "examples": [
+      [132943, 134748],
+      [132943, 134747],
+      [132942, 134748],
+      [132943, 134753],
+      [132943, 134750],
+      [132943, 134751],
+      [132942, 134753],
+      [132942, 134750],
+      [132942, 134751],
+      [134748, 134755],
+      [134747, 134755],
+      [134750, 134755],
+      [134751, 134755]
+    ],
+    "classifications": {
+      "properCrossings": 0,
+      "coplanarPositiveAreaOverlaps": 0,
+      "pointOrEdgeContacts": 13,
+      "degenerateOrUnclassified": 0
+    },
+    "intersectionDetails": [
+      {
+        "faces": [132943, 134748],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66641, 65659, 66640],
+          [67249, 67570, 67534]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 5.694683074951172, -266.8701477050781],
+            [57.24601745605469, 4.737735748291016, -266.8343811035156],
+            [58.202964782714844, 4.737735748291016, -267.062744140625]
+          ],
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [58.66242980957031, 4.291141510009766, -267.5152893066406],
+            [59.159912109375, 4.737735748291016, -267.5982666015625]
+          ]
+        ],
+        "density": [
+          [5.721220970153809, 5.651103973388672, 5.974327087402344],
+          [5.974327087402344, 6.812154769897461, 7.0210723876953125]
+        ]
+      },
+      {
+        "faces": [132943, 134747],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66641, 65659, 66640],
+          [66639, 67570, 67249]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 5.694683074951172, -266.8701477050781],
+            [57.24601745605469, 4.737735748291016, -266.8343811035156],
+            [58.202964782714844, 4.737735748291016, -267.062744140625]
+          ],
+          [
+            [58.202964782714844, 4.73773193359375, -267.062744140625],
+            [58.66242980957031, 4.291141510009766, -267.5152893066406],
+            [58.202964782714844, 4.737735748291016, -267.062744140625]
+          ]
+        ],
+        "density": [
+          [5.721220970153809, 5.651103973388672, 5.974327087402344],
+          [5.97432804107666, 6.812154769897461, 5.974327087402344]
+        ]
+      },
+      {
+        "faces": [132942, 134748],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66640, 66683, 66639],
+          [67249, 67570, 67534]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [57.73961639404297, 4.354953765869141, -266.9721374511719],
+            [58.202964782714844, 4.73773193359375, -267.062744140625]
+          ],
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [58.66242980957031, 4.291141510009766, -267.5152893066406],
+            [59.159912109375, 4.737735748291016, -267.5982666015625]
+          ]
+        ],
+        "density": [
+          [5.974327087402344, 5.904233455657959, 5.97432804107666],
+          [5.974327087402344, 6.812154769897461, 7.0210723876953125]
+        ]
+      },
+      {
+        "faces": [132943, 134753],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66641, 65659, 66640],
+          [67250, 67571, 67249]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 5.694683074951172, -266.8701477050781],
+            [57.24601745605469, 4.737735748291016, -266.8343811035156],
+            [58.202964782714844, 4.737735748291016, -267.062744140625]
+          ],
+          [
+            [59.05719757080078, 5.694683074951172, -267.062744140625],
+            [58.416526794433594, 5.216209411621094, -267.01458740234375],
+            [58.202964782714844, 4.737735748291016, -267.062744140625]
+          ]
+        ],
+        "density": [
+          [5.721220970153809, 5.651103973388672, 5.974327087402344],
+          [6.010666370391846, 5.920135498046875, 5.974327087402344]
+        ]
+      },
+      {
+        "faces": [132943, 134750],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66641, 65659, 66640],
+          [67535, 67249, 67534]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 5.694683074951172, -266.8701477050781],
+            [57.24601745605469, 4.737735748291016, -266.8343811035156],
+            [58.202964782714844, 4.737735748291016, -267.062744140625]
+          ],
+          [
+            [59.159912109375, 5.694683074951172, -267.09429931640625],
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [59.159912109375, 4.737735748291016, -267.5982666015625]
+          ]
+        ],
+        "density": [
+          [5.721220970153809, 5.651103973388672, 5.974327087402344],
+          [6.120626926422119, 5.974327087402344, 7.0210723876953125]
+        ]
+      },
+      {
+        "faces": [132943, 134751],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66641, 65659, 66640],
+          [67250, 67249, 67535]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 5.694683074951172, -266.8701477050781],
+            [57.24601745605469, 4.737735748291016, -266.8343811035156],
+            [58.202964782714844, 4.737735748291016, -267.062744140625]
+          ],
+          [
+            [59.05719757080078, 5.694683074951172, -267.062744140625],
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [59.159912109375, 5.694683074951172, -267.09429931640625]
+          ]
+        ],
+        "density": [
+          [5.721220970153809, 5.651103973388672, 5.974327087402344],
+          [6.010666370391846, 5.974327087402344, 6.120626926422119]
+        ]
+      },
+      {
+        "faces": [132942, 134753],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66640, 66683, 66639],
+          [67250, 67571, 67249]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [57.73961639404297, 4.354953765869141, -266.9721374511719],
+            [58.202964782714844, 4.73773193359375, -267.062744140625]
+          ],
+          [
+            [59.05719757080078, 5.694683074951172, -267.062744140625],
+            [58.416526794433594, 5.216209411621094, -267.01458740234375],
+            [58.202964782714844, 4.737735748291016, -267.062744140625]
+          ]
+        ],
+        "density": [
+          [5.974327087402344, 5.904233455657959, 5.97432804107666],
+          [6.010666370391846, 5.920135498046875, 5.974327087402344]
+        ]
+      },
+      {
+        "faces": [132942, 134750],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66640, 66683, 66639],
+          [67535, 67249, 67534]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [57.73961639404297, 4.354953765869141, -266.9721374511719],
+            [58.202964782714844, 4.73773193359375, -267.062744140625]
+          ],
+          [
+            [59.159912109375, 5.694683074951172, -267.09429931640625],
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [59.159912109375, 4.737735748291016, -267.5982666015625]
+          ]
+        ],
+        "density": [
+          [5.974327087402344, 5.904233455657959, 5.97432804107666],
+          [6.120626926422119, 5.974327087402344, 7.0210723876953125]
+        ]
+      },
+      {
+        "faces": [132942, 134751],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66640, 66683, 66639],
+          [67250, 67249, 67535]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [57.73961639404297, 4.354953765869141, -266.9721374511719],
+            [58.202964782714844, 4.73773193359375, -267.062744140625]
+          ],
+          [
+            [59.05719757080078, 5.694683074951172, -267.062744140625],
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [59.159912109375, 5.694683074951172, -267.09429931640625]
+          ]
+        ],
+        "density": [
+          [5.974327087402344, 5.904233455657959, 5.97432804107666],
+          [6.010666370391846, 5.974327087402344, 6.120626926422119]
+        ]
+      },
+      {
+        "faces": [134748, 134755],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [67249, 67570, 67534],
+          [66640, 67571, 66641]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [58.66242980957031, 4.291141510009766, -267.5152893066406],
+            [59.159912109375, 4.737735748291016, -267.5982666015625]
+          ],
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [58.416526794433594, 5.216209411621094, -267.01458740234375],
+            [58.202964782714844, 5.694683074951172, -266.8701477050781]
+          ]
+        ],
+        "density": [
+          [5.974327087402344, 6.812154769897461, 7.0210723876953125],
+          [5.974327087402344, 5.920135498046875, 5.721220970153809]
+        ]
+      },
+      {
+        "faces": [134747, 134755],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [66639, 67570, 67249],
+          [66640, 67571, 66641]
+        ],
+        "vertices": [
+          [
+            [58.202964782714844, 4.73773193359375, -267.062744140625],
+            [58.66242980957031, 4.291141510009766, -267.5152893066406],
+            [58.202964782714844, 4.737735748291016, -267.062744140625]
+          ],
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [58.416526794433594, 5.216209411621094, -267.01458740234375],
+            [58.202964782714844, 5.694683074951172, -266.8701477050781]
+          ]
+        ],
+        "density": [
+          [5.97432804107666, 6.812154769897461, 5.974327087402344],
+          [5.974327087402344, 5.920135498046875, 5.721220970153809]
+        ]
+      },
+      {
+        "faces": [134750, 134755],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [67535, 67249, 67534],
+          [66640, 67571, 66641]
+        ],
+        "vertices": [
+          [
+            [59.159912109375, 5.694683074951172, -267.09429931640625],
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [59.159912109375, 4.737735748291016, -267.5982666015625]
+          ],
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [58.416526794433594, 5.216209411621094, -267.01458740234375],
+            [58.202964782714844, 5.694683074951172, -266.8701477050781]
+          ]
+        ],
+        "density": [
+          [6.120626926422119, 5.974327087402344, 7.0210723876953125],
+          [5.974327087402344, 5.920135498046875, 5.721220970153809]
+        ]
+      },
+      {
+        "faces": [134751, 134755],
+        "kind": "pointOrEdgeContacts",
+        "sharedCoordinates": true,
+        "segmentLength": 0,
+        "coplanarProjectedOverlapArea": 0,
+        "vertexIds": [
+          [67250, 67249, 67535],
+          [66640, 67571, 66641]
+        ],
+        "vertices": [
+          [
+            [59.05719757080078, 5.694683074951172, -267.062744140625],
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [59.159912109375, 5.694683074951172, -267.09429931640625]
+          ],
+          [
+            [58.202964782714844, 4.737735748291016, -267.062744140625],
+            [58.416526794433594, 5.216209411621094, -267.01458740234375],
+            [58.202964782714844, 5.694683074951172, -266.8701477050781]
+          ]
+        ],
+        "density": [
+          [6.010666370391846, 5.974327087402344, 6.120626926422119],
+          [5.974327087402344, 5.920135498046875, 5.721220970153809]
+        ]
+      }
+    ],
+    "classificationMethod": "No epsilon introduced. Exact Float32 coordinate equality is separately flagged. Noncoplanar positive-length intersections are proper crossings only if their segment midpoint has strictly positive barycentric coordinates inside both triangles. Coplanar positive projected polygon area is reported separately; degenerate cases remain unclassified. Floating-point predicates are diagnostic rather than exact arithmetic certification.",
+    "method": "MeshBVH broadphase self-cast, unique face pairs, ExtendedTriangle narrowphase; pairs sharing any indexed vertex are excluded. Fixed 20 million candidate work limit reports incomplete instead of passing."
+  },
+  "acceptance": {
+    "path": "docs/evidence/cloudcompare-20261029/normals/ply-1-quality-acceptance.json",
+    "sha256": "897784b58bf121793556193d9112d848680ebcfb937323738afa77b6cc32673c",
+    "checks": [
+      {
+        "name": "sourceVerticesToMesh.p95",
+        "actual": 0.08998740898784834,
+        "maximum": 0.4809366813701732,
+        "passed": true
+      },
+      {
+        "name": "sourceVerticesToMesh.p99",
+        "actual": 0.12800065338827724,
+        "maximum": 0.9618733627403464,
+        "passed": true
+      },
+      {
+        "name": "meshVerticesToSourceTopology.p95",
+        "actual": 2.9423866648729704,
+        "maximum": 0.4809366813701732,
+        "passed": false
+      },
+      {
+        "name": "meshVerticesToSourceTopology.p99",
+        "actual": 5.27180429317106,
+        "maximum": 0.9618733627403464,
+        "passed": false
+      },
+      {
+        "name": "meshFaceCentroidsToSourceTopology.p95",
+        "actual": 2.9301985345567605,
+        "maximum": 0.4809366813701732,
+        "passed": false
+      },
+      {
+        "name": "meshFaceCentroidsToSourceTopology.p99",
+        "actual": 5.285575301160531,
+        "maximum": 0.9618733627403464,
+        "passed": false
+      },
+      {
+        "name": "nonManifoldEdges",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "nonManifoldVertices",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "inconsistentWindingEdges",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "degenerateTriangles",
+        "actual": 2,
+        "maximum": 0,
+        "passed": false
+      },
+      {
+        "name": "duplicateTriangles",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "nonAdjacentIntersectingTrianglePairs",
+        "actual": 13,
+        "maximum": 0,
+        "passed": false
+      },
+      {
+        "name": "selfIntersectionAnalysisComplete",
+        "actual": true,
+        "required": true,
+        "passed": true
+      }
+    ],
+    "passed": false
+  },
+  "analyzerSha256": "177fefb032afb006447bc2166fe91efd196e632f84f1fb92ad1c26f809e42bd8"
+}

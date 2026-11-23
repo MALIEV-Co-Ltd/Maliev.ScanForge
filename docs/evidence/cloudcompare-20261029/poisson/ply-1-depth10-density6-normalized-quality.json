@@ -1,0 +1,371 @@
+{
+  "scope": "Independent Three.js / three-mesh-bvh comparison against the complete original PLY triangle topology. The original scan is an exchange reference, not physical ground truth.",
+  "source": {
+    "path": "C:/repo/alignment-example-files/ply-1.ply",
+    "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "bytes": 6926970,
+    "topology": {
+      "vertices": 140113,
+      "usedVertices": 140113,
+      "triangles": 274154,
+      "edges": 414268,
+      "components": 23,
+      "boundaryEdges": 6074,
+      "nonManifoldEdges": 0,
+      "inconsistentWindingEdges": 0,
+      "nonManifoldVertices": 13,
+      "duplicateVertices": 2,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 4,
+      "eulerCharacteristic": -1,
+      "surfaceArea": 8239.89807684384,
+      "signedVolume": 345447.81145978585,
+      "bbox": {
+        "min": [-32.87358474731445, -38.4989128112793, -331.615234375],
+        "max": [72.72367095947266, 72.85503387451172, -261.84112548828125],
+        "diagonal": 168.57908567269624
+      },
+      "edgeLength": {
+        "samples": 414268,
+        "minimum": 0,
+        "mean": 0.2788827740358787,
+        "rms": 0.28506222769093004,
+        "p50": 0.24958317430550966,
+        "p90": 0.3511506344182171,
+        "p95": 0.37032984722453827,
+        "p99": 0.4178975343476733,
+        "maximum": 0.6462065644395631
+      },
+      "minimumIncidentEdgeLength": {
+        "samples": 140113,
+        "minimum": 0,
+        "mean": 0.2227176765093016,
+        "rms": 0.22645477839838596,
+        "p50": 0.2404683406850866,
+        "p90": 0.2435638254414807,
+        "p95": 0.24644085874677712,
+        "p99": 0.2643193926833794,
+        "maximum": 0.3571558583469266
+      },
+      "suppliedNormals": {
+        "count": 140113,
+        "invalidOrZero": 2
+      }
+    }
+  },
+  "predeclaredAcceptance": {
+    "method": "No arbitrary distance thresholds. Compare full-cloud distance distributions in source coordinate units with the source incident-edge spacing and edge-length distributions, measured before reconstruction. Topological defects and incomplete self-intersection analysis are reported explicitly.",
+    "sourceScaleMeasuredBeforeOutput": false
+  },
+  "limitations": [
+    "Distances are exact point-to-triangle queries at every source vertex, output vertex, and output face centroid; these finite sample sets are not a continuous symmetric Hausdorff certificate.",
+    "Source coordinate units are preserved and are not independently certified as millimetres.",
+    "Vertex-link manifold classification follows retained indices; coincident unmerged vertices are separately reported.",
+    "The original scan may contain holes, noise and normal defects. Agreement with it does not establish physical accuracy."
+  ],
+  "settings": {
+    "sha256": "7dba8b9bb19077c4f7c6d52e53df43a1aab98661faeb1972278c47167a36fe1d",
+    "scope": "Actual compiled upstream screened PoissonRecon WASM, full owner PLY1 input, no point dropping and no decimation; explicit density trimming only when the threshold is positive. Node execution separate from browser GUI/MCP validation.",
+    "sourcePath": "C:/repo/alignment-example-files/ply-1.ply",
+    "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "sourcePointCount": 140113,
+    "normalReceiptSha256": "0083b4225183b95021cdb84d6c155afef54318a8a08bbbf60b8f3266a8525338",
+    "estimatedNormalsSha256": "8d40594f0433a27c561c4f598de84186225e51dd4ae588aa8aa4d6280626c453",
+    "wasmSha256": "fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425",
+    "loaderSha256": "3bc6f3dda94a446a12b84531b7537f2423e0f6988ce3e8a43995dc4f365bf3d9",
+    "harnessSha256": "936a84fb17fee7204798d33f1ddc5924b58ae6478e808d4751c3852221bd4174",
+    "meshPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth10-density6-normalized-mesh.ply",
+    "meshSha256": "71ab35ec14de05e7d65c406a7ca185f3d1e0188f381daf4f439ed3df7ac6c1e3",
+    "settings": {
+      "normalMode": "estimate-provided",
+      "normalNeighbors": 24,
+      "depth": 10,
+      "pointWeight": 2,
+      "samplesPerNode": 1.5,
+      "densityThreshold": 6,
+      "femDegree": 2,
+      "boundary": "Neumann",
+      "scale": 1.1,
+      "threads": 1
+    },
+    "vertices": 263972,
+    "triangles": 525933,
+    "untrimmedVertices": 269767,
+    "untrimmedTriangles": 539566,
+    "removedDegenerateTriangles": 12,
+    "mergedVertices": 6,
+    "removedDuplicateTriangles": 0,
+    "trimmedTriangles": 13621,
+    "normalizerSha256": "d93ff8b599d3f585cf5a855f2c2b88c59fbbe595c9f015a1f8ecb73835230e42",
+    "elapsedMs": 15898.7619,
+    "wasmHeapBytes": 240582656,
+    "density": {
+      "minimum": 6,
+      "maximum": 9.151205062866211
+    },
+    "warnings": []
+  },
+  "reconstruction": {
+    "path": "docs/evidence/cloudcompare-20261029/poisson/ply-1-depth10-density6-normalized-mesh.ply",
+    "sha256": "71ab35ec14de05e7d65c406a7ca185f3d1e0188f381daf4f439ed3df7ac6c1e3",
+    "bytes": 14228671,
+    "topology": {
+      "vertices": 263972,
+      "usedVertices": 263972,
+      "triangles": 525933,
+      "edges": 789917,
+      "components": 5,
+      "boundaryEdges": 2035,
+      "nonManifoldEdges": 0,
+      "inconsistentWindingEdges": 0,
+      "nonManifoldVertices": 0,
+      "duplicateVertices": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0,
+      "eulerCharacteristic": -12,
+      "surfaceArea": 11232.119798504413,
+      "signedVolume": 274325.2955605394,
+      "bbox": {
+        "min": [-33.02294921875, -38.498046875, -331.6134033203125],
+        "max": [72.72151947021484, 72.85386657714844, -261.54400634765625],
+        "diagonal": 168.79236262306986
+      },
+      "edgeLength": {
+        "samples": 789917,
+        "minimum": 0.000003814697265625,
+        "mean": 0.2363578136958578,
+        "rms": 0.26171432334343864,
+        "p50": 0.2534124479675539,
+        "p90": 0.3399418788412188,
+        "p95": 0.36661449425378995,
+        "p99": 0.595534260677304,
+        "maximum": 1.4114216120053402
+      },
+      "minimumIncidentEdgeLength": {
+        "samples": 263972,
+        "minimum": 0.000003814697265625,
+        "mean": 0.10546315507267764,
+        "rms": 0.13094450045528216,
+        "p50": 0.09199164404576943,
+        "p90": 0.22260575812782382,
+        "p95": 0.24050300858876497,
+        "p99": 0.34844387595893334,
+        "maximum": 0.9291636069468204
+      },
+      "suppliedNormals": {
+        "count": 263972,
+        "invalidOrZero": 0
+      }
+    }
+  },
+  "distances": {
+    "sourceVerticesToMesh": {
+      "samples": 140113,
+      "minimum": 2.7176582651461703e-8,
+      "mean": 0.007774219021592674,
+      "rms": 0.012162082877590984,
+      "p50": 0.004481595426452621,
+      "p90": 0.01967190762171873,
+      "p95": 0.02765754022483183,
+      "p99": 0.043274647453580194,
+      "maximum": 0.252438631331838
+    },
+    "meshVerticesToSourceTopology": {
+      "samples": 263972,
+      "minimum": 9.311473197181065e-9,
+      "mean": 0.13056799709438488,
+      "rms": 0.41839053356167477,
+      "p50": 0.004485702014381341,
+      "p90": 0.4193664541811555,
+      "p95": 0.8876279775903775,
+      "p99": 2.165703084099325,
+      "maximum": 3.2973459831856973
+    },
+    "meshFaceCentroidsToSourceTopology": {
+      "samples": 525933,
+      "minimum": 2.637414630712565e-8,
+      "mean": 0.12270077335097482,
+      "rms": 0.3911544489701419,
+      "p50": 0.004707793920380935,
+      "p90": 0.3943103253322549,
+      "p95": 0.8391233686077955,
+      "p99": 2.027650923358633,
+      "maximum": 3.2944985830388434
+    }
+  },
+  "densityVersusReferenceSupport": {
+    "distanceLimit": 0.4809366813701732,
+    "method": "Output vertex density grouped by exact closest distance to original source triangles; this is a parameter diagnostic, not a changed acceptance gate.",
+    "withinTwoSourceIntervals": {
+      "samples": 239783,
+      "minimum": 7.002869129180908,
+      "mean": 8.631530284849774,
+      "rms": 8.634329634214685,
+      "p50": 8.687203407287598,
+      "p90": 8.754226684570312,
+      "p95": 8.774182319641113,
+      "p99": 8.84141731262207,
+      "maximum": 9.151205062866211
+    },
+    "fartherThanTwoSourceIntervals": {
+      "samples": 24189,
+      "minimum": 6,
+      "mean": 6.832659581195545,
+      "rms": 6.849862301565668,
+      "p50": 6.957491397857666,
+      "p90": 7.405412673950195,
+      "p95": 7.481605529785156,
+      "p99": 7.662503242492676,
+      "maximum": 8.029379844665527
+    }
+  },
+  "normalAgreement": {
+    "sourceVerticesAgainstClosestReconstructedGeometricFace": {
+      "normalizedSignedDot": {
+        "samples": 140111,
+        "minimum": -0.856123829724381,
+        "mean": 0.9974487101313851,
+        "rms": 0.9976779795377493,
+        "p50": 0.9996250066418947,
+        "p90": 0.9999613570419703,
+        "p95": 0.9999817110344005,
+        "p99": 0.9999965635346468,
+        "maximum": 0.9999999988791239
+      },
+      "fractionOpposed": 0.0000999207770981579,
+      "invalidOrZero": 2
+    },
+    "outputVertexNormalsAgainstInterpolatedSourceNormals": {
+      "normalizedSignedDot": {
+        "samples": 263972,
+        "minimum": -0.9969845380513163,
+        "mean": 0.975584060441355,
+        "rms": 0.9829981899087534,
+        "p50": 0.9997804812115724,
+        "p90": 0.999983679492011,
+        "p95": 0.9999923776273916,
+        "p99": 0.999998554110639,
+        "maximum": 0.9999999986256356
+      },
+      "fractionOpposed": 0.004254239085963663,
+      "invalidOrZero": 0
+    },
+    "outputGeometricFaceNormalsAgainstInterpolatedSourceNormals": {
+      "normalizedSignedDot": {
+        "samples": 525933,
+        "minimum": -0.9990885738603169,
+        "mean": 0.9762687201547409,
+        "rms": 0.9835619474976095,
+        "p50": 0.9994965006468903,
+        "p90": 0.9999548175485317,
+        "p95": 0.9999790179160791,
+        "p99": 0.9999960158637806,
+        "maximum": 0.9999999994526797
+      },
+      "fractionOpposed": 0.004192549241063025,
+      "invalidOrZero": 0
+    }
+  },
+  "selfIntersection": {
+    "complete": true,
+    "candidatePairs": 15963639,
+    "adjacentPairsExcluded": 3370260,
+    "nonAdjacentIntersectingTrianglePairs": 0,
+    "examples": [],
+    "classifications": {
+      "properCrossings": 0,
+      "coplanarPositiveAreaOverlaps": 0,
+      "pointOrEdgeContacts": 0,
+      "degenerateOrUnclassified": 0
+    },
+    "intersectionDetails": [],
+    "classificationMethod": "No epsilon introduced. Exact Float32 coordinate equality is separately flagged. Noncoplanar positive-length intersections are proper crossings only if their segment midpoint has strictly positive barycentric coordinates inside both triangles. Coplanar positive projected polygon area is reported separately; degenerate cases remain unclassified. Floating-point predicates are diagnostic rather than exact arithmetic certification.",
+    "method": "MeshBVH broadphase self-cast, unique face pairs, ExtendedTriangle narrowphase; pairs sharing any indexed vertex are excluded. Fixed 20 million candidate work limit reports incomplete instead of passing."
+  },
+  "acceptance": {
+    "path": "docs/evidence/cloudcompare-20261029/normals/ply-1-quality-acceptance.json",
+    "sha256": "897784b58bf121793556193d9112d848680ebcfb937323738afa77b6cc32673c",
+    "checks": [
+      {
+        "name": "sourceVerticesToMesh.p95",
+        "actual": 0.02765754022483183,
+        "maximum": 0.4809366813701732,
+        "passed": true
+      },
+      {
+        "name": "sourceVerticesToMesh.p99",
+        "actual": 0.043274647453580194,
+        "maximum": 0.9618733627403464,
+        "passed": true
+      },
+      {
+        "name": "meshVerticesToSourceTopology.p95",
+        "actual": 0.8876279775903775,
+        "maximum": 0.4809366813701732,
+        "passed": false
+      },
+      {
+        "name": "meshVerticesToSourceTopology.p99",
+        "actual": 2.165703084099325,
+        "maximum": 0.9618733627403464,
+        "passed": false
+      },
+      {
+        "name": "meshFaceCentroidsToSourceTopology.p95",
+        "actual": 0.8391233686077955,
+        "maximum": 0.4809366813701732,
+        "passed": false
+      },
+      {
+        "name": "meshFaceCentroidsToSourceTopology.p99",
+        "actual": 2.027650923358633,
+        "maximum": 0.9618733627403464,
+        "passed": false
+      },
+      {
+        "name": "nonManifoldEdges",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "nonManifoldVertices",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "inconsistentWindingEdges",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "degenerateTriangles",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "duplicateTriangles",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "nonAdjacentIntersectingTrianglePairs",
+        "actual": 0,
+        "maximum": 0,
+        "passed": true
+      },
+      {
+        "name": "selfIntersectionAnalysisComplete",
+        "actual": true,
+        "required": true,
+        "passed": true
+      }
+    ],
+    "passed": false
+  },
+  "analyzerSha256": "d7625999aa4fc57f2ca76a43ff6dbcf746e0077560f9c304b02a26d5402f3e5e"
+}

@@ -41,20 +41,20 @@ section.edit-scan-dialog .scan-diagnostics > small {
 section.edit-scan-dialog .scan-tool-row,
 section.edit-scan-dialog .edit-scan-actions {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 5px;
   margin: 0 0 8px;
 }
 section.edit-scan-dialog .scan-tool-row button,
 section.edit-scan-dialog .edit-scan-actions button {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 3px;
   width: auto;
   height: auto;
-  min-height: 36px;
+  min-height: 26px;
   padding: 3px 2px;
   font-size: 10px;
   line-height: 1.2;
@@ -133,7 +133,7 @@ section.edit-scan-dialog .scan-diagnostics > div > span {
 }
 section.edit-scan-dialog .edit-scan-actions button {
   flex-direction: row;
-  min-height: 30px;
+  min-height: 26px;
   gap: 4px;
 }
 section.edit-scan-dialog .edit-scan-section h3 {
@@ -151,7 +151,7 @@ section.edit-scan-dialog .edit-scan-create .button-row {
 
 section.edit-scan-dialog .scan-tool-row button {
   flex-direction: row;
-  min-height: 32px;
+  min-height: 26px;
   gap: 4px;
 }
 section.edit-scan-dialog .scan-tool-row button :is(svg, img.generated-icon),
@@ -173,42 +173,65 @@ section.edit-scan-dialog .scan-dialog-footer {
 
 /* Diagrams retain the existing tool labels and control grouping. */
 section.edit-scan-dialog .scan-tool-row button:has([data-scan-icon]) {
-  flex-direction: column;
+  flex-direction: row;
   gap: 2px;
 }
 section.edit-scan-dialog .scan-tool-row [data-scan-icon] {
-  width: 30px;
-  height: 30px;
+  width: 18px;
+  height: 18px;
   object-fit: contain;
 }
 section.edit-scan-dialog .edit-scan-actions button:has([data-scan-icon]) {
-  flex-direction: column;
+  flex-direction: row;
   gap: 3px;
   padding: 4px 2px;
 }
 section.edit-scan-dialog .edit-scan-actions [data-scan-icon] {
-  width: 26px;
-  height: 26px;
+  width: 18px;
+  height: 18px;
 }
 section.edit-scan-dialog .edit-scan-through [data-scan-icon] {
-  width: 26px;
-  height: 26px;
+  width: 18px;
+  height: 18px;
 }
 section.edit-scan-dialog .edit-scan-create button:has([data-scan-icon]) {
-  flex-direction: column;
+  flex-direction: row;
   gap: 3px;
   padding: 4px 2px;
 }
 section.edit-scan-dialog .edit-scan-create [data-scan-icon] {
-  width: 26px;
-  height: 26px;
+  width: 18px;
+  height: 18px;
   margin-right: 0;
 }
 
 section.edit-scan-dialog .scan-diagnostics > .scan-diagnostics-calculate {
   display: block;
   width: 100%;
-  min-height: 30px;
+  min-height: 26px;
   margin: 8px 0 4px;
   padding: 6px 10px;
+}
+
+section.edit-scan-dialog .edit-scan-more > .button-row {
+  grid-template-columns: 1fr;
+}
+section.edit-scan-dialog .edit-scan-more > .button-row button {
+  min-height: 26px;
+  padding: 3px 7px;
+  justify-content: flex-start;
+}
+section.edit-scan-dialog .edit-scan-more > .button-row [data-scan-icon] {
+  width: 18px;
+  height: 18px;
+}
+section.edit-scan-dialog .edit-scan-actions button {
+  white-space: nowrap;
+  padding: 3px 2px;
+}
+
+section.edit-scan-dialog
+  .edit-scan-actions
+  > button[title="Select entire connected objects from marked facets"] {
+  grid-column: 1 / -1;
 }

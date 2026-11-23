@@ -1,0 +1,20 @@
+[15:30:21] [SET LOG FILE] finished in 0.00 s.
+[15:30:21] [AUTO SAVE STATE]
+[15:30:21] Auto-save is disabled
+[15:30:21] [AUTO SAVE STATE] finished in 0.00 s.
+[15:30:21] [LOAD]
+[15:30:21] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\fixed.ply'
+[15:30:21] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\fixed.ply' loaded successfully
+[15:30:21] Found one cloud with 437 points
+[15:30:21] [LOAD] finished in 0.00 s.
+[15:30:21] [LOAD]
+[15:30:21] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\moving.ply'
+[15:30:21] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\moving.ply' loaded successfully
+[15:30:21] Found one cloud with 437 points
+[15:30:21] [LOAD] finished in 0.00 s.
+[15:30:21] [SAVE CLOUDS]
+[15:30:21] [SAVING]
+[15:30:21] [BIN] Output file version: 3.4 (automatically deduced from selected entities)
+[15:30:22] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028/fixtures//pair.bin' saved successfully
+[15:30:22] [SAVE CLOUDS] finished in 0.51 s.
+[15:30:22] Processed finished in 0.52 s.

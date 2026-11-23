@@ -96,3 +96,9 @@ pass registration quality: all three local refinements fail without iterations
 at 0.5 mm, all poses remain identity and the source geometry does not move.
 The two-component reconstruction is not proof of one usable solid or native
 reconstruction equivalence.
+
+That identity-pose failure describes the raw-pose replay. After coarse placement,
+a later retained full Global Fine Align workflow completed GUI Preview, cached
+MCP Apply and history/save checks. A new [exhaustive geometric assessment](ORIGINAL_STL_GLOBAL_QUALITY.md)
+shows improved distances on the same overlap vertices, without satisfying the
+native convergence threshold or establishing a current-tree/native final replay.

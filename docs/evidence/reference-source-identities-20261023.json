@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "Native picked-source interface identities recovered; construction remains incomplete and gated",
+  "applicationBehaviorChanged": false,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "installedImageSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "method": "Static helper/query/adjusting-thunk/vtable/COL tracing, followed by two repeated read-only metadata captures from the identity-checked running application. No target calls, writes, suspension, GUI input or geometry-buffer reads.",
+  "findings": [
+    {
+      "role": "Point source fallback",
+      "helper": "0x14040d7d0",
+      "descriptor": "0x14114bbd0",
+      "query": "0x14041d970",
+      "queryReturnAdjustment": -768,
+      "identifiedSource": "sketch object",
+      "evidence": "Exact full-identifier comparisons lead through a mapped adjusting thunk and vtable/COL to a captured sketch type name. The earlier unidentified provider must not be modeled as a generic mesh-point source."
+    },
+    {
+      "role": "Axis source fallback",
+      "helper": "0x14040da70",
+      "descriptor": "0x14114bbf0",
+      "query": "0x14049e900",
+      "queryReturnAdjustment": -864,
+      "identifiedSource": "CAD model interface, also inherited by modeling operation objects",
+      "capturedClassCount": 31,
+      "evidence": "Mapped code, adjusting thunks, vtables and COLs agree with static candidates; retained names include the CAD model and boolean, surface, pattern and body operations. Interface admission does not imply every resulting face has an extractable axis."
+    },
+    {
+      "role": "Preserved data coverage",
+      "finding": "The derivative analysis image deliberately omits writable data. Selected type names and globals are not file-backed there; bounded reads of the installed file also do not supply the selected type names. Missing bytes must not be treated as zero values."
+    }
+  ],
+  "observedRuntimeGlobals": [
+    {
+      "address": "0x1415a20b8",
+      "bytes": "0000000000408f40",
+      "value": 1000.0
+    },
+    {
+      "address": "0x1415a20c8",
+      "bytes": "fca9f1d24d62503f",
+      "value": 0.001
+    },
+    {
+      "address": "0x141615203",
+      "bytes": "01",
+      "value": 1
+    }
+  ],
+  "unitInterpretation": "The projection helper multiplies incoming pick coordinates by the value observed as 0.001 and returned coordinates by the value observed as 1000. These are current observations, not proven universal defaults or immutable unit constants.",
+  "providerBranchInference": {
+    "observedState": 1,
+    "eligibilityBranch": "0x14027e51d zeroes R14D; 0x14027e525 compares the state byte against R14B; 0x14027e52c jumps to 0x14027e696 only on zero. The nonzero path calls 0x14026adf0 and conditionally 0x14026afc0.",
+    "extractionBranch": "0x14027ebc7 zeroes R12D; 0x14027ebcf compares the state byte against R12B; 0x14027ebd6 jumps to 0x14027ed96 only on zero. The nonzero path calls 0x14026adf0 and conditionally 0x14026afc0.",
+    "implication": "At the captured state, these helpers would select the alternate provider path rather than the already implemented resolved OpenCascade adapter. Prioritize its extraction and caller scratch/extent semantics. This is an inference from matched code and observed state, not an observed construction call."
+  },
+  "verification": {
+    "helperCodeBindings": [
+      {
+        "function": "14040d7d0",
+        "bytesChecked": 657
+      },
+      {
+        "function": "14040da70",
+        "bytesChecked": 1138
+      },
+      {
+        "function": "14027d8c0",
+        "bytesChecked": 588
+      },
+      {
+        "function": "14027e4e0",
+        "bytesChecked": 646
+      },
+      {
+        "function": "14027eb60",
+        "bytesChecked": 1693
+      }
+    ],
+    "helperInstructionBytesMatchedPerPass": 4722,
+    "captures": [
+      {
+        "artifact": "native-construction-source-metadata-20261023-r1/evidence.json",
+        "sha256": "c6035761732be6ea38ff4c5ca8f7310ee738202599848561cb3037cc40d17d23",
+        "twoReadsAgree": true,
+        "readBytes": 12148,
+        "regionQueries": 588,
+        "elapsedSeconds": 0.04495149999274872,
+        "peakHelperMemoryBytes": 16818176,
+        "handlesClosed": true,
+        "nativeFunctionsCalled": false
+      },
+      {
+        "artifact": "native-construction-source-metadata-20261023-r2/evidence.json",
+        "sha256": "53fed0853f2f6aa1fc2f4aa8fa6fb6b47c54cc08c5923e0464dc485e3918d184",
+        "twoReadsAgree": true,
+        "readBytes": 21592,
+        "regionQueries": 630,
+        "elapsedSeconds": 0.04562749998876825,
+        "peakHelperMemoryBytes": 15671296,
+        "handlesClosed": true,
+        "nativeFunctionsCalled": false
+      }
+    ],
+    "ownedStaticJobs": [
+      {
+        "label": "construction-rtti-r1",
+        "sha256": "9b46511fa2d1ee106e4a38dbcb03bc276c2e6e2e4f27dfb6b17575e89cb56c7b",
+        "completed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-query-r1",
+        "sha256": "0ae6ed171b6192bb5e4285568396676ddd15addc40d4359b8c41533030e1bc18",
+        "completed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-query-r2",
+        "sha256": "73549952e131b0cde011c05713a6bac5b3730dc21417547150bd61c54e090ee4",
+        "completed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-query-r3",
+        "sha256": "4e6d8d463fc9d2df594a43f5fe09bad6aa13472c12538693e52fa1dd14641e37",
+        "completed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-query-r4",
+        "sha256": "7ae0aa28b7cf06a247b8b4ff72f9aaf3fb940756a2a3fd03d5790f86d9868208",
+        "completed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-query-r5",
+        "sha256": "ecbf5ee05840a598286da0a9f45c0a24e9090c7a775997025bb90b6d84fa82e0",
+        "completed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-query-r6",
+        "sha256": "4dfb5b84a294db69ae5905331160e6e6e98a67f29f9a3b898fb047dc7a78c8cc",
+        "completed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-query-r7",
+        "sha256": "aecd1c3e5e2769f50b793c36869c9abf2e0d5952b11a895fc3025844c1c35028",
+        "completed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-source-binding-r2",
+        "sha256": "9890f7ce7728d2d93bb30f9303d2b762d430f2ccd51547831f82ad41bb0fd6c8",
+        "completed": true,
+        "cleanupErrors": []
+      }
+    ],
+    "nativeNumericReplay": false,
+    "nativeSaveReopenAcceptance": false,
+    "renderedGuiMcpAcceptance": false
+  },
+  "mcpParity": "No application capability or schema changed in this evidence checkpoint. Future picked-source resolution must be shared by GUI and MCP construction operations; discovery remains gated.",
+  "remaining": [
+    "Identify the sketch child record producer and exact acquisition/coordinate-space rules before mapping stored records to application sketch geometry.",
+    "Trace provider global initialization and active-provider branching; do not hard-code observed runtime values.",
+    "Resolve CAD projection/eligibility order and alternate-provider extent behavior before publishing picked-axis construction.",
+    "Complete retained point fields, edit anchoring, dependency lifecycle and native/rendered acceptance from the existing feature plan."
+  ],
+  "privateEvidence": [
+    {
+      "artifact": "construction-rtti-r1.json",
+      "sha256": "3036371b10b7915c727702fc2118caa53bad885ac03208a14469bc9330f357bd"
+    },
+    {
+      "artifact": "construction-query-r2.json",
+      "sha256": "505fe614b8efd78c44454836640d1995da75a7df38879a8c789ed431e1241bbd"
+    },
+    {
+      "artifact": "construction-query-r4.json",
+      "sha256": "a3cc3528b541dc22d6fa04618d5e44c3b93876b3c879c72ea651e20cae610acd"
+    },
+    {
+      "artifact": "construction-query-r5.json",
+      "sha256": "3e5e43ed162233d73f0e2d0b315bb4165b78278059b2c2f3dbbf72a0ed95629f"
+    },
+    {
+      "artifact": "construction-query-r6.json",
+      "sha256": "9b89118ff464619e0dfe90b182b564c5d23f31828a25545f5fa21b33e63d1845"
+    },
+    {
+      "artifact": "construction-query-r7.json",
+      "sha256": "3134fef2dd1ec7afec8ebf43a83a12ad9e24e875b7f075c32701a36d48e716fd"
+    },
+    {
+      "artifact": "construction-source-code-bindings-r2.json",
+      "sha256": "06b28a391037d059351c212a650bcf7bf6ba886f15cfbd89d13745a6d6445b91"
+    },
+    {
+      "artifact": "native-construction-source-metadata-20261023-r1/evidence.json",
+      "sha256": "c6035761732be6ea38ff4c5ca8f7310ee738202599848561cb3037cc40d17d23"
+    },
+    {
+      "artifact": "native-construction-source-metadata-20261023-r2/evidence.json",
+      "sha256": "53fed0853f2f6aa1fc2f4aa8fa6fb6b47c54cc08c5923e0464dc485e3918d184"
+    }
+  ]
+}

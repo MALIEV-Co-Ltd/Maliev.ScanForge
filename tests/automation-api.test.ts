@@ -9,6 +9,7 @@ import {
 import { createOperations } from "../src/automation/operations";
 import { createAuthoringOperations } from "../src/automation/authoring-operations";
 import { createWorkflowOperations } from "../src/automation/workflow-operations";
+import { createScanSelectionOperations } from "../src/automation/scan-selection-operations";
 import catalog from "../src/automation/catalog.json";
 import type { CadClient } from "../src/cad/client";
 function setup(handlers?: Record<string, Handler>) {
@@ -59,6 +60,7 @@ function setup(handlers?: Record<string, Handler>) {
     ...createOperations(host),
     ...createAuthoringOperations(host),
     ...createWorkflowOperations(host),
+    ...createScanSelectionOperations(host),
   };
   return {
     state,

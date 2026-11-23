@@ -1,0 +1,21 @@
+[15:31:01] [SET LOG FILE] finished in 0.00 s.
+[15:31:01] [AUTO SAVE STATE]
+[15:31:01] Auto-save is disabled
+[15:31:01] [AUTO SAVE STATE] finished in 0.00 s.
+[15:31:01] [CHANGE MESH OUTPUT FORMAT]
+[15:31:01] Output export format (meshes) set to: PLY
+[15:31:01] [CHANGE MESH OUTPUT FORMAT] finished in 0.00 s.
+[15:31:01] [NO TIMESTAMP]
+[15:31:01] [NO TIMESTAMP] finished in 0.00 s.
+[15:31:01] [LOAD]
+[15:31:01] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\fixed.ply'
+[15:31:01] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\fixed.ply' loaded successfully
+[15:31:01] Found one cloud with 437 points
+[15:31:01] [LOAD] finished in 0.01 s.
+[15:31:01] [DELAUNAY TRIANGULATION]
+[15:31:01] Axis aligned: yes
+[15:31:01] 	Processing cloud fixed - Cloud
+[15:31:01] 	Resulting mesh: #855 faces, 437 vertices
+[15:31:01] [DELAUNAY TRIANGULATION] finished in 0.01 s.
+[15:31:01] Unknown or misplaced command: '-AXIS_ALIGNED'
+[15:31:01] Processed finished in 0.03 s.

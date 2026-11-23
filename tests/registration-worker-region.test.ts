@@ -42,12 +42,26 @@ it("the worker fits only the priority region and returns the entire moving scan"
       targetSampleSize: 100,
       tolerance: 1e-8,
       trimFraction: 1,
+      targetRms: 0.02,
     },
   });
   const reply = replies.at(-1)!;
   expect("error" in reply).toBe(false);
   if (!("result" in reply)) throw new Error("Missing registration result");
   expect(reply.result.registration?.pairs).toBe(6);
+  expect(reply.result.diagnostics).toMatchObject({
+    algorithm: "fullTargetPointToPoint",
+    targetRms: 0.02,
+    targetReached: true,
+    terminationReason: "targetReached",
+    evaluatedPoints: 6,
+    targetPoints: 6,
+    rejectedPoints: 0,
+    overlapPercent: 100,
+    targetRmsBasis: "overlap",
+    fittingSamples: 6,
+    sampleSize: 100,
+  });
   expect(reply.result.positions).toHaveLength(27);
   expect(reply.result.positions![18]).toBeCloseTo(100.05, 4);
   expect(moving[18]).toBe(100);

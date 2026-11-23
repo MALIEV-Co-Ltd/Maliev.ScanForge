@@ -49,6 +49,43 @@ const request: ProcessingRequest = {
   tolerance: 0.001,
 };
 
+it("copies fine alignment surface and normal buffers without transferring authored inputs", async () => {
+  const normals = new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1]);
+  const triangles = new Uint32Array([0, 1, 2]);
+  const pending = processMesh({
+    kind: "icp",
+    positions,
+    target: positions,
+    sourceNormals: normals,
+    targetNormals: normals,
+    targetSurface: { vertices: positions, triangles },
+    maxDistance: 10,
+    maxIterations: 200,
+    sampleSize: 3,
+    targetSampleSize: 3,
+    tolerance: 1e-5,
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  const sent = worker.sent as Extract<
+    ProcessingRequest,
+    { kind: "icp" | "global" }
+  >;
+  expect(sent.targetSurface?.vertices).not.toBe(positions);
+  expect(sent.targetSurface?.triangles).not.toBe(triangles);
+  expect(sent.sourceNormals).not.toBe(normals);
+  expect(sent.targetNormals).not.toBe(normals);
+  expect(sent.sourceNormals).toEqual(normals);
+  expect(sent.targetNormals).toEqual(normals);
+  expect(worker.transfers).not.toContain(positions.buffer);
+  expect(worker.transfers).not.toContain(normals.buffer);
+  expect(worker.transfers).not.toContain(triangles.buffer);
+  worker.reply({ result: { kind: "icp", diagnostics: { applied: false } } });
+  await pending;
+  expect(positions.byteLength).toBe(36);
+  expect(normals.byteLength).toBe(36);
+  expect(triangles.byteLength).toBe(12);
+});
+
 it("keeps explicit large diagnostics available after optional warmup admission declines", async () => {
   const triangles = SCAN_DEFAULT_BUDGET_BYTES / 512 + 1;
   const source = new Float32Array(triangles * 9);
@@ -537,7 +574,18 @@ describe("processing worker resource ownership", () => {
   it("clones Scan Data reference surfaces and selection masks and releases its worker", async () => {
     const selection = new Uint8Array([1]);
     for (const operation of [
-      { kind: "averageMesh" as const, targets: [positions], tolerance: 10 },
+      {
+        kind: "averageMesh" as const,
+        targets: [positions],
+        tolerance: 10,
+        targetTopology: [
+          { vertices: positions, triangles: new Uint32Array([0, 1, 2]) },
+        ],
+        sourceTopology: {
+          vertices: positions,
+          triangles: new Uint32Array([0, 1, 2]),
+        },
+      },
       { kind: "reduceNoise" as const, selection, selectionOnly: true },
     ]) {
       const pending = processMesh({ kind: "scanTools", positions, operation });
@@ -548,7 +596,21 @@ describe("processing worker resource ownership", () => {
       expect(worker.sent.positions).not.toBe(positions);
       if (worker.sent.operation.kind === "averageMesh") {
         expect(worker.sent.operation.targets[0]).not.toBe(positions);
-        expect(worker.transfers).toHaveLength(2);
+        expect(worker.sent.operation.targetTopology?.[0]?.vertices).not.toBe(
+          positions,
+        );
+        if (operation.kind !== "averageMesh")
+          throw new Error("Expected average");
+        expect(worker.sent.operation.targetTopology?.[0]?.triangles).not.toBe(
+          operation.targetTopology[0].triangles,
+        );
+        expect(worker.sent.operation.sourceTopology?.vertices).not.toBe(
+          positions,
+        );
+        expect(worker.sent.operation.sourceTopology?.triangles).not.toBe(
+          operation.sourceTopology.triangles,
+        );
+        expect(worker.transfers).toHaveLength(6);
       } else if (worker.sent.operation.kind === "reduceNoise") {
         expect(worker.sent.operation.selection).not.toBe(selection);
         expect(worker.transfers).toHaveLength(2);
@@ -565,6 +627,31 @@ describe("processing worker resource ownership", () => {
       expect(vi.getTimerCount()).toBe(0);
       expect(selection[0]).toBe(1);
     }
+  });
+  it("rejects oversized Average carriers before constructing or copying to a worker", async () => {
+    const before = ProcessingWorkerDouble.creates;
+    await expect(
+      processMesh({
+        kind: "scanTools",
+        positions: { length: 27_000_000 } as Float32Array,
+        operation: { kind: "averageMesh", targets: [positions] },
+      }),
+    ).rejects.toThrow(/limit/);
+    await expect(
+      processMesh({
+        kind: "scanTools",
+        positions,
+        operation: {
+          kind: "averageMesh",
+          targets: [positions],
+          sourceTopology: {
+            vertices: { length: 27_000_001 } as Float32Array,
+            triangles: [0, 1, 2],
+          },
+        },
+      }),
+    ).rejects.toThrow(/Indexed reference/);
+    expect(ProcessingWorkerDouble.creates).toBe(before);
   });
   it("dispatches Scan Data geometry through the real worker and transfers its result", async () => {
     const replies: { message: any; transfers?: Transferable[] }[] = [];

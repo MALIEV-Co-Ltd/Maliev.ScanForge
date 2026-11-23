@@ -19,13 +19,13 @@ it("keeps an offset long part and its 50% edge margins inside the unfaded grid",
   );
   try {
     expect(updateViewportGrid(grid, 10, bounds)).toBe(true);
-    const fadeStart = grid.userData.halfExtent * 0.8;
+    const fadeStart = grid.userData.halfExtent * 0.5;
     // Padded XY footprint is [-200,1800] x [-40,40], still anchored to the origin.
     expect(fadeStart).toBeGreaterThanOrEqual(Math.hypot(1800, 40));
     expect(grid.position.toArray()).toEqual([0, 0, 0]);
     expect(updateViewportGrid(grid, 10, bounds)).toBe(false);
     expect(updateViewportGrid(grid, 5, bounds)).toBe(true);
-    expect(grid.userData.halfExtent * 0.8).toBeGreaterThanOrEqual(
+    expect(grid.userData.halfExtent * 0.5).toBeGreaterThanOrEqual(
       Math.hypot(1800, 40),
     );
   } finally {
@@ -42,7 +42,7 @@ it("sizes rotated sketch floors in their local plane and bounds dense grid geome
   );
   try {
     updateViewportGrid(grid, 0.001, bounds);
-    expect(grid.userData.halfExtent * 0.8).toBeGreaterThanOrEqual(
+    expect(grid.userData.halfExtent * 0.5).toBeGreaterThanOrEqual(
       Math.hypot(2000, 1000),
     );
     expect(grid.userData.divisions).toBeLessThanOrEqual(2048);

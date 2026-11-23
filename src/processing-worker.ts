@@ -1,4 +1,6 @@
 import { growConnectedSelection } from "./connected-selection";
+import { meshPointCloud } from "./point-cloud-meshing";
+import { meshPointCloudPoisson } from "./point-cloud-poisson";
 import {
   createHoleFillReporter,
   type HoleFillProgress,
@@ -32,14 +34,20 @@ import {
 import {
   applyRigidTransform,
   transformPoint,
-  registerIcp,
   registerGlobal,
+  type RegistrationResult,
 } from "./registration";
+import {
+  registerFineAlignment,
+  isFineAlignmentResult,
+  type FineAlignmentResult,
+} from "./fine-registration";
 import { registerNativeLandmarks } from "./native-landmark-registration";
 import { refineNativeLandmarkAfterCoarse } from "./native-landmark-refinement";
 import { nativeAlignmentOriginalVertexIndices } from "./scan-native-alignment-landmarks";
 import { expandPlyTopology } from "./ply-topology";
 import { prepareScanRenderData } from "./scan-render-data";
+import { meshGeometryNormals } from "./mesh-geometry-normals";
 import type {
   ProcessingRequest,
   ProcessingResult,
@@ -203,6 +211,10 @@ scope.onmessage = async ({ data: incoming }) => {
             }
           : {}),
       };
+    } else if (request.kind === "pointCloudMesh") {
+      Object.assign(result, meshPointCloud(request, progress));
+    } else if (request.kind === "pointCloudPoisson") {
+      Object.assign(result, await meshPointCloudPoisson(request, progress));
     } else if (request.kind === "pointCloudEdit") {
       result.pointCloudEdit = editPointCloud(request, progress);
       result.diagnostics = result.pointCloudEdit.diagnostics;
@@ -249,6 +261,7 @@ scope.onmessage = async ({ data: incoming }) => {
             })
           : runScanTool(request, options);
       result.positions = outcome.positions;
+      result.indexedMesh = outcome.indexedMesh;
       if ("noiseComparison" in outcome)
         result.noiseComparison = outcome.noiseComparison;
       result.topology = outcome.topology;
@@ -461,7 +474,7 @@ scope.onmessage = async ({ data: incoming }) => {
         throw new Error(
           "Alignment indexed topology does not match its render geometry.",
         );
-      const registration =
+      const registration: RegistrationResult | FineAlignmentResult =
         request.kind === "paired"
           ? registerNativeLandmarks(
               request.sourceLandmarks,
@@ -474,16 +487,17 @@ scope.onmessage = async ({ data: incoming }) => {
                   ),
               },
             )
-          : (request.kind === "global" ? registerGlobal : registerIcp)(
-              request.positions,
-              request.target,
-              {
-                ...request,
-                onProgress: (fraction, rms) =>
-                  progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
-              },
-            );
+          : (request.kind === "global"
+              ? registerGlobal
+              : registerFineAlignment)(request.positions, request.target, {
+              ...request,
+              onProgress: (fraction, rms) =>
+                progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
+            });
+      const applyRegistration =
+        !isFineAlignmentResult(registration) || registration.applied;
       if (
+        applyRegistration &&
         !request.deferCloudTransform &&
         !(request.kind === "paired" && request.refinementTargets)
       )
@@ -497,6 +511,7 @@ scope.onmessage = async ({ data: incoming }) => {
         );
       result.registration = registration;
       if (
+        applyRegistration &&
         request.sourceIndexed &&
         !(request.kind === "paired" && request.refinementTargets)
       ) {
@@ -517,6 +532,10 @@ scope.onmessage = async ({ data: incoming }) => {
         result.indexedMesh = {
           vertices,
           triangles: Uint32Array.from(request.sourceIndexed.triangles),
+          geometryNormals: rotateIndexedNormals(
+            meshGeometryNormals(request.sourceIndexed),
+            registration.transform.rotation,
+          ),
           ...(request.sourceIndexed.normals
             ? {
                 normals: rotateIndexedNormals(
@@ -536,6 +555,32 @@ scope.onmessage = async ({ data: incoming }) => {
         converged: registration.converged,
         iterations: registration.iterations,
         pairs: registration.pairs,
+        ...(isFineAlignmentResult(registration)
+          ? {
+              algorithm: registration.matching,
+              applied: registration.applied,
+              normalCompatibility: registration.normalCompatibility,
+              rejectedNormalPoints: registration.rejectedNormalPoints,
+              targetRms: registration.targetRms,
+              targetReached: registration.targetReached,
+              terminationReason: registration.terminationReason,
+              evaluatedPoints: registration.evaluatedPoints,
+              targetPoints: registration.targetPoints,
+              rejectedPoints: registration.rejectedPoints,
+              overlapFraction: registration.overlapFraction,
+              inlierRms: registration.inlierRms,
+              inlierPairs: registration.inlierPairs,
+              targetRmsBasis: registration.targetRmsBasis,
+              overlapRms: registration.overlapRms,
+              wholeCloudRms: registration.wholeCloudRms,
+              overlapPercent: registration.overlapPercent,
+              sampleSize: registration.sampleSize,
+              fittingSamples: registration.fittingSamples,
+              overlapPoints: registration.overlapPoints,
+              requiredOverlapPoints: registration.requiredOverlapPoints,
+              overlapSatisfied: registration.overlapSatisfied,
+            }
+          : {}),
       };
       if (request.kind === "paired" && request.refinementTargets) {
         if (
@@ -657,15 +702,13 @@ scope.onmessage = async ({ data: incoming }) => {
     for (const segment of result.scanEdit?.segments ?? [])
       transfers.push(segment.buffer);
     if (result.selection) transfers.push(result.selection.buffer);
-    // Preserve the existing weld-based display normals, but never perform their
-    // welding/statistics on the UI thread when the aligned mesh is displayed.
-    if (
-      request.kind === "paired" &&
-      request.sourceIndexed &&
-      result.positions
-    ) {
-      progress(0.99, "Preparing aligned mesh display");
-      result.renderData = prepareScanRenderData(result.positions);
+    // Display borrows the computed state already transformed with the mesh.
+    if (result.indexedMesh && result.positions) {
+      progress(0.99, "Preparing mesh display");
+      result.renderData = prepareScanRenderData(
+        result.positions,
+        result.indexedMesh,
+      );
       if (result.renderData.normals)
         transfers.push(result.renderData.normals.buffer as ArrayBuffer);
     }
@@ -674,6 +717,8 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.indexedMesh.vertices.buffer);
     if (result.indexedMesh?.normals instanceof Float32Array)
       transfers.push(result.indexedMesh.normals.buffer);
+    if (result.indexedMesh?.geometryNormals instanceof Float32Array)
+      transfers.push(result.indexedMesh.geometryNormals.buffer);
     if (result.indexedMesh?.triangles instanceof Uint32Array)
       transfers.push(result.indexedMesh.triangles.buffer);
     if (result.noiseComparison)
@@ -684,10 +729,9 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.noiseComparison.renderDistances.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
     // Published shared geometry stays attached; only private buffers transfer.
-    scope.postMessage(
-      { result },
-      transfers.filter((buffer) => buffer instanceof ArrayBuffer),
-    );
+    scope.postMessage({ result }, [
+      ...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer)),
+    ]);
   } catch (error) {
     // A rejected edit may have analyzed temporary geometry. Never reinterpret
     // that temporary mesh as the next request's original input.

@@ -1,0 +1,8 @@
+{
+  "status": "timeout",
+  "timeoutSeconds": 120,
+  "ownedPid": 4512,
+  "termination": "Process.Kill after 120 seconds",
+  "endedUtc": "2026-10-28T08:39:47.0531656Z",
+  "outputs": "No registration matrix was produced before timeout"
+}

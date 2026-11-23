@@ -1,0 +1,973 @@
+﻿2026-10-28 15:24:24.620   Log opened. (Time zone: UTC+07:00)
+2026-10-28 15:24:24.620   Setup version: Inno Setup version 6.1.2
+2026-10-28 15:24:24.620   Original Setup EXE: C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\CloudCompare_v2.13.2_setup_x64.exe
+2026-10-28 15:24:24.620   Setup command line: /SL5="$60428,341120117,780800,C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\CloudCompare_v2.13.2_setup_x64.exe" /SPAWNWND=$40426 /NOTIFYWND=$120C0A /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- /DIR=C:\tools\CloudCompare-2.13.2 /LOG=C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\install.log
+2026-10-28 15:24:24.620   Compatibility mode: Yes (DetectorsAppHealth Installer)
+2026-10-28 15:24:24.620   Windows version: 10.0.26300  (NT platform: Yes)
+2026-10-28 15:24:24.621   64-bit Windows: Yes
+2026-10-28 15:24:24.621   Processor architecture: x64
+2026-10-28 15:24:24.621   User privileges: Administrative
+2026-10-28 15:24:24.665   Administrative install mode: Yes
+2026-10-28 15:24:24.665   Install mode root key: HKEY_LOCAL_MACHINE
+2026-10-28 15:24:24.665   64-bit install mode: Yes
+2026-10-28 15:24:24.671   Created temporary directory: C:\Users\Shoung\AppData\Local\Temp\is-7P61E.tmp
+2026-10-28 15:24:24.784   Found 131 files to register with RestartManager.
+2026-10-28 15:24:24.784   Calling RestartManager's RmGetList.
+2026-10-28 15:24:24.794   RmGetList finished successfully.
+2026-10-28 15:24:24.794   RestartManager found no applications using one of our files.
+2026-10-28 15:24:24.800   Starting the installation process.
+2026-10-28 15:24:24.818   Creating directory: C:\tools\CloudCompare-2.13.2
+2026-10-28 15:24:24.819   Directory for uninstall files: C:\tools\CloudCompare-2.13.2
+2026-10-28 15:24:24.819   Creating new uninstall log: C:\tools\CloudCompare-2.13.2\unins000.dat
+2026-10-28 15:24:24.828   -- File entry --
+2026-10-28 15:24:24.829   Dest filename: C:\tools\CloudCompare-2.13.2\unins000.exe
+2026-10-28 15:24:24.829   Non-default bitness: 32-bit
+2026-10-28 15:24:24.830   Time stamp of our file: 2026-10-28 15:24:24.200
+2026-10-28 15:24:24.830   Installing the file.
+2026-10-28 15:24:24.833   Successfully installed the file.
+2026-10-28 15:24:24.834   -- File entry --
+2026-10-28 15:24:24.834   Dest filename: C:\tools\CloudCompare-2.13.2\CloudCompare.exe
+2026-10-28 15:24:24.834   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:24.834   Installing the file.
+2026-10-28 15:24:24.895   Successfully installed the file.
+2026-10-28 15:24:24.895   -- File entry --
+2026-10-28 15:24:24.895   Dest filename: C:\tools\CloudCompare-2.13.2\avcodec-60.dll
+2026-10-28 15:24:24.895   Time stamp of our file: 2024-05-04 11:27:14.000
+2026-10-28 15:24:24.895   Installing the file.
+2026-10-28 15:24:25.996   Successfully installed the file.
+2026-10-28 15:24:25.997   -- File entry --
+2026-10-28 15:24:25.997   Dest filename: C:\tools\CloudCompare-2.13.2\avformat-60.dll
+2026-10-28 15:24:25.997   Time stamp of our file: 2024-05-04 11:27:12.000
+2026-10-28 15:24:25.997   Installing the file.
+2026-10-28 15:24:26.277   Successfully installed the file.
+2026-10-28 15:24:26.277   -- File entry --
+2026-10-28 15:24:26.277   Dest filename: C:\tools\CloudCompare-2.13.2\avutil-58.dll
+2026-10-28 15:24:26.277   Time stamp of our file: 2024-05-04 11:27:12.000
+2026-10-28 15:24:26.277   Installing the file.
+2026-10-28 15:24:26.306   Successfully installed the file.
+2026-10-28 15:24:26.306   -- File entry --
+2026-10-28 15:24:26.306   Dest filename: C:\tools\CloudCompare-2.13.2\CCAppCommon.dll
+2026-10-28 15:24:26.306   Time stamp of our file: 2024-07-03 22:52:18.000
+2026-10-28 15:24:26.306   Installing the file.
+2026-10-28 15:24:26.312   Successfully installed the file.
+2026-10-28 15:24:26.312   -- File entry --
+2026-10-28 15:24:26.312   Dest filename: C:\tools\CloudCompare-2.13.2\CCCoreLib.dll
+2026-10-28 15:24:26.312   Time stamp of our file: 2024-07-03 22:48:38.000
+2026-10-28 15:24:26.312   Installing the file.
+2026-10-28 15:24:26.324   Successfully installed the file.
+2026-10-28 15:24:26.324   -- File entry --
+2026-10-28 15:24:26.324   Dest filename: C:\tools\CloudCompare-2.13.2\CCPluginAPI.dll
+2026-10-28 15:24:26.324   Time stamp of our file: 2024-07-03 22:51:20.000
+2026-10-28 15:24:26.324   Installing the file.
+2026-10-28 15:24:26.327   Successfully installed the file.
+2026-10-28 15:24:26.327   -- File entry --
+2026-10-28 15:24:26.328   Dest filename: C:\tools\CloudCompare-2.13.2\CC_FBO_LIB.dll
+2026-10-28 15:24:26.328   Time stamp of our file: 2024-06-30 22:19:54.000
+2026-10-28 15:24:26.328   Installing the file.
+2026-10-28 15:24:26.329   Successfully installed the file.
+2026-10-28 15:24:26.329   -- File entry --
+2026-10-28 15:24:26.329   Dest filename: C:\tools\CloudCompare-2.13.2\CHANGELOG.md
+2026-10-28 15:24:26.329   Time stamp of our file: 2024-06-30 23:46:10.000
+2026-10-28 15:24:26.329   Installing the file.
+2026-10-28 15:24:26.332   Successfully installed the file.
+2026-10-28 15:24:26.333   -- File entry --
+2026-10-28 15:24:26.333   Dest filename: C:\tools\CloudCompare-2.13.2\CloudCompare.exe
+2026-10-28 15:24:26.333   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:26.333   Dest file exists.
+2026-10-28 15:24:26.333   Time stamp of existing file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:26.333   Installing the file.
+2026-10-28 15:24:26.337   Successfully installed the file.
+2026-10-28 15:24:26.337   -- File entry --
+2026-10-28 15:24:26.337   Dest filename: C:\tools\CloudCompare-2.13.2\concrt140.dll
+2026-10-28 15:24:26.337   Time stamp of our file: 2021-01-06 22:05:58.000
+2026-10-28 15:24:26.337   Installing the file.
+2026-10-28 15:24:26.344   Successfully installed the file.
+2026-10-28 15:24:26.344   -- File entry --
+2026-10-28 15:24:26.344   Dest filename: C:\tools\CloudCompare-2.13.2\DotProduct_x64.dll
+2026-10-28 15:24:26.344   Time stamp of our file: 2023-11-17 05:36:20.000
+2026-10-28 15:24:26.344   Installing the file.
+2026-10-28 15:24:26.374   Successfully installed the file.
+2026-10-28 15:24:26.374   -- File entry --
+2026-10-28 15:24:26.374   Dest filename: C:\tools\CloudCompare-2.13.2\expat.dll
+2026-10-28 15:24:26.374   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.374   Installing the file.
+2026-10-28 15:24:26.377   Successfully installed the file.
+2026-10-28 15:24:26.377   -- File entry --
+2026-10-28 15:24:26.377   Dest filename: C:\tools\CloudCompare-2.13.2\freexl.dll
+2026-10-28 15:24:26.377   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.377   Installing the file.
+2026-10-28 15:24:26.379   Successfully installed the file.
+2026-10-28 15:24:26.379   -- File entry --
+2026-10-28 15:24:26.379   Dest filename: C:\tools\CloudCompare-2.13.2\gdal202.dll
+2026-10-28 15:24:26.379   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.379   Installing the file.
+2026-10-28 15:24:26.640   Successfully installed the file.
+2026-10-28 15:24:26.640   -- File entry --
+2026-10-28 15:24:26.640   Dest filename: C:\tools\CloudCompare-2.13.2\geos.dll
+2026-10-28 15:24:26.640   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.640   Installing the file.
+2026-10-28 15:24:26.657   Successfully installed the file.
+2026-10-28 15:24:26.658   -- File entry --
+2026-10-28 15:24:26.658   Dest filename: C:\tools\CloudCompare-2.13.2\geos_c.dll
+2026-10-28 15:24:26.658   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.658   Installing the file.
+2026-10-28 15:24:26.661   Successfully installed the file.
+2026-10-28 15:24:26.661   -- File entry --
+2026-10-28 15:24:26.661   Dest filename: C:\tools\CloudCompare-2.13.2\global_shift_list_template.txt
+2026-10-28 15:24:26.661   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:26.661   Installing the file.
+2026-10-28 15:24:26.662   Successfully installed the file.
+2026-10-28 15:24:26.662   -- File entry --
+2026-10-28 15:24:26.662   Dest filename: C:\tools\CloudCompare-2.13.2\hdf5.dll
+2026-10-28 15:24:26.662   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.662   Installing the file.
+2026-10-28 15:24:26.697   Successfully installed the file.
+2026-10-28 15:24:26.697   -- File entry --
+2026-10-28 15:24:26.697   Dest filename: C:\tools\CloudCompare-2.13.2\hdf5_hl.dll
+2026-10-28 15:24:26.697   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.697   Installing the file.
+2026-10-28 15:24:26.700   Successfully installed the file.
+2026-10-28 15:24:26.700   -- File entry --
+2026-10-28 15:24:26.700   Dest filename: C:\tools\CloudCompare-2.13.2\iconv.dll
+2026-10-28 15:24:26.700   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.700   Installing the file.
+2026-10-28 15:24:26.706   Successfully installed the file.
+2026-10-28 15:24:26.706   -- File entry --
+2026-10-28 15:24:26.706   Dest filename: C:\tools\CloudCompare-2.13.2\laszip3.dll
+2026-10-28 15:24:26.706   Time stamp of our file: 2022-09-25 16:10:42.000
+2026-10-28 15:24:26.706   Installing the file.
+2026-10-28 15:24:26.711   Successfully installed the file.
+2026-10-28 15:24:26.711   -- File entry --
+2026-10-28 15:24:26.711   Dest filename: C:\tools\CloudCompare-2.13.2\libcurl.dll
+2026-10-28 15:24:26.711   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.711   Installing the file.
+2026-10-28 15:24:26.718   Successfully installed the file.
+2026-10-28 15:24:26.719   -- File entry --
+2026-10-28 15:24:26.719   Dest filename: C:\tools\CloudCompare-2.13.2\libeay32.dll
+2026-10-28 15:24:26.719   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.719   Installing the file.
+2026-10-28 15:24:26.743   Successfully installed the file.
+2026-10-28 15:24:26.743   -- File entry --
+2026-10-28 15:24:26.743   Dest filename: C:\tools\CloudCompare-2.13.2\libgmp-10.dll
+2026-10-28 15:24:26.744   Time stamp of our file: 2011-03-03 16:36:10.000
+2026-10-28 15:24:26.744   Installing the file.
+2026-10-28 15:24:26.754   Successfully installed the file.
+2026-10-28 15:24:26.754   -- File entry --
+2026-10-28 15:24:26.754   Dest filename: C:\tools\CloudCompare-2.13.2\libmpfr-4.dll
+2026-10-28 15:24:26.754   Time stamp of our file: 2011-03-03 16:36:32.000
+2026-10-28 15:24:26.754   Installing the file.
+2026-10-28 15:24:26.762   Successfully installed the file.
+2026-10-28 15:24:26.762   -- File entry --
+2026-10-28 15:24:26.762   Dest filename: C:\tools\CloudCompare-2.13.2\libmysql.dll
+2026-10-28 15:24:26.762   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.762   Installing the file.
+2026-10-28 15:24:26.805   Successfully installed the file.
+2026-10-28 15:24:26.805   -- File entry --
+2026-10-28 15:24:26.805   Dest filename: C:\tools\CloudCompare-2.13.2\libpq.dll
+2026-10-28 15:24:26.805   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.805   Installing the file.
+2026-10-28 15:24:26.809   Successfully installed the file.
+2026-10-28 15:24:26.809   -- File entry --
+2026-10-28 15:24:26.809   Dest filename: C:\tools\CloudCompare-2.13.2\libxml2.dll
+2026-10-28 15:24:26.809   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.809   Installing the file.
+2026-10-28 15:24:26.831   Successfully installed the file.
+2026-10-28 15:24:26.831   -- File entry --
+2026-10-28 15:24:26.831   Dest filename: C:\tools\CloudCompare-2.13.2\license.txt
+2026-10-28 15:24:26.831   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:26.831   Installing the file.
+2026-10-28 15:24:26.832   Successfully installed the file.
+2026-10-28 15:24:26.832   -- File entry --
+2026-10-28 15:24:26.832   Dest filename: C:\tools\CloudCompare-2.13.2\msvcp140.dll
+2026-10-28 15:24:26.832   Time stamp of our file: 2021-01-06 22:05:58.000
+2026-10-28 15:24:26.832   Installing the file.
+2026-10-28 15:24:26.841   Successfully installed the file.
+2026-10-28 15:24:26.841   -- File entry --
+2026-10-28 15:24:26.841   Dest filename: C:\tools\CloudCompare-2.13.2\msvcp140_1.dll
+2026-10-28 15:24:26.841   Time stamp of our file: 2021-01-06 22:05:58.000
+2026-10-28 15:24:26.841   Installing the file.
+2026-10-28 15:24:26.842   Successfully installed the file.
+2026-10-28 15:24:26.842   -- File entry --
+2026-10-28 15:24:26.842   Dest filename: C:\tools\CloudCompare-2.13.2\msvcp140_2.dll
+2026-10-28 15:24:26.842   Time stamp of our file: 2021-01-06 22:05:58.000
+2026-10-28 15:24:26.842   Installing the file.
+2026-10-28 15:24:26.847   Successfully installed the file.
+2026-10-28 15:24:26.847   -- File entry --
+2026-10-28 15:24:26.847   Dest filename: C:\tools\CloudCompare-2.13.2\netcdf.dll
+2026-10-28 15:24:26.847   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:26.847   Installing the file.
+2026-10-28 15:24:26.858   Successfully installed the file.
+2026-10-28 15:24:26.858   -- File entry --
+2026-10-28 15:24:26.858   Dest filename: C:\tools\CloudCompare-2.13.2\opencv_world340.dll
+2026-10-28 15:24:26.858   Time stamp of our file: 2017-12-22 23:24:58.000
+2026-10-28 15:24:26.858   Installing the file.
+2026-10-28 15:24:27.570   Successfully installed the file.
+2026-10-28 15:24:27.570   -- File entry --
+2026-10-28 15:24:27.570   Dest filename: C:\tools\CloudCompare-2.13.2\openjp2.dll
+2026-10-28 15:24:27.570   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:27.570   Installing the file.
+2026-10-28 15:24:27.574   Successfully installed the file.
+2026-10-28 15:24:27.575   -- File entry --
+2026-10-28 15:24:27.575   Dest filename: C:\tools\CloudCompare-2.13.2\proj.dll
+2026-10-28 15:24:27.575   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:27.575   Installing the file.
+2026-10-28 15:24:27.595   Successfully installed the file.
+2026-10-28 15:24:27.595   -- File entry --
+2026-10-28 15:24:27.595   Dest filename: C:\tools\CloudCompare-2.13.2\python3.dll
+2026-10-28 15:24:27.595   Time stamp of our file: 2021-10-04 19:12:44.000
+2026-10-28 15:24:27.595   Installing the file.
+2026-10-28 15:24:27.596   Successfully installed the file.
+2026-10-28 15:24:27.596   -- File entry --
+2026-10-28 15:24:27.596   Dest filename: C:\tools\CloudCompare-2.13.2\python310.dll
+2026-10-28 15:24:27.596   Time stamp of our file: 2021-10-04 19:12:44.000
+2026-10-28 15:24:27.596   Installing the file.
+2026-10-28 15:24:27.712   Successfully installed the file.
+2026-10-28 15:24:27.712   -- File entry --
+2026-10-28 15:24:27.712   Dest filename: C:\tools\CloudCompare-2.13.2\QCC_DB_LIB.dll
+2026-10-28 15:24:27.713   Time stamp of our file: 2024-07-03 22:50:42.000
+2026-10-28 15:24:27.713   Installing the file.
+2026-10-28 15:24:27.743   Successfully installed the file.
+2026-10-28 15:24:27.743   -- File entry --
+2026-10-28 15:24:27.743   Dest filename: C:\tools\CloudCompare-2.13.2\QCC_GL_LIB.dll
+2026-10-28 15:24:27.744   Time stamp of our file: 2024-07-03 22:50:56.000
+2026-10-28 15:24:27.744   Installing the file.
+2026-10-28 15:24:27.751   Successfully installed the file.
+2026-10-28 15:24:27.751   -- File entry --
+2026-10-28 15:24:27.751   Dest filename: C:\tools\CloudCompare-2.13.2\QCC_IO_LIB.dll
+2026-10-28 15:24:27.752   Time stamp of our file: 2024-07-03 22:51:10.000
+2026-10-28 15:24:27.752   Installing the file.
+2026-10-28 15:24:27.771   Successfully installed the file.
+2026-10-28 15:24:27.771   -- File entry --
+2026-10-28 15:24:27.771   Dest filename: C:\tools\CloudCompare-2.13.2\Qt5Concurrent.dll
+2026-10-28 15:24:27.771   Time stamp of our file: 2020-11-06 07:29:50.000
+2026-10-28 15:24:27.771   Installing the file.
+2026-10-28 15:24:27.774   Successfully installed the file.
+2026-10-28 15:24:27.774   -- File entry --
+2026-10-28 15:24:27.774   Dest filename: C:\tools\CloudCompare-2.13.2\Qt5Core.dll
+2026-10-28 15:24:27.774   Time stamp of our file: 2020-11-06 07:29:52.000
+2026-10-28 15:24:27.774   Installing the file.
+2026-10-28 15:24:27.912   Successfully installed the file.
+2026-10-28 15:24:27.912   -- File entry --
+2026-10-28 15:24:27.912   Dest filename: C:\tools\CloudCompare-2.13.2\Qt5Gamepad.dll
+2026-10-28 15:24:27.912   Time stamp of our file: 2020-11-06 11:03:16.000
+2026-10-28 15:24:27.912   Installing the file.
+2026-10-28 15:24:27.915   Successfully installed the file.
+2026-10-28 15:24:27.915   -- File entry --
+2026-10-28 15:24:27.915   Dest filename: C:\tools\CloudCompare-2.13.2\Qt5Gui.dll
+2026-10-28 15:24:27.915   Time stamp of our file: 2020-11-06 07:29:54.000
+2026-10-28 15:24:27.915   Installing the file.
+2026-10-28 15:24:28.068   Successfully installed the file.
+2026-10-28 15:24:28.069   -- File entry --
+2026-10-28 15:24:28.069   Dest filename: C:\tools\CloudCompare-2.13.2\Qt5Network.dll
+2026-10-28 15:24:28.069   Time stamp of our file: 2020-11-06 07:29:56.000
+2026-10-28 15:24:28.069   Installing the file.
+2026-10-28 15:24:28.100   Successfully installed the file.
+2026-10-28 15:24:28.100   -- File entry --
+2026-10-28 15:24:28.100   Dest filename: C:\tools\CloudCompare-2.13.2\Qt5OpenGL.dll
+2026-10-28 15:24:28.100   Time stamp of our file: 2020-11-06 07:29:58.000
+2026-10-28 15:24:28.100   Installing the file.
+2026-10-28 15:24:28.111   Successfully installed the file.
+2026-10-28 15:24:28.111   -- File entry --
+2026-10-28 15:24:28.111   Dest filename: C:\tools\CloudCompare-2.13.2\Qt5Svg.dll
+2026-10-28 15:24:28.111   Time stamp of our file: 2020-11-06 10:27:06.000
+2026-10-28 15:24:28.111   Installing the file.
+2026-10-28 15:24:28.119   Successfully installed the file.
+2026-10-28 15:24:28.120   -- File entry --
+2026-10-28 15:24:28.120   Dest filename: C:\tools\CloudCompare-2.13.2\Qt5WebSockets.dll
+2026-10-28 15:24:28.120   Time stamp of our file: 2020-11-06 11:01:16.000
+2026-10-28 15:24:28.120   Installing the file.
+2026-10-28 15:24:28.124   Successfully installed the file.
+2026-10-28 15:24:28.124   -- File entry --
+2026-10-28 15:24:28.124   Dest filename: C:\tools\CloudCompare-2.13.2\Qt5Widgets.dll
+2026-10-28 15:24:28.124   Time stamp of our file: 2020-11-06 07:30:02.000
+2026-10-28 15:24:28.124   Installing the file.
+2026-10-28 15:24:28.254   Successfully installed the file.
+2026-10-28 15:24:28.254   -- File entry --
+2026-10-28 15:24:28.254   Dest filename: C:\tools\CloudCompare-2.13.2\rdblib.dll
+2026-10-28 15:24:28.254   Time stamp of our file: 2023-11-30 16:48:44.000
+2026-10-28 15:24:28.254   Installing the file.
+2026-10-28 15:24:28.407   Successfully installed the file.
+2026-10-28 15:24:28.407   -- File entry --
+2026-10-28 15:24:28.407   Dest filename: C:\tools\CloudCompare-2.13.2\spatialite.dll
+2026-10-28 15:24:28.408   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:28.408   Installing the file.
+2026-10-28 15:24:28.547   Successfully installed the file.
+2026-10-28 15:24:28.547   -- File entry --
+2026-10-28 15:24:28.547   Dest filename: C:\tools\CloudCompare-2.13.2\sqlite3.dll
+2026-10-28 15:24:28.548   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:28.548   Installing the file.
+2026-10-28 15:24:28.576   Successfully installed the file.
+2026-10-28 15:24:28.576   -- File entry --
+2026-10-28 15:24:28.577   Dest filename: C:\tools\CloudCompare-2.13.2\ssleay32.dll
+2026-10-28 15:24:28.577   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:28.578   Installing the file.
+2026-10-28 15:24:28.587   Successfully installed the file.
+2026-10-28 15:24:28.587   -- File entry --
+2026-10-28 15:24:28.587   Dest filename: C:\tools\CloudCompare-2.13.2\start.bat
+2026-10-28 15:24:28.588   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:28.588   Installing the file.
+2026-10-28 15:24:28.588   Successfully installed the file.
+2026-10-28 15:24:28.589   -- File entry --
+2026-10-28 15:24:28.589   Dest filename: C:\tools\CloudCompare-2.13.2\swresample-4.dll
+2026-10-28 15:24:28.589   Time stamp of our file: 2024-05-04 11:27:12.000
+2026-10-28 15:24:28.589   Installing the file.
+2026-10-28 15:24:28.612   Successfully installed the file.
+2026-10-28 15:24:28.612   -- File entry --
+2026-10-28 15:24:28.612   Dest filename: C:\tools\CloudCompare-2.13.2\swscale-7.dll
+2026-10-28 15:24:28.612   Time stamp of our file: 2024-05-04 11:27:12.000
+2026-10-28 15:24:28.612   Installing the file.
+2026-10-28 15:24:28.627   Successfully installed the file.
+2026-10-28 15:24:28.627   -- File entry --
+2026-10-28 15:24:28.627   Dest filename: C:\tools\CloudCompare-2.13.2\szip.dll
+2026-10-28 15:24:28.628   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:28.628   Installing the file.
+2026-10-28 15:24:28.630   Successfully installed the file.
+2026-10-28 15:24:28.630   -- File entry --
+2026-10-28 15:24:28.630   Dest filename: C:\tools\CloudCompare-2.13.2\tbb.dll
+2026-10-28 15:24:28.630   Time stamp of our file: 2020-11-03 13:37:56.000
+2026-10-28 15:24:28.630   Installing the file.
+2026-10-28 15:24:28.638   Successfully installed the file.
+2026-10-28 15:24:28.638   -- File entry --
+2026-10-28 15:24:28.638   Dest filename: C:\tools\CloudCompare-2.13.2\tbbmalloc.dll
+2026-10-28 15:24:28.638   Time stamp of our file: 2020-11-03 13:37:54.000
+2026-10-28 15:24:28.638   Installing the file.
+2026-10-28 15:24:28.668   Successfully installed the file.
+2026-10-28 15:24:28.668   -- File entry --
+2026-10-28 15:24:28.669   Dest filename: C:\tools\CloudCompare-2.13.2\TKBRep.dll
+2026-10-28 15:24:28.669   Time stamp of our file: 2020-11-03 14:30:54.000
+2026-10-28 15:24:28.669   Installing the file.
+2026-10-28 15:24:28.688   Successfully installed the file.
+2026-10-28 15:24:28.688   -- File entry --
+2026-10-28 15:24:28.688   Dest filename: C:\tools\CloudCompare-2.13.2\TKernel.dll
+2026-10-28 15:24:28.688   Time stamp of our file: 2020-11-03 14:30:58.000
+2026-10-28 15:24:28.688   Installing the file.
+2026-10-28 15:24:28.720   Successfully installed the file.
+2026-10-28 15:24:28.720   -- File entry --
+2026-10-28 15:24:28.721   Dest filename: C:\tools\CloudCompare-2.13.2\TKG2d.dll
+2026-10-28 15:24:28.721   Time stamp of our file: 2020-11-03 14:31:00.000
+2026-10-28 15:24:28.721   Installing the file.
+2026-10-28 15:24:28.728   Successfully installed the file.
+2026-10-28 15:24:28.728   -- File entry --
+2026-10-28 15:24:28.728   Dest filename: C:\tools\CloudCompare-2.13.2\TKG3d.dll
+2026-10-28 15:24:28.728   Time stamp of our file: 2020-11-03 14:31:02.000
+2026-10-28 15:24:28.728   Installing the file.
+2026-10-28 15:24:28.748   Successfully installed the file.
+2026-10-28 15:24:28.748   -- File entry --
+2026-10-28 15:24:28.748   Dest filename: C:\tools\CloudCompare-2.13.2\TKGeomAlgo.dll
+2026-10-28 15:24:28.748   Time stamp of our file: 2020-11-03 14:31:02.000
+2026-10-28 15:24:28.748   Installing the file.
+2026-10-28 15:24:28.830   Successfully installed the file.
+2026-10-28 15:24:28.830   -- File entry --
+2026-10-28 15:24:28.831   Dest filename: C:\tools\CloudCompare-2.13.2\TKGeomBase.dll
+2026-10-28 15:24:28.831   Time stamp of our file: 2020-11-03 14:31:04.000
+2026-10-28 15:24:28.831   Installing the file.
+2026-10-28 15:24:28.933   Successfully installed the file.
+2026-10-28 15:24:28.933   -- File entry --
+2026-10-28 15:24:28.933   Dest filename: C:\tools\CloudCompare-2.13.2\TKMath.dll
+2026-10-28 15:24:28.933   Time stamp of our file: 2020-11-03 14:31:08.000
+2026-10-28 15:24:28.933   Installing the file.
+2026-10-28 15:24:28.969   Successfully installed the file.
+2026-10-28 15:24:28.969   -- File entry --
+2026-10-28 15:24:28.969   Dest filename: C:\tools\CloudCompare-2.13.2\TKMesh.dll
+2026-10-28 15:24:28.969   Time stamp of our file: 2020-11-03 14:31:10.000
+2026-10-28 15:24:28.969   Installing the file.
+2026-10-28 15:24:28.983   Successfully installed the file.
+2026-10-28 15:24:28.983   -- File entry --
+2026-10-28 15:24:28.984   Dest filename: C:\tools\CloudCompare-2.13.2\TKShHealing.dll
+2026-10-28 15:24:28.984   Time stamp of our file: 2020-11-03 14:31:16.000
+2026-10-28 15:24:28.984   Installing the file.
+2026-10-28 15:24:29.034   Successfully installed the file.
+2026-10-28 15:24:29.034   -- File entry --
+2026-10-28 15:24:29.035   Dest filename: C:\tools\CloudCompare-2.13.2\TKSTEP.dll
+2026-10-28 15:24:29.035   Time stamp of our file: 2020-11-03 14:31:20.000
+2026-10-28 15:24:29.035   Installing the file.
+2026-10-28 15:24:29.075   Successfully installed the file.
+2026-10-28 15:24:29.075   -- File entry --
+2026-10-28 15:24:29.075   Dest filename: C:\tools\CloudCompare-2.13.2\TKSTEP209.dll
+2026-10-28 15:24:29.075   Time stamp of our file: 2020-11-03 14:31:20.000
+2026-10-28 15:24:29.075   Installing the file.
+2026-10-28 15:24:29.084   Successfully installed the file.
+2026-10-28 15:24:29.084   -- File entry --
+2026-10-28 15:24:29.085   Dest filename: C:\tools\CloudCompare-2.13.2\TKSTEPAttr.dll
+2026-10-28 15:24:29.085   Time stamp of our file: 2020-11-03 14:31:20.000
+2026-10-28 15:24:29.085   Installing the file.
+2026-10-28 15:24:29.098   Successfully installed the file.
+2026-10-28 15:24:29.098   -- File entry --
+2026-10-28 15:24:29.098   Dest filename: C:\tools\CloudCompare-2.13.2\TKSTEPBase.dll
+2026-10-28 15:24:29.098   Time stamp of our file: 2020-11-03 14:31:22.000
+2026-10-28 15:24:29.098   Installing the file.
+2026-10-28 15:24:29.127   Successfully installed the file.
+2026-10-28 15:24:29.127   -- File entry --
+2026-10-28 15:24:29.128   Dest filename: C:\tools\CloudCompare-2.13.2\TKTopAlgo.dll
+2026-10-28 15:24:29.128   Time stamp of our file: 2020-11-03 14:31:32.000
+2026-10-28 15:24:29.128   Installing the file.
+2026-10-28 15:24:29.172   Successfully installed the file.
+2026-10-28 15:24:29.172   -- File entry --
+2026-10-28 15:24:29.172   Dest filename: C:\tools\CloudCompare-2.13.2\TKXSBase.dll
+2026-10-28 15:24:29.172   Time stamp of our file: 2020-11-03 14:32:14.000
+2026-10-28 15:24:29.172   Installing the file.
+2026-10-28 15:24:29.214   Successfully installed the file.
+2026-10-28 15:24:29.214   -- File entry --
+2026-10-28 15:24:29.214   Dest filename: C:\tools\CloudCompare-2.13.2\vcruntime140.dll
+2026-10-28 15:24:29.215   Time stamp of our file: 2021-01-06 22:05:58.000
+2026-10-28 15:24:29.215   Installing the file.
+2026-10-28 15:24:29.218   Successfully installed the file.
+2026-10-28 15:24:29.219   -- File entry --
+2026-10-28 15:24:29.219   Dest filename: C:\tools\CloudCompare-2.13.2\xerces-c_3_1.dll
+2026-10-28 15:24:29.219   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:29.219   Installing the file.
+2026-10-28 15:24:29.265   Successfully installed the file.
+2026-10-28 15:24:29.265   -- File entry --
+2026-10-28 15:24:29.265   Dest filename: C:\tools\CloudCompare-2.13.2\zlib1.dll
+2026-10-28 15:24:29.265   Time stamp of our file: 2017-10-14 20:07:46.000
+2026-10-28 15:24:29.265   Installing the file.
+2026-10-28 15:24:29.267   Successfully installed the file.
+2026-10-28 15:24:29.267   -- File entry --
+2026-10-28 15:24:29.268   Dest filename: C:\tools\CloudCompare-2.13.2\gamepads\xinputgamepad.dll
+2026-10-28 15:24:29.268   Time stamp of our file: 2020-11-06 11:03:18.000
+2026-10-28 15:24:29.268   Installing the file.
+2026-10-28 15:24:29.268   Creating directory: C:\tools\CloudCompare-2.13.2\gamepads
+2026-10-28 15:24:29.270   Successfully installed the file.
+2026-10-28 15:24:29.270   -- File entry --
+2026-10-28 15:24:29.270   Dest filename: C:\tools\CloudCompare-2.13.2\iconengines\qsvgicon.dll
+2026-10-28 15:24:29.270   Time stamp of our file: 2020-11-06 10:27:06.000
+2026-10-28 15:24:29.270   Installing the file.
+2026-10-28 15:24:29.270   Creating directory: C:\tools\CloudCompare-2.13.2\iconengines
+2026-10-28 15:24:29.272   Successfully installed the file.
+2026-10-28 15:24:29.272   -- File entry --
+2026-10-28 15:24:29.272   Dest filename: C:\tools\CloudCompare-2.13.2\imageformats\qgif.dll
+2026-10-28 15:24:29.272   Time stamp of our file: 2020-11-06 07:30:16.000
+2026-10-28 15:24:29.272   Installing the file.
+2026-10-28 15:24:29.273   Creating directory: C:\tools\CloudCompare-2.13.2\imageformats
+2026-10-28 15:24:29.274   Successfully installed the file.
+2026-10-28 15:24:29.274   -- File entry --
+2026-10-28 15:24:29.275   Dest filename: C:\tools\CloudCompare-2.13.2\imageformats\qicns.dll
+2026-10-28 15:24:29.275   Time stamp of our file: 2020-11-06 10:26:54.000
+2026-10-28 15:24:29.275   Installing the file.
+2026-10-28 15:24:29.277   Successfully installed the file.
+2026-10-28 15:24:29.277   -- File entry --
+2026-10-28 15:24:29.277   Dest filename: C:\tools\CloudCompare-2.13.2\imageformats\qico.dll
+2026-10-28 15:24:29.277   Time stamp of our file: 2020-11-06 07:30:18.000
+2026-10-28 15:24:29.277   Installing the file.
+2026-10-28 15:24:29.279   Successfully installed the file.
+2026-10-28 15:24:29.279   -- File entry --
+2026-10-28 15:24:29.279   Dest filename: C:\tools\CloudCompare-2.13.2\imageformats\qjpeg.dll
+2026-10-28 15:24:29.279   Time stamp of our file: 2020-11-06 07:30:20.000
+2026-10-28 15:24:29.279   Installing the file.
+2026-10-28 15:24:29.288   Successfully installed the file.
+2026-10-28 15:24:29.288   -- File entry --
+2026-10-28 15:24:29.288   Dest filename: C:\tools\CloudCompare-2.13.2\imageformats\qsvg.dll
+2026-10-28 15:24:29.288   Time stamp of our file: 2020-11-06 10:27:08.000
+2026-10-28 15:24:29.288   Installing the file.
+2026-10-28 15:24:29.290   Successfully installed the file.
+2026-10-28 15:24:29.290   -- File entry --
+2026-10-28 15:24:29.290   Dest filename: C:\tools\CloudCompare-2.13.2\imageformats\qtga.dll
+2026-10-28 15:24:29.290   Time stamp of our file: 2020-11-06 10:26:56.000
+2026-10-28 15:24:29.290   Installing the file.
+2026-10-28 15:24:29.292   Successfully installed the file.
+2026-10-28 15:24:29.292   -- File entry --
+2026-10-28 15:24:29.292   Dest filename: C:\tools\CloudCompare-2.13.2\imageformats\qtiff.dll
+2026-10-28 15:24:29.292   Time stamp of our file: 2020-11-06 10:26:56.000
+2026-10-28 15:24:29.292   Installing the file.
+2026-10-28 15:24:29.301   Successfully installed the file.
+2026-10-28 15:24:29.301   -- File entry --
+2026-10-28 15:24:29.301   Dest filename: C:\tools\CloudCompare-2.13.2\imageformats\qwbmp.dll
+2026-10-28 15:24:29.302   Time stamp of our file: 2020-11-06 10:26:58.000
+2026-10-28 15:24:29.302   Installing the file.
+2026-10-28 15:24:29.303   Successfully installed the file.
+2026-10-28 15:24:29.303   -- File entry --
+2026-10-28 15:24:29.303   Dest filename: C:\tools\CloudCompare-2.13.2\imageformats\qwebp.dll
+2026-10-28 15:24:29.303   Time stamp of our file: 2020-11-06 10:26:58.000
+2026-10-28 15:24:29.303   Installing the file.
+2026-10-28 15:24:29.318   Successfully installed the file.
+2026-10-28 15:24:29.318   -- File entry --
+2026-10-28 15:24:29.318   Dest filename: C:\tools\CloudCompare-2.13.2\platforms\qwindows.dll
+2026-10-28 15:24:29.318   Time stamp of our file: 2020-11-06 07:30:24.000
+2026-10-28 15:24:29.318   Installing the file.
+2026-10-28 15:24:29.318   Creating directory: C:\tools\CloudCompare-2.13.2\platforms
+2026-10-28 15:24:29.360   Successfully installed the file.
+2026-10-28 15:24:29.360   -- File entry --
+2026-10-28 15:24:29.360   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\MeshIO.dll
+2026-10-28 15:24:29.361   Time stamp of our file: 2024-07-03 22:52:18.000
+2026-10-28 15:24:29.361   Installing the file.
+2026-10-28 15:24:29.361   Creating directory: C:\tools\CloudCompare-2.13.2\plugins
+2026-10-28 15:24:29.411   Successfully installed the file.
+2026-10-28 15:24:29.411   -- File entry --
+2026-10-28 15:24:29.411   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\Q3DMASC_PLUGIN.dll
+2026-10-28 15:24:29.412   Time stamp of our file: 2024-07-06 12:03:20.000
+2026-10-28 15:24:29.412   Installing the file.
+2026-10-28 15:24:29.430   Successfully installed the file.
+2026-10-28 15:24:29.430   -- File entry --
+2026-10-28 15:24:29.431   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QADDITIONAL_IO_PLUGIN.dll
+2026-10-28 15:24:29.431   Time stamp of our file: 2024-07-03 22:52:40.000
+2026-10-28 15:24:29.431   Installing the file.
+2026-10-28 15:24:29.437   Successfully installed the file.
+2026-10-28 15:24:29.437   -- File entry --
+2026-10-28 15:24:29.437   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QANIMATION_PLUGIN.dll
+2026-10-28 15:24:29.437   Time stamp of our file: 2024-07-03 22:52:20.000
+2026-10-28 15:24:29.437   Installing the file.
+2026-10-28 15:24:29.442   Successfully installed the file.
+2026-10-28 15:24:29.442   -- File entry --
+2026-10-28 15:24:29.442   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QAUTO_SEG_PLUGIN.dll
+2026-10-28 15:24:29.442   Time stamp of our file: 2024-07-03 22:52:32.000
+2026-10-28 15:24:29.442   Installing the file.
+2026-10-28 15:24:29.453   Successfully installed the file.
+2026-10-28 15:24:29.454   -- File entry --
+2026-10-28 15:24:29.454   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QBROOM_PLUGIN.dll
+2026-10-28 15:24:29.454   Time stamp of our file: 2024-07-03 22:52:14.000
+2026-10-28 15:24:29.454   Installing the file.
+2026-10-28 15:24:29.460   Successfully installed the file.
+2026-10-28 15:24:29.460   -- File entry --
+2026-10-28 15:24:29.460   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QCANUPO_PLUGIN.dll
+2026-10-28 15:24:29.461   Time stamp of our file: 2024-07-03 22:52:54.000
+2026-10-28 15:24:29.461   Installing the file.
+2026-10-28 15:24:29.474   Successfully installed the file.
+2026-10-28 15:24:29.474   -- File entry --
+2026-10-28 15:24:29.474   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QCLOUDLAYERS_PLUGIN.dll
+2026-10-28 15:24:29.474   Time stamp of our file: 2024-07-03 22:51:50.000
+2026-10-28 15:24:29.474   Installing the file.
+2026-10-28 15:24:29.478   Successfully installed the file.
+2026-10-28 15:24:29.478   -- File entry --
+2026-10-28 15:24:29.478   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QCOLORIMETRIC_SEGMENTER_PLUGIN.dll
+2026-10-28 15:24:29.478   Time stamp of our file: 2024-07-03 22:51:52.000
+2026-10-28 15:24:29.478   Installing the file.
+2026-10-28 15:24:29.483   Successfully installed the file.
+2026-10-28 15:24:29.483   -- File entry --
+2026-10-28 15:24:29.484   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QCOMPASS_PLUGIN.dll
+2026-10-28 15:24:29.484   Time stamp of our file: 2024-07-03 22:53:16.000
+2026-10-28 15:24:29.484   Installing the file.
+2026-10-28 15:24:29.495   Successfully installed the file.
+2026-10-28 15:24:29.495   -- File entry --
+2026-10-28 15:24:29.495   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QCORE_IO_PLUGIN.dll
+2026-10-28 15:24:29.495   Time stamp of our file: 2024-07-03 22:52:40.000
+2026-10-28 15:24:29.495   Installing the file.
+2026-10-28 15:24:29.503   Successfully installed the file.
+2026-10-28 15:24:29.503   -- File entry --
+2026-10-28 15:24:29.504   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QCORK_PLUGIN.dll
+2026-10-28 15:24:29.504   Time stamp of our file: 2024-07-03 22:51:38.000
+2026-10-28 15:24:29.504   Installing the file.
+2026-10-28 15:24:29.516   Successfully installed the file.
+2026-10-28 15:24:29.517   -- File entry --
+2026-10-28 15:24:29.517   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QCSF_PLUGIN.dll
+2026-10-28 15:24:29.517   Time stamp of our file: 2024-07-03 22:51:46.000
+2026-10-28 15:24:29.517   Installing the file.
+2026-10-28 15:24:29.521   Successfully installed the file.
+2026-10-28 15:24:29.521   -- File entry --
+2026-10-28 15:24:29.521   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QCSV_MATRIX_IO_PLUGIN.dll
+2026-10-28 15:24:29.521   Time stamp of our file: 2024-07-03 22:51:36.000
+2026-10-28 15:24:29.521   Installing the file.
+2026-10-28 15:24:29.523   Successfully installed the file.
+2026-10-28 15:24:29.524   -- File entry --
+2026-10-28 15:24:29.524   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QDOT_PRODUCT_IO_PLUGIN.dll
+2026-10-28 15:24:29.525   Time stamp of our file: 2024-07-03 22:51:50.000
+2026-10-28 15:24:29.525   Installing the file.
+2026-10-28 15:24:29.528   Successfully installed the file.
+2026-10-28 15:24:29.528   -- File entry --
+2026-10-28 15:24:29.528   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QDRACO_IO_PLUGIN.dll
+2026-10-28 15:24:29.528   Time stamp of our file: 2024-07-03 23:26:56.000
+2026-10-28 15:24:29.528   Installing the file.
+2026-10-28 15:24:29.542   Successfully installed the file.
+2026-10-28 15:24:29.542   -- File entry --
+2026-10-28 15:24:29.543   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QE57_IO_PLUGIN.dll
+2026-10-28 15:24:29.543   Time stamp of our file: 2024-07-03 22:51:44.000
+2026-10-28 15:24:29.543   Installing the file.
+2026-10-28 15:24:29.585   Successfully installed the file.
+2026-10-28 15:24:29.585   -- File entry --
+2026-10-28 15:24:29.586   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QEDL_GL_PLUGIN.dll
+2026-10-28 15:24:29.586   Time stamp of our file: 2024-07-03 22:51:56.000
+2026-10-28 15:24:29.586   Installing the file.
+2026-10-28 15:24:29.588   Successfully installed the file.
+2026-10-28 15:24:29.588   -- File entry --
+2026-10-28 15:24:29.589   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QELLIPSER_PLUGIN.dll
+2026-10-28 15:24:29.589   Time stamp of our file: 2024-07-03 22:52:26.000
+2026-10-28 15:24:29.589   Installing the file.
+2026-10-28 15:24:29.594   Successfully installed the file.
+2026-10-28 15:24:29.594   -- File entry --
+2026-10-28 15:24:29.594   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QFACETS_PLUGIN.dll
+2026-10-28 15:24:29.595   Time stamp of our file: 2024-07-03 22:51:50.000
+2026-10-28 15:24:29.595   Installing the file.
+2026-10-28 15:24:29.602   Successfully installed the file.
+2026-10-28 15:24:29.603   -- File entry --
+2026-10-28 15:24:29.603   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QFBX_IO_PLUGIN.dll
+2026-10-28 15:24:29.603   Time stamp of our file: 2024-07-03 22:51:44.000
+2026-10-28 15:24:29.603   Installing the file.
+2026-10-28 15:24:29.770   Successfully installed the file.
+2026-10-28 15:24:29.770   -- File entry --
+2026-10-28 15:24:29.770   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QHOUGH_NORMALS_PLUGIN.dll
+2026-10-28 15:24:29.770   Time stamp of our file: 2024-07-03 22:51:36.000
+2026-10-28 15:24:29.770   Installing the file.
+2026-10-28 15:24:29.773   Successfully installed the file.
+2026-10-28 15:24:29.773   -- File entry --
+2026-10-28 15:24:29.773   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QHPR_PLUGIN.dll
+2026-10-28 15:24:29.774   Time stamp of our file: 2024-07-03 22:51:50.000
+2026-10-28 15:24:29.774   Installing the file.
+2026-10-28 15:24:29.784   Successfully installed the file.
+2026-10-28 15:24:29.784   -- File entry --
+2026-10-28 15:24:29.784   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QJSON_RPC_PLUGIN.dll
+2026-10-28 15:24:29.785   Time stamp of our file: 2024-07-03 22:51:34.000
+2026-10-28 15:24:29.785   Installing the file.
+2026-10-28 15:24:29.787   Successfully installed the file.
+2026-10-28 15:24:29.787   -- File entry --
+2026-10-28 15:24:29.787   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QLAS_IO_PLUGIN.dll
+2026-10-28 15:24:29.787   Time stamp of our file: 2024-07-03 22:52:36.000
+2026-10-28 15:24:29.787   Installing the file.
+2026-10-28 15:24:29.794   Successfully installed the file.
+2026-10-28 15:24:29.794   -- File entry --
+2026-10-28 15:24:29.794   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QM3C2_PLUGIN.dll
+2026-10-28 15:24:29.794   Time stamp of our file: 2024-07-03 22:52:26.000
+2026-10-28 15:24:29.794   Installing the file.
+2026-10-28 15:24:29.803   Successfully installed the file.
+2026-10-28 15:24:29.803   -- File entry --
+2026-10-28 15:24:29.803   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QMANUAL_SEG_PLUGIN.dll
+2026-10-28 15:24:29.803   Time stamp of our file: 2024-07-03 22:52:34.000
+2026-10-28 15:24:29.803   Installing the file.
+2026-10-28 15:24:29.847   Successfully installed the file.
+2026-10-28 15:24:29.847   -- File entry --
+2026-10-28 15:24:29.848   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QMESH_BOOLEAN_PLUGIN.dll
+2026-10-28 15:24:29.848   Time stamp of our file: 2024-07-03 22:53:18.000
+2026-10-28 15:24:29.848   Installing the file.
+2026-10-28 15:24:29.876   Successfully installed the file.
+2026-10-28 15:24:29.876   -- File entry --
+2026-10-28 15:24:29.876   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QMPLANE_PLUGIN.dll
+2026-10-28 15:24:29.877   Time stamp of our file: 2024-07-03 22:52:34.000
+2026-10-28 15:24:29.877   Installing the file.
+2026-10-28 15:24:29.880   Successfully installed the file.
+2026-10-28 15:24:29.880   -- File entry --
+2026-10-28 15:24:29.880   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QPCL_IO_PLUGIN.dll
+2026-10-28 15:24:29.881   Time stamp of our file: 2024-07-03 22:53:22.000
+2026-10-28 15:24:29.881   Installing the file.
+2026-10-28 15:24:29.887   Successfully installed the file.
+2026-10-28 15:24:29.887   -- File entry --
+2026-10-28 15:24:29.887   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QPCL_PLUGIN.dll
+2026-10-28 15:24:29.887   Time stamp of our file: 2024-07-03 22:54:28.000
+2026-10-28 15:24:29.887   Installing the file.
+2026-10-28 15:24:29.903   Successfully installed the file.
+2026-10-28 15:24:29.903   -- File entry --
+2026-10-28 15:24:29.903   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QPCV_PLUGIN.dll
+2026-10-28 15:24:29.903   Time stamp of our file: 2024-07-03 22:51:56.000
+2026-10-28 15:24:29.903   Installing the file.
+2026-10-28 15:24:29.906   Successfully installed the file.
+2026-10-28 15:24:29.906   -- File entry --
+2026-10-28 15:24:29.907   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QPHOTOSCAN_IO_PLUGIN.dll
+2026-10-28 15:24:29.907   Time stamp of our file: 2024-07-03 22:51:50.000
+2026-10-28 15:24:29.907   Installing the file.
+2026-10-28 15:24:29.911   Successfully installed the file.
+2026-10-28 15:24:29.911   -- File entry --
+2026-10-28 15:24:29.912   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QPOISSON_RECON_PLUGIN.dll
+2026-10-28 15:24:29.912   Time stamp of our file: 2024-07-03 22:51:58.000
+2026-10-28 15:24:29.912   Installing the file.
+2026-10-28 15:24:29.934   Successfully installed the file.
+2026-10-28 15:24:29.934   -- File entry --
+2026-10-28 15:24:29.934   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QRANSAC_SD_PLUGIN.dll
+2026-10-28 15:24:29.935   Time stamp of our file: 2024-07-03 22:51:58.000
+2026-10-28 15:24:29.935   Installing the file.
+2026-10-28 15:24:29.955   Successfully installed the file.
+2026-10-28 15:24:29.955   -- File entry --
+2026-10-28 15:24:29.955   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QRDB_IO_PLUGIN.dll
+2026-10-28 15:24:29.955   Time stamp of our file: 2024-07-03 22:51:58.000
+2026-10-28 15:24:29.955   Installing the file.
+2026-10-28 15:24:29.958   Successfully installed the file.
+2026-10-28 15:24:29.958   -- File entry --
+2026-10-28 15:24:29.958   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QRIEGL_IO_PLUGIN.dll
+2026-10-28 15:24:29.958   Time stamp of our file: 2024-07-03 22:52:42.000
+2026-10-28 15:24:29.958   Installing the file.
+2026-10-28 15:24:29.960   Successfully installed the file.
+2026-10-28 15:24:29.960   -- File entry --
+2026-10-28 15:24:29.960   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QSRA_PLUGIN.dll
+2026-10-28 15:24:29.961   Time stamp of our file: 2024-07-03 22:52:40.000
+2026-10-28 15:24:29.961   Installing the file.
+2026-10-28 15:24:29.971   Successfully installed the file.
+2026-10-28 15:24:29.971   -- File entry --
+2026-10-28 15:24:29.972   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QSSAO_GL_PLUGIN.dll
+2026-10-28 15:24:29.972   Time stamp of our file: 2024-07-03 22:51:56.000
+2026-10-28 15:24:29.972   Installing the file.
+2026-10-28 15:24:29.974   Successfully installed the file.
+2026-10-28 15:24:29.974   -- File entry --
+2026-10-28 15:24:29.974   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QSTEP_IO_PLUGIN.dll
+2026-10-28 15:24:29.975   Time stamp of our file: 2024-07-03 22:52:58.000
+2026-10-28 15:24:29.975   Installing the file.
+2026-10-28 15:24:29.977   Successfully installed the file.
+2026-10-28 15:24:29.977   -- File entry --
+2026-10-28 15:24:29.977   Dest filename: C:\tools\CloudCompare-2.13.2\plugins\QTREEISO_PLUGIN.dll
+2026-10-28 15:24:29.978   Time stamp of our file: 2024-07-06 12:03:00.000
+2026-10-28 15:24:29.978   Installing the file.
+2026-10-28 15:24:29.995   Successfully installed the file.
+2026-10-28 15:24:29.995   -- File entry --
+2026-10-28 15:24:29.996   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\Bilateral\bilateral.frag
+2026-10-28 15:24:29.996   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:29.996   Installing the file.
+2026-10-28 15:24:29.996   Creating directory: C:\tools\CloudCompare-2.13.2\shaders
+2026-10-28 15:24:29.996   Creating directory: C:\tools\CloudCompare-2.13.2\shaders\Bilateral
+2026-10-28 15:24:29.997   Successfully installed the file.
+2026-10-28 15:24:29.998   -- File entry --
+2026-10-28 15:24:29.998   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\Bilateral\bilateral.vert
+2026-10-28 15:24:29.998   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:29.998   Installing the file.
+2026-10-28 15:24:29.999   Successfully installed the file.
+2026-10-28 15:24:29.999   -- File entry --
+2026-10-28 15:24:29.999   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\ColorRamp\color_ramp.frag
+2026-10-28 15:24:29.999   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:29.999   Installing the file.
+2026-10-28 15:24:29.999   Creating directory: C:\tools\CloudCompare-2.13.2\shaders\ColorRamp
+2026-10-28 15:24:30.000   Successfully installed the file.
+2026-10-28 15:24:30.000   -- File entry --
+2026-10-28 15:24:30.001   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\DrawNormals\DrawNormals.fs
+2026-10-28 15:24:30.001   Time stamp of our file: 2024-03-20 20:43:54.000
+2026-10-28 15:24:30.001   Installing the file.
+2026-10-28 15:24:30.001   Creating directory: C:\tools\CloudCompare-2.13.2\shaders\DrawNormals
+2026-10-28 15:24:30.002   Successfully installed the file.
+2026-10-28 15:24:30.002   -- File entry --
+2026-10-28 15:24:30.002   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\DrawNormals\DrawNormals.gs
+2026-10-28 15:24:30.002   Time stamp of our file: 2024-03-20 20:43:54.000
+2026-10-28 15:24:30.002   Installing the file.
+2026-10-28 15:24:30.003   Successfully installed the file.
+2026-10-28 15:24:30.003   -- File entry --
+2026-10-28 15:24:30.003   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\DrawNormals\DrawNormals.vs
+2026-10-28 15:24:30.003   Time stamp of our file: 2024-03-20 20:43:54.000
+2026-10-28 15:24:30.003   Installing the file.
+2026-10-28 15:24:30.015   Successfully installed the file.
+2026-10-28 15:24:30.015   -- File entry --
+2026-10-28 15:24:30.015   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\EDL\edl_mix.frag
+2026-10-28 15:24:30.015   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:30.015   Installing the file.
+2026-10-28 15:24:30.015   Creating directory: C:\tools\CloudCompare-2.13.2\shaders\EDL
+2026-10-28 15:24:30.020   Successfully installed the file.
+2026-10-28 15:24:30.020   -- File entry --
+2026-10-28 15:24:30.020   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\EDL\edl_mix.vert
+2026-10-28 15:24:30.020   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:30.020   Installing the file.
+2026-10-28 15:24:30.021   Successfully installed the file.
+2026-10-28 15:24:30.021   -- File entry --
+2026-10-28 15:24:30.021   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\EDL\edl_shade.frag
+2026-10-28 15:24:30.021   Time stamp of our file: 2024-03-20 20:43:48.000
+2026-10-28 15:24:30.021   Installing the file.
+2026-10-28 15:24:30.022   Successfully installed the file.
+2026-10-28 15:24:30.022   -- File entry --
+2026-10-28 15:24:30.022   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\EDL\edl_shade.vert
+2026-10-28 15:24:30.023   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:30.023   Installing the file.
+2026-10-28 15:24:30.078   Successfully installed the file.
+2026-10-28 15:24:30.078   -- File entry --
+2026-10-28 15:24:30.078   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\SSAO\ssao.frag
+2026-10-28 15:24:30.079   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:30.079   Installing the file.
+2026-10-28 15:24:30.079   Creating directory: C:\tools\CloudCompare-2.13.2\shaders\SSAO
+2026-10-28 15:24:30.080   Successfully installed the file.
+2026-10-28 15:24:30.080   -- File entry --
+2026-10-28 15:24:30.081   Dest filename: C:\tools\CloudCompare-2.13.2\shaders\SSAO\ssao.vert
+2026-10-28 15:24:30.081   Time stamp of our file: 2020-09-06 16:53:56.000
+2026-10-28 15:24:30.081   Installing the file.
+2026-10-28 15:24:30.082   Successfully installed the file.
+2026-10-28 15:24:30.082   -- File entry --
+2026-10-28 15:24:30.083   Dest filename: C:\tools\CloudCompare-2.13.2\styles\qwindowsvistastyle.dll
+2026-10-28 15:24:30.083   Time stamp of our file: 2020-11-06 07:30:32.000
+2026-10-28 15:24:30.083   Installing the file.
+2026-10-28 15:24:30.083   Creating directory: C:\tools\CloudCompare-2.13.2\styles
+2026-10-28 15:24:30.088   Successfully installed the file.
+2026-10-28 15:24:30.089   -- File entry --
+2026-10-28 15:24:30.089   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_chs.qm
+2026-10-28 15:24:30.089   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.089   Installing the file.
+2026-10-28 15:24:30.089   Creating directory: C:\tools\CloudCompare-2.13.2\translations
+2026-10-28 15:24:30.096   Successfully installed the file.
+2026-10-28 15:24:30.096   -- File entry --
+2026-10-28 15:24:30.096   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_de.qm
+2026-10-28 15:24:30.096   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.096   Installing the file.
+2026-10-28 15:24:30.102   Successfully installed the file.
+2026-10-28 15:24:30.102   -- File entry --
+2026-10-28 15:24:30.102   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_es_AR.qm
+2026-10-28 15:24:30.102   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.102   Installing the file.
+2026-10-28 15:24:30.113   Successfully installed the file.
+2026-10-28 15:24:30.114   -- File entry --
+2026-10-28 15:24:30.114   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_fr.qm
+2026-10-28 15:24:30.114   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.114   Installing the file.
+2026-10-28 15:24:30.137   Successfully installed the file.
+2026-10-28 15:24:30.137   -- File entry --
+2026-10-28 15:24:30.137   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_ja.qm
+2026-10-28 15:24:30.137   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.137   Installing the file.
+2026-10-28 15:24:30.139   Successfully installed the file.
+2026-10-28 15:24:30.139   -- File entry --
+2026-10-28 15:24:30.139   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_ko.qm
+2026-10-28 15:24:30.139   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.139   Installing the file.
+2026-10-28 15:24:30.149   Successfully installed the file.
+2026-10-28 15:24:30.149   -- File entry --
+2026-10-28 15:24:30.149   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_kr.qm
+2026-10-28 15:24:30.149   Time stamp of our file: 2023-10-29 20:47:08.000
+2026-10-28 15:24:30.149   Installing the file.
+2026-10-28 15:24:30.153   Successfully installed the file.
+2026-10-28 15:24:30.153   -- File entry --
+2026-10-28 15:24:30.154   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_pt.qm
+2026-10-28 15:24:30.154   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.154   Installing the file.
+2026-10-28 15:24:30.168   Successfully installed the file.
+2026-10-28 15:24:30.168   -- File entry --
+2026-10-28 15:24:30.168   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_ru.qm
+2026-10-28 15:24:30.169   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.169   Installing the file.
+2026-10-28 15:24:30.175   Successfully installed the file.
+2026-10-28 15:24:30.175   -- File entry --
+2026-10-28 15:24:30.175   Dest filename: C:\tools\CloudCompare-2.13.2\translations\CloudCompare_zh.qm
+2026-10-28 15:24:30.175   Time stamp of our file: 2024-06-30 22:19:44.000
+2026-10-28 15:24:30.175   Installing the file.
+2026-10-28 15:24:30.179   Successfully installed the file.
+2026-10-28 15:24:30.179   -- File entry --
+2026-10-28 15:24:30.179   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_ar.qm
+2026-10-28 15:24:30.179   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.179   Installing the file.
+2026-10-28 15:24:30.183   Successfully installed the file.
+2026-10-28 15:24:30.183   -- File entry --
+2026-10-28 15:24:30.183   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_bg.qm
+2026-10-28 15:24:30.184   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.184   Installing the file.
+2026-10-28 15:24:30.187   Successfully installed the file.
+2026-10-28 15:24:30.187   -- File entry --
+2026-10-28 15:24:30.187   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_ca.qm
+2026-10-28 15:24:30.187   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.187   Installing the file.
+2026-10-28 15:24:30.191   Successfully installed the file.
+2026-10-28 15:24:30.191   -- File entry --
+2026-10-28 15:24:30.191   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_cs.qm
+2026-10-28 15:24:30.191   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.191   Installing the file.
+2026-10-28 15:24:30.194   Successfully installed the file.
+2026-10-28 15:24:30.194   -- File entry --
+2026-10-28 15:24:30.194   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_da.qm
+2026-10-28 15:24:30.194   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.194   Installing the file.
+2026-10-28 15:24:30.197   Successfully installed the file.
+2026-10-28 15:24:30.197   -- File entry --
+2026-10-28 15:24:30.198   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_de.qm
+2026-10-28 15:24:30.198   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.198   Installing the file.
+2026-10-28 15:24:30.202   Successfully installed the file.
+2026-10-28 15:24:30.203   -- File entry --
+2026-10-28 15:24:30.203   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_en.qm
+2026-10-28 15:24:30.203   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.203   Installing the file.
+2026-10-28 15:24:30.204   Successfully installed the file.
+2026-10-28 15:24:30.204   -- File entry --
+2026-10-28 15:24:30.204   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_es.qm
+2026-10-28 15:24:30.204   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.204   Installing the file.
+2026-10-28 15:24:30.207   Successfully installed the file.
+2026-10-28 15:24:30.207   -- File entry --
+2026-10-28 15:24:30.207   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_fi.qm
+2026-10-28 15:24:30.207   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.207   Installing the file.
+2026-10-28 15:24:30.211   Successfully installed the file.
+2026-10-28 15:24:30.211   -- File entry --
+2026-10-28 15:24:30.211   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_fr.qm
+2026-10-28 15:24:30.211   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.211   Installing the file.
+2026-10-28 15:24:30.215   Successfully installed the file.
+2026-10-28 15:24:30.215   -- File entry --
+2026-10-28 15:24:30.215   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_gd.qm
+2026-10-28 15:24:30.215   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.215   Installing the file.
+2026-10-28 15:24:30.219   Successfully installed the file.
+2026-10-28 15:24:30.219   -- File entry --
+2026-10-28 15:24:30.219   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_he.qm
+2026-10-28 15:24:30.219   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.219   Installing the file.
+2026-10-28 15:24:30.222   Successfully installed the file.
+2026-10-28 15:24:30.222   -- File entry --
+2026-10-28 15:24:30.222   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_hu.qm
+2026-10-28 15:24:30.222   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.222   Installing the file.
+2026-10-28 15:24:30.226   Successfully installed the file.
+2026-10-28 15:24:30.226   -- File entry --
+2026-10-28 15:24:30.226   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_it.qm
+2026-10-28 15:24:30.226   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.226   Installing the file.
+2026-10-28 15:24:30.228   Successfully installed the file.
+2026-10-28 15:24:30.229   -- File entry --
+2026-10-28 15:24:30.229   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_ja.qm
+2026-10-28 15:24:30.229   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.229   Installing the file.
+2026-10-28 15:24:30.231   Successfully installed the file.
+2026-10-28 15:24:30.231   -- File entry --
+2026-10-28 15:24:30.231   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_ko.qm
+2026-10-28 15:24:30.231   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.231   Installing the file.
+2026-10-28 15:24:30.235   Successfully installed the file.
+2026-10-28 15:24:30.235   -- File entry --
+2026-10-28 15:24:30.235   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_lv.qm
+2026-10-28 15:24:30.236   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.236   Installing the file.
+2026-10-28 15:24:30.247   Successfully installed the file.
+2026-10-28 15:24:30.247   -- File entry --
+2026-10-28 15:24:30.247   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_pl.qm
+2026-10-28 15:24:30.247   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.247   Installing the file.
+2026-10-28 15:24:30.250   Successfully installed the file.
+2026-10-28 15:24:30.250   -- File entry --
+2026-10-28 15:24:30.250   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_ru.qm
+2026-10-28 15:24:30.251   Time stamp of our file: 2024-06-30 22:19:42.000
+2026-10-28 15:24:30.251   Installing the file.
+2026-10-28 15:24:30.254   Successfully installed the file.
+2026-10-28 15:24:30.254   -- File entry --
+2026-10-28 15:24:30.254   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_sk.qm
+2026-10-28 15:24:30.254   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.254   Installing the file.
+2026-10-28 15:24:30.257   Successfully installed the file.
+2026-10-28 15:24:30.257   -- File entry --
+2026-10-28 15:24:30.257   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_tr.qm
+2026-10-28 15:24:30.257   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.257   Installing the file.
+2026-10-28 15:24:30.263   Successfully installed the file.
+2026-10-28 15:24:30.263   -- File entry --
+2026-10-28 15:24:30.264   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_uk.qm
+2026-10-28 15:24:30.264   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.264   Installing the file.
+2026-10-28 15:24:30.266   Successfully installed the file.
+2026-10-28 15:24:30.267   -- File entry --
+2026-10-28 15:24:30.267   Dest filename: C:\tools\CloudCompare-2.13.2\translations\qt_zh_TW.qm
+2026-10-28 15:24:30.267   Time stamp of our file: 2024-07-06 12:06:10.000
+2026-10-28 15:24:30.267   Installing the file.
+2026-10-28 15:24:30.270   Successfully installed the file.
+2026-10-28 15:24:30.270   -- File entry --
+2026-10-28 15:24:30.270   Dest filename: C:\Users\Shoung\AppData\Local\Temp\is-7P61E.tmp\vcredist_2013_x64.exe
+2026-10-28 15:24:30.270   Time stamp of our file: 2017-04-26 21:18:18.000
+2026-10-28 15:24:30.270   Installing the file.
+2026-10-28 15:24:30.368   Successfully installed the file.
+2026-10-28 15:24:30.368   -- File entry --
+2026-10-28 15:24:30.368   Dest filename: C:\Users\Shoung\AppData\Local\Temp\is-7P61E.tmp\vcredist_all_x64.exe
+2026-10-28 15:24:30.368   Time stamp of our file: 2021-03-27 10:06:12.000
+2026-10-28 15:24:30.368   Installing the file.
+2026-10-28 15:24:30.583   Successfully installed the file.
+2026-10-28 15:24:30.606   -- Icon entry --
+2026-10-28 15:24:30.606   Dest filename: C:\ProgramData\Microsoft\Windows\Start Menu\Programs\CloudCompare\CloudCompare.lnk
+2026-10-28 15:24:30.606   Creating directory: C:\ProgramData\Microsoft\Windows\Start Menu\Programs\CloudCompare
+2026-10-28 15:24:30.610   Creating the icon.
+2026-10-28 15:24:30.681   Successfully created the icon.
+2026-10-28 15:24:30.684   -- Icon entry --
+2026-10-28 15:24:30.685   Dest filename: C:\Users\Public\Desktop\CloudCompare.lnk
+2026-10-28 15:24:30.685   Creating the icon.
+2026-10-28 15:24:30.686   Successfully created the icon.
+2026-10-28 15:24:30.694   Saving uninstall information.
+2026-10-28 15:24:30.694   Writing uninstaller messages: C:\tools\CloudCompare-2.13.2\unins000.msg
+2026-10-28 15:24:30.694   Creating new uninstall key: HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall\{4DE0A2C8-03F9-4B3F-BAFC-1D5F2141464B}_is1
+2026-10-28 15:24:30.695   Writing uninstall key values.
+2026-10-28 15:24:30.695   Detected previous non administrative install? No
+2026-10-28 15:24:30.695   Detected previous administrative 32-bit install? No
+2026-10-28 15:24:30.699   Installation process succeeded.
+2026-10-28 15:24:30.706   -- Run entry --
+2026-10-28 15:24:30.706   Run as: Current user
+2026-10-28 15:24:30.706   Type: Exec
+2026-10-28 15:24:30.706   Filename: C:\Users\Shoung\AppData\Local\Temp\is-7P61E.tmp\vcredist_2013_x64.exe
+2026-10-28 15:24:30.706   Parameters: /install /quiet /norestart
+2026-10-28 15:24:31.486   Process exit code: 0
+2026-10-28 15:24:31.486   -- Run entry --
+2026-10-28 15:24:31.486   Run as: Current user
+2026-10-28 15:24:31.486   Type: Exec
+2026-10-28 15:24:31.486   Filename: C:\Users\Shoung\AppData\Local\Temp\is-7P61E.tmp\vcredist_all_x64.exe
+2026-10-28 15:24:31.486   Parameters: /install /quiet /norestart
+2026-10-28 15:24:31.877   Process exit code: 1638
+2026-10-28 15:24:31.878   Need to restart Windows? No
+2026-10-28 15:24:31.880   Deinitializing Setup.
+2026-10-28 15:24:31.891   Log closed.

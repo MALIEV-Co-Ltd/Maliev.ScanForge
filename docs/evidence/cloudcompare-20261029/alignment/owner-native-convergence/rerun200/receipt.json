@@ -1,0 +1,45 @@
+{
+  "case": "rerun200:20",
+  "initialMatrix": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\owner-native-convergence\\200\\moving_REGISTRATION_MATRIX.txt",
+  "arguments": [
+    "-SILENT",
+    "-LOG_FILE",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\owner-native-convergence\\rerun200\\native.log",
+    "-AUTO_SAVE",
+    "OFF",
+    "-NO_TIMESTAMP",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\owner-native-convergence\\rerun200\\moving.ply",
+    "-APPLY_TRANS",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\owner-native-convergence\\200\\moving_REGISTRATION_MATRIX.txt",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\owner-native-convergence\\rerun200\\fixed.ply",
+    "-ICP",
+    "-OVERLAP",
+    "15",
+    "-ITER",
+    "20",
+    "-RANDOM_SAMPLING_LIMIT",
+    "20000",
+    "-MAX_TCOUNT",
+    "2"
+  ],
+  "durationSeconds": 10.646,
+  "deadlineSeconds": 600,
+  "error": null,
+  "observations": [
+    {
+      "elapsedSeconds": 10.01,
+      "lastLines": [
+        "[08:15:45] [ICP]",
+        "[08:15:45] [ICP][Partial overlap] Selecting 24986 points out of 49929 (50%) for registration",
+        "[08:15:45] [ICP] Will use 2 threads"
+      ]
+    }
+  ],
+  "executableSha256": "6f79a0e283b06c48e618df145c0a26d0da39c798b19d08c3e934c07e6212172c",
+  "inputHashes": {
+    "moving.ply": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+    "fixed.ply": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "evidenceType": "bounded deterministic source sample; independent three-mesh-bvh closest-surface verification against complete owner target mesh",
+  "inputs": {
+    "ply-2.ply": {
+      "bytes": 68084515,
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f"
+    },
+    "ply-1.ply": {
+      "bytes": 6926970,
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+    }
+  },
+  "sourcePoints": 1375494,
+  "targetPoints": 140113,
+  "targetTriangles": 274154,
+  "sample": {
+    "count": 5000,
+    "selection": "vertex floor(i * sourcePointCount / 5000), i=0..4999",
+    "fittingSamples": 2000,
+    "maxIterations": 3
+  },
+  "initial": {
+    "evaluatedPoints": 5000,
+    "wholeSourceRmsMm": 1.6707727719938874,
+    "closest15PercentRmsMm": 0.02617020807271675,
+    "closest85PercentRmsMm": 1.3688573159467323,
+    "compatibleWithin10mm": 1626,
+    "required15PercentPoints": 750,
+    "compatible15PercentSatisfied": true,
+    "compatible15PercentRmsMm": 0.026262000943075,
+    "compatible85PercentAvailableSubsetRmsMm": 0.7586762559923309
+  },
+  "native85": {
+    "independentlyMeasured": {
+      "evaluatedPoints": 5000,
+      "wholeSourceRmsMm": 1.144458850514471,
+      "closest15PercentRmsMm": 0.11158207626812824,
+      "closest85PercentRmsMm": 0.7844100696863853,
+      "compatibleWithin10mm": 745,
+      "required15PercentPoints": 750,
+      "compatible15PercentSatisfied": false,
+      "compatible15PercentRmsMm": 0.6539501278737354,
+      "compatible85PercentAvailableSubsetRmsMm": 0.6539501278737354
+    },
+    "transform": {
+      "rotation": [
+        0.999999701977, -0.00023477638, 0.000757883128, 0.000234505977,
+        0.999999880791, 0.000356846082, -0.000757966831, -0.000356668257,
+        0.999999642372
+      ],
+      "translation": [1.365176558495, -0.792845726013, -2.214140892029]
+    }
+  },
+  "scanforge15": {
+    "independentlyMeasured": {
+      "evaluatedPoints": 5000,
+      "wholeSourceRmsMm": 1.6707853296679525,
+      "closest15PercentRmsMm": 0.026037066136702886,
+      "closest85PercentRmsMm": 1.3689473185119703,
+      "compatibleWithin10mm": 1626,
+      "required15PercentPoints": 750,
+      "compatible15PercentSatisfied": true,
+      "compatible15PercentRmsMm": 0.026125063517701958,
+      "compatible85PercentAvailableSubsetRmsMm": 0.758837789353261
+    },
+    "registration": {
+      "transform": {
+        "rotation": [
+          0.9999999984522359, 0.00005219149559392788, -0.000019276310217082917,
+          -0.00005219185770230358, 0.9999999984615645, -0.00001878512454806246,
+          0.000019275329763682477, 0.000018786130585427392, 0.9999999996377715
+        ],
+        "translation": [
+          -0.005609654902471561, -0.005862880001988202, -0.00005246162595540227
+        ]
+      },
+      "rms": 1.6707848579740294,
+      "wholeCloudRms": 1.6707848579740294,
+      "overlapRms": 0.026125015281753813,
+      "overlapPoints": 750,
+      "requiredOverlapPoints": 750,
+      "overlapSatisfied": true,
+      "rejectedNormalPoints": 3381,
+      "maxError": 3.3898296358673754,
+      "pairs": 5000,
+      "evaluatedPoints": 5000,
+      "targetPoints": 140113,
+      "rejectedPoints": 3381,
+      "overlapFraction": 0.3238,
+      "inlierPairs": 750,
+      "inlierRms": 0.026125015281753813,
+      "iterations": 1,
+      "converged": true,
+      "targetRms": 0.5,
+      "targetReached": true,
+      "terminationReason": "targetReached",
+      "matching": "fullTargetSurface",
+      "normalCompatibility": true,
+      "applied": true,
+      "targetRmsBasis": "overlap",
+      "overlapPercent": 15,
+      "sampleSize": 2000,
+      "fittingSamples": 2000
+    }
+  },
+  "scanforge85": {
+    "independentlyMeasured": {
+      "evaluatedPoints": 5000,
+      "wholeSourceRmsMm": 1.6707727719938874,
+      "closest15PercentRmsMm": 0.02617020807271675,
+      "closest85PercentRmsMm": 1.3688573159467323,
+      "compatibleWithin10mm": 1626,
+      "required15PercentPoints": 750,
+      "compatible15PercentSatisfied": true,
+      "compatible15PercentRmsMm": 0.026262000943075,
+      "compatible85PercentAvailableSubsetRmsMm": 0.7586762559923309
+    },
+    "registration": {
+      "transform": {
+        "rotation": [1, 0, 0, 0, 1, 0, 0, 0, 1],
+        "translation": [0, 0, 0]
+      },
+      "rms": 1.6707723828578671,
+      "wholeCloudRms": 1.6707723828578671,
+      "overlapRms": 0.7487315280981577,
+      "overlapPoints": 1620,
+      "requiredOverlapPoints": 4250,
+      "overlapSatisfied": false,
+      "rejectedNormalPoints": 3380,
+      "maxError": 3.3902366508513673,
+      "pairs": 5000,
+      "evaluatedPoints": 5000,
+      "targetPoints": 140113,
+      "rejectedPoints": 3380,
+      "overlapFraction": 0.324,
+      "inlierPairs": 1620,
+      "inlierRms": 0.7487315280981577,
+      "iterations": 0,
+      "converged": false,
+      "targetRms": 0.5,
+      "targetReached": false,
+      "terminationReason": "insufficientOverlap",
+      "matching": "fullTargetSurface",
+      "normalCompatibility": true,
+      "applied": false,
+      "targetRmsBasis": "overlap",
+      "overlapPercent": 85,
+      "sampleSize": 2000,
+      "fittingSamples": 2000
+    }
+  },
+  "limits": [
+    "Sample-only evidence; does not replace the failed full-source 300-second ScanForge test.",
+    "Owner scan correspondence truth is unknown; nearest-surface residual improvement does not prove correct physical registration.",
+    "Native85 transform was fit by a separate native mesh sampling workflow; sample sets, normals policy, overlap and stopping differ.",
+    "three-mesh-bvh verification is independent of ScanForge solver target query and RMS; compatible-subset metrics describe available matches even when requested85 percent coverage is not present.",
+    "Deterministic input-order sampling is not an area-weighted or random sampling certificate.",
+    "Independent BVH and solver normal-compatible counts differ by a few points; nearest-triangle/normal handling is a possible explanation that was not adjudicated."
+  ]
+}

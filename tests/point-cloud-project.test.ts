@@ -21,6 +21,10 @@ const cloud: Entity = {
   visible: true,
   opacity: 1,
   color: "#abcdef",
+  pointSize: 3,
+  pointColorMode: "solid",
+  pointAutoDensity: false,
+  pointDensity: 25,
 };
 it("round trips points and scanner normals through JSON and binary projects with history", async () => {
   const json = serializeProject("Scan", [cloud]);
@@ -43,11 +47,72 @@ it("round trips points and scanner normals through JSON and binary projects with
   };
   const decoded = await decodeProjectFile(await encodeProjectFile(session));
   expect(decoded.project.entities[0].normals).toEqual(cloud.normals);
+  expect(decoded.project.entities[0]).toMatchObject({
+    pointAutoDensity: false,
+    pointDensity: 25,
+    pointSize: 3,
+    pointColorMode: "solid",
+  });
+  expect(parseProject(json).entities[0]).toMatchObject({
+    pointAutoDensity: false,
+    pointDensity: 25,
+    pointSize: 3,
+    pointColorMode: "solid",
+  });
   expect(decoded.history[0].entities[0].positions).toEqual(cloud.positions);
 });
 it("does not export point triples as STL triangles", () => {
   const stl = exportStl([cloud]);
   expect(stl.getUint32(80, true)).toBe(0);
+});
+
+it("migrates legacy neutral cloud defaults but retains explicit solid and source appearance", async () => {
+  for (const color of ["#ffffff", "#a6a6a6"]) {
+    const legacy = { ...cloud, color, pointColorMode: undefined };
+    expect(
+      parseProject(serializeProject("Legacy", [legacy])).entities[0],
+    ).toMatchObject({ color: "#aaff00", pointColorMode: "solid" });
+    const restored = await decodeProjectFile(
+      await encodeProjectFile({
+        project: {
+          format: "maliev-scanforge",
+          version: 1,
+          name: "Legacy",
+          units: "mm",
+          entities: [legacy],
+        },
+        history: [{ label: "Import", entities: [legacy] }],
+        future: [],
+      }),
+    );
+    expect(restored.project.entities[0]).toMatchObject({
+      color: "#aaff00",
+      pointColorMode: "solid",
+    });
+    expect(restored.history[0].entities[0]).toMatchObject({
+      color: "#aaff00",
+      pointColorMode: "solid",
+    });
+    for (const pointColorMode of ["solid", "source"] as const)
+      expect(
+        parseProject(
+          serializeProject("Authored", [{ ...legacy, pointColorMode }]),
+        ).entities[0],
+      ).toMatchObject({ color, pointColorMode });
+  }
+});
+
+it("rejects invalid adaptive settings at the project boundary", () => {
+  for (const patch of [
+    { pointDensity: 0 },
+    { pointDensity: 101 },
+    { pointAutoDensity: "yes" },
+  ])
+    expect(() =>
+      parseProject(
+        serializeProject("Scan", [{ ...cloud, ...patch } as Entity]),
+      ),
+    ).toThrow();
 });
 it("aligns a point cloud and rotates its normals while keeping the fixed target unchanged", () => {
   const moving = {

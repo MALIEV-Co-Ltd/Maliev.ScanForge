@@ -1,5 +1,7 @@
 import type { ScanRenderData } from "./scan-render-data";
 import type { IndexedMesh, Positions } from "./types";
+import { indexedMeshMatches } from "./indexed-mesh";
+import { meshGeometryNormals } from "./mesh-geometry-normals";
 
 export interface ScanDisplayBuffers {
   positions: Positions;
@@ -43,21 +45,29 @@ export function scanDisplayBuffers(
     hiddenFaces.add(face);
   }
 
+  const indexedNormals =
+    indexedMesh && prepared?.indexedMesh === indexedMesh
+      ? prepared.normals
+      : indexedMesh?.geometryNormals &&
+          indexedMeshMatches(indexedMesh, positions)
+        ? meshGeometryNormals(indexedMesh)
+        : undefined;
   const compact =
     indexedMesh !== undefined &&
-    prepared?.indexedMesh === indexedMesh &&
-    indexedMesh.triangles instanceof Uint32Array &&
+    (indexedMesh.triangles instanceof Uint32Array ||
+      (Array.isArray(indexedMesh.triangles) &&
+        indexedMeshMatches(indexedMesh, positions))) &&
     indexedMesh.triangles.length > 0 &&
     indexedMesh.triangles.length % 3 === 0 &&
     indexedMesh.triangles.length * 3 === positions.length &&
     indexedMesh.vertices.length > 0 &&
     indexedMesh.vertices.length % 3 === 0 &&
-    prepared.normals instanceof Float32Array &&
-    prepared.normals.length === indexedMesh.vertices.length;
+    indexedNormals instanceof Float32Array &&
+    indexedNormals.length === indexedMesh.vertices.length;
   const indexed = compact && !forceExpanded;
   let normals: Float32Array | undefined;
   if (compact) {
-    normals = prepared.normals!;
+    normals = indexedNormals!;
     if (forceExpanded) {
       const source = new Uint32Array(
         normals.buffer,
@@ -81,8 +91,11 @@ export function scanDisplayBuffers(
   }
 
   let index: Uint32Array | undefined;
-  if (indexed && indexedMesh.triangles instanceof Uint32Array)
-    index = indexedMesh.triangles;
+  if (indexed)
+    index =
+      indexedMesh.triangles instanceof Uint32Array
+        ? indexedMesh.triangles
+        : Uint32Array.from(indexedMesh.triangles);
   let triangleSlots: number[] | undefined;
   if (hiddenFaces.size) {
     index = new Uint32Array((faces - hiddenFaces.size) * 3);

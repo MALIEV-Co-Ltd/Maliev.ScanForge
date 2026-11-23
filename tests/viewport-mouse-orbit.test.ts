@@ -277,7 +277,7 @@ it.each([false, true])(
     expect(view.mouseOrbitPointer).toBeUndefined();
     mesh.visible = false;
     view.pointerDown(down({ pointerId: 8 }));
-    expect(view.mouseOrbitPivot.equals(pivot)).toBe(true);
+    expect(view.mouseOrbitPivot.equals(target)).toBe(true);
   },
 );
 
@@ -296,7 +296,7 @@ it("ignores clipped surfaces when choosing the pivot", () => {
     new THREE.Plane(new THREE.Vector3(1, 0, 0), -100),
   ];
   view.pointerDown(down());
-  expect(view.mouseOrbitPivot).toBeUndefined();
+  expect(view.mouseOrbitPivot.toArray()).toEqual([0, 0, 0]);
 });
 
 it.each([false, true])(
@@ -395,4 +395,71 @@ it("rejects navigation setting changes during right-drag panning", () => {
   expect(() =>
     view.controlAgentView({ action: "navigation", orbitMode: "constrained" }),
   ).toThrow(/gesture/);
+});
+
+it("uses rendered point-cloud depth for large scans instead of retaining an old pivot", () => {
+  const { view } = fixture();
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(new Float32Array(30001 * 3), 3),
+  );
+  const cloud = new THREE.Points(
+    geometry,
+    new THREE.PointsMaterial({ size: 3 }),
+  );
+  const mesh = new THREE.Mesh();
+  mesh.visible = true;
+  view.objects = new Map([["cloud", { mesh, pointCloud: cloud }]]);
+  view.navigationDepthPoint = vi.fn(() => new THREE.Vector3(2, 1, 0));
+  view.pointerDown(down());
+  expect(view.navigationDepthPoint).toHaveBeenCalledWith(
+    [cloud],
+    expect.any(THREE.Vector2),
+  );
+  expect(view.mouseOrbitPivot.toArray()).toEqual([2, 1, 0]);
+});
+
+it.each([false, true])(
+  "uses screen center at model depth when both pointer and center miss (%s)",
+  (ortho) => {
+    const { view, camera, target, mesh } = fixture(ortho);
+    mesh.position.set(8, 0, -20);
+    mesh.updateMatrixWorld(true);
+    view.bounds = new THREE.Box3().setFromObject(mesh);
+    target.set(0, 0, 0); // Historical look-at depth is unrelated to the model at z=-20.
+    view.mouseOrbitPivot = new THREE.Vector3(9, 1, -19);
+    view.pointerDown(down({ clientX: 1, clientY: 1 }));
+    expect(view.mouseOrbitPivot.toArray()).toEqual([0, 0, -20]);
+    const projected = view.mouseOrbitPivot.clone().project(camera);
+    expect(projected.x).toBeCloseTo(0);
+    expect(projected.y).toBeCloseTo(0);
+  },
+);
+
+it("keeps the off-model pivot on the middle ray at model depth after rotating and panning the camera", () => {
+  const { view, camera, target } = fixture();
+  camera.position.set(10, -20, 30);
+  camera.lookAt(3, 4, 0);
+  camera.updateMatrixWorld();
+  target.set(3, 4, 0);
+  const modelCenter = new THREE.Vector3(20, 5, -50);
+  view.bounds = new THREE.Box3().setFromCenterAndSize(
+    modelCenter,
+    new THREE.Vector3(2, 2, 2),
+  );
+  view.navigationSurfacePoint = vi.fn(() => undefined);
+  view.pointerDown(down());
+  const pivot = view.mouseOrbitPivot;
+  const projected = pivot.clone().project(camera);
+  expect(projected.x).toBeCloseTo(0, 10);
+  expect(projected.y).toBeCloseTo(0, 10);
+  expect(
+    pivot
+      .clone()
+      .sub(modelCenter)
+      .dot(camera.getWorldDirection(new THREE.Vector3())),
+  ).toBeCloseTo(0, 10);
+  expect(pivot.distanceTo(modelCenter)).toBeGreaterThan(1);
+  expect(pivot.distanceTo(target)).toBeGreaterThan(1);
 });

@@ -1,0 +1,46 @@
+{
+  "scope": "Proposed acceptance gates for the full owner PLY1 reconstruction, fixed from source spacing before inspecting the reconstructed mesh. These are engineering scan-fidelity criteria, not a statement of physical scanner accuracy.",
+  "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+  "sourceVertices": 140113,
+  "sourceMedianMinimumIncidentEdgeLength": 0.2404683406850866,
+  "distanceUnits": "Source coordinate units; ScanForge treats imported coordinates as millimeters, but file units are not independently certified.",
+  "distanceGates": {
+    "sourceVerticesToMesh": {
+      "p95Maximum": 0.4809366813701732,
+      "p99Maximum": 0.9618733627403464
+    },
+    "meshVerticesToSourceTopology": {
+      "p95Maximum": 0.4809366813701732,
+      "p99Maximum": 0.9618733627403464
+    },
+    "meshFaceCentroidsToSourceTopology": {
+      "p95Maximum": 0.4809366813701732,
+      "p99Maximum": 0.9618733627403464
+    }
+  },
+  "rationale": "At least 95 percent of each complete directional sample set must remain within two measured source sample intervals; at least 99 percent within four. Maximum and RMS remain mandatory diagnostics. Filling an unsupported open region is counted as reverse-distance error, not silently excluded.",
+  "topologyGates": {
+    "nonManifoldEdgesMaximum": 0,
+    "nonManifoldVerticesMaximum": 0,
+    "inconsistentWindingEdgesMaximum": 0,
+    "degenerateTrianglesMaximum": 0,
+    "duplicateTrianglesMaximum": 0,
+    "nonAdjacentIntersectingTrianglePairsMaximum": 0,
+    "selfIntersectionAnalysisComplete": true
+  },
+  "sourceBaseline": {
+    "components": 23,
+    "boundaryEdges": 6074,
+    "nonManifoldVertices": 13,
+    "degenerateTriangles": 4,
+    "nonAdjacentIntersectingTrianglePairs": 32,
+    "invalidOrZeroSourceNormals": 2
+  },
+  "limitations": [
+    "The original PLY is a measured exchange reference, not physical ground truth.",
+    "These gates use complete vertex and centroid sample sets rather than a continuous symmetric Hausdorff bound.",
+    "Original defects do not excuse output defects without a localized measured correspondence.",
+    "Output components and boundary edges must be reported; closure versus density trimming depends on explicitly selected settings.",
+    "Normal agreement is reported against the retained scanner normals without a posthoc angular acceptance threshold."
+  ]
+}

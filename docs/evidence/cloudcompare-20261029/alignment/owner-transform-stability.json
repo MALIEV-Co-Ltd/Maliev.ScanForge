@@ -1,0 +1,25 @@
+{
+  "sourceSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+  "precision": "Each application of native saved matrix is rounded to Float32; restart delta is applied to Float32 base points.",
+  "physicalTruth": "Unknown; no accuracy or global-convergence certificate is inferred from stability.",
+  "twentyToTwoHundred": {
+    "evaluatedPoints": 1375494,
+    "rmsDisplacementMm": 0.07991401401187173,
+    "maximumDisplacementMm": 0.11608596035355515
+  },
+  "twoHundredToAdaptive": {
+    "evaluatedPoints": 1375494,
+    "rmsDisplacementMm": 0.07928171933522082,
+    "maximumDisplacementMm": 0.11684889287880286
+  },
+  "twoHundredRestartTwenty": {
+    "evaluatedPoints": 1375494,
+    "rmsDisplacementMm": 0.006861020445859929,
+    "maximumDisplacementMm": 0.008498152395744883
+  },
+  "adaptiveRestartAdaptive": {
+    "evaluatedPoints": 1375494,
+    "rmsDisplacementMm": 0.003485051207527657,
+    "maximumDisplacementMm": 0.005527654833994309
+  }
+}

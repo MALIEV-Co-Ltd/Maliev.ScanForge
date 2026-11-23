@@ -276,6 +276,20 @@ try {
     throw Error("Geometry job timeout");
   };
 
+  const assertFramed = async () => {
+    const view = (await call("viewport_get")).result;
+    assert(view.bounds);
+    const center = view.bounds.min.map(
+      (value, i) => (value + view.bounds.max[i]) / 2,
+    );
+    view.target.forEach((value, i) =>
+      assert(
+        Math.abs(value - center[i]) < 0.01,
+        JSON.stringify({ target: view.target, center }),
+      ),
+    );
+  };
+
   const packedPly = () => {
     const header = Buffer.from(
       "ply\nformat binary_little_endian 1.0\nelement vertex 4\nproperty float x\nproperty float y\nproperty float z\nproperty float nx\nproperty float ny\nproperty float nz\nelement face 1\nproperty list uchar int vertex_indices\nend_header\n",
@@ -321,16 +335,17 @@ try {
   const label = page.locator(".pointer-job-status");
   await label.waitFor({ state: "visible" });
   assert.equal(await label.getByRole("progressbar").count(), 2);
+  assert.match(await label.innerText(), /Parallel import \(2 parsers\)/);
   assert.match(await label.innerText(), new RegExp(`first\\.${extension}`));
   assert.match(await label.innerText(), new RegExp(`second\\.${extension}`));
   assert.match(await label.innerText(), /1 queued/);
   await page.screenshot({
     path: fileURLToPath(new URL("parallel-import.png", out)),
   });
-  await page.evaluate(() =>
-    window.__pendingImports.splice(0).forEach((release) => release()),
-  );
-  await page.waitForFunction(() => window.__pendingImports.length === 1);
+  await page.evaluate(() => window.__pendingImports.shift()());
+  await page.waitForFunction(() => window.__pendingImports.length === 2);
+  assert.equal((await call("project_get")).result.objects.length, 1);
+  await assertFramed();
   await page.evaluate(() =>
     window.__pendingImports.splice(0).forEach((release) => release()),
   );
@@ -357,6 +372,8 @@ try {
   await page.waitForFunction(() => window.__pendingImports.length === 2);
   const state = (await call("job_get", { jobId: receipt.result.jobId })).result;
   assert.equal(state.progressDetails.kind, "importBatch");
+  assert.equal(state.progressDetails.admission.concurrency, 2);
+  assert.equal(state.progressDetails.admission.reason, "parallel");
   assert.equal(
     state.progressDetails.files.filter((file) => file.status === "importing")
       .length,
@@ -661,6 +678,60 @@ try {
       }
     }
   }
+  // A successful public MCP batch must publish both clouds without a selection revision race.
+  await page.evaluate(() => window.__pendingImports.splice(0));
+  await mutate("project_new", { discard: true });
+  await mutate("viewport_control", {
+    action: "camera",
+    projection: "perspective",
+    position: [100, -100, 100],
+    target: [0, 0, 0],
+  });
+  const cloudIds = [];
+  for (const offset of [0, 80]) {
+    const cloud = Buffer.from(
+      Array.from(
+        { length: 400 },
+        (_, i) =>
+          `${5000 + offset + (i % 20)} ${-3000 + Math.floor(i / 20)} 200`,
+      ).join("\n"),
+    );
+    cloudIds.push(
+      (
+        await call("artifact_put", {
+          name: `fit-${offset}.asc`,
+          offset: 0,
+          base64: cloud.toString("base64"),
+        })
+      ).result.artifactId,
+    );
+  }
+  const fitReceipt = await mutate("project_import_batch", {
+    artifactIds: cloudIds,
+    placeAtOrigin: false,
+  });
+  await page.waitForFunction(() => window.__pendingImports.length === 2);
+  await page.evaluate(() => window.__pendingImports.shift()());
+  // Presentation completes asynchronously after the held worker response is released.
+  for (let i = 0; i < 100; i++) {
+    if ((await call("project_get")).result.objects.length === 1) break;
+    await page.waitForTimeout(50);
+  }
+  assert.equal((await call("project_get")).result.objects.length, 1);
+  await assertFramed();
+  await page.evaluate(() => window.__pendingImports.shift()());
+  const fitted = await job(fitReceipt);
+  assert.deepEqual(fitted.result.failed, []);
+  assert.equal(fitted.result.admission.reason, "parallel");
+  assert(
+    fitted.result.admission.estimates.every(
+      (file) => file.basis === "sampled-asc",
+    ),
+  );
+  assert.equal(fitted.result.completed.length, 2);
+  assert.equal((await call("project_get")).result.objects.length, 2);
+  assert.equal((await call("project_get")).result.undo, 2);
+  await assertFramed();
   assert.deepEqual(errors, []);
   ledger.result = {
     guiParallelWorkers: 2,
@@ -668,6 +739,8 @@ try {
     undoSteps: 3,
     pointerBars: 2,
     mcpPerFileProgress: true,
+    guiFirstFileFramed: true,
+    mcpCompletedBatchFramed: true,
     cancellationPreservesObjects: true,
     activeImportWorkersAfterCleanup: 0,
     pageErrors: errors,

@@ -1,0 +1,36 @@
+{
+  "scope": "Actual compiled upstream screened PoissonRecon WASM, full owner PLY1 input, no point dropping and no decimation; explicit density trimming only when the threshold is positive. Node execution separate from browser GUI/MCP validation.",
+  "sourcePath": "C:/repo/alignment-example-files/ply-1.ply",
+  "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+  "sourcePointCount": 140113,
+  "normalReceiptSha256": "0083b4225183b95021cdb84d6c155afef54318a8a08bbbf60b8f3266a8525338",
+  "estimatedNormalsSha256": "8d40594f0433a27c561c4f598de84186225e51dd4ae588aa8aa4d6280626c453",
+  "wasmSha256": "fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425",
+  "loaderSha256": "3bc6f3dda94a446a12b84531b7537f2423e0f6988ce3e8a43995dc4f365bf3d9",
+  "harnessSha256": "8998f7e3b7a38fa1b33782d0fd629ebc8dd8e3a797294d2726198bd89748ec8d",
+  "meshPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\ply-1-depth8-density6-mesh.ply",
+  "meshSha256": "cddc43778e646db326aa31b7c419b8940909a0396cd1398192ca8e2c58702baa",
+  "settings": {
+    "normalMode": "estimate-provided",
+    "normalNeighbors": 24,
+    "depth": 8,
+    "pointWeight": 2,
+    "samplesPerNode": 1.5,
+    "densityThreshold": 6,
+    "femDegree": 2,
+    "boundary": "Neumann",
+    "scale": 1.1,
+    "threads": 1
+  },
+  "vertices": 70315,
+  "triangles": 139358,
+  "untrimmedVertices": 74581,
+  "untrimmedTriangles": 149202,
+  "elapsedMs": 3168.1348000000003,
+  "wasmHeapBytes": 96665600,
+  "density": {
+    "minimum": 6.000246047973633,
+    "maximum": 8.974189758300781
+  },
+  "warnings": []
+}

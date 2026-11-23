@@ -12,6 +12,19 @@ const empty: ObjectSelectionState = {
 };
 const order = ["a", "b", "c", "d", "e"];
 
+it("selects every eligible object in order, preserves active/anchor, and handles empty scenes", () => {
+  const selected = { ids: ["b"], activeId: "b", anchorId: "b" };
+  expect(
+    selectObject(selected, ["a", "hidden", "b"], null, { all: true }),
+  ).toEqual({
+    ids: ["a", "hidden", "b"],
+    activeId: "b",
+    anchorId: "b",
+  });
+  expect(selectObject(empty, [], null, { all: true })).toEqual(empty);
+  expect(selectObject(selected, order, null)).toEqual(empty);
+});
+
 it("replaces the selection and anchor on an ordinary click", () => {
   expect(
     selectObject(

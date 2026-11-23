@@ -1,0 +1,26 @@
+[08:34:05] [SET LOG FILE] finished in 0.00 s.
+[08:34:05] [AUTO SAVE STATE]
+[08:34:05] Auto-save is disabled
+[08:34:05] [AUTO SAVE STATE] finished in 0.00 s.
+[08:34:05] [CHANGE MESH OUTPUT FORMAT]
+[08:34:05] Output export format (meshes) set to: PLY
+[08:34:05] [CHANGE MESH OUTPUT FORMAT] finished in 0.00 s.
+[08:34:05] [CHANGE PLY OUTPUT FORMAT]
+[08:34:05] [CHANGE PLY OUTPUT FORMAT] finished in 0.00 s.
+[08:34:05] [NO TIMESTAMP]
+[08:34:05] [NO TIMESTAMP] finished in 0.00 s.
+[08:34:05] [LOAD]
+[08:34:05] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\poisson\native-cloudcompare\owner-ply1-native-depth9.bin'
+[08:34:05] [BIN] Opening file 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\poisson\native-cloudcompare\owner-ply1-native-depth9.bin'...
+[08:34:05] [BIN] Version 4.1 (coords: float / scalar: float)
+[08:34:05] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\poisson\native-cloudcompare\owner-ply1-native-depth9.bin' loaded successfully
+[08:34:05] Found one mesh with 535815 faces and 267986 vertices: 'Mesh[ply-1-oriented-input - Cloud] (level 9)'
+[08:34:05] Found one cloud with 437 points
+[08:34:05] Found one cloud with 437 points
+[08:34:05] Found one cloud with 140113 points
+[08:34:05] [LOAD] finished in 0.01 s.
+[08:34:05] [SAVE MESHES]
+[08:34:05] [SAVING]
+[08:34:05] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/poisson/native-cloudcompare/owner-ply1-native-depth9.ply' saved successfully
+[08:34:05] [SAVE MESHES] finished in 0.07 s.
+[08:34:05] Processed finished in 0.09 s.

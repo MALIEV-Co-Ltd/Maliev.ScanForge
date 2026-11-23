@@ -1,0 +1,20 @@
+[15:46:25] [SET LOG FILE] finished in 0.00 s.
+[15:46:25] [AUTO SAVE STATE]
+[15:46:25] Auto-save is disabled
+[15:46:25] [AUTO SAVE STATE] finished in 0.00 s.
+[15:46:25] [LOAD]
+[15:46:25] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\sphere-normals.ply'
+[15:46:25] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\sphere-normals.ply' loaded successfully
+[15:46:25] Found one cloud with 1200 points
+[15:46:25] [LOAD] finished in 0.01 s.
+[15:46:25] [LOAD]
+[15:46:25] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\sphere-no-normals.ply'
+[15:46:25] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\fixtures\sphere-no-normals.ply' loaded successfully
+[15:46:25] Found one cloud with 1200 points
+[15:46:25] [LOAD] finished in 0.01 s.
+[15:46:25] [SAVE CLOUDS]
+[15:46:25] [SAVING]
+[15:46:25] [BIN] Output file version: 4.1 (automatically deduced from selected entities)
+[15:46:25] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028/fixtures//spheres.bin' saved successfully
+[15:46:25] [SAVE CLOUDS] finished in 0.51 s.
+[15:46:25] Processed finished in 0.54 s.

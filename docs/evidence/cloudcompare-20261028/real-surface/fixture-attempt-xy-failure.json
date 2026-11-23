@@ -1,0 +1,9 @@
+{
+  "stage": "real-surface-fixture-selection",
+  "source": "C:/repo/alignment-example-files/asc-1.asc",
+  "sourceSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+  "attemptedRule": "Normal Z >= 0.9; most-populated 5mm X by5mm Y by1mm Z tile; minimum100 selected records",
+  "outcome": "refused",
+  "error": "AssertionError: No representative upward-facing crop found",
+  "recovery": "Evaluate all dominant coordinate axes and normal signs deterministically; retain exact selected indices and projection in final manifest. No product behavior changed."
+}

@@ -1,0 +1,53 @@
+
+> scanforge@0.1.0 prebuild
+> node scripts/resource-check.mjs && node scripts/verify-poisson.mjs && node scripts/prepare-kernel.mjs
+
+Resource admission: 14913 MiB available; 1536 MiB required.
+{"passed":true,"upstreamCommit":"262b0f539d404057d1f36e1adc07fc9388678899","wasmSha256":"fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425","verifiedFiles":5,"requiresEmsdk":false}
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 27 modules transformed.
+rendering chunks...
+computing gzip size...
+public/kernel/sketch-backend.js  118.75 kB │ gzip: 22.62 kB
+✓ built in 178ms
+Local CAD kernel prepared at C:\repo\Maliev.ScanForge\public\kernel\
+
+> scanforge@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 2068 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                                     0.76 kB │ gzip:   0.41 kB
+dist/assets/scan-noise-worker-Bj2yl9jW.js                           1.37 kB
+dist/assets/scan-smoothing-worker-BiJz00c-.js                       1.39 kB
+dist/assets/datum-transform-worker-DSJ-VX6g.js                      1.60 kB
+dist/assets/scan-alignment-worker-CpFu5nzY.js                       5.91 kB
+dist/assets/global-alignment-input-worker-CVm4OTFi.js               7.16 kB
+dist/assets/interactive-bounds-worker-BLfFs376.js                   8.00 kB
+dist/assets/scan-global-scene-worker-CXEyabhO.js                    8.76 kB
+dist/assets/surface-worker-O-OueH5t.js                             14.95 kB
+dist/assets/project-encoding-worker-BDLCmz8G.js                    47.04 kB
+dist/assets/scan-global-query-worker-DI7V5UFy.js                   64.52 kB
+dist/assets/scan-global-controller-worker-C-hgCh-s.js             103.95 kB
+dist/assets/project-decoding-worker-DoBkqMIo.js                   127.15 kB
+dist/assets/viewport-picking-worker-C1t_UCCA.js                   136.86 kB
+dist/assets/screen-selection-worker-DOxtAEg_.js                   151.66 kB
+dist/assets/global-alignment-initialization-worker-ae7OdLvp.js    154.63 kB
+dist/assets/import-worker-C4iASMCp.js                             165.90 kB
+dist/assets/processing-worker-DA3QHfhS.js                         486.75 kB
+dist/assets/index-C6Xs7z5k.css                                     85.83 kB │ gzip:  16.68 kB
+dist/assets/global-alignment-input-BYdQ9QVf.js                      7.93 kB │ gzip:   3.03 kB
+dist/assets/index-DoLiZPBX.js                                      12.93 kB │ gzip:   5.17 kB
+dist/assets/scan-global-registration-BI80-tRe.js                   87.34 kB │ gzip:  33.31 kB
+dist/assets/index-B1rgG1XV.js                                     799.33 kB │ gzip: 240.21 kB
+dist/assets/agent-api-D_Sy68gx.js                               1,141.99 kB │ gzip: 314.05 kB
+✓ built in 10.64s
+
+> scanforge@0.1.0 postbuild
+> node scripts/offline-manifest.mjs
+
+Offline manifest generated: 279 local assets, scanforge-45d4eb72d2d17bff

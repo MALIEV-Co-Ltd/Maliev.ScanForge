@@ -1,0 +1,36 @@
+{
+  "arguments": [
+    "-SILENT",
+    "-LOG_FILE",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\noisy-three-axis\\native-stricter-rerun\\native.log",
+    "-AUTO_SAVE",
+    "OFF",
+    "-C_EXPORT_FMT",
+    "ASC",
+    "-NO_TIMESTAMP",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\noisy-three-axis\\native-stricter-rerun\\moving.ply",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\noisy-three-axis\\native-stricter-rerun\\fixed.ply",
+    "-ICP",
+    "-OVERLAP",
+    "100",
+    "-MIN_ERROR_DIFF",
+    "1e-8",
+    "-RANDOM_SAMPLING_LIMIT",
+    "693",
+    "-MAX_TCOUNT",
+    "2",
+    "-SAVE_CLOUDS"
+  ],
+  "durationMs": 2034.5324,
+  "deadlineMs": 120000,
+  "movingSha256": "8dd89c9be432304effa1f23effe50d2cbdf36cdb6b0a45829478a94403a000da",
+  "fixedSha256": "6872459d015f9b542ffaeaaf4f5254738118ff14261edeacc41393a57cc2a9ac",
+  "transform": {
+    "rotation": [
+      1, 5.8e-10, 1.575e-9, -5.8e-10, 1, -1.116e-9, -1.575e-9, 1.116e-9, 1
+    ],
+    "translation": [-1.37342e-7, -2.7044e-8, 8.7167e-8]
+  }
+}

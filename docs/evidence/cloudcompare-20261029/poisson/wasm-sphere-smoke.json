@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "execution": "Actual compiled upstream WASM in Node; browser/worker integration separate",
+  "inputSha256": "52b2b0c89ee6d49e80d87c17b7a38b46850bec83e0228a12bda98775ba317ad7",
+  "wasmSha256": "fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425",
+  "inputPoints": 1200,
+  "vertices": 3990,
+  "triangles": 7976,
+  "elapsedMs": 863.9559999999999,
+  "heapBytes": 67108864,
+  "vertexRadialRmsMm": 0.005188290151630814,
+  "maxVertexRadialErrorMm": 0.01835254178233292,
+  "densityRange": [3.9932403564453125, 4.2873311042785645],
+  "warnings": []
+}

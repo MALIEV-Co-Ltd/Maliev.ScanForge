@@ -1,0 +1,273 @@
+{
+  "origin": "http://127.0.0.1:5191",
+  "startedAt": "2026-10-29T01:19:44.196Z",
+  "passed": true,
+  "checks": [
+    "Full140113-point owner PLY1 reconstructed through public MCP with explicit estimate-provided normals; original source preserved; one new mesh/history and exact Undo/Redo; independent exported-mesh quality gates passed",
+    "Completed500000-point depth8publicMCPPoissonsolve preservesfullsource,addsonehistoryentryandclosesworker"
+  ],
+  "scope": "Actual browser worker/WASM, public MCP and GUI; isolated scene. Worker observers do not alter native results or delay execution.",
+  "workerClosureChecks": [
+    {
+      "poissonIds": [1],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    },
+    {
+      "poissonIds": [1, 2],
+      "allPoissonClosed": true,
+      "otherLiveWorkers": []
+    }
+  ],
+  "realScan": {
+    "sourcePath": "C:/repo/alignment-example-files/ply-1.ply",
+    "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "sourcePoints": 140113,
+    "sourceGeometrySha256": "a61ffba8d8ca0c9c0ac96adc654cbf27f7885e76747c8e3f509806d564c34987",
+    "operation": {
+      "kind": "pointCloudPoisson",
+      "normalMode": "estimate-provided",
+      "normalNeighbors": 24,
+      "depth": 9,
+      "pointWeight": 2,
+      "samplesPerNode": 1.5,
+      "densityThreshold": 7
+    },
+    "diagnostics": {
+      "algorithm": "upstream-screened-poisson-18.76",
+      "engineCommit": "262b0f539d404057d1f36e1adc07fc9388678899",
+      "sourcePoints": 140113,
+      "depth": 9,
+      "pointWeight": 2,
+      "samplesPerNode": 1.5,
+      "densityThreshold": 7,
+      "femDegree": 2,
+      "boundary": "Neumann",
+      "scale": 1.1,
+      "threads": 1,
+      "vertices": 249999,
+      "triangles": 495378,
+      "untrimmedVertices": 268097,
+      "untrimmedTriangles": 536234,
+      "trimmedTriangles": 40852,
+      "mergedVertices": 2,
+      "removedDegenerateTriangles": 4,
+      "removedDuplicateTriangles": 0,
+      "densityMinimum": 4.355195045471191,
+      "densityMedian": 8.691302299499512,
+      "densityP95": 8.772478103637695,
+      "densityMaximum": 9.03261947631836,
+      "wasmHeapBytes": 200474624,
+      "warnings": "",
+      "summary": "Created 495378 general 3D Poisson triangles; source cloud preserved.",
+      "normalMode": "estimate-provided",
+      "normalNeighbors": 24,
+      "normalComponents": 7,
+      "normalOrientationAnchors": 140111,
+      "normalInvalidOrientationAnchors": 2,
+      "normalOrientationAssumption": "PCA estimates every point; graph-consistent component signs follow aggregate agreement with valid supplied normal anchors. Invalid anchors are counted and do not remove points."
+    },
+    "elapsedIncludingExportAndQualityMs": 54541,
+    "vertices": 249999,
+    "triangles": 495378,
+    "exactCoordinatesVsNode": true,
+    "exactTopologyVsNode": true,
+    "quality": {
+      "path": "docs/evidence/cloudcompare-20261029/normals/ply-1-quality-acceptance.json",
+      "sha256": "897784b58bf121793556193d9112d848680ebcfb937323738afa77b6cc32673c",
+      "checks": [
+        {
+          "name": "sourceVerticesToMesh.p95",
+          "actual": 0.027849594797685413,
+          "maximum": 0.4809366813701732,
+          "passed": true
+        },
+        {
+          "name": "sourceVerticesToMesh.p99",
+          "actual": 0.04390483850841201,
+          "maximum": 0.9618733627403464,
+          "passed": true
+        },
+        {
+          "name": "meshVerticesToSourceTopology.p95",
+          "actual": 0.44727702189472285,
+          "maximum": 0.4809366813701732,
+          "passed": true
+        },
+        {
+          "name": "meshVerticesToSourceTopology.p99",
+          "actual": 0.7869007265483353,
+          "maximum": 0.9618733627403464,
+          "passed": true
+        },
+        {
+          "name": "meshFaceCentroidsToSourceTopology.p95",
+          "actual": 0.3861677489511825,
+          "maximum": 0.4809366813701732,
+          "passed": true
+        },
+        {
+          "name": "meshFaceCentroidsToSourceTopology.p99",
+          "actual": 0.7061536932972821,
+          "maximum": 0.9618733627403464,
+          "passed": true
+        },
+        {
+          "name": "nonManifoldEdges",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "nonManifoldVertices",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "inconsistentWindingEdges",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "degenerateTriangles",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "duplicateTriangles",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "nonAdjacentIntersectingTrianglePairs",
+          "actual": 0,
+          "maximum": 0,
+          "passed": true
+        },
+        {
+          "name": "selfIntersectionAnalysisComplete",
+          "actual": true,
+          "required": true,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "meshPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\browser\\ply-1-public-mcp-mesh.ply",
+    "qualityPath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\browser\\ply-1-public-mcp-quality.json"
+  },
+  "probes": [
+    {
+      "id": 1,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface",
+        "Validating Poisson mesh and density",
+        "General 3D Poisson reconstruction complete",
+        "Preparing mesh display"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    },
+    {
+      "id": 2,
+      "kinds": ["pointCloudPoisson"],
+      "stages": [
+        "Preparing oriented Poisson normals",
+        "Preparing oriented Poisson normals",
+        "Loading bounded Poisson reconstruction engine",
+        "Solving general 3D screened Poisson surface",
+        "Validating Poisson mesh and density",
+        "General 3D Poisson reconstruction complete",
+        "Preparing mesh display"
+      ],
+      "terminated": true,
+      "result": true,
+      "error": null
+    }
+  ],
+  "completedCapacity": {
+    "points": 500000,
+    "depth": 8,
+    "elapsedIncludingSourceChecksMs": 23126,
+    "freePhysicalBytesBefore": 12328165376,
+    "diagnostics": {
+      "algorithm": "upstream-screened-poisson-18.76",
+      "engineCommit": "262b0f539d404057d1f36e1adc07fc9388678899",
+      "sourcePoints": 500000,
+      "depth": 8,
+      "pointWeight": 2,
+      "samplesPerNode": 1.5,
+      "densityThreshold": 0,
+      "femDegree": 2,
+      "boundary": "Neumann",
+      "scale": 1.1,
+      "threads": 1,
+      "vertices": 255333,
+      "triangles": 510662,
+      "untrimmedVertices": 255334,
+      "untrimmedTriangles": 510664,
+      "trimmedTriangles": 0,
+      "mergedVertices": 1,
+      "removedDegenerateTriangles": 2,
+      "removedDuplicateTriangles": 0,
+      "densityMinimum": 8.400738716125488,
+      "densityMedian": 8.50247573852539,
+      "densityP95": 8.547786712646484,
+      "densityMaximum": 8.571253776550293,
+      "wasmHeapBytes": 240582656,
+      "warnings": "[WARNING] poisson-upstream\\Src\\FEMTree.LevelSet.3D.inl (Line 2398)\n          Extract\n          bad average roots: 1",
+      "summary": "Created 510662 general 3D Poisson triangles; source cloud preserved.",
+      "normalMode": "provided",
+      "normalNeighbors": 0,
+      "normalComponents": 0,
+      "normalOrientationAnchors": 500000,
+      "normalInvalidOrientationAnchors": 0,
+      "normalOrientationAssumption": "Caller asserts supplied normals are consistently oriented; validation checks finite nonzero vectors only."
+    },
+    "sourceGeometrySha256": "dec466675eb63b1f2433d80836047e96ee37d81abdf3a1017e48438971607d11",
+    "sourcePreserved": true,
+    "oneHistoryStep": true,
+    "workerClosed": true
+  },
+  "errors": [],
+  "workers": [
+    {
+      "id": 1,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:19:48.502Z",
+      "closed": "2026-10-29T01:20:04.988Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    },
+    {
+      "id": 2,
+      "url": "http://127.0.0.1:5191/src/processing-worker.ts?worker_file&type=module",
+      "opened": "2026-10-29T01:20:55.738Z",
+      "closed": "2026-10-29T01:21:12.623Z",
+      "requestKinds": ["pointCloudPoisson"],
+      "terminateObserved": true
+    }
+  ],
+  "finishedAt": "2026-10-29T01:21:18.760Z"
+}

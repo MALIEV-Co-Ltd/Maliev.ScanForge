@@ -1,0 +1,21 @@
+[08:03:57] [SET LOG FILE] finished in 0.00 s.
+[08:03:57] [AUTO SAVE STATE]
+[08:03:57] Auto-save is disabled
+[08:03:57] [AUTO SAVE STATE] finished in 0.00 s.
+[08:03:57] [NO TIMESTAMP]
+[08:03:57] [NO TIMESTAMP] finished in 0.00 s.
+[08:03:57] [LOAD]
+[08:03:57] Opening file: 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\20261029-owner15\moving.ply'
+[08:03:57] [PLY][Comment] File generated
+[08:03:58] [I/O] File 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\20261029-owner15\moving.ply' loaded successfully
+[08:03:58] Found one mesh with 2697877 faces and 1375494 vertices: 'Mesh'
+[08:03:58] [LOAD] finished in 0.36 s.
+[08:03:58] [LOAD]
+[08:03:58] Opening file: 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\20261029-owner15\fixed.ply'
+[08:03:58] [PLY][Comment] File generated
+[08:03:58] [I/O] File 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\20261029-owner15\fixed.ply' loaded successfully
+[08:03:58] Found one mesh with 274154 faces and 140113 vertices: 'Mesh'
+[08:03:58] [LOAD] finished in 0.04 s.
+[08:03:58] [ICP]
+[08:03:58] [ICP][Partial overlap] Selecting 24597 points out of 49968 (49%) for registration
+[08:03:58] [ICP] Will use 2 threads

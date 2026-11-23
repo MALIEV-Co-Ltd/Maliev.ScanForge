@@ -31,7 +31,7 @@ export type Rpc = {
   kind: "rpc";
   runId: number;
   requestId: number;
-  action: "check" | "clock" | "pass" | "progress";
+  action: "check" | "clock" | "pass" | "pose" | "progress";
   pass?: number;
   ordered?: readonly GlobalOuterState[];
   fraction?: number;

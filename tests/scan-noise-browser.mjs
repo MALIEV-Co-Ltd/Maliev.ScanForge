@@ -4,12 +4,15 @@ import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir, unlink } from "node:fs/promises";
 import { randomUUID, randomBytes, createHash } from "node:crypto";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const root = new URL("../", import.meta.url),
   out = new URL("../.resources/noise-input/", import.meta.url);
+const builtRoot = process.env.SCANFORGE_QA_DIST
+  ? new URL("./", pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/index.html`))
+  : new URL("dist/", root);
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -62,10 +65,9 @@ try {
       const name = new URL(req.url, "http://127.0.0.1").pathname;
       const file = new URL(
         name === "/" ? "index.html" : name.slice(1),
-        new URL("dist/", root),
+        builtRoot,
       );
-      if (!file.href.startsWith(new URL("dist/", root).href))
-        throw Error("Invalid path");
+      if (!file.href.startsWith(builtRoot.href)) throw Error("Invalid path");
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
@@ -142,6 +144,7 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -340,7 +343,7 @@ try {
     guiGeometrySha256,
     mcpGeometrySha256,
     comparisonBeforePreview: true,
-    errors,
+    errors: [...errors],
   };
   console.log(JSON.stringify(ledger.result));
 } catch (error) {
@@ -351,10 +354,10 @@ try {
   throw error;
 } finally {
   clearTimeout(deadline);
-  await client?.close().catch(() => {});
-  await transport?.close().catch(() => {});
   await browser?.close().catch(() => {});
   await browserServer?.close().catch(() => {});
+  await client?.close().catch(() => {});
+  await transport?.close().catch(() => {});
   if (reserve?.listening)
     await new Promise((resolve) => reserve.close(resolve));
   if (server?.listening) await new Promise((resolve) => server.close(resolve));

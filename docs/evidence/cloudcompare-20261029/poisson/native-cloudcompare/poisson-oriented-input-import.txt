@@ -1,0 +1,400 @@
+Window: "CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]", App: CloudCompare.exe.
+	0 window (settable, string) CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1] Secondary Actions: Raise ID: MainWindow
+		15708 window (settable, string) Ply File Open Secondary Actions: Raise ID: MainWindow.PlyOpenDlg
+			15709 title bar (settable, string) Value: Ply File Open
+				15710 menu bar System ID: MenuBar
+					15711 menu item System
+				15712 button Context help
+				15713 button Close
+			15714 text Type ID: MainWindow.PlyOpenDlg.label
+			15715 edit Value: PLY_LITTLE_ENDIAN ID: MainWindow.PlyOpenDlg.plyTypeEdit
+			15716 text Elements ID: MainWindow.PlyOpenDlg.label_2
+			15717 edit Value: 1 ID: MainWindow.PlyOpenDlg.elementsEdit
+			15718 text Properties ID: MainWindow.PlyOpenDlg.label_3
+			15719 edit Value: 6 ID: MainWindow.PlyOpenDlg.propertiesEdit
+			15720 text Textures ID: MainWindow.PlyOpenDlg.label_18
+			15721 edit (settable, string) Value: 0 ID: MainWindow.PlyOpenDlg.textureCountEdit
+			15722 text Point X ID: MainWindow.PlyOpenDlg.label_4
+			15723 combo box (settable, string) Value: vertex - x [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.xComboBox
+				15724 list (settable, string)
+					15725 list item (selectable, settable, string) None
+					15726 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15727 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15728 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15729 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15730 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15731 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15732 text Point Y ID: MainWindow.PlyOpenDlg.label_5
+			15733 combo box (settable, string) Value: vertex - y [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.yComboBox
+				15734 list (settable, string)
+					15735 list item (selectable, settable, string) None
+					15736 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15737 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15738 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15739 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15740 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15741 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15742 text Point Z ID: MainWindow.PlyOpenDlg.label_6
+			15743 combo box (settable, string) Value: vertex - z [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.zComboBox
+				15744 list (settable, string)
+					15745 list item (selectable, settable, string) None
+					15746 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15747 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15748 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15749 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15750 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15751 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15752 text Red ID: MainWindow.PlyOpenDlg.label_7
+			15753 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.rComboBox
+				15754 list (settable, string)
+					15755 list item (selectable, settable, string) None
+					15756 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15757 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15758 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15759 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15760 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15761 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15762 text Green ID: MainWindow.PlyOpenDlg.label_8
+			15763 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.gComboBox
+				15764 list (settable, string)
+					15765 list item (selectable, settable, string) None
+					15766 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15767 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15768 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15769 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15770 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15771 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15772 text Blue ID: MainWindow.PlyOpenDlg.label_9
+			15773 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.bComboBox
+				15774 list (settable, string)
+					15775 list item (selectable, settable, string) None
+					15776 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15777 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15778 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15779 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15780 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15781 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15782 text Intensity ID: MainWindow.PlyOpenDlg.label_10
+			15783 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.iComboBox
+				15784 list (settable, string)
+					15785 list item (selectable, settable, string) None
+					15786 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15787 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15788 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15789 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15790 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15791 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15792 text Nx ID: MainWindow.PlyOpenDlg.label_12
+			15793 combo box (settable, string) Value: vertex - nx [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.nxComboBox
+				15794 list (settable, string)
+					15795 list item (selectable, settable, string) None
+					15796 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15797 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15798 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15799 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15800 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15801 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15802 text Ny ID: MainWindow.PlyOpenDlg.label_13
+			15803 combo box (settable, string) Value: vertex - ny [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.nyComboBox
+				15804 list (settable, string)
+					15805 list item (selectable, settable, string) None
+					15806 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15807 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15808 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15809 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15810 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15811 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15812 text Nz ID: MainWindow.PlyOpenDlg.label_14
+			15813 combo box (settable, string) Value: vertex - nz [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.nzComboBox
+				15814 list (settable, string)
+					15815 list item (selectable, settable, string) None
+					15816 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15817 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15818 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15819 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15820 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15821 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15822 text Faces ID: MainWindow.PlyOpenDlg.label_15
+			15823 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.facesComboBox
+				15824 list (settable, string)
+					15825 list item (selectable, settable, string) None
+			15826 text Texture coordinates ID: MainWindow.PlyOpenDlg.label_16
+			15827 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.textCoordsComboBox
+				15828 list (settable, string)
+					15829 list item (selectable, settable, string) None
+			15830 text Texture index ID: MainWindow.PlyOpenDlg.label_17
+			15831 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.texIndexComboBox
+				15832 list (settable, string)
+					15833 list item (selectable, settable, string) None
+			15834 group (settable, string) Scalar fields ID: MainWindow.PlyOpenDlg.groupBox
+				15835 list (settable, string) ID: MainWindow.PlyOpenDlg.groupBox.scalarFields
+				15836 button (settable, string) Add ID: MainWindow.PlyOpenDlg.groupBox.addSFToolButton
+			15837 custom (settable, string) ID: MainWindow.PlyOpenDlg.buttonFrame
+				15838 button (settable, string) Apply ID: MainWindow.PlyOpenDlg.buttonFrame.applyButton
+				15839 button (settable, string) Apply all ID: MainWindow.PlyOpenDlg.buttonFrame.applyAllButton
+				15840 button (settable, string) Cancel ID: MainWindow.PlyOpenDlg.buttonFrame.cancelButton
+		1 title bar (settable, string) Value: CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]
+			2 menu bar System ID: MenuBar
+				3 menu item System
+			4 button Minimize
+			5 button Maximize
+			6 button Close
+		7 menu bar (settable, string) ID: MainWindow.menubar
+			8 menu item (settable, string) File
+			9 menu item (settable, string) Edit
+			10 menu item (settable, string) Tools
+			11 menu item (settable, string) Display
+			12 menu item (settable, string) Plugins
+			13 menu item (settable, string) 3D Views
+			14 menu item (settable, string) Help
+		15 window (settable, string) DB Tree Secondary Actions: Raise ID: MainWindow.DockableDBTree
+			16 group (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents
+				17 tree (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents.dbTreeView
+					15841 tree item (settable, string) pair.bin (C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028/fixtures)
+					15842 tree item (settable, string) fixed - Cloud
+					15843 tree item (settable, string) moving - Cloud
+			18 button (settable, string) Float ID: MainWindow.DockableDBTree.qt_dockwidget_floatbutton
+		19 status bar ID: MainWindow.statusBar
+			1537 thumb (settable, string)
+		20 tool bar (settable, string) ID: MainWindow.toolBarView
+			21 button (settable, string) Display settings
+			22 button (settable, string) Camera settings
+			23 button (settable, string) Global Zoom
+			24 button (settable, string) Pick rotation center
+			25 check box (settable, string) Auto-pick rotation center
+			26 button (disabled, settable, string) Level
+			27 button (disabled, settable, string) ZoomCenter
+			28 button (settable, string) Top View
+			29 button (settable, string) Front View
+			30 button (settable, string) Left Side View
+			31 button (settable, string) Back View
+			32 button (settable, string) Right Side View
+			33 button (settable, string) Bottom View
+			34 button (settable, string) Iso 1
+			35 button (settable, string) Iso 2
+			36 check box (settable, string) actionEnableStereo
+			37 button (settable, string)
+			38 button (settable, string)
+		39 window (settable, string) Console Secondary Actions: Raise ID: MainWindow.DockableConsole
+			40 group (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2
+				41 list (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2.consoleWidget
+					5343 list item (selectable, settable, string) [08:10:53] [3D View 3] Stereo mode: not supported
+					5344 list item (selectable, settable, string) [08:10:53] [ccGLWindow] 3D view initialized
+					5345 list item (selectable, settable, string) [08:10:53] [ccGLWindow] Succesfully initialized PBO for faster depth picking
+					15284 list item (selectable, settable, string) [08:23:29] [BIN] Opening file 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/poisson/ply-1-oriented-input.ply'...
+					15285 list item (selectable, settable, string) [08:23:29] [BIN] Version 1.0
+					15328 list item (selectable, settable, string) [08:24:09] An error occurred while loading 'ply-1-oriented-input': wrong file type (check header)
+			42 button (settable, string) Close ID: MainWindow.DockableConsole.qt_dockwidget_closebutton
+			43 button (settable, string) Float ID: MainWindow.DockableConsole.qt_dockwidget_floatbutton
+		44 tool bar (settable, string) ID: MainWindow.toolBarMainTools
+			1538 check box (settable, string) ID: MainWindow.toolBarMainTools.qt_toolbar_ext_button
+			45 button (settable, string) Open
+			46 button (disabled, settable, string) Save
+			47 button (settable, string) Save project (BIN)
+			48 group (settable, string)
+			49 button (settable, string) Point picking
+			50 button (disabled, settable, string) Point list picking
+			51 button (settable, string) Trace Polyline
+			52 button (disabled, settable, string) Clone
+			53 button (disabled, settable, string) Merge
+			54 button (disabled, settable, string) Delete
+			55 group (settable, string)
+			56 button (disabled, settable, string) Align (point pairs picking)
+			57 button (disabled, settable, string) Fine registration (ICP)
+			58 button (disabled, settable, string) Subsample
+			59 button (disabled, settable, string) Sample points
+			60 button (disabled, settable, string) Cloud/Cloud Dist
+			61 button (disabled, settable, string) Cloud/Mesh Dist
+			62 button (disabled, settable, string) Cloud/Primitive Dist
+			63 button (disabled, settable, string) Label Connected Comp.
+			64 button (settable, string) Primitive factory
+			65 button (disabled, settable, string) Rasterize (and contour plot)
+		72 tool bar (settable, string) ID: MainWindow.toolBarSFTools
+			1539 check box (settable, string) ID: MainWindow.toolBarSFTools.qt_toolbar_ext_button
+			73 button (disabled, settable, string) Show histogram
+		80 window (settable, string) Properties Secondary Actions: Raise ID: MainWindow.DockableProperties
+			81 group (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4
+				82 tree (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4.propertiesTreeView
+			83 button (settable, string) Float ID: MainWindow.DockableProperties.qt_dockwidget_floatbutton
+		84 tool bar (settable, string) Plugins ID: MainWindow.Main Plugin Toolbar
+			85 button (disabled, settable, string) Animation
+			86 button (disabled, settable, string) CEA Virtual Broom
+			87 button (settable, string) Compass
+			88 button (disabled, settable, string) Cork
+			89 button (disabled, settable, string) CSF Filter
+			90 button (disabled, settable, string) Hough Normals Computation
+			91 button (disabled, settable, string) Hidden Point Removal
+			92 button (disabled, settable, string) M3C2 Distance
+			93 button (disabled, settable, string) Mesh Boolean
+			94 button (disabled, settable, string) PCV / ShadeVis
+			95 button (disabled, settable, string) PoissonRecon
+			96 button (disabled, settable, string) RANSAC Shape Detection
+			97 button (settable, string) AutoSeg
+			98 button (disabled, settable, string) Cloud layers
+			99 button (settable, string) Ellipse marking
+			100 check box (settable, string) Json RPC (Standard Plugin)
+			101 button (settable, string) ManualSeg
+			102 button (disabled, settable, string) MPlane
+			103 button (disabled, settable, string) TreeIso
+		104 tool bar (settable, string) GL Filters ID: MainWindow.GL Plugin Toolbar
+			105 button (disabled, settable, string) Remove Filter
+			106 check box (settable, string) EDL Shader
+			107 check box (settable, string) SSAO Shader
+		108 custom (settable, string)
+			109 window (settable, string) 3D View 1 Secondary Actions: Raise
+				110 group (settable, string)
+		111 tool bar (settable, string) CANUPO toolbar ID: MainWindow.CANUPO
+			1540 check box (settable, string) ID: MainWindow.CANUPO.qt_toolbar_ext_button
+			112 button (settable, string) Train classifier
+		114 tool bar (settable, string) Facet/fracture detection toolbar ID: MainWindow.Facet/fracture detection
+			1541 check box (settable, string) ID: MainWindow.Facet/fracture detection.qt_toolbar_ext_button
+			115 button (disabled, settable, string) Extract facets (Kd-tree)
+		121 tool bar (settable, string) PCL wrapper toolbar ID: MainWindow.PCL wrapper
+			1542 check box (settable, string) ID: MainWindow.PCL wrapper.qt_toolbar_ext_button
+			122 button (disabled, settable, string) Fast Global Registration, by Zhou et al.
+		125 tool bar (settable, string) Surface of Revolution Analysis toolbar ID: MainWindow.Surface of Revolution Analysis
+			1543 check box (settable, string) ID: MainWindow.Surface of Revolution Analysis.qt_toolbar_ext_button
+			126 button (settable, string) Load profile
+		129 tool bar (settable, string) 3DMASC toolbar ID: MainWindow.3DMASC
+			1544 check box (settable, string) ID: MainWindow.3DMASC.qt_toolbar_ext_button
+			130 button (settable, string) Train classifier
+		132 tool bar (settable, string) Colorimetric Segmenter toolbar ID: MainWindow.Colorimetric Segmenter
+			1545 check box (settable, string) ID: MainWindow.Colorimetric Segmenter.qt_toolbar_ext_button
+			133 button (disabled, settable, string) Filter RGB
+		15708 window (settable, string) Ply File Open Secondary Actions: Raise ID: MainWindow.PlyOpenDlg
+			15709 title bar (settable, string) Value: Ply File Open
+				15710 menu bar System ID: MenuBar
+					15711 menu item System
+				15712 button Context help
+				15713 button Close
+			15714 text Type ID: MainWindow.PlyOpenDlg.label
+			15715 edit Value: PLY_LITTLE_ENDIAN ID: MainWindow.PlyOpenDlg.plyTypeEdit
+			15716 text Elements ID: MainWindow.PlyOpenDlg.label_2
+			15717 edit Value: 1 ID: MainWindow.PlyOpenDlg.elementsEdit
+			15718 text Properties ID: MainWindow.PlyOpenDlg.label_3
+			15719 edit Value: 6 ID: MainWindow.PlyOpenDlg.propertiesEdit
+			15720 text Textures ID: MainWindow.PlyOpenDlg.label_18
+			15721 edit (settable, string) Value: 0 ID: MainWindow.PlyOpenDlg.textureCountEdit
+			15722 text Point X ID: MainWindow.PlyOpenDlg.label_4
+			15723 combo box (settable, string) Value: vertex - x [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.xComboBox
+				15724 list (settable, string)
+					15725 list item (selectable, settable, string) None
+					15726 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15727 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15728 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15729 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15730 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15731 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15732 text Point Y ID: MainWindow.PlyOpenDlg.label_5
+			15733 combo box (settable, string) Value: vertex - y [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.yComboBox
+				15734 list (settable, string)
+					15735 list item (selectable, settable, string) None
+					15736 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15737 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15738 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15739 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15740 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15741 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15742 text Point Z ID: MainWindow.PlyOpenDlg.label_6
+			15743 combo box (settable, string) Value: vertex - z [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.zComboBox
+				15744 list (settable, string)
+					15745 list item (selectable, settable, string) None
+					15746 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15747 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15748 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15749 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15750 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15751 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15752 text Red ID: MainWindow.PlyOpenDlg.label_7
+			15753 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.rComboBox
+				15754 list (settable, string)
+					15755 list item (selectable, settable, string) None
+					15756 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15757 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15758 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15759 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15760 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15761 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15762 text Green ID: MainWindow.PlyOpenDlg.label_8
+			15763 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.gComboBox
+				15764 list (settable, string)
+					15765 list item (selectable, settable, string) None
+					15766 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15767 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15768 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15769 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15770 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15771 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15772 text Blue ID: MainWindow.PlyOpenDlg.label_9
+			15773 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.bComboBox
+				15774 list (settable, string)
+					15775 list item (selectable, settable, string) None
+					15776 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15777 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15778 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15779 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15780 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15781 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15782 text Intensity ID: MainWindow.PlyOpenDlg.label_10
+			15783 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.iComboBox
+				15784 list (settable, string)
+					15785 list item (selectable, settable, string) None
+					15786 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15787 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15788 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15789 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15790 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15791 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15792 text Nx ID: MainWindow.PlyOpenDlg.label_12
+			15793 combo box (settable, string) Value: vertex - nx [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.nxComboBox
+				15794 list (settable, string)
+					15795 list item (selectable, settable, string) None
+					15796 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15797 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15798 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15799 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15800 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15801 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15802 text Ny ID: MainWindow.PlyOpenDlg.label_13
+			15803 combo box (settable, string) Value: vertex - ny [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.nyComboBox
+				15804 list (settable, string)
+					15805 list item (selectable, settable, string) None
+					15806 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15807 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15808 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15809 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15810 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15811 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15812 text Nz ID: MainWindow.PlyOpenDlg.label_14
+			15813 combo box (settable, string) Value: vertex - nz [PLY_FLOAT] ID: MainWindow.PlyOpenDlg.nzComboBox
+				15814 list (settable, string)
+					15815 list item (selectable, settable, string) None
+					15816 list item (selectable, settable, string) vertex - x [PLY_FLOAT]
+					15817 list item (selectable, settable, string) vertex - y [PLY_FLOAT]
+					15818 list item (selectable, settable, string) vertex - z [PLY_FLOAT]
+					15819 list item (selectable, settable, string) vertex - nx [PLY_FLOAT]
+					15820 list item (selectable, settable, string) vertex - ny [PLY_FLOAT]
+					15821 list item (selectable, settable, string) vertex - nz [PLY_FLOAT]
+			15822 text Faces ID: MainWindow.PlyOpenDlg.label_15
+			15823 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.facesComboBox
+				15824 list (settable, string)
+					15825 list item (selectable, settable, string) None
+			15826 text Texture coordinates ID: MainWindow.PlyOpenDlg.label_16
+			15827 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.textCoordsComboBox
+				15828 list (settable, string)
+					15829 list item (selectable, settable, string) None
+			15830 text Texture index ID: MainWindow.PlyOpenDlg.label_17
+			15831 combo box (settable, string) Value: None ID: MainWindow.PlyOpenDlg.texIndexComboBox
+				15832 list (settable, string)
+					15833 list item (selectable, settable, string) None
+			15834 group (settable, string) Scalar fields ID: MainWindow.PlyOpenDlg.groupBox
+				15835 list (settable, string) ID: MainWindow.PlyOpenDlg.groupBox.scalarFields
+				15836 button (settable, string) Add ID: MainWindow.PlyOpenDlg.groupBox.addSFToolButton
+			15837 custom (settable, string) ID: MainWindow.PlyOpenDlg.buttonFrame
+				15838 button (settable, string) Apply ID: MainWindow.PlyOpenDlg.buttonFrame.applyButton
+				15839 button (settable, string) Apply all ID: MainWindow.PlyOpenDlg.buttonFrame.applyAllButton
+				15840 button (settable, string) Cancel ID: MainWindow.PlyOpenDlg.buttonFrame.cancelButton
+
+Document text: ```
+0
+```

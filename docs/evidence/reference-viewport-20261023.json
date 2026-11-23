@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "reference display and picking integration; feature still gated",
+  "applicationBehaviorChanged": true,
+  "newConstructionOperationAdvertised": false,
+  "nativeNumericReplay": false,
+  "renderedGuiMcpAcceptance": false,
+  "sources": [
+    {
+      "path": "src/reference-display.ts",
+      "sha256": "7238efed197084f4f59a9ae3cf1b1017504ffab9bcf932a9b7a8a51e3e89b9c7"
+    },
+    {
+      "path": "src/reference-entity.ts",
+      "sha256": "0eb564237f0c688788b0d21e910c543fc39d0db2e21ee56aaac85bb80adab633"
+    },
+    {
+      "path": "src/reference-construction-values.ts",
+      "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+    },
+    {
+      "path": "src/viewport.ts",
+      "sha256": "589dab590bfdfb0d52ce8215a30088164bb514e0e47b0791182895c536ed9e9b"
+    },
+    {
+      "path": "src/viewport-agent.ts",
+      "sha256": "6c7f6608b657b413ecad48d1cf5fab71c36d191e4769cb9abc530e414e8cfb99"
+    },
+    {
+      "path": "src/viewport-picking.ts",
+      "sha256": "c56a930e9c5f65ce331fac1757f185872f9b7af41b634c30d0a6e9ddb8a0c87c"
+    },
+    {
+      "path": "src/automation/workflow-operations.ts",
+      "sha256": "ba4283cfd8c035ebc6f66f80f3209bfad8c60bfa5ddb4f59203641143ace5f1e"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "d7f39980c917904b334aeb064a4cbdf0de643b991deb3b2f4ff9987ea8bee14f"
+    },
+    {
+      "path": "src/ui/App.tsx",
+      "sha256": "67ff453fb6a1617c98517c88112f04bd7f233b0013ee08b8c0d5efd33f7d1264"
+    },
+    {
+      "path": "src/project-file.ts",
+      "sha256": "7988c91230c41ef30836673aa74623622b962504daea459abf6ad93e17015ac9"
+    },
+    {
+      "path": "src/project-decoding-worker.ts",
+      "sha256": "9464de058778e4a4847332a50de496e96ee2b7c52488add0576795b5163d74fa"
+    },
+    {
+      "path": "tests/reference-viewport.test.ts",
+      "sha256": "99102575eeddd2936e576ec6ebf7a47fb71e8a73a315ad15368a0154193a5c69"
+    },
+    {
+      "path": "tests/viewport-agent.test.ts",
+      "sha256": "b293294dc03c17fef45d2311645462290ab0f77d016ea4d28e098fc83efb661c"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "dd0505801100dac24804476b7d850e77e1b8833172a5d7df77ae641359d4875a"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "b6fc7c39c2bec36c2abc43fce5994a7c55379c5151e0e29a6c3a4eaacd199d6f"
+    }
+  ],
+  "coverage": [
+    "Independent Points/Line scene objects with no fake mesh, normals, triangle selection index or BVH",
+    "Authoritative Float64 bounds and world picking; derived Float32 offsets remain display-only",
+    "Canvas, context-menu and MCP viewport method return semantic point/line identities without facet/cloud indices",
+    "Visibility, protection, clipping, brush exclusion and scene-scaled tolerance including visible locked objects",
+    "Decorative CAD edge lines remain excluded from semantic hits",
+    "Reference-only and mixed-scene framing; metadata buffer retention; geometry replacement/removal/kind-transition cleanup",
+    "Large-coordinate local offsets, collapsed-line picking and explicit rejection of nonrepresentable display offsets"
+  ],
+  "verification": {
+    "initialRed": "Five failures and two negative-path passes before implementation",
+    "edgeRed": "One decorative-edge regression failed; seven tests passed",
+    "toleranceRed": "One locked-scene tolerance regression failed; eight tests passed",
+    "focused": {
+      "passedTests": 176,
+      "passedFiles": 11,
+      "newTests": 12
+    },
+    "full": {
+      "passedTests": 48183,
+      "skippedTests": 64,
+      "failedTests": 0
+    },
+    "fullReceipt": "project-index-validation-reference-viewport-r1-full-final-full.receipt.json",
+    "scope": "CPU Three.js scene graph, raycast and resource-disposal tests; no browser or GPU rendering"
+  },
+  "validation": [
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-build-final-build.receipt.json",
+      "sha256": "46f473afbf75d02c44a057bedd0204ee2e646325a68a675a8d132c07e690a880",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 33.19260049998411,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2452111360,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-build-initial-build.receipt.json",
+      "sha256": "a333dd8b7d02e81fff71ad2baabcce9cff2b3296399ca99918b58942dad05702",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 36.27282980000018,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2461487104,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-format-final-mirror-focused.receipt.json",
+      "sha256": "d56e0e51123c9a8023acbcdcb2f7dc8d1b8e6245064cf60de0fdde1d119da2c4",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 1.269313199998578,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 182693888,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-format-initial-mirror-focused.receipt.json",
+      "sha256": "28b57bc0b5381f886cd34baccf1333da40973fa1b4015e95ab2b470eff7dd06d",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.965631700004451,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 165703680,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-full-final-full.receipt.json",
+      "sha256": "2c04a9731d4699efc1d3581b7bfe67d03e34b01815ca77505a9fa03761d3ba22",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 265.3568961999845,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 600,
+      "outerPeakJobMemoryBytes": 1041895424,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-green-final-mirror-focused.receipt.json",
+      "sha256": "57ccc75038d9c8757b62433a52cd38325fdde83d818dda6bb1e823e86b6062c7",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 5.259010700014187,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 439271424,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-green-initial-mirror-focused.receipt.json",
+      "sha256": "f1e9049899a44fbd23217cf80f4038b7b468077decfc8d58c5a904e2878fd356",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 6.370965700014494,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 453996544,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-red-edges-mirror-focused.receipt.json",
+      "sha256": "3310c50078d1bab13f8be2a767234493dceb864a3940d1ff2b04dbf5e5678921",
+      "exitCode": 1,
+      "completed": false,
+      "elapsedSeconds": 1.117388500017114,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 352493568,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-red-initial-mirror-focused.receipt.json",
+      "sha256": "b16bf604772d1cafd4773abfa21514964d88fcf5318a316ccc026d9bf92ee9fd",
+      "exitCode": 1,
+      "completed": false,
+      "elapsedSeconds": 1.1173804999853019,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 354779136,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-viewport-r1-red-tolerance-mirror-focused.receipt.json",
+      "sha256": "cbf7ac8d36b81aeade3e0e9724a34ae097849996928010049f14da1617b0d602",
+      "exitCode": 1,
+      "completed": false,
+      "elapsedSeconds": 1.117159699992044,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 352620544,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    }
+  ],
+  "mcpCoverage": "Existing viewport_pick forwards to Viewport.pickAgentView through App and workflow operations. The viewport method and canvas/context-menu routes are tested with the same semantic entities; catalog and agent docs describe referenceKind and indices. Reference-bearing project import remains rejected. Browser transport and rendered GUI/MCP acceptance are not established by these tests.",
+  "remaining": [
+    "GUI selected-object statistics and triangle-only controls",
+    "Datum discovery, selectors and remaining downstream consumers",
+    "Display viability admission in the future construction preview/apply transaction",
+    "Exact native source/pick resolution, construction lifecycle and dependencies",
+    "Rendered GPU, native visual and original-code acceptance"
+  ],
+  "limitations": [
+    "Display appearance and ray tolerance are application policies, not native equivalence claims",
+    "Float32-offset rejection is a renderer guard, not a recovered native input range",
+    "No native image executed",
+    "No browser access occurred",
+    "No feature completion, commit or push"
+  ]
+}

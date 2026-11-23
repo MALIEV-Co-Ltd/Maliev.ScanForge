@@ -1,3 +1,5 @@
+import { MeshOperationResult } from "./MeshOperationResult";
+import { HelpPopover } from "./HelpPopover";
 import { AppSelect } from "./AppSelect";
 import { useEffect, useRef, useState } from "react";
 import type { ProcessingRequest, ProcessingResult } from "../processing-client";
@@ -7,10 +9,29 @@ import { Field, Panel } from "./controls";
 import { alignmentTriangleMask } from "../registration-selection";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
 import { parseLandmarkSeedVertices } from "../native-landmark-region";
-import { processScanRegistration } from "../scan-registration";
+import {
+  DEFAULT_FINE_ALIGNMENT_MAX_DISTANCE,
+  processScanRegistration,
+} from "../scan-registration";
+import { fineAlignmentInput } from "../fine-alignment-input";
+
+function fineAlignmentStatus(reason: string): string {
+  return reason === "insufficientOverlap"
+    ? "Insufficient compatible overlap; geometry unchanged"
+    : reason === "targetReached"
+      ? "Target accuracy reached"
+      : reason === "stoppedImproving"
+        ? "Stopped improving; target accuracy not reached"
+        : "Iteration limit reached; target accuracy not reached";
+}
+
+function fineAlignmentRms(value: number | null): string {
+  return value === null ? "unavailable" : `${value.toPrecision(4)} mm`;
+}
 
 export type MeshTool =
   | "fineAlign"
+  | "surfaceRefinement"
   | "repairMesh"
   | "segmentMesh"
   | "smoothMesh"
@@ -82,8 +103,11 @@ export function MeshTools({
     [angle, setAngle] = useState(25);
   const [targetId, setTargetId] = useState(""),
     [surfaceSamples, setSurfaceSamples] = useState(500),
-    [distance, setDistance] = useState(10),
-    [icpIterations, setIcpIterations] = useState(40);
+    [distance, setDistance] = useState(DEFAULT_FINE_ALIGNMENT_MAX_DISTANCE),
+    [icpIterations, setIcpIterations] = useState(200),
+    [targetRms, setTargetRms] = useState(0.5),
+    [overlapPercent, setOverlapPercent] = useState(85),
+    [fittingSampleCount, setFittingSampleCount] = useState(20000);
   const [additionalTargetIds, setAdditionalTargetIds] = useState<string[]>([]);
   const [parallelRefinement, setParallelRefinement] = useState(false);
   const [landmarkSeeds, setLandmarkSeeds] = useState("");
@@ -161,9 +185,19 @@ export function MeshTools({
         onStatus("Surface refinement did not converge · geometry unchanged");
         return;
       }
-      onStatus(
-        `${label} complete${outcome.registration ? ` · RMS ${outcome.registration.rms.toPrecision(4)} mm${outcome.registration.converged ? "" : " · iteration limit reached"}` : ""}`,
-      );
+      const registration = outcome.registration;
+      if (registration && "applied" in registration && !registration.applied) {
+        onStatus(
+          "Insufficient compatible overlap; geometry unchanged. Reduce expected overlap to match the shared region, or improve the starting alignment.",
+        );
+        return;
+      }
+      const summary = registration
+        ? "overlapRms" in registration
+          ? ` · Overlap RMS ${fineAlignmentRms(registration.overlapRms)} · Whole-cloud RMS ${registration.wholeCloudRms.toPrecision(4)} mm · ${fineAlignmentStatus(registration.terminationReason)}`
+          : ` · RMS ${registration.rms.toPrecision(4)} mm · ${registration.converged ? "converged" : "iteration limit reached"}`
+        : "";
+      onStatus(`${label} complete${summary}`);
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError")
         onStatus("Mesh operation cancelled; original geometry retained.");
@@ -198,6 +232,7 @@ export function MeshTools({
       title={
         {
           fineAlign: "Fine alignment",
+          surfaceRefinement: "Surface refinement",
           repairMesh: "Repair topology",
           segmentMesh: "Segment surfaces",
           smoothMesh: "Smooth mesh",
@@ -414,8 +449,14 @@ export function MeshTools({
             </p>
           </>
         )}
-        {["fineAlign", "globalAlignment"].includes(tool) && (
+        {["fineAlign", "globalAlignment", "surfaceRefinement"].includes(
+          tool,
+        ) && (
           <>
+            <p>
+              Moving scan: <strong>{selected?.name}</strong>. The registration
+              target remains fixed; alignment moves the selected scan.
+            </p>
             <label className="select-field">
               Registration target
               <AppSelect
@@ -441,6 +482,57 @@ export function MeshTools({
           </>
         )}
         {tool === "fineAlign" && (
+          <>
+            <Field
+              label="Target overlap RMS (mm)"
+              value={targetRms}
+              onChange={setTargetRms}
+              min={0.000001}
+              step={0.01}
+            />
+            <Field
+              label="Expected overlap (%)"
+              value={overlapPercent}
+              onChange={setOverlapPercent}
+              min={0.01}
+              max={100}
+              step={1}
+            />
+            <details>
+              <summary>Advanced ICP settings</summary>
+              <p>
+                Fitting samples control computation cost. Maximum iterations
+                limits the search; numerical stopping uses a tolerance of
+                0.00001. Target overlap RMS is the separate accuracy goal.
+              </p>
+              <label className="field">
+                <span>
+                  Fitting sample count:{" "}
+                  <output>{fittingSampleCount.toLocaleString()}</output>
+                </span>
+                <input
+                  aria-label="Fitting sample count"
+                  type="range"
+                  min={3}
+                  max={100000}
+                  step={1}
+                  value={fittingSampleCount}
+                  onChange={(event) =>
+                    setFittingSampleCount(event.target.valueAsNumber)
+                  }
+                />
+              </label>
+              <Field
+                label="ICP maximum iterations"
+                value={icpIterations}
+                onChange={setIcpIterations}
+                min={1}
+                step={1}
+              />
+            </details>
+          </>
+        )}
+        {tool === "surfaceRefinement" && (
           <>
             <fieldset>
               <legend>Additional fixed surfaces</legend>
@@ -509,13 +601,6 @@ export function MeshTools({
                 step={1}
               />
             )}
-            <Field
-              label="ICP maximum iterations"
-              value={icpIterations}
-              onChange={setIcpIterations}
-              min={1}
-              step={1}
-            />
             <button
               className="wide"
               disabled={
@@ -562,48 +647,88 @@ export function MeshTools({
         )}
         {tool === "fineAlign" && (
           <>
-            <button
-              className="wide"
-              disabled={!targets.some((entity) => entity.id === targetId)}
-              onClick={() => {
-                const target = targets.find((entity) => entity.id === targetId);
-                if (selected && target)
-                  void run(
-                    {
-                      kind: "icp",
-                      positions: selected.positions,
-                      sourceTriangleMask:
-                        selected.kind === "pointcloud"
-                          ? undefined
-                          : alignmentTriangleMask(
-                              selected.positions.length / 9,
-                              triangleSelection,
-                              selected.meshSelection?.hidden,
-                            ),
-                      target: target.positions,
-                      maxDistance: distance,
-                      maxIterations: icpIterations,
-                      sampleSize: 4000,
-                      targetSampleSize: 20000,
-                      tolerance: 0.00001,
-                      trimFraction: 0.85,
-                    },
-                    "Fine align scans with sampled ICP",
+            <div className="alignment-actions">
+              <button
+                className="wide"
+                disabled={!targets.some((entity) => entity.id === targetId)}
+                onClick={() => {
+                  const target = targets.find(
+                    (entity) => entity.id === targetId,
                   );
-              }}
-            >
-              Fine align with sampled ICP
-            </button>
-            <p className="muted">
-              {selected?.kind === "pointcloud"
-                ? "All points drive alignment; the whole cloud moves. "
-                : triangleSelection?.some((value) => value !== 0)
-                  ? "Selected visible triangles drive fine alignment; the whole scan moves. "
-                  : "Visible triangles drive fine alignment; the whole scan moves. "}
-              ICP uses up to 4,000 source and 20,000 target samples. Start from
-              approximate alignment; symmetric geometry can settle into an
-              incorrect local match.
-            </p>
+                  if (selected && target)
+                    try {
+                      void run(
+                        {
+                          kind: "icp",
+                          positions: selected.positions,
+                          sourceTriangleMask:
+                            selected.kind === "pointcloud"
+                              ? undefined
+                              : alignmentTriangleMask(
+                                  selected.positions.length / 9,
+                                  triangleSelection,
+                                  selected.meshSelection?.hidden,
+                                ),
+                          target: target.positions,
+                          ...fineAlignmentInput(selected, target),
+                          maxDistance: distance,
+                          maxIterations: icpIterations,
+                          sampleSize: fittingSampleCount,
+                          targetSampleSize: 20000,
+                          targetRms,
+                          overlapPercent,
+                          tolerance: 0.00001,
+                        },
+                        "Fine align scans",
+                      );
+                    } catch (error) {
+                      onError(
+                        error instanceof Error ? error.message : String(error),
+                      );
+                    }
+                }}
+              >
+                Fine align scans
+              </button>
+              <HelpPopover label="Fine alignment help">
+                <ul>
+                  <li>
+                    <strong>Start close.</strong> Roughly align the scans first;
+                    symmetric shapes can match incorrectly.
+                  </li>
+                  <li>
+                    <strong>What moves?</strong>{" "}
+                    {selected?.kind === "pointcloud"
+                      ? "The whole cloud moves."
+                      : triangleSelection?.some(Boolean)
+                        ? "Selected visible triangles drive fine alignment; the whole scan moves."
+                        : "Visible triangles drive fine alignment; the whole scan moves."}{" "}
+                    The target stays fixed.
+                  </li>
+                  <li>
+                    <strong>Overlap: {overlapPercent}%.</strong> Set this to the
+                    shared area. Target RMS measures that matching region.
+                  </li>
+                  <li>
+                    <strong>
+                      Samples: {fittingSampleCount.toLocaleString()}.
+                    </strong>{" "}
+                    More samples cost more time. Matching uses the full target;
+                    available normals reject matches over 60° apart.
+                  </li>
+                  <li>
+                    <strong>Read the result.</strong> Whole-cloud RMS includes
+                    every eligible source point, including unmatched regions.
+                    Final metrics are checked independently of fitting samples.
+                  </li>
+                  <li>
+                    <strong>Insufficient overlap?</strong> Geometry stays
+                    unchanged. Lower expected overlap or improve the starting
+                    alignment.
+                  </li>
+                </ul>
+              </HelpPopover>
+            </div>
           </>
         )}
         {tool === "globalAlignment" && (
@@ -670,55 +795,7 @@ export function MeshTools({
           </>
         )}
       </fieldset>
-      {result && (
-        <div role="status" aria-label="Mesh operation result">
-          <h4>Result</h4>
-          {result.topology && (
-            <dl>
-              {Object.entries(result.topology).map(([key, value]) => (
-                <div key={key}>
-                  <dt>{key.replace(/([A-Z])/g, " $1")}</dt>
-                  <dd>{value.toLocaleString()}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-          {Object.entries(result.diagnostics)
-            .filter(
-              ([key]) =>
-                !["pointCloudPose", "localBuffersRetained"].includes(key),
-            )
-            .map(([key, value]) => (
-              <p key={key}>
-                {key.replace(/([A-Z])/g, " $1")}: {String(value)}
-              </p>
-            ))}
-          {result.segmentClassifications?.map((classification, index) => (
-            <p key={index}>
-              Region {index + 1}:{" "}
-              {classification.kind === "freeform"
-                ? "unclassified / freeform"
-                : classification.kind}{" "}
-              · {classification.samples} samples
-              {classification.rms !== undefined
-                ? ` · RMS ${classification.rms.toPrecision(4)} mm · max ${classification.maxError?.toPrecision(4)} mm`
-                : ""}{" "}
-              · tolerance {classification.tolerance.toPrecision(4)} mm ·{" "}
-              {classification.reason}
-            </p>
-          ))}
-          {result.repairSheets?.map((sheet, index) => (
-            <p key={`sheet-${index}`}>
-              Sheet {index + 1}: {sheet.triangles.toLocaleString()} triangles ·{" "}
-              {sheet.watertight
-                ? "watertight topology"
-                : `${sheet.boundaryEdges} boundary edges`}{" "}
-              · {sheet.nonManifoldEdges} nonmanifold edges ·{" "}
-              {sheet.nonManifoldVertices} nonmanifold vertices
-            </p>
-          ))}
-        </div>
-      )}
+      {result && <MeshOperationResult result={result} />}
       <p className="muted">Cancel releases the operation worker immediately.</p>
     </Panel>
   );

@@ -1,0 +1,32 @@
+[08:12:12] [SET LOG FILE] finished in 0.00 s.
+[08:12:12] [AUTO SAVE STATE]
+[08:12:12] Auto-save is disabled
+[08:12:12] [AUTO SAVE STATE] finished in 0.00 s.
+[08:12:12] [CHANGE CLOUD OUTPUT FORMAT]
+[08:12:12] Output export format (clouds) set to: ASC
+[08:12:12] [CHANGE CLOUD OUTPUT FORMAT] finished in 0.00 s.
+[08:12:12] [NO TIMESTAMP]
+[08:12:12] [NO TIMESTAMP] finished in 0.00 s.
+[08:12:12] [LOAD]
+[08:12:12] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\partial-with-authored-outliers\native-stricter-rerun\moving.ply'
+[08:12:12] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\partial-with-authored-outliers\native-stricter-rerun\moving.ply' loaded successfully
+[08:12:12] Found one cloud with 866 points
+[08:12:12] [LOAD] finished in 0.01 s.
+[08:12:12] [LOAD]
+[08:12:12] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\partial-with-authored-outliers\native-stricter-rerun\fixed.ply'
+[08:12:12] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\partial-with-authored-outliers\native-stricter-rerun\fixed.ply' loaded successfully
+[08:12:12] Found one cloud with 693 points
+[08:12:12] [LOAD] finished in 0.01 s.
+[08:12:12] [ICP]
+[08:12:12] [ICP] Will use 2 threads
+[08:12:12] Entity 'moving - Cloud' has been registered
+[08:12:12] RMS: 5.10705e-07
+[08:12:12] Number of points used for final step: 693
+[08:12:12] [ICP] finished in 0.00 s.
+[08:12:12] [SAVE CLOUDS]
+[08:12:12] [SAVING]
+[08:12:12] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/alignment/partial-with-authored-outliers/native-stricter-rerun/moving_REGISTERED.asc' saved successfully
+[08:12:12] [SAVING]
+[08:12:12] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/alignment/partial-with-authored-outliers/native-stricter-rerun/fixed.asc' saved successfully
+[08:12:12] [SAVE CLOUDS] finished in 0.00 s.
+[08:12:12] Processed finished in 0.02 s.

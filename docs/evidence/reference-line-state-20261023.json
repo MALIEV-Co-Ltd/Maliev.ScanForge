@@ -1,0 +1,385 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "static-line-state-contract; native execution acceptance open",
+  "nativeNumericReplay": false,
+  "renderedGuiMcpAcceptance": false,
+  "newConstructionOperationAdvertised": false,
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "focusedAnalysis": {
+    "artifact": {
+      "privateArtifact": "construction-line-controls-noanalysis-r1/evidence.json",
+      "sha256": "dfad3bd025ede14154db51c1c7253872c9f9647a3f53a21bdf174972a259efe2",
+      "bytes": 159550
+    },
+    "script": {
+      "privateArtifact": "ConstructionLineControls.java",
+      "sha256": "6e5dd3215378f37f4c9fb536f8ac0da9f9fc3618c08685a80247c723a89b0edd",
+      "bytes": 3275
+    },
+    "driver": {
+      "privateArtifact": "construction-line-controls-noanalysis-r1.mjs",
+      "sha256": "f8f532e545f4bf89cdb303a3683803165b213618b629f5656e1696ee89f53e79",
+      "bytes": 2612
+    },
+    "receipt": {
+      "privateArtifact": "project-index-validation-construction-line-controls-noanalysis-r1-cad.receipt.json",
+      "sha256": "0531bfc83de6c7879146c53ee840c459caa135837757ac36a108a849a0113b30",
+      "bytes": 1880,
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 11.878621299998485,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 180,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 729452544,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    }
+  },
+  "staticVerification": {
+    "privateArtifact": "reference-line-state-static-r1.json",
+    "sha256": "9f3ff0459864cd2ab2204b09f77e85630aae836e5d7b44bdd1af0f6c569ca7dd",
+    "bytes": 6437,
+    "driver": {
+      "privateArtifact": "verify-reference-line-state-r1.py",
+      "sha256": "28bde40aa16871d015e08137986549d7bac4ee34f7bd03903d0fda3f94b6cc31",
+      "bytes": 5112
+    },
+    "sources": [
+      {
+        "privateArtifact": "construction-geometry-noanalysis-r1/evidence.json",
+        "sha256": "62aafd4a3d2d1a015a11810bf2116c77fe0f01fa944451dc86515df71e1d18e0"
+      },
+      {
+        "privateArtifact": "construction-calculation-noanalysis-r1/evidence.json",
+        "sha256": "881166f8f3587bab95fdaf616ae4ceb29700b03499b789e0ecc48e3f572db292"
+      },
+      {
+        "privateArtifact": "construction-math-noanalysis-r1/evidence.json",
+        "sha256": "5786e43b433f4a93701c70d894afd7efe0cd7324b653203f0d6df65cc8f436a4"
+      },
+      {
+        "privateArtifact": "construction-factory-noanalysis-r1/evidence.json",
+        "sha256": "92ae090bdd56399139463f2de6f41fc8bac854daeeca7721814d0b20d4a56dd0"
+      },
+      {
+        "privateArtifact": "construction-line-controls-noanalysis-r1/evidence.json",
+        "sha256": "dfad3bd025ede14154db51c1c7253872c9f9647a3f53a21bdf174972a259efe2"
+      }
+    ],
+    "procedures": [
+      {
+        "entry": "0x14040e340",
+        "listedInstructionStarts": 1347,
+        "instructionBytesSha256": "0fb452027d616b83023c7fce6aad47e639a4245e512f608d8617b47eecf90388",
+        "checkedDirectFlows": 107
+      },
+      {
+        "entry": "0x140573170",
+        "listedInstructionStarts": 457,
+        "instructionBytesSha256": "6ae602edf60554d6786256bb4df1a29ce0c2bb791c55acb7f663ef4e851f1a56",
+        "checkedDirectFlows": 49
+      },
+      {
+        "entry": "0x1405716f0",
+        "listedInstructionStarts": 724,
+        "instructionBytesSha256": "d760c5e1ae4da9685914eeb849e2c58d289460db9310bdfed482eeee9fc406ae",
+        "checkedDirectFlows": 74
+      },
+      {
+        "entry": "0x14040cd60",
+        "listedInstructionStarts": 112,
+        "instructionBytesSha256": "e5421bb7cca01a339a16f97a51188f59f5a4a23a78891026dc87d960102c7d24",
+        "checkedDirectFlows": 8
+      },
+      {
+        "entry": "0x14040c5c0",
+        "listedInstructionStarts": 104,
+        "instructionBytesSha256": "e2b1adef187711df46d099c84e60f7f6ff115b0c649eb94615a77dad3f1722a8",
+        "checkedDirectFlows": 1
+      },
+      {
+        "entry": "0x140805700",
+        "listedInstructionStarts": 202,
+        "instructionBytesSha256": "e7b8fd3c6701273bcc862be3c86576b66490e55d6b2e3dcf4ce5d9002a1437e9",
+        "checkedDirectFlows": 31
+      },
+      {
+        "entry": "0x140570f10",
+        "listedInstructionStarts": 118,
+        "instructionBytesSha256": "f97bc795e50c1834bcbacc52228f6de3dacb3e3d8069647036ee1654e5763e4a",
+        "checkedDirectFlows": 11
+      },
+      {
+        "entry": "0x1405712b0",
+        "listedInstructionStarts": 125,
+        "instructionBytesSha256": "29e235df61a074f61397dbfd3d77b3316418d28d6debfe555ca1782844b38e84",
+        "checkedDirectFlows": 8
+      },
+      {
+        "entry": "0x1405726f0",
+        "listedInstructionStarts": 67,
+        "instructionBytesSha256": "2a0aacc07c39c6f47d5769c1cde351a74bd0bfc79e4b216ecb12750cab3da68f",
+        "checkedDirectFlows": 8
+      },
+      {
+        "entry": "0x140572850",
+        "listedInstructionStarts": 117,
+        "instructionBytesSha256": "b47a025bc8906056507ad4987d6c45dc2c60cf496feb39aebd313695a18ca666",
+        "checkedDirectFlows": 14
+      },
+      {
+        "entry": "0x140572a10",
+        "listedInstructionStarts": 471,
+        "instructionBytesSha256": "5a006d01c1f29f3ceffeeecb3880eefa5ce369dd4bfd7660e2726ab90eb6da07",
+        "checkedDirectFlows": 57
+      },
+      {
+        "entry": "0x140a93410",
+        "listedInstructionStarts": 52,
+        "instructionBytesSha256": "49eb6633659950a9999db6a0e4feba4892cc020b3b7f16ad84821685af1832c3",
+        "checkedDirectFlows": 4
+      }
+    ],
+    "branches": [
+      {
+        "address": "0x14040e3cc",
+        "target": "0x14040fb28",
+        "bytesSha256": "eaa0f8b95154c690d77d8fff55cdc4c42a5f25382df3b6fed8b2c6a2f6e05cd2"
+      },
+      {
+        "address": "0x14040f505",
+        "target": "0x14040fb1d",
+        "bytesSha256": "8990fc51c505e3ddb8e296c5c55debde2eb0ba9def2afaf724d6859aa86b5ce3"
+      },
+      {
+        "address": "0x14040fae6",
+        "target": "0x14040fb1d",
+        "bytesSha256": "ee8616502dd081f3f250cdef1b5f1c40a7be6b5eedd5936f26dccb2c5e312131"
+      }
+    ],
+    "operandChecks": [
+      {
+        "address": "0x14040e54b",
+        "role": "record range load",
+        "fieldOffset": "0x2e0",
+        "bytesSha256": "9f9077639035a10c06644372b7607d324ea71b4b9411598f721f3860d6aaad04"
+      },
+      {
+        "address": "0x14040e5b0",
+        "role": "record range load",
+        "fieldOffset": "0x2d8",
+        "bytesSha256": "ef0f71dcdc68c9c646f0c1682c2ace7489caf54d031c610b5ab2225451c788f4"
+      },
+      {
+        "address": "0x14040f617",
+        "role": "record range load",
+        "fieldOffset": "0x2e0",
+        "bytesSha256": "5b6ccd871f7082d07b78c8d3ca0ea0710508ad49f003f63889b6a6d14c042150"
+      },
+      {
+        "address": "0x14040f61f",
+        "role": "record range load",
+        "fieldOffset": "0x2d8",
+        "bytesSha256": "91eeda440bcd1c108b74cde847197689433e01be70f4bbf13e617a95cc1a24bc"
+      },
+      {
+        "address": "0x14040fb1d",
+        "role": "ordinary state word store",
+        "fieldOffset": "0x2b0",
+        "value": 256,
+        "bytesSha256": "11227524f4b6411726c119b6ac4479d21d4316c5612671a0d46692f19ba2bce0"
+      }
+    ],
+    "constants": [
+      {
+        "address": "0x14126ad40",
+        "value": 2.220446049250313e-16,
+        "format": "d",
+        "bytes": "000000000000b03c"
+      },
+      {
+        "address": "0x14126ae00",
+        "value": 1.1920928955078125e-7,
+        "format": "d",
+        "bytes": "000000000000803e"
+      },
+      {
+        "address": "0x14126b970",
+        "value": 10.0,
+        "format": "d",
+        "bytes": "0000000000002440"
+      },
+      {
+        "address": "0x14126b978",
+        "value": 0.0,
+        "format": "d",
+        "bytes": "0000000000000000"
+      },
+      {
+        "address": "0x14126b8a4",
+        "value": -3.4028234663852886e38,
+        "format": "f",
+        "bytes": "ffff7fff"
+      },
+      {
+        "address": "0x14126b6e0",
+        "value": 3.4028234663852886e38,
+        "format": "f",
+        "bytes": "ffff7f7f"
+      }
+    ],
+    "endpointSetter": {
+      "table": "0x14117d0f8",
+      "slot": "0xe0",
+      "target": "0x140a93410"
+    },
+    "receipt": {
+      "privateArtifact": "project-index-validation-verify-reference-line-state-r1-cad.receipt.json",
+      "sha256": "0d7399867e8302a13798aff77b3611aa642e4a20222afeabb349230b2a059c5d",
+      "bytes": 1828,
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.3097532000101637,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 120,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 97669120,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    }
+  },
+  "fieldDiscovery": {
+    "artifact": {
+      "privateArtifact": "reference-line-controls-discovery-r1.json",
+      "sha256": "b1470147bc1d3cddfb620dfe57e683b186c64c6ea32bfe05c0b9834aa1fd9ae5",
+      "bytes": 5157
+    },
+    "receipt": {
+      "privateArtifact": "project-index-validation-discover-reference-line-controls-r1-cad.receipt.json",
+      "sha256": "ce10c6c6f5f4c4db32d14e6c2903e5b5ece5f60899274e75718bf00d44c0b3c1",
+      "bytes": 1855,
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.3095920999912778,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 120,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 115585024,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    "scope": "Eight raw displacement matches produced 15 overlapping decode candidates. Candidate instruction boundaries were not assumed; selected owning procedures were analyzed separately."
+  },
+  "resourceInventory": {
+    "artifact": {
+      "privateArtifact": "reference-line-resource-inventory-r1.json",
+      "sha256": "97a781cbace42d6556075d59d7e097bac95673cc899620215ee82b588b989509",
+      "bytes": 27408
+    },
+    "evidenceId": "ev_8d2827580cf186a77293e869b35b4fbeb9add805f71027ebd8f98d20dfe47d2c",
+    "provider": {
+      "id": "rea-pe-resources",
+      "name": "REA PE resource parser",
+      "version": "1"
+    },
+    "installedArtifactSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "coverage": {
+      "status": "complete",
+      "examined_entries": 35,
+      "resources": 15
+    },
+    "dialogResourcesFound": 0,
+    "limitBytes": 16777216,
+    "limitEntries": 10000,
+    "scope": "Static shipped-resource tree only; absence of RT_DIALOG here does not establish runtime dialog absence or editability."
+  },
+  "rules": [
+    {
+      "id": "initial-inner-state",
+      "entries": ["0x14040c5c0", "0x14040cd60"],
+      "finding": "Inner start, direction and length initialize to zero; outer mode initializes to 2. These constructor values are distinct from command-level defaults."
+    },
+    {
+      "id": "command-default",
+      "entry": "0x140805700",
+      "finding": "Before later dialog/preselection adjustments, finite valid scene bounds seed endpoints (minX,0,0) and (maxX,0,0); invalid/inverted or extreme sentinel bounds select (0,0,0) to (10,0,0). A zero X span does not automatically select the 10 mm fallback."
+    },
+    {
+      "id": "endpoint-setter",
+      "entry": "0x140a93410",
+      "finding": "Compute sqrt((dy squared + dx squared) + dz squared), require length strictly greater than 2^-52, then store start, normalized direction and length. Rejection writes none of those fields."
+    },
+    {
+      "id": "typed-controller",
+      "entry": "0x140573170",
+      "finding": "Mode 2 converts six displayed endpoint coordinates to internal units and uses sqrt((dx squared + dy squared) + dz squared). It updates geometry only for length > 2^-52. This arithmetic order differs from the general endpoint setter."
+    },
+    {
+      "id": "length-display",
+      "entries": ["0x1405712b0", "0x1405726f0", "0x140573170"],
+      "finding": "Length member +0x36e8 is registered to control 0x421. Display refresh reconstructs the second endpoint from stored start/direction/length and measures endpoint distance before unit conversion; it does not simply display stored length. Editable-length behavior is not established."
+    },
+    {
+      "id": "line-record-order",
+      "entries": ["0x14040e340", "0x140573170"],
+      "finding": "Mode 3 consumes the first two ordered 28-byte retained records. The controller appends first selector and second selector records independently of the common deduplicated input set. Mode 5 iterates that record vector, with a nonempty common-input-set guard."
+    },
+    {
+      "id": "line-duplicates",
+      "entry": "0x140573170",
+      "finding": "The inspected controller does not deduplicate retained records. Two records can carry one identity while the dependency set has one member. Native UI admission of such selections remains unverified."
+    },
+    {
+      "id": "missing-input-finalization",
+      "entry": "0x14040e340",
+      "finding": "Candidate endpoints start from the old stored line. Missing inputs can lead to endpoint reconstruction and renormalization, so old geometry is not necessarily preserved bit-for-bit."
+    },
+    {
+      "id": "degenerate-finalization",
+      "entry": "0x14040e340",
+      "finding": "Mode 3 and mode 5 final length <= 2^-52 skips geometry stores but reaches the ordinary two-byte 0x100 store at outer+0x2b0. Initial guard failure skips both geometry and that store."
+    },
+    {
+      "id": "average-order",
+      "entry": "0x14040e340",
+      "finding": "Each successfully extracted axis increments contribution count, adds its unweighted midpoint, updates maximum half-length and contributes a normalized/sign-adjusted direction in record order. A zero-length extracted axis must not be silently filtered after successful extraction."
+    },
+    {
+      "id": "average-extent",
+      "entry": "0x14040e340",
+      "finding": "For prior length <= 2^-23, use average midpoint plus/minus maximum input half-length. For larger prior length, project previous endpoints onto the average line. Finalization still applies the strict 2^-52 length test."
+    }
+  ],
+  "limits": [
+    "This is static analysis and instruction corroboration, not native numerical execution or GUI/MCP acceptance.",
+    "Exact near-parallel pair fallback arithmetic, CAD/curve pick interpretation, endpoint drag anchoring and all UI admission remain unfinished evidence work.",
+    "Defaults described here precede later dialog/preselection adjustments; they are not an observed final UI result.",
+    "Raw code, resource assets, pseudocode and installed product names remain outside this repository.",
+    "No fresh live code binding was performed for the six newly analyzed entries."
+  ],
+  "mcpCoverage": {
+    "existingCapabilityChanged": false,
+    "constructionToolsAdvertised": false,
+    "requiredIntegration": "Preserve distinct ordered records and dependency sets through the single shared construction editor, inspection, history and project persistence."
+  }
+}

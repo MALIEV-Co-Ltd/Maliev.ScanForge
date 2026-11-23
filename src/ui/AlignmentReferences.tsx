@@ -60,9 +60,7 @@ export function AlignmentReferences({
         <>
           <p className="muted">{page.total} references · mm</p>
           {page.total === 0 && (
-            <p>
-              No exact CAD faces or fitted primitive references on this object.
-            </p>
+            <p>No supported alignment references on this object.</p>
           )}
           {page.references.length > 0 && (
             <label className="field">
@@ -81,7 +79,9 @@ export function AlignmentReferences({
                   >
                     {item.source === "cadFace"
                       ? `Face ${(item.faceIndex ?? 0) + 1}`
-                      : "Fitted primitive"}{" "}
+                      : item.source === "referenceConstruction"
+                        ? "Construction reference"
+                        : "Fitted primitive"}{" "}
                     · {item.kind}
                     {item.surfaceKind && item.surfaceKind !== item.kind
                       ? ` (${item.surfaceKind})`

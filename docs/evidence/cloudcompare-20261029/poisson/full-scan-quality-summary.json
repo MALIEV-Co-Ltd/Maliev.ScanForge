@@ -1,0 +1,313 @@
+{
+  "scope": "Full owner PLY1 scan reconstruction quality: actual public MCP browser export and exact geometry-matched independent Node upstream PoissonRecon WASM run, verified with independent Three.js MeshBVH analysis. Native CloudCompare modeling comparison remains a separate receipt.",
+  "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+  "sourcePointCount": 140113,
+  "sourceTriangles": 274154,
+  "normalPreparation": {
+    "mode": "estimate-provided",
+    "neighbors": 24,
+    "validSourceOrientationAnchors": 140111,
+    "invalidOrZeroSourceAnchors": 2,
+    "pointsDroppedOrSampled": 0
+  },
+  "selectionRule": "Keep fixed source-spacing acceptance gates; choose a tested exposed depth/density configuration satisfying full-source coverage, both reverse-direction sample distributions and topology/intersection gates. Depth 8 and density 6 at depths 9/10 retain unsupported closure; density 7 at depth 9 removes that closure while preserving complete input use and measured source coverage. No acceptance threshold was relaxed.",
+  "selected": {
+    "nodeRunReceipt": "ply-1-depth9-density7-native-normalized-run.json",
+    "nodeQualityReceipt": "ply-1-depth9-density7-native-normalized-quality.json",
+    "nodeBinaryPly": "ply-1-depth9-density7-native-normalized-mesh.ply",
+    "publicMcpQualityReceipt": "../browser/ply-1-public-mcp-quality.json",
+    "publicMcpBinaryPly": "../browser/ply-1-public-mcp-mesh.ply",
+    "nodeMeshSha256": "3d5ba2aecdf608cde76fbb7c5d061fdce2cb4c3cf16b0b2592ad9c51f43f0dd6",
+    "publicMcpMeshSha256": "4e0bae490c5cbf5cfdb61b94fc8068d1493fb076f8300ed337c4d7b3198722c1",
+    "sharedGeometrySha256": "f8fc37e44287a1a254deb34b4c4ab41e77c8723b0258b05e7517278485a06af0",
+    "settings": {
+      "normalMode": "estimate-provided",
+      "normalNeighbors": 24,
+      "depth": 9,
+      "pointWeight": 2,
+      "samplesPerNode": 1.5,
+      "densityThreshold": 7,
+      "femDegree": 2,
+      "boundary": "Neumann",
+      "scale": 1.1,
+      "threads": 1
+    },
+    "nodePassed": true,
+    "publicMcpPassed": true,
+    "sourceInputPoints": 140113,
+    "vertices": 249999,
+    "triangles": 495378,
+    "components": 7,
+    "boundaryEdges": 4636,
+    "selfIntersectionCandidatePairs": 14896700,
+    "selfIntersectionAnalysisComplete": true
+  },
+  "sourceBaseline": {
+    "components": 23,
+    "boundaryEdges": 6074,
+    "nonManifoldVertices": 13,
+    "degenerateTriangles": 4,
+    "duplicateVertices": 2,
+    "invalidOrZeroNormals": 2,
+    "nonAdjacentIntersectionPairs": 32
+  },
+  "parameterRows": [
+    {
+      "receipt": "ply-1-depth10-density6-normalized-quality.json",
+      "passed": false,
+      "settings": {
+        "normalMode": "estimate-provided",
+        "normalNeighbors": 24,
+        "depth": 10,
+        "pointWeight": 2,
+        "samplesPerNode": 1.5,
+        "densityThreshold": 6,
+        "femDegree": 2,
+        "boundary": "Neumann",
+        "scale": 1.1,
+        "threads": 1
+      },
+      "sourcePoints": 140113,
+      "outputVertices": 263972,
+      "outputTriangles": 525933,
+      "sourceToMeshP95": 0.02765754022483183,
+      "sourceToMeshP99": 0.043274647453580194,
+      "meshVerticesToSourceP95": 0.8876279775903775,
+      "meshVerticesToSourceP99": 2.165703084099325,
+      "meshCentroidsToSourceP95": 0.8391233686077955,
+      "meshCentroidsToSourceP99": 2.027650923358633,
+      "nonManifoldVertices": 0,
+      "degenerateTriangles": 0,
+      "rawNonAdjacentIntersectionPairs": 0,
+      "intersectionClassifications": {
+        "properCrossings": 0,
+        "coplanarPositiveAreaOverlaps": 0,
+        "pointOrEdgeContacts": 0,
+        "degenerateOrUnclassified": 0
+      },
+      "failedChecks": [
+        "meshVerticesToSourceTopology.p95",
+        "meshVerticesToSourceTopology.p99",
+        "meshFaceCentroidsToSourceTopology.p95",
+        "meshFaceCentroidsToSourceTopology.p99"
+      ]
+    },
+    {
+      "receipt": "ply-1-depth8-density6-quality.json",
+      "passed": false,
+      "settings": {
+        "normalMode": "estimate-provided",
+        "normalNeighbors": 24,
+        "depth": 8,
+        "pointWeight": 2,
+        "samplesPerNode": 1.5,
+        "densityThreshold": 6,
+        "femDegree": 2,
+        "boundary": "Neumann",
+        "scale": 1.1,
+        "threads": 1
+      },
+      "sourcePoints": 140113,
+      "outputVertices": 70315,
+      "outputTriangles": 139358,
+      "sourceToMeshP95": 0.08998740898784834,
+      "sourceToMeshP99": 0.12800065338827724,
+      "meshVerticesToSourceP95": 1.4388491976074236,
+      "meshVerticesToSourceP99": 2.273202615796329,
+      "meshCentroidsToSourceP95": 1.3574360718588123,
+      "meshCentroidsToSourceP99": 2.0075786293096236,
+      "nonManifoldVertices": 1,
+      "degenerateTriangles": 0,
+      "rawNonAdjacentIntersectionPairs": 0,
+      "intersectionClassifications": {
+        "properCrossings": 0,
+        "coplanarPositiveAreaOverlaps": 0,
+        "pointOrEdgeContacts": 0,
+        "degenerateOrUnclassified": 0
+      },
+      "failedChecks": [
+        "meshVerticesToSourceTopology.p95",
+        "meshVerticesToSourceTopology.p99",
+        "meshFaceCentroidsToSourceTopology.p95",
+        "meshFaceCentroidsToSourceTopology.p99",
+        "nonManifoldVertices"
+      ]
+    },
+    {
+      "receipt": "ply-1-depth8-quality.json",
+      "passed": false,
+      "settings": {
+        "normalMode": "estimate-provided",
+        "normalNeighbors": 24,
+        "depth": 8,
+        "pointWeight": 2,
+        "samplesPerNode": 1.5,
+        "densityThreshold": 0,
+        "femDegree": 2,
+        "boundary": "Neumann",
+        "scale": 1.1,
+        "threads": 1
+      },
+      "sourcePoints": 140113,
+      "outputVertices": 74581,
+      "outputTriangles": 149202,
+      "sourceToMeshP95": 0.08998740898784834,
+      "sourceToMeshP99": 0.12800065338827724,
+      "meshVerticesToSourceP95": 2.9423866648729704,
+      "meshVerticesToSourceP99": 5.27180429317106,
+      "meshCentroidsToSourceP95": 2.9301985345567605,
+      "meshCentroidsToSourceP99": 5.285575301160531,
+      "nonManifoldVertices": 0,
+      "degenerateTriangles": 2,
+      "rawNonAdjacentIntersectionPairs": 13,
+      "intersectionClassifications": {
+        "properCrossings": 0,
+        "coplanarPositiveAreaOverlaps": 0,
+        "pointOrEdgeContacts": 13,
+        "degenerateOrUnclassified": 0
+      },
+      "failedChecks": [
+        "meshVerticesToSourceTopology.p95",
+        "meshVerticesToSourceTopology.p99",
+        "meshFaceCentroidsToSourceTopology.p95",
+        "meshFaceCentroidsToSourceTopology.p99",
+        "degenerateTriangles",
+        "nonAdjacentIntersectingTrianglePairs"
+      ]
+    },
+    {
+      "receipt": "ply-1-depth9-density6-normalized-quality.json",
+      "passed": false,
+      "settings": {
+        "normalMode": "estimate-provided",
+        "normalNeighbors": 24,
+        "depth": 9,
+        "pointWeight": 2,
+        "samplesPerNode": 1.5,
+        "densityThreshold": 6,
+        "femDegree": 2,
+        "boundary": "Neumann",
+        "scale": 1.1,
+        "threads": 1
+      },
+      "sourcePoints": 140113,
+      "outputVertices": 262582,
+      "outputTriangles": 523133,
+      "sourceToMeshP95": 0.027849594797685413,
+      "sourceToMeshP99": 0.04390483850841201,
+      "meshVerticesToSourceP95": 0.9002164042772359,
+      "meshVerticesToSourceP99": 2.1654133306058005,
+      "meshCentroidsToSourceP95": 0.848722177796232,
+      "meshCentroidsToSourceP99": 2.023374386063598,
+      "nonManifoldVertices": 0,
+      "degenerateTriangles": 0,
+      "rawNonAdjacentIntersectionPairs": 37,
+      "intersectionClassifications": {
+        "properCrossings": 0,
+        "coplanarPositiveAreaOverlaps": 0,
+        "pointOrEdgeContacts": 37,
+        "degenerateOrUnclassified": 0
+      },
+      "failedChecks": [
+        "meshVerticesToSourceTopology.p95",
+        "meshVerticesToSourceTopology.p99",
+        "meshFaceCentroidsToSourceTopology.p95",
+        "meshFaceCentroidsToSourceTopology.p99",
+        "nonAdjacentIntersectingTrianglePairs"
+      ]
+    },
+    {
+      "receipt": "ply-1-depth9-density7-normalized-quality.json",
+      "passed": true,
+      "settings": {
+        "normalMode": "estimate-provided",
+        "normalNeighbors": 24,
+        "depth": 9,
+        "pointWeight": 2,
+        "samplesPerNode": 1.5,
+        "densityThreshold": 7,
+        "femDegree": 2,
+        "boundary": "Neumann",
+        "scale": 1.1,
+        "threads": 1
+      },
+      "sourcePoints": 140113,
+      "outputVertices": 249999,
+      "outputTriangles": 495379,
+      "sourceToMeshP95": 0.027849594797685413,
+      "sourceToMeshP99": 0.04390483850841201,
+      "meshVerticesToSourceP95": 0.44727702189472285,
+      "meshVerticesToSourceP99": 0.7869007265483353,
+      "meshCentroidsToSourceP95": 0.38616941213267153,
+      "meshCentroidsToSourceP99": 0.7061194790575971,
+      "nonManifoldVertices": 0,
+      "degenerateTriangles": 0,
+      "rawNonAdjacentIntersectionPairs": 0,
+      "intersectionClassifications": {
+        "properCrossings": 0,
+        "coplanarPositiveAreaOverlaps": 0,
+        "pointOrEdgeContacts": 0,
+        "degenerateOrUnclassified": 0
+      },
+      "failedChecks": []
+    },
+    {
+      "receipt": "ply-1-depth9-density7-native-normalized-quality.json",
+      "passed": true,
+      "settings": {
+        "normalMode": "estimate-provided",
+        "normalNeighbors": 24,
+        "depth": 9,
+        "pointWeight": 2,
+        "samplesPerNode": 1.5,
+        "densityThreshold": 7,
+        "femDegree": 2,
+        "boundary": "Neumann",
+        "scale": 1.1,
+        "threads": 1
+      },
+      "sourcePoints": 140113,
+      "outputVertices": 249999,
+      "outputTriangles": 495378,
+      "sourceToMeshP95": 0.027849594797685413,
+      "sourceToMeshP99": 0.04390483850841201,
+      "meshVerticesToSourceP95": 0.44727702189472285,
+      "meshVerticesToSourceP99": 0.7869007265483353,
+      "meshCentroidsToSourceP95": 0.3861677489511825,
+      "meshCentroidsToSourceP99": 0.7061536932972821,
+      "nonManifoldVertices": 0,
+      "degenerateTriangles": 0,
+      "rawNonAdjacentIntersectionPairs": 0,
+      "failedChecks": [],
+      "nativeNormalBufferMatchedApplication": true
+    }
+  ],
+  "artifacts": "Selected binary PLY plus all small successful/failed receipts are durable in docs; duplicate JSON geometry and failed binary outputs are preserved in .resources/poisson-quality with hashes in geometry-artifact-locations.json.",
+  "limitations": [
+    "Passing engineering scan-resolution gates is not proof of physical scanner accuracy or equivalence to native modeling.",
+    "Density trimming produces an open surface: selected mesh has 7 components and 4636 boundary edges. It is not a watertight volume.",
+    "All 140113 input points participated; output trimming removes unsupported reconstructed faces, not input points.",
+    "Full vertex and centroid distributions are finite equal-weight sample sets, not continuous symmetric Hausdorff bounds.",
+    "Maximum reverse distances remain 1.26625 and 1.22682 source units despite passing percentile gates.",
+    "Source defects are reported and are not used to excuse output defects."
+  ],
+  "arrayParity": {
+    "scope": "Full actual public-MCP export compared with an independent actual Node WASM run using identical final unit-normal assignment and shared exact mesh cleanup. Complete arrays compared without rounding or sampling.",
+    "nodeFileSha256": "3d5ba2aecdf608cde76fbb7c5d061fdce2cb4c3cf16b0b2592ad9c51f43f0dd6",
+    "mcpFileSha256": "4e0bae490c5cbf5cfdb61b94fc8068d1493fb076f8300ed337c4d7b3198722c1",
+    "nodeVertices": 249999,
+    "mcpVertices": 249999,
+    "nodeTriangles": 495378,
+    "mcpTriangles": 495378,
+    "exactPositionArrayEqual": true,
+    "exactTriangleArrayEqual": true
+  },
+  "normalInputArtifact": {
+    "path": "ply-1-oriented-input.ply",
+    "receipt": "ply-1-oriented-input.ply.json",
+    "pointCount": 140113,
+    "sha256": "98d483766c41107207e5d5d116bcde84005066e06ed7af83456cfc01c9df4656",
+    "nativeNormalSha256": "79d975fb0818d0af4a40e0c240440be4b41410c424071587b07923d5262bf955"
+  },
+  "harnessCorrection": "The initial Node harness copied prepared Float32 normals directly, whereas the application performs a final Math.hypot unitization before Float32 WASM assignment. That one-stage input distinction caused a one-face output difference. The corrected Node run matches every actual public MCP output position and triangle index exactly. Initial reference receipts and geometry remain preserved."
+}

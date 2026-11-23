@@ -4,6 +4,12 @@ The current N-point coarse/refinement workflow and project save now complete
 under 4 GiB; see [the memory correction](#bounded-indexed-alignment-memory-correction).
 The historical raw-pose fine-alignment quality failure below is a separate result.
 
+A later retained full Global Fine Align workflow after coarse placement also
+completed. The [independent full-geometry assessment](ORIGINAL_STL_GLOBAL_QUALITY.md)
+measures every indexed vertex before/after and finds lower fixed-overlap RMS,
+while all three native convergence flags remain false. It verifies retained
+snapshots, not a fresh current-tree or original-native controller replay.
+
 The full original STL workflow completes under the 4 GiB process cap, but
 **fine alignment from the raw file poses fails the quality gate**. At a
 0.5 mm search tolerance, all three local refinements return status `-2`

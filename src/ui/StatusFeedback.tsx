@@ -176,6 +176,7 @@ export function StatusBar({
   hint,
   facets,
   points,
+  reference,
   shortcuts,
   jobMessage,
 }: {
@@ -184,6 +185,7 @@ export function StatusBar({
   hint: ReactNode;
   facets?: number;
   points?: number;
+  reference?: { points: number; lines: number };
   shortcuts: ShortcutContext;
   jobMessage?: string;
 }) {
@@ -227,7 +229,7 @@ export function StatusBar({
         role="group"
         aria-label="Model information"
       >
-        <StatusMetrics facets={facets} points={points} />
+        <StatusMetrics facets={facets} points={points} reference={reference} />
         <span className="status-end">Units: mm</span>
         <StatusKeyboard busy={busy} shortcuts={shortcuts} />
       </div>

@@ -2,12 +2,15 @@ import * as THREE from "three";
 import { updateCameraClipping } from "./camera-clipping";
 import type { NavigationCamera } from "./camera-gizmo";
 
+// Leave a broad fade skirt outside the clear workspace around the model.
+const GRID_FADE_START = 0.5;
+
 export function createViewportGrid(
   spacing = 20,
   visibleRadius = 0,
 ): THREE.GridHelper {
   const requested = Math.ceil(
-    Math.max(spacing * 10, visibleRadius / 0.8) / spacing,
+    Math.max(spacing * 10, visibleRadius / GRID_FADE_START) / spacing,
   );
   // Bound line geometry for very large scans or very small user grid spacing.
   const stride = Math.max(1, Math.ceil(requested / 1024));
@@ -43,7 +46,7 @@ export function createViewportGrid(
       )
       .replace(
         "#include <color_fragment>",
-        `#include <color_fragment>\ndiffuseColor.a *= 1.0 - smoothstep(${(halfExtent * 0.8).toExponential(8)}, ${(halfExtent * 0.95).toExponential(8)}, length(gridPosition));`,
+        `#include <color_fragment>\ndiffuseColor.a *= 1.0 - smoothstep(${(halfExtent * GRID_FADE_START).toExponential(8)}, ${(halfExtent * 0.95).toExponential(8)}, length(gridPosition));`,
       );
   };
   material.customProgramCacheKey = () => `radial-workspace-grid-${halfExtent}`;
@@ -70,7 +73,9 @@ export function updateViewportGrid(
       Math.max(Math.abs(local.min.z), Math.abs(local.max.z)) + depth * 0.5;
     radius = Math.hypot(x, z);
   }
-  const requested = Math.ceil(Math.max(spacing * 10, radius / 0.8) / spacing);
+  const requested = Math.ceil(
+    Math.max(spacing * 10, radius / GRID_FADE_START) / spacing,
+  );
   const stride = Math.max(1, Math.ceil(requested / 1024));
   const halfExtent = Math.ceil(requested / stride) * stride * spacing;
   if (

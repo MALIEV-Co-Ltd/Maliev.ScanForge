@@ -1,0 +1,74 @@
+{
+  "recordedUtc": "2026-10-29T01:27:05.251389+00:00",
+  "scope": "Alignment continuation verification; no production changes in this continuation",
+  "sourceHashes": {
+    "tests/cloudcompare-convergence.mjs": "5ad52d1b54b4a6259030de451bf4631f83acac469069369f71cf7c2eb7895eb0",
+    "tests/cloudcompare-owner-native-convergence.mjs": "2a8f9888ff1c0ca59aae03933f6ae88d01b7bfb2673ac613eb6bd837d885d2ed",
+    "tests/cloudcompare-owner-full-source-comparison.mjs": "db4ba09673916bb455e57a6d24b075d839409c8515b0c25e454b279f44952350",
+    "tests/cloudcompare-owner-transform-stability.mjs": "c5745ffa73bab8327565eb6307cbea0562bd0d4acd987c8b3d0147450013c903",
+    "src/fine-registration.ts": "1127ad38b5a26b9da16aac28ddd56e2b54f9dcb2c116d375b54c7335b403751d",
+    "src/scan-native-alignment-mesh-query.ts": "2f406de38599fba89a3515bb2fbaca5aff24cbc831d878b6044a2addecb2c1e9",
+    "src/scan-alignment-pool.ts": "4efad64164c48c2564901e12764f4db1a9cdc226d862f638461732de78252086"
+  },
+  "originalInputsAfterExecution": {
+    "C:\\repo\\alignment-example-files\\ply-1.ply": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "C:\\repo\\alignment-example-files\\ply-2.ply": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f"
+  },
+  "knownTruthDriver": {
+    "command": "node tests/cloudcompare-convergence.mjs",
+    "exitCode": 0,
+    "positiveCases": 5,
+    "negativeControls": 1,
+    "results": "convergence-results.json",
+    "predeclaredAcceptance": [
+      "convergence-acceptance.json",
+      "noisy-acceptance.json"
+    ]
+  },
+  "nativeOriginal15": {
+    "initial120sRerun": "owner15-rerun/receipt.json",
+    "separate600sExperiments": [
+      "owner-native-convergence/1/receipt.json",
+      "owner-native-convergence/20/receipt.json",
+      "owner-native-convergence/200/receipt.json",
+      "owner-native-convergence/adaptive/receipt.json",
+      "owner-native-convergence/rerun200/receipt.json",
+      "owner-native-convergence/rerun-adaptive/receipt.json"
+    ],
+    "allSixSuccessfulExit": true,
+    "failuresPreserved": [
+      "owner15-rerun",
+      "owner-native-convergence/rerun-adaptive-invalid-command"
+    ]
+  },
+  "fullSourceIndependentComparison": {
+    "evaluatedSourcePoints": 1375494,
+    "completeReferenceTriangles": 274154,
+    "exitCodes": {
+      "20": 0,
+      "200": 0,
+      "adaptive": 0,
+      "rerun-adaptive": 0
+    },
+    "results": [
+      "owner-ply-full-source-comparison-20.json",
+      "owner-ply-full-source-comparison-200.json",
+      "owner-ply-full-source-comparison-adaptive.json",
+      "owner-ply-full-source-comparison-rerun-adaptive.json"
+    ],
+    "cachedMetrics": "Later native cases reuse initial/ScanForge metrics only after matching both input hashes; each native result is independently measured."
+  },
+  "transformStability": {
+    "command": "node tests/cloudcompare-owner-transform-stability.mjs",
+    "exitCode": 0,
+    "results": "owner-transform-stability.json"
+  },
+  "nativePreviewCancellation": "pointpair-cancel-verification.json",
+  "retainedPrior300sRegression": "../../cloudcompare-20261028/full-ply-query-dedup-test.log",
+  "limitations": [
+    "Known owner physical correspondence truth unavailable; measured geometry/coverage/stability do not imply global physical accuracy.",
+    "REA Windows native process capture unavailable; direct native outputs retained.",
+    "Native surface sampling differs across invocations and from ScanForge vertex fitting/orientation policy.",
+    "Native adjusted-scale preview/cancel verified; nonunit Apply geometry not certified."
+  ]
+}

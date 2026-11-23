@@ -1,0 +1,99 @@
+{
+  "status": "output-dispatch-statically-bound-packed-source-ported",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 2,
+  "newInstructionAddressesIndependentlyDecoded": 212,
+  "targetExecuted": false,
+  "nativeRuntimeParity": false,
+  "applicationChanged": false,
+  "staticOutputDispatch": {
+    "successfulConstructionPathBound": true,
+    "normalWrapperInvokesAdjacency": true,
+    "selectedAdjacencyEntry": "bucket-first adjacency builder",
+    "noOpAlternativeSelected": false,
+    "currentRuntimeObjectObserved": false
+  },
+  "packedTriangleSource": {
+    "passed": 11,
+    "failed": 0,
+    "coverage": [
+      "Repeatable triangle order and shared Float32 position/face-normal views",
+      "Vertex boundary-bit reset and marking from missing neighbors",
+      "Boundary edges from both flagged endpoints, including an internal diagonal",
+      "Deleted-vertex exclusion and preservation of unrelated flag bits",
+      "Packed-buffer validation, empty input and input immutability",
+      "Repeatable source iterator feeds sparse discovery and analytic plane extraction"
+    ],
+    "geometryBuffersBorrowed": true,
+    "retainedPerTriangleObjectsRequired": false,
+    "sourceNormalsSupplied": true,
+    "sourceAdjacencySupplied": true
+  },
+  "findings": [
+    "The command constructs an output wrapper whose mesh field receives the concrete indexed-mesh constructor, then passes that field into reconstruction.",
+    "The concrete mesh constructor installs the candidate table containing the real normal wrapper and bucket-first adjacency builder. This resolves the earlier static dispatch ambiguity on the successful allocation path.",
+    "Source preparation clears the vertex boundary bit, then marks both endpoints of every edge with no neighbor.",
+    "The triangle iterator treats an edge as boundary when both endpoint flags match the boundary/nondeleted predicate; this can include an internal diagonal between boundary vertices.",
+    "The packed private source is repeatable and borrows coordinate/normal views, avoiding a retained JavaScript object graph for all source triangles."
+  ],
+  "globalValueInvestigation": {
+    "epsilonResolved": false,
+    "directionInitializerResolved": false,
+    "retainedImagesChecked": 8,
+    "requestedGlobalRawRangesFound": 0,
+    "overlappingSelectedStoreCandidates": 0,
+    "completeWriteSetEstablished": false
+  },
+  "github": {
+    "issue": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/3",
+    "observedState": "open",
+    "reviewDate": "2026-10-24",
+    "remainingScopeIncludesPointCloudReconstruction": true,
+    "issueOrMilestoneChanged": false
+  },
+  "boundedJobs": [
+    {
+      "label": "repolygon-output-construction-r1",
+      "receiptSha256": "5589840634c0540628b0eddb3ce831ac8f28d6c26a6fdbcd1da44eac9df687b4",
+      "expectedExitCode": 0,
+      "peakBytes": 850329600,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-triangle-source-r1-red",
+      "receiptSha256": "b4fed58aa9e5f084a09dbde4e0d7e2cd1f788366e0dba8a2fe93312088059f52",
+      "expectedExitCode": 1,
+      "peakBytes": 34795520,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-triangle-source-r1-green",
+      "receiptSha256": "f5f053926c891cf4b44d3aa1cafea419c2b1110a34c2f9bd7cd58b2b4a3be7a4",
+      "expectedExitCode": 0,
+      "peakBytes": 35328000,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false
+  },
+  "remaining": [
+    "Resolve mutable epsilon and direction initializer without inferring zero from unavailable bytes.",
+    "Validate imported cached face normals/adjacency against the native source path; supplied caches are not import equivalence.",
+    "Resolve exact-lattice behavior, partitioned reconstruction frontiers and pre-collected triangle-pointer lifetime during deletion.",
+    "Complete required point-cloud reconstruction and full original-input/native/GUI/MCP acceptance.",
+    "Integrate the complete shared application operation with history, cancellation, persistence and rendered verification."
+  ],
+  "limitations": [
+    "Static construction proves the selected success-path table, not a fresh runtime observation or every allocation-failure branch.",
+    "Eight retained files and selected overlapping-reference scans did not recover the globals; this is not a complete module-wide alias or write-set proof.",
+    "The private packed iterator validates components on synthetic geometry; no full original scan or native-output comparison was run.",
+    "Prior two-source and exact-lattice quality expectations remain unresolved."
+  ],
+  "privateProofSha256": "f0cca999e96a4b235722ecab757f6b6e99083a7243343ee6d3bd9147c52eb262"
+}

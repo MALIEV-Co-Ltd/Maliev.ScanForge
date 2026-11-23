@@ -1,0 +1,89 @@
+{
+  "application": {
+    "path": "C:/tools/CloudCompare-2.13.2/CloudCompare.exe",
+    "sha256": "6f79a0e283b06c48e618df145c0a26d0da39c798b19d08c3e934c07e6212172c",
+    "observedVersion": "2.13.2 Kharkiv July6 2024 64bit"
+  },
+  "input": {
+    "path": "../ply-1-oriented-input.ply",
+    "sha256": "98d483766c41107207e5d5d116bcde84005066e06ed7af83456cfc01c9df4656",
+    "points": 140113,
+    "faces": 0,
+    "properties": ["x", "y", "z", "nx", "ny", "nz"],
+    "preparationReceipt": "../ply-1-oriented-input.ply.json"
+  },
+  "observedGuiSettings": {
+    "octreeDepth": 9,
+    "boundary": "Neumann",
+    "samplesPerNode": 1.5,
+    "pointWeight": 2,
+    "threads": 1,
+    "outputDensity": true,
+    "linearFit": false
+  },
+  "releasedSourceCorroboration": {
+    "cloudcompareTag": "v2.13.2",
+    "poissonSubmoduleCommit": "d215dbaa8ba6139e7b48113365f25ada3663bb98",
+    "sourceRoot": "https://github.com/cloudcompare/PoissonRecon/tree/d215dbaa8ba6139e7b48113365f25ada3663bb98/Src_CC_wrap",
+    "defaultFemDegree": 1,
+    "scale": 1.1,
+    "degreeEvidence": "PoissonReconLib.cpp line37 DEFAULT_FEM_DEGREE1; float Neumann execution line746 uses that constant. Header line56 scale1.1f. Neither control is exposed in observedGUI.",
+    "limitation": "Released-source corroboration/inference for installed executable; binary FEM degree was not directly verified. ScanForge pinned v18.76 uses degree2; exact degree/version equivalence is not claimed."
+  },
+  "nativeResult": {
+    "consoleSeconds": 4.4,
+    "vertices": 267986,
+    "triangles": 535815,
+    "savedBin": "owner-ply1-native-depth9.bin",
+    "exportedRawPly": "owner-ply1-native-depth9.ply",
+    "scalarDensityProperty": "scalar_Density",
+    "rawQualityPassed": false
+  },
+  "postprocess": {
+    "script": "../../../../../scripts/normalize-cloudcompare-poisson.mjs",
+    "threshold": 7,
+    "policy": "Exact existing shared normalizePoissonMesh Float32 normalization plus explicit vertex-density threshold7; not nativeGUI trimming. Raw BIN/PLY retained.",
+    "inputVertices": 267986,
+    "inputTriangles": 535815,
+    "mergedVertices": 8,
+    "removedDegenerateTriangles": 16,
+    "removedDuplicateTriangles": 0,
+    "trimmedTriangles": 43887,
+    "outputVertices": 248547,
+    "outputTriangles": 491912,
+    "qualityPassed": true,
+    "receipt": "owner-ply1-native-depth9-density7-normalized.ply.json"
+  },
+  "quality": {
+    "source": "C:/repo/alignment-example-files/ply-1.ply",
+    "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "acceptance": "../../normals/ply-1-quality-acceptance.json",
+    "acceptanceSha256": "897784b58bf121793556193d9112d848680ebcfb937323738afa77b6cc32673c",
+    "rawReport": "raw-quality.json",
+    "trimmedReport": "density7-quality.json",
+    "allSourceVertices": 140113,
+    "allReferenceTriangles": 274154,
+    "normalizerSha256": "d93ff8b599d3f585cf5a855f2c2b88c59fbbe595c9f015a1f8ecb73835230e42",
+    "analysisScriptSha256": "b3e3cab32c12768e49ace24d71495d3d1b9113fa52ecce7a63b6a01f35c38d31",
+    "postprocessScriptSha256": "bf5a20df51a418256ea34eddfa02361cfeec492dcfa6babcd5f2ce4157e63f3c"
+  },
+  "artifactSha256": {
+    "owner-ply1-native-depth9.bin": "c3abba5922a5a389d0571ff4e204f936d9f98b794fbb6d338ff065119408d91a",
+    "owner-ply1-native-depth9.ply": "bc3a48b50d377f11b1a12b4f965c69c740b27039c1936878fe6e4cb3222cf638",
+    "owner-ply1-native-depth9-density7-normalized.ply": "adeefc67c4f1d9034c2f5ac1b880415fca1556a3c92325aca5ecad262c81a127",
+    "raw-quality.json": "51c166979a97270f3fdd5027144792bbc40351c814f50c1b3cceda6c837c6976",
+    "density7-quality.json": "be0d93d027905b8efcb5a9630f2b710ce1fd14de627026b07c487ee3b898b85d",
+    "qPoissonRecon-native-version.cpp": "93c92d3c5b572913c3275d635435ac93ab587e6c1dfbb9c29b80dac8397a2b04",
+    "PoissonReconLib-native-version.cpp": "5dea51e81bfec375b38a207db046746c328ed8eef8c6c68770cd005e30004a16",
+    "PoissonReconLib-native-version.h": "cfa5e895a0a1683750ab24ced1844f018a1cd4353d495e260e6476728274e5d7"
+  },
+  "limits": [
+    "No exact native/WASM algorithm, hidden FEM degree, version or bitwise equivalence claim.",
+    "The same prepared point-normal input and exposed settings plus identical postprocessing and fixed quality gates are compared.",
+    "Both trimmed outputs are open meshes; topology and missing closure remain explicit.",
+    "Reference scan is an exchange reference, not physical ground truth; distances preserve source coordinate units interpreted as mm by ScanForge.",
+    "Main viewport captured white; actual dialogs/console, saved native BIN/PLY and independent geometry analysis supply runtime evidence.",
+    "REA Windows process capture unavailable; directnative GUI/CLI output retained.",
+    "NativeGUI untouched after finalsavedscene; desktop handed back toparent."
+  ]
+}

@@ -1,5 +1,5 @@
 import { importScan } from "./import-client";
-import { DEFAULT_PART_COLOR } from "./appearance";
+import { DEFAULT_PART_COLOR, DEFAULT_POINT_CLOUD_COLOR } from "./appearance";
 import { isSampledScan } from "./scan-source";
 import type { Entity } from "./types";
 import { DEFAULT_ASC_ATTRIBUTES } from "./asc-import";
@@ -41,13 +41,16 @@ export async function prepareImportedScan(
     positions,
     normals,
     pointColors,
+    ...(/\.asc$/i.test(file.name) ? { pointColorMode: "solid" as const } : {}),
     ascAttributes: /\.asc$/i.test(file.name)
       ? (options.ascAttributes ?? DEFAULT_ASC_ATTRIBUTES)
       : undefined,
     indexedMesh,
     scanSource,
     source: file.name,
-    color: DEFAULT_PART_COLOR,
+    color: /\.asc$/i.test(file.name)
+      ? DEFAULT_POINT_CLOUD_COLOR
+      : DEFAULT_PART_COLOR,
     visible: true,
     opacity: 1,
   };

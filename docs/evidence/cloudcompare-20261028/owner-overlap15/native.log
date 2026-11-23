@@ -1,0 +1,21 @@
+[15:37:23] [SET LOG FILE] finished in 0.00 s.
+[15:37:23] [AUTO SAVE STATE]
+[15:37:23] Auto-save is disabled
+[15:37:23] [AUTO SAVE STATE] finished in 0.00 s.
+[15:37:23] [NO TIMESTAMP]
+[15:37:23] [NO TIMESTAMP] finished in 0.00 s.
+[15:37:23] [LOAD]
+[15:37:23] Opening file: 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\owner-ply\overlap15\moving.ply'
+[15:37:23] [PLY][Comment] File generated
+[15:37:23] [I/O] File 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\owner-ply\overlap15\moving.ply' loaded successfully
+[15:37:23] Found one mesh with 2697877 faces and 1375494 vertices: 'Mesh'
+[15:37:23] [LOAD] finished in 0.35 s.
+[15:37:23] [LOAD]
+[15:37:23] Opening file: 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\owner-ply\overlap15\fixed.ply'
+[15:37:23] [PLY][Comment] File generated
+[15:37:23] [I/O] File 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\owner-ply\overlap15\fixed.ply' loaded successfully
+[15:37:23] Found one mesh with 274154 faces and 140113 vertices: 'Mesh'
+[15:37:23] [LOAD] finished in 0.04 s.
+[15:37:23] [ICP]
+[15:37:23] [ICP][Partial overlap] Selecting 24591 points out of 50180 (49%) for registration
+[15:37:23] [ICP] Will use 2 threads

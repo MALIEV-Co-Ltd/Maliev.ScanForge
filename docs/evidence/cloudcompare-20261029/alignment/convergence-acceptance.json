@@ -1,0 +1,7 @@
+{
+  "correspondingRmsMm": 0.00005,
+  "translationErrorMm": 0.0001,
+  "rotationFrobeniusError": 0.00001,
+  "rerunDisplacementRmsMm": 0.00001,
+  "reason": "Known rigid noiseless Float32 fixtures, coordinates below 30 mm. These are predeclared geometric and stability thresholds, independent of solver RMS/flags."
+}

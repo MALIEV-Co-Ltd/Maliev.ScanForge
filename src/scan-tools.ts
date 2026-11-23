@@ -1,5 +1,5 @@
 import { shrinkwrapScanMesh, type ShrinkwrapOptions } from "./scan-shrinkwrap";
-import type { Positions, Vec3 } from "./types";
+import type { IndexedMesh, Positions, Vec3 } from "./types";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import { weldScanSamples } from "./scan-resident-samples";
 import { compareReductionSurface } from "./scan-reduction-comparison";
@@ -44,7 +44,13 @@ export type ScanToolOperation =
   | { kind: "scaleMesh"; factor: number; center?: Vec3 }
   | { kind: "flipNormals" }
   | { kind: "repolygonize"; resolution?: number; targets?: Positions[] }
-  | { kind: "averageMesh"; targets: Positions[]; tolerance?: number }
+  | {
+      kind: "averageMesh";
+      targets: Positions[];
+      targetTopology?: (IndexedMesh | undefined)[];
+      sourceTopology?: IndexedMesh;
+      tolerance?: number;
+    }
   | { kind: "mirrorMesh"; center: Vec3; normal: Vec3; tangent?: Vec3 }
   | {
       kind: "unroll";
@@ -52,6 +58,7 @@ export type ScanToolOperation =
       axis: Vec3;
       radius: number;
       offsetDegrees?: number;
+      instances?: number;
     };
 export interface ScanToolsRequest {
   kind: "scanTools";

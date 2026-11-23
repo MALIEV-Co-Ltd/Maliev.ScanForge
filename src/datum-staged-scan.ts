@@ -2,6 +2,7 @@ import { yieldScanTask } from "./scan-task";
 import type { Entity, IndexedMesh, Positions } from "./types";
 import { datumFeatureMetadata } from "./scan-native-datum-primitive";
 import { cacheScanRenderData, prepareScanRenderData } from "./scan-render-data";
+import { meshGeometryNormals } from "./mesh-geometry-normals";
 import {
   cloudPoseMatrix,
   nextCloudPlacementStages,
@@ -28,7 +29,7 @@ async function indexedScan(
 ): Promise<IndexedMesh | undefined> {
   const indexed = entity.indexedMesh;
   if (!indexed || entity.kind !== "mesh") return undefined;
-  const { vertices, triangles, normals } = indexed;
+  const { vertices, triangles, normals, geometryNormals } = indexed;
   if (
     !(Array.isArray(vertices) || vertices instanceof Float32Array) ||
     !(Array.isArray(triangles) || triangles instanceof Uint32Array) ||
@@ -39,20 +40,34 @@ async function indexedScan(
     triangles.length * 3 !== entity.positions.length ||
     (normals !== undefined &&
       (!(Array.isArray(normals) || normals instanceof Float32Array) ||
-        normals.length !== vertices.length))
+        normals.length !== vertices.length)) ||
+    (geometryNormals !== undefined &&
+      (!(
+        Array.isArray(geometryNormals) ||
+        geometryNormals instanceof Float32Array
+      ) ||
+        geometryNormals.length !== vertices.length))
   )
     return undefined;
-  const finite = async (values: Positions) =>
+  const finite = async (values: Positions, requireFloat32 = false) =>
     visit(
       values.length,
       (first, end) => {
         for (let i = first; i < end; i++)
-          if (!Number.isFinite(values[i])) return false;
+          if (
+            !Number.isFinite(values[i]) ||
+            (requireFloat32 && !Number.isFinite(Math.fround(values[i])))
+          )
+            return false;
         return true;
       },
       check,
     );
-  if (!(await finite(vertices)) || (normals && !(await finite(normals))))
+  if (
+    !(await finite(vertices)) ||
+    (normals && !(await finite(normals))) ||
+    (geometryNormals && !(await finite(geometryNormals, true)))
+  )
     return undefined;
   const matches = await visit(
     triangles.length,
@@ -146,6 +161,9 @@ export async function transformDatumScanStages(
   const indexedNormals = indexed?.normals
     ? await transform(indexed.normals, frames, true)
     : undefined;
+  const geometryNormals = indexed
+    ? await transform(meshGeometryNormals(indexed), frames, true)
+    : undefined;
   const sourceNormals = placement ? placement.sourceNormals : entity.normals;
   const normals = sourceNormals
     ? await transform(sourceNormals, coordinateFrames, true)
@@ -164,6 +182,7 @@ export async function transformDatumScanStages(
       ? {
           vertices: vertices!.output,
           triangles: indexed.triangles,
+          geometryNormals: geometryNormals!.output,
           ...(indexedNormals ? { normals: indexedNormals.output } : {}),
         }
       : undefined,

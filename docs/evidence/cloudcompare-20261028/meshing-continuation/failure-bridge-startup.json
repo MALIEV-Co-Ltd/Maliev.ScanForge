@@ -1,0 +1,10 @@
+{
+  "origin": "http://127.0.0.1:5190",
+  "browser": "Browser plugin unavailable; disposable Playwright Chrome and real public MCP",
+  "startedAt": "2026-10-28T09:18:58.100Z",
+  "passed": false,
+  "checks": [],
+  "resourceScope": "Worker constructor/terminate/message observer only; real native Worker implementation and unmodified processing results. JS heap snapshots are not aggregate process RSS or a process-memory-cap certificate.",
+  "error": "{\"ok\":false,\"error\":{\"code\":\"BRIDGE_UNAVAILABLE\",\"message\":\"No ScanForge browser connected\"}}",
+  "finishedAt": "2026-10-28T09:19:00.983Z"
+}

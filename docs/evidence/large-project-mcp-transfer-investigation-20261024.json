@@ -1,0 +1,276 @@
+{
+  "schema": 1,
+  "status": "incomplete",
+  "scope": "Actual original-three full-history project GUI/MCP transfer investigation; quota and string-allocation candidate changes have focused/build coverage, but complete transfer still exceeds the unchanged4GiB Job.",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "tree": "6c9b1ca451672d6ef492ace4c7160d5fbfefaa37",
+    "sourceManifestSha256": "5caa989ae11c5a8c5fe8ad1ace20865ed8cbc7af2928bde4894ce6af2281d41c",
+    "frozenSourceAndDistInputsReverified": 2251,
+    "compilerInputsReverified": 1978,
+    "workingChangesPresent": true,
+    "attributedToPushedMain": false
+  },
+  "change": {
+    "sharedArtifactStore": "ApplicationApi.storeArtifact",
+    "logicalArtifactBytesBefore": 536870912,
+    "logicalArtifactBytesAfter": 1073741824,
+    "handles": 64,
+    "uploadChunkBytes": 1048576,
+    "readChunkBytes": 262144,
+    "leaseSeconds": 900,
+    "validationJobBytes": 4294967296,
+    "CPUPercent": 25,
+    "maxStringConversionsPerReadBefore": 262144,
+    "maxStringConversionsPerReadAfter": 32,
+    "byteExactAll256ValuesCovered": true,
+    "newPublicToolOrSchemaField": false
+  },
+  "sourcePins": [
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "3e1e5470746894802c0e490cb91fa13803e21d5de5d5cc642845e052f7530c4c"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "4754aa59f031c3a4644d03e28bcb2acc34a5f9e659d2e5430e81e9b7550c8d38"
+    },
+    {
+      "path": "tests/automation-artifact-capacity.test.ts",
+      "sha256": "e86555f45c4a6574aded1e0dddd6ece8d4d46a44299c0810c5568b8a0697a229"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "5644b64e59f3a13e85fccce41da8e29b9a7a30c23c22a807e064ae644e577a6e"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "13a466bfbe202a69db1eb0ccbe218601d46c99132c963089847592fc17ac7982"
+    },
+    {
+      "path": "src/global-alignment-input-core.ts",
+      "sha256": "a85565e02b376169c4c6db300c3c43bc5ea8b537e4e432b2c8fe4e40ece61111"
+    },
+    {
+      "path": "src/automation/global-alignment-operations.ts",
+      "sha256": "b54aad01f80a6c44d46c09c4f12ae8723c8dc8cf99289c6f78d5c582a02e566a"
+    },
+    {
+      "path": "src/history.ts",
+      "sha256": "bd93063075982c2e3eb4f51f92ee4a6ae806ab967f23abd0779cbadb2516369b"
+    },
+    {
+      "path": "src/project-file-codec.ts",
+      "sha256": "31b0031ad6b24f6cad1c524ddaea1330d66a62c5c581c39971e0b6f51a8d8ee2"
+    },
+    {
+      "path": "src/datum-transform-kernel.ts",
+      "sha256": "8f3d27d6decc5d9d106c156c018899402a97bdb87b3e327a8de606ffe5321bd3"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261024T050909041858Z-browser/evidence.json",
+      "sha256": "d875d0fd3a4edcd139c0fd4ae7f3a1a2c369dfee91564eb397b3c5a4cdf8efad"
+    },
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261024T050909041858Z-kernel/resource-ledger.json",
+      "sha256": "a50e9e648dae10ef93e5ed9df0156c3687acf9c4e9b37053cccd27cc08ff53cb"
+    },
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261024T051723220312Z-browser/evidence.json",
+      "sha256": "f3819d8c33313079db59937de39d1b362ba95ec489c5457243e7e89b0bce0c21"
+    },
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261024T051723220312Z-kernel/resource-ledger.json",
+      "sha256": "f1f99102521e961806d7d674207348a9a5ab0361f6667243400df3d51741c2d8"
+    },
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261024T052547115800Z-browser/evidence.json",
+      "sha256": "fead226d7e7664a94fbbbddbfe5e08bb40dcccffc9fd02e8cbcdd2b60a8d27a0"
+    },
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261024T052547115800Z-kernel/resource-ledger.json",
+      "sha256": "ff4d6732656a6655990a43d2a4abb10d670bbc00e48064b6c5256363e08e428b"
+    },
+    {
+      "name": "project-index-validation-artifact-gib-r1-red-full.receipt.json",
+      "sha256": "b9301e1d4af5c748ecc4e6076784f8e7be72af53a196c31b9683f3df15592c45"
+    },
+    {
+      "name": "project-index-validation-artifact-gib-r1-read-red-full.receipt.json",
+      "sha256": "3d9214962d7ab821cf88fcf29a179d3a44b2190c64edc97d4fffd1ced6e3b691"
+    },
+    {
+      "name": "artifact-gib-build-verified-r2.json",
+      "sha256": "e727583cf54fce74b0e8bf4793f120a67f5cd2d3b24155aa4527c5892e87e347"
+    },
+    {
+      "name": "global-after-coarse-three-stl-plan-source-20261024T052547115800Z.json",
+      "sha256": "82304776a075fcddde1d38bd6bd1618500ce9bb685c6d6759af813efb359c8f3"
+    },
+    {
+      "name": "artifact-gib-roundtrip-r1.mjs",
+      "sha256": "7a6dff79c688362b6176ff4edb29840eba7f7e7a5352fa2d4ed263dbc047d69c"
+    },
+    {
+      "name": "artifact-gib-roundtrip-bind-r1.py",
+      "sha256": "568863452dc3ffb0b310dc59bbcc47d44431c21b47156dc054eff7a393a6c863"
+    },
+    {
+      "name": "global-reopen-export-runner-r1.py",
+      "sha256": "9e2eb77ba6affdd3890a4471c7b8ea9281c6e9192ec98fe8edde360d764aafe6"
+    },
+    {
+      "name": "run-artifact-gib-r1.py",
+      "sha256": "faad90a61d90954dbb600809c1e93a66f275a60ec418bb0ec80b938782582d77"
+    },
+    {
+      "name": "record-artifact-gib-investigation-r1.py",
+      "sha256": "a560d88b8a57678dc6a64b3ab23edaab316d33147ced4ff6c36428d8dc8d72ae"
+    }
+  ],
+  "runs": [
+    {
+      "kind": "original-512MiB-artifact-rejection",
+      "stamp": "20261024T050909041858Z",
+      "GUIReopenAndHistoryPassed": true,
+      "historyRetryPassed": true,
+      "staleRevisionRejected": true,
+      "exportJob": {
+        "jobId": "bc574ac0-78b5-49a7-8cd0-9284a52010d2",
+        "command": "project_export",
+        "status": "failed",
+        "progress": 0,
+        "stage": "Artifact storage exceeds 64 artifacts or 512 MiB; delete artifacts before retrying.",
+        "error": {
+          "code": "RESOURCE_LIMIT",
+          "message": "Artifact storage exceeds 64 artifacts or 512 MiB; delete artifacts before retrying."
+        }
+      },
+      "downloadedBytesBeforeRetirement": 0,
+      "fullRoundtripPassed": false,
+      "peakJobBytes": 3629326336,
+      "finalActiveProcesses": 0,
+      "retainedObservedProcessesExited": true,
+      "handlesClosed": true,
+      "cleanupErrors": [],
+      "captureErrors": [],
+      "completeJobIdentityEventCoverage": true
+    },
+    {
+      "kind": "1GiB-quota-before-string-block-fix",
+      "stamp": "20261024T051723220312Z",
+      "GUIReopenAndHistoryPassed": true,
+      "historyRetryPassed": true,
+      "staleRevisionRejected": true,
+      "exportJob": {
+        "jobId": "e86f76a3-d495-4ed9-a5ec-9c8b8180ab49",
+        "command": "project_export",
+        "status": "succeeded",
+        "progress": 1,
+        "stage": "Completed",
+        "result": {
+          "artifactId": "bc88aa01-e4a7-4620-b1f8-423b3830a530",
+          "name": "Untitled project.scanforge",
+          "mime": "application/x-scanforge",
+          "bytes": 736091936
+        }
+      },
+      "downloadedBytesBeforeRetirement": 223346688,
+      "fullRoundtripPassed": false,
+      "peakJobBytes": 4295090176,
+      "finalActiveProcesses": 0,
+      "retainedObservedProcessesExited": true,
+      "handlesClosed": true,
+      "cleanupErrors": [],
+      "captureErrors": [
+        "AssertionError('Time/memory/unknown Job completion event')"
+      ],
+      "completeJobIdentityEventCoverage": false
+    },
+    {
+      "kind": "1GiB-quota-with-string-block-fix",
+      "stamp": "20261024T052547115800Z",
+      "GUIReopenAndHistoryPassed": true,
+      "historyRetryPassed": true,
+      "staleRevisionRejected": true,
+      "exportJob": {
+        "jobId": "1ca548ca-5e09-41bc-9f7d-19969c612e95",
+        "command": "project_export",
+        "status": "succeeded",
+        "progress": 1,
+        "stage": "Completed",
+        "result": {
+          "artifactId": "e616432d-8ae1-4320-9502-521e5c1571ee",
+          "name": "Untitled project.scanforge",
+          "mime": "application/x-scanforge",
+          "bytes": 736091936
+        }
+      },
+      "downloadedBytesBeforeRetirement": 554172416,
+      "fullRoundtripPassed": false,
+      "peakJobBytes": 4295651328,
+      "finalActiveProcesses": 0,
+      "retainedObservedProcessesExited": true,
+      "handlesClosed": true,
+      "cleanupErrors": [],
+      "captureErrors": [
+        "AssertionError('Time/memory/unknown Job completion event')",
+        "AssertionError('Time/memory/unknown Job completion event')"
+      ],
+      "completeJobIdentityEventCoverage": false
+    }
+  ],
+  "receipts": [
+    {
+      "name": "project-index-validation-artifact-gib-r1-read-green-full.receipt.json",
+      "sha256": "12dec19e0d5864d56e1e3a4d1bdcac69465182eb6c522b11c6019a59fad7e92c",
+      "elapsedSeconds": 1.3717554000031669,
+      "childPeakJobBytes": 455749632,
+      "heapMiB": 1024,
+      "terminalCleanupVerified": true
+    },
+    {
+      "name": "project-index-validation-artifact-gib-r1-read-focused-full.receipt.json",
+      "sha256": "97a23f04ab89cd3eee3563c08e3fdaa076a11ef6ddf20e75a4e7d4d304c50de5",
+      "elapsedSeconds": 3.946133199991891,
+      "childPeakJobBytes": 448679936,
+      "heapMiB": 1024,
+      "terminalCleanupVerified": true
+    },
+    {
+      "name": "project-index-validation-artifact-gib-r1-read-format-full.receipt.json",
+      "sha256": "2287b3d540eb56ecbfa0fadde9ed3e7958834a51c6c7f7b14ffabea45ae2acbf",
+      "elapsedSeconds": 1.0159084999759216,
+      "childPeakJobBytes": 156114944,
+      "heapMiB": 1024,
+      "terminalCleanupVerified": true
+    },
+    {
+      "name": "project-index-validation-artifact-gib-r2-build.receipt.json",
+      "sha256": "86a8acd2da18f4a46e247fa3c4a5fcd8765a418aa6cf1057b01c2cd15a6364a6",
+      "elapsedSeconds": 34.35401239999919,
+      "childPeakJobBytes": 2470359040,
+      "heapMiB": 3072,
+      "terminalCleanupVerified": true
+    }
+  ],
+  "focused": {
+    "testsPassed": 129,
+    "files": 8,
+    "artifactPolicyTests": 11,
+    "fullUnitSuiteRun": false,
+    "CADSuiteRun": false
+  },
+  "mcpCoverage": "Existing capabilities_get, artifact_put/read/delete and project_export/import use the shared store. Discovery/agent guide report1GiB. ActualGUI reopen checks all16 buffers/history; public retry/stale-revision handling passes; project_export succeeds, but full artifact download and reimport do not pass under4GiB.",
+  "remaining": [
+    "Diagnose retained browser Blob/transfer memory and complete the same full-file transfer under4GiB without downsampling, forced GC or smaller acceptance fixtures.",
+    "Full real-input MCP reimport and large in-place replacement/cancellation remain unverified.",
+    "Native final controller/setter comparison, convergence, other-format lifecycle, usable combined output and other milestones remain open."
+  ],
+  "nativeApplicationAccess": false,
+  "githubMutated": false,
+  "committed": false,
+  "fullFeatureOrMilestoneAcceptance": false
+}

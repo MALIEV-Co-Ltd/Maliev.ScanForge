@@ -138,10 +138,12 @@ describe("landmark alignment session", () => {
       expect(landmarkState(session).preview).toBe(true);
     }
   });
-  it("preserves locked preview points until Reset restores editing without changing geometry", () => {
+  it("invalidates previews on removal and keeps original points on reset", () => {
     const session = previewed();
-    expect(editLandmarks(session, { action: "remove-last" })).toBe(session);
-    expect(editLandmarks(session, { action: "clear" })).toBe(session);
+    expect(
+      editLandmarks(session, { action: "remove-last" }).picks,
+    ).toHaveLength(5);
+    expect(editLandmarks(session, { action: "clear" }).picks).toEqual([]);
     const reset = editLandmarks(session, { action: "reset" });
     expect(reset.picks).toBe(session.picks);
     expect(reset.moving).toBe(session.moving);
@@ -206,9 +208,9 @@ describe("landmark alignment session", () => {
     expect(landmarkMarkers(session)[1].point[0]).toBeCloseTo(5, 8);
     expect(moving.positions[0]).toBe(0);
   });
-  it("locks point picking after preview, and changed target geometry invalidates acceptance", () => {
+  it("allows point picking after preview, and changed target geometry invalidates acceptance", () => {
     const session = previewed();
-    expect(() => pickLandmark(session, moving.id, [1, 1, 0])).toThrow("Reset");
+    expect(pickLandmark(session, moving.id, [1, 1, 0]).preview).toBeUndefined();
     const scene = [moving, { ...fixed, positions: [...fixed.positions] }];
     expect(landmarkSceneUnchanged(session, scene)).toBe(false);
     expect(() => acceptLandmarkAlignment(session, scene)).toThrow(

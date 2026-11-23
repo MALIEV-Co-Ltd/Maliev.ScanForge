@@ -1,0 +1,17 @@
+{
+  "input": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\native-cloudcompare\\owner-ply1-native-depth9.ply",
+  "output": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\native-cloudcompare\\owner-ply1-native-depth9-density7-normalized.ply",
+  "threshold": 7,
+  "densityName": "scalar_Density",
+  "inputSha256": "bc3a48b50d377f11b1a12b4f965c69c740b27039c1936878fe6e4cb3222cf638",
+  "outputSha256": "adeefc67c4f1d9034c2f5ac1b880415fca1556a3c92325aca5ecad262c81a127",
+  "inputVertices": 267986,
+  "inputTriangles": 535815,
+  "outputVertices": 248547,
+  "outputTriangles": 491912,
+  "mergedVertices": 8,
+  "removedDegenerateTriangles": 16,
+  "removedDuplicateTriangles": 0,
+  "trimmedTriangles": 43887,
+  "scope": "Explicit scripted postprocessing of native output, not native GUI filter behavior; same shared Float32 normalization/density7 policy as ScanForge."
+}

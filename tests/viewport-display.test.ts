@@ -64,7 +64,7 @@ it("emits floating-point GLSL fade distances for integral grid spacing", () => {
   };
   (grid.material as THREE.Material).onBeforeCompile(shader as any, {} as any);
   expect(shader.fragmentShader).toContain(
-    "smoothstep(4.00000000e+1, 4.75000000e+1, length(gridPosition))",
+    "smoothstep(2.50000000e+1, 4.75000000e+1, length(gridPosition))",
   );
   grid.geometry.dispose();
   (grid.material as THREE.Material).dispose();

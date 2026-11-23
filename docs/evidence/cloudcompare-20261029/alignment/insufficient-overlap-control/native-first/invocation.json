@@ -1,0 +1,38 @@
+{
+  "arguments": [
+    "-SILENT",
+    "-LOG_FILE",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\insufficient-overlap-control\\native-first\\native.log",
+    "-AUTO_SAVE",
+    "OFF",
+    "-C_EXPORT_FMT",
+    "ASC",
+    "-NO_TIMESTAMP",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\insufficient-overlap-control\\native-first\\moving.ply",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\insufficient-overlap-control\\native-first\\fixed.ply",
+    "-ICP",
+    "-OVERLAP",
+    "100",
+    "-MIN_ERROR_DIFF",
+    "1e-7",
+    "-RANDOM_SAMPLING_LIMIT",
+    "1386",
+    "-MAX_TCOUNT",
+    "2",
+    "-SAVE_CLOUDS"
+  ],
+  "durationMs": 2184.3091999999997,
+  "deadlineMs": 120000,
+  "movingSha256": "00297367e66f1629df10d2c35f0cfda67e121b38739233034bd11b1cac2ba3b3",
+  "fixedSha256": "6872459d015f9b542ffaeaaf4f5254738118ff14261edeacc41393a57cc2a9ac",
+  "transform": {
+    "rotation": [
+      0.87217605114, -0.378006577492, -0.310515671968, 0.333138614893,
+      -0.005865453277, 0.942859649658, 0.358228474855, 0.925784349442,
+      -0.120812878013
+    ],
+    "translation": [-41.309940338135, -39.538497924805, -40.52515411377]
+  }
+}

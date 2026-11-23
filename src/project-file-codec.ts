@@ -7,7 +7,18 @@ import type { Entity, Project } from "./types";
 import type { Revision } from "./history";
 import { retainIndexedMesh } from "./indexed-mesh";
 import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
+import {
+  DISK_BLOB_BLOCK_BYTES,
+  diskBackedBlob,
+} from "./transient-blob-storage";
 import { cloudPlacement, placedCloud } from "./point-cloud-placement";
+import {
+  encodeReferenceEntityData,
+  decodeReferenceEntityData,
+  validateReferenceEntity,
+  assertReferenceCompatibleMetadata,
+  type EncodedReferenceEntityData,
+} from "./reference-entity";
 import {
   projectValueHash,
   projectValueBlob,
@@ -19,6 +30,12 @@ export interface ProjectSession {
   project: Project;
   history: Revision[];
   future: Revision[];
+}
+
+/** Internal immutable chunk backing shared across disposable restore workers. */
+export interface ProjectSharedChunk {
+  sha256: string;
+  buffer: SharedArrayBuffer;
 }
 type Chunk = {
   offset: number;
@@ -38,23 +55,39 @@ type RecordData = Omit<
   | "indexedMesh"
   | "pointCloudPlacement"
   | "pointColors"
+  | "reference"
 > & {
+  reference?: EncodedReferenceEntityData;
   positions: Ref;
   cloudPoseBits?: string;
   edgePositions?: Ref;
   brep?: Ref;
   normals?: Ref;
   pointColors?: Ref;
-  indexedMesh?: { vertices: Ref; triangles: Ref; normals?: Ref };
+  indexedMesh?: {
+    vertices: Ref;
+    triangles: Ref;
+    normals?: Ref;
+    geometryNormals?: Ref;
+  };
   meshSelection?: {
     hidden: Ref;
     saved: { id: string; name: string; triangles: Ref }[];
   };
 };
 const magic = new TextEncoder().encode("SCANFRG2");
-async function digest(bytes: Uint8Array<ArrayBuffer>): Promise<string> {
+async function digest(bytes: Uint8Array): Promise<string> {
+  // WebCrypto rejects shared buffers; the existing incremental hash borrows
+  // their bytes without allocating another full decompressed chunk.
+  if (!(bytes.buffer instanceof ArrayBuffer))
+    return projectValueHash(bytes, "u8").sha256;
   return Array.from(
-    new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)),
+    new Uint8Array(
+      await crypto.subtle.digest(
+        "SHA-256",
+        new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength),
+      ),
+    ),
     (x) => x.toString(16).padStart(2, "0"),
   ).join("");
 }
@@ -70,9 +103,12 @@ export async function encodeProjectFileLocally(
     recordIds = new Map<string, number>();
   const entityCache = new Map<Entity, number>();
   const valueCache = new WeakMap<object, Ref>();
+  let pendingPayloads: Blob[] = [];
+  let pendingBytes = 0;
   let offset = 0;
   let deferredClouds = false;
   let cloudAttributes = false;
+  let constructionMetadata = false;
   async function store(value: ProjectValue, integer = false): Promise<Ref> {
     const type =
       typeof value === "string"
@@ -102,7 +138,14 @@ export async function encodeProjectFileLocally(
         codec: smaller ? "gzip" : "raw",
         sha256,
       });
-      payloads.push(data);
+      pendingPayloads.push(data);
+      pendingBytes += data.size;
+      // Release completed payloads before encoding the rest of a large history.
+      if (pendingBytes >= DISK_BLOB_BLOCK_BYTES) {
+        payloads.push(await diskBackedBlob(new Blob(pendingPayloads)));
+        pendingPayloads = [];
+        pendingBytes = 0;
+      }
       offset += data.size;
       chunkIds.set(sha256, chunk);
     }
@@ -111,6 +154,7 @@ export async function encodeProjectFileLocally(
     return ref;
   }
   async function state(entities: Entity[]): Promise<number[]> {
+    for (const entity of entities) validateReferenceEntity(entity);
     entities = entities.map(retainIndexedMesh);
     validateProject({ ...session.project, entities });
     const ids: number[] = [];
@@ -128,6 +172,7 @@ export async function encodeProjectFileLocally(
           meshSelection,
           indexedMesh,
           pointCloudPlacement: _placement,
+          reference,
           ...metadata
         } = entity;
         const selection: RecordData["meshSelection"] = meshSelection
@@ -148,8 +193,16 @@ export async function encodeProjectFileLocally(
         if (placement) deferredClouds = true;
         if (pointColors !== undefined || entity.ascAttributes !== undefined)
           cloudAttributes = true;
+        if (
+          reference !== undefined ||
+          entity.constructionOrderKey !== undefined
+        )
+          constructionMetadata = true;
         const record: RecordData = {
           ...metadata,
+          ...(reference !== undefined
+            ? { reference: encodeReferenceEntityData(reference) }
+            : {}),
           positions: await store(placement?.sourcePositions ?? positions),
           ...(placement ? { cloudPoseBits: placement.matrixBits } : {}),
           ...(pointColors !== undefined
@@ -176,6 +229,13 @@ export async function encodeProjectFileLocally(
                   triangles: await store(indexedMesh.triangles, true),
                   ...(indexedMesh.normals
                     ? { normals: await store(indexedMesh.normals) }
+                    : {}),
+                  ...(indexedMesh.geometryNormals
+                    ? {
+                        geometryNormals: await store(
+                          indexedMesh.geometryNormals,
+                        ),
+                      }
                     : {}),
                 },
               }
@@ -213,7 +273,13 @@ export async function encodeProjectFileLocally(
     JSON.stringify(
       {
         format: "scanforge-binary",
-        version: cloudAttributes ? 4 : deferredClouds ? 3 : 2,
+        version: constructionMetadata
+          ? 5
+          : cloudAttributes
+            ? 4
+            : deferredClouds
+              ? 3
+              : 2,
         name: session.project.name,
         projectId: session.projectId,
         units: "mm",
@@ -235,14 +301,18 @@ export async function encodeProjectFileLocally(
   const view = new DataView(header.buffer);
   view.setUint32(8, manifest.length, true);
   view.setUint32(12, offset, true);
-  return new Blob([header, manifest, ...payloads], {
+  return new Blob([header, manifest, ...payloads, ...pendingPayloads], {
     type: "application/x-scanforge",
   });
 }
 
 export async function decodeProjectContents(
   file: Blob,
-  options: { sharedReadonlyBuffers?: boolean } = {},
+  options: {
+    sharedReadonlyBuffers?: boolean;
+    reusableChunks?: readonly ProjectSharedChunk[];
+    onSharedChunk?: (chunk: ProjectSharedChunk) => void;
+  } = {},
 ): Promise<ProjectSession> {
   const header = new Uint8Array(await file.slice(0, 16).arrayBuffer());
   if (!magic.every((byte, i) => header[i] === byte))
@@ -262,7 +332,7 @@ export async function decodeProjectContents(
   const m = JSON.parse(await file.slice(16, 16 + length).text());
   if (
     m.format !== "scanforge-binary" ||
-    ![2, 3, 4].includes(m.version) ||
+    ![2, 3, 4, 5].includes(m.version) ||
     m.units !== "mm" ||
     !Array.isArray(m.chunks) ||
     !Array.isArray(m.records) ||
@@ -271,7 +341,22 @@ export async function decodeProjectContents(
     !Array.isArray(m.future)
   )
     return invalid();
-  const data: Uint8Array<ArrayBuffer>[] = [];
+  const data: Uint8Array[] = [];
+  const reusable = new Map<string, SharedArrayBuffer>();
+  if (
+    options.sharedReadonlyBuffers &&
+    globalThis.crossOriginIsolated === true &&
+    typeof SharedArrayBuffer !== "undefined"
+  )
+    for (const chunk of options.reusableChunks ?? [])
+      if (
+        chunk?.buffer instanceof SharedArrayBuffer &&
+        /^[a-f0-9]{64}$/.test(chunk.sha256)
+      )
+        reusable.set(
+          `${chunk.sha256}:${chunk.buffer.byteLength}`,
+          chunk.buffer,
+        );
   let expected = 0;
   for (const chunk of m.chunks as Chunk[]) {
     if (
@@ -296,14 +381,40 @@ export async function decodeProjectContents(
         ? stored.stream().pipeThrough(new DecompressionStream("gzip"))
         : stored.stream()
     ).getReader();
-    const bytes = new Uint8Array(chunk.rawBytes);
+    // Decompress into the final readonly backing. Keeping private chunks and
+    // later copying all geometry into shared buffers doubles restore storage.
+    const existing = reusable.get(`${chunk.sha256}:${chunk.rawBytes}`);
+    let borrowed = existing !== undefined;
+    let bytes = new Uint8Array(
+      existing ??
+        allocateImportedReadonlyBuffer(
+          chunk.rawBytes,
+          options.sharedReadonlyBuffers,
+        ),
+    );
     let used = 0;
     try {
       while (true) {
         const next = await reader.read();
         if (next.done) break;
         if (used + next.value.length > bytes.length) return invalid();
-        bytes.set(next.value, used);
+        // Still consume and verify the incoming file. Never write into a live
+        // consumer's backing; a mismatch gets an independent replacement.
+        if (borrowed)
+          for (let i = 0; i < next.value.length; i++)
+            if (bytes[used + i] !== next.value[i]) {
+              const replacement = new Uint8Array(
+                allocateImportedReadonlyBuffer(
+                  chunk.rawBytes,
+                  options.sharedReadonlyBuffers,
+                ),
+              );
+              replacement.set(bytes.subarray(0, used));
+              bytes = replacement;
+              borrowed = false;
+              break;
+            }
+        if (!borrowed) bytes.set(next.value, used);
         used += next.value.length;
       }
     } finally {
@@ -312,6 +423,11 @@ export async function decodeProjectContents(
     }
     if (used !== bytes.length || (await digest(bytes)) !== chunk.sha256)
       return invalid();
+    if (
+      typeof SharedArrayBuffer !== "undefined" &&
+      bytes.buffer instanceof SharedArrayBuffer
+    )
+      options.onSharedChunk?.({ sha256: chunk.sha256, buffer: bytes.buffer });
     data.push(bytes);
     expected += chunk.bytes;
   }
@@ -327,7 +443,7 @@ export async function decodeProjectContents(
         "f64",
         "u32",
         "text",
-        ...(m.version === 4 ? ["u8"] : []),
+        ...([4, 5].includes(m.version) ? ["u8"] : []),
       ].includes(ref.type)
     )
       return invalid();
@@ -351,24 +467,17 @@ export async function decodeProjectContents(
         bytes.byteOffset % width === 0 &&
         new Uint8Array(new Uint16Array([1]).buffer)[0] === 1
       ) {
-        const ArrayType = unsignedTopology ? Uint32Array : Float32Array;
-        result = new ArrayType(
-          bytes.buffer,
-          bytes.byteOffset,
-          bytes.length / width,
-        );
-        if (
-          options.sharedReadonlyBuffers &&
-          globalThis.crossOriginIsolated === true &&
-          typeof SharedArrayBuffer !== "undefined"
-        ) {
-          const buffer = allocateImportedReadonlyBuffer(bytes.length, true);
-          const shared = unsignedTopology
-            ? new Uint32Array(buffer)
-            : new Float32Array(buffer);
-          shared.set(result);
-          result = shared;
-        }
+        result = unsignedTopology
+          ? new Uint32Array(
+              bytes.buffer,
+              bytes.byteOffset,
+              bytes.length / width,
+            )
+          : new Float32Array(
+              bytes.buffer,
+              bytes.byteOffset,
+              bytes.length / width,
+            );
         decoded.set(key, result);
         return result;
       }
@@ -403,16 +512,26 @@ export async function decodeProjectContents(
   }
   const entities = (m.records as RecordData[]).map((record) => {
     if (!record || typeof record !== "object") return invalid();
+    assertReferenceCompatibleMetadata(record);
     if (
       (record.pointColors !== undefined ||
         record.ascAttributes !== undefined) &&
-      m.version !== 4
+      ![4, 5].includes(m.version)
     )
       return invalid();
     if (record.pointColors !== undefined && record.pointColors.type !== "u8")
       return invalid();
+    if (
+      (record.reference !== undefined ||
+        record.constructionOrderKey !== undefined) &&
+      m.version !== 5
+    )
+      return invalid();
     const entity = {
       ...record,
+      ...(record.reference !== undefined
+        ? { reference: decodeReferenceEntityData(record.reference) }
+        : {}),
       positions: read(record.positions),
       indexedMesh: record.indexedMesh
         ? {
@@ -420,6 +539,9 @@ export async function decodeProjectContents(
             triangles: read(record.indexedMesh.triangles, true),
             ...(record.indexedMesh.normals
               ? { normals: read(record.indexedMesh.normals) }
+              : {}),
+            ...(record.indexedMesh.geometryNormals
+              ? { geometryNormals: read(record.indexedMesh.geometryNormals) }
               : {}),
           }
         : undefined,
@@ -443,7 +565,7 @@ export async function decodeProjectContents(
         : undefined,
     } as Entity;
     if (record.cloudPoseBits !== undefined) {
-      if (![3, 4].includes(m.version) || entity.kind !== "pointcloud")
+      if (![3, 4, 5].includes(m.version) || entity.kind !== "pointcloud")
         return invalid();
       return placedCloud(entity, {
         matrixBits: record.cloudPoseBits,

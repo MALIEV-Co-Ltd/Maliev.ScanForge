@@ -1,4 +1,5 @@
 import { AppSelect } from "./AppSelect";
+import { ToolTitle } from "./controls";
 import { useState } from "react";
 import { coordinateSketchFrame, type SketchFrame } from "../sketch-frame";
 import {
@@ -33,98 +34,104 @@ export function SketchPlaneDialog({
   return (
     <div className="modal-backdrop">
       <section
-        className="modal"
+        className="modal command-dialog tool-panel"
         role="dialog"
         aria-modal="true"
         aria-labelledby="sketch-plane-title"
       >
-        <h2 id="sketch-plane-title">Create sketch on a plane</h2>
-        <label className="select-field">
-          Sketch plane
-          <AppSelect
-            autoFocus
-            value={plane}
-            onChange={(e) => setPlane(e.target.value)}
-          >
-            {ORIGIN_PLANES.map((p) => (
-              <option key={p} value={p}>
-                {PLANE_LABELS[p]} · world origin
-              </option>
-            ))}
-            {fitted.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.name}
-              </option>
-            ))}
-            <option value="custom">Custom plane</option>
-          </AppSelect>
-        </label>
-        {plane === "custom" &&
-          ["origin", "normal"].map((kind) => (
-            <fieldset key={kind}>
-              <legend>
-                {kind === "origin" ? "Plane origin (mm)" : "Plane normal"}
-              </legend>
-              {["X", "Y", "Z"].map((axis, i) => (
-                <label className="field" key={axis}>
-                  {`${kind} ${axis}`}
-                  <input
-                    aria-label={`${kind} ${axis}`}
-                    type="number"
-                    value={(kind === "origin" ? origin : normal)[i]}
-                    onChange={(e) => {
-                      const next = [
-                        ...(kind === "origin" ? origin : normal),
-                      ] as Vec3;
-                      next[i] = Number(e.target.value);
-                      (kind === "origin" ? setOrigin : setNormal)(next);
-                    }}
-                  />
-                </label>
+        <ToolTitle
+          id="sketch-plane-title"
+          title="Create sketch on a plane"
+          onClose={onCancel}
+        />
+        <div className="tool-panel-content">
+          <label className="select-field">
+            Sketch plane
+            <AppSelect
+              autoFocus
+              value={plane}
+              onChange={(e) => setPlane(e.target.value)}
+            >
+              {ORIGIN_PLANES.map((p) => (
+                <option key={p} value={p}>
+                  {PLANE_LABELS[p]} · world origin
+                </option>
               ))}
-            </fieldset>
-          ))}
-        <label className="field">
-          Normal offset (mm)
-          <input
-            type="number"
-            value={offset}
-            onChange={(e) => setOffset(Number(e.target.value))}
-          />
-        </label>
-        {error && <p role="alert">{error}</p>}
-        <div className="import-unit-actions">
-          <button onClick={onCancel}>Cancel</button>
-          {onScanSection && (
-            <button onClick={onScanSection}>Use scan section</button>
-          )}
-          <button
-            className="accent"
-            onClick={() => {
-              try {
-                if (!Number.isFinite(offset))
-                  throw new Error("Offset must be finite.");
-                let frame: SketchFrame;
-                if (ORIGIN_PLANES.includes(plane as OriginPlane))
-                  frame = coordinateSketchFrame(plane as OriginPlane, offset);
-                else {
-                  const fit = fitted.find((e) => e.id === plane)?.fit;
-                  frame = datumFrame(
-                    plane === "custom" ? origin : fit!.center,
-                    plane === "custom" ? normal : fit!.axis,
-                  );
-                  frame.origin = frame.origin.map(
-                    (n, i) => n + frame.normal[i] * offset,
-                  ) as Vec3;
+              {fitted.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.name}
+                </option>
+              ))}
+              <option value="custom">Custom plane</option>
+            </AppSelect>
+          </label>
+          {plane === "custom" &&
+            ["origin", "normal"].map((kind) => (
+              <fieldset key={kind}>
+                <legend>
+                  {kind === "origin" ? "Plane origin (mm)" : "Plane normal"}
+                </legend>
+                {["X", "Y", "Z"].map((axis, i) => (
+                  <label className="field" key={axis}>
+                    {`${kind} ${axis}`}
+                    <input
+                      aria-label={`${kind} ${axis}`}
+                      type="number"
+                      value={(kind === "origin" ? origin : normal)[i]}
+                      onChange={(e) => {
+                        const next = [
+                          ...(kind === "origin" ? origin : normal),
+                        ] as Vec3;
+                        next[i] = Number(e.target.value);
+                        (kind === "origin" ? setOrigin : setNormal)(next);
+                      }}
+                    />
+                  </label>
+                ))}
+              </fieldset>
+            ))}
+          <label className="field">
+            Normal offset (mm)
+            <input
+              type="number"
+              value={offset}
+              onChange={(e) => setOffset(Number(e.target.value))}
+            />
+          </label>
+          {error && <p role="alert">{error}</p>}
+          <div className="import-unit-actions">
+            <button onClick={onCancel}>Cancel</button>
+            {onScanSection && (
+              <button onClick={onScanSection}>Use scan section</button>
+            )}
+            <button
+              className="accent"
+              onClick={() => {
+                try {
+                  if (!Number.isFinite(offset))
+                    throw new Error("Offset must be finite.");
+                  let frame: SketchFrame;
+                  if (ORIGIN_PLANES.includes(plane as OriginPlane))
+                    frame = coordinateSketchFrame(plane as OriginPlane, offset);
+                  else {
+                    const fit = fitted.find((e) => e.id === plane)?.fit;
+                    frame = datumFrame(
+                      plane === "custom" ? origin : fit!.center,
+                      plane === "custom" ? normal : fit!.axis,
+                    );
+                    frame.origin = frame.origin.map(
+                      (n, i) => n + frame.normal[i] * offset,
+                    ) as Vec3;
+                  }
+                  onCreate(frame);
+                } catch (e) {
+                  setError(e instanceof Error ? e.message : String(e));
                 }
-                onCreate(frame);
-              } catch (e) {
-                setError(e instanceof Error ? e.message : String(e));
-              }
-            }}
-          >
-            Create sketch
-          </button>
+              }}
+            >
+              Create sketch
+            </button>
+          </div>
         </div>
       </section>
     </div>

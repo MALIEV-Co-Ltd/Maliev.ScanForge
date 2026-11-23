@@ -1,0 +1,19 @@
+[15:50:26] [SET LOG FILE] finished in 0.00 s.
+[15:50:26] [AUTO SAVE STATE]
+[15:50:26] Auto-save is disabled
+[15:50:26] [AUTO SAVE STATE] finished in 0.00 s.
+[15:50:26] [LOAD]
+[15:50:26] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\poisson-sphere-native.bin'
+[15:50:26] [BIN] Opening file 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\poisson-sphere-native.bin'...
+[15:50:26] [BIN] Version 4.1 (coords: float / scalar: float)
+[15:50:26] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261028\poisson-sphere-native.bin' loaded successfully
+[15:50:26] Found one mesh with 7980 faces and 3992 vertices: 'Mesh[sphere-normals - Cloud] (level 8)'
+[15:50:26] [LOAD] finished in 0.01 s.
+[15:50:26] [CHANGE MESH OUTPUT FORMAT]
+[15:50:26] Output export format (meshes) set to: PLY
+[15:50:26] [CHANGE MESH OUTPUT FORMAT] finished in 0.00 s.
+[15:50:26] [SAVE MESHES]
+[15:50:26] [SAVING]
+[15:50:26] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028//poisson-sphere-native.ply' saved successfully
+[15:50:26] [SAVE MESHES] finished in 0.00 s.
+[15:50:26] Processed finished in 0.02 s.

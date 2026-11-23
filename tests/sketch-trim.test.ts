@@ -139,6 +139,159 @@ describe("analytic paint trim between sketch intersections", () => {
       s.arcs![1],
     );
   });
+  it.each([
+    {
+      sweep: 0.002,
+      cut: 0.001,
+      painted: 0.0015,
+      clockwise: false,
+      kind: "line",
+    },
+    {
+      sweep: 0.002,
+      cut: 0.001,
+      painted: 0.0015,
+      clockwise: true,
+      kind: "line",
+    },
+    { sweep: 0.008, cut: 0.004, painted: 0.006, clockwise: false, kind: "arc" },
+    {
+      sweep: 0.004,
+      cut: 0.0017452292519943296,
+      painted: 0.003,
+      clockwise: false,
+      kind: "line",
+    },
+    {
+      sweep: 0.004,
+      cut: 0.0017454292519943296,
+      painted: 0.003,
+      clockwise: false,
+      kind: "arc",
+    },
+    {
+      sweep: Math.PI * 2 - 0.0005,
+      cut: Math.PI * 2 - 0.001,
+      painted: Math.PI * 2 - 0.00075,
+      clockwise: false,
+      kind: "line",
+    },
+  ])(
+    "uses the ordinary arc chord-direction fallback ($kind, $sweep, clockwise=$clockwise)",
+    async ({ sweep, cut, painted, clockwise, kind }) => {
+      const s = empty(),
+        sign = clockwise ? -1 : 1;
+      const point = (angle: number, r = 1000): [number, number] => [
+        r * Math.cos(sign * angle),
+        r * Math.sin(sign * angle),
+      ];
+      const end = point(sweep);
+      s.points.push(
+        { id: "center", x: 0, y: 0 },
+        { id: "start", x: 1000, y: 0 },
+        { id: "end", x: end[0], y: end[1] },
+      );
+      s.arcs!.push({
+        id: "arc",
+        a: "start",
+        b: "end",
+        center: "center",
+        clockwise,
+        construction: true,
+      });
+      line(s, "cutter", point(cut, 999), point(cut, 1001));
+      const before = structuredClone(s),
+        result = await trimSketchStroke(s, stroke(point(painted), 0.01));
+      expect(result.changed).toBe(true);
+      expect(result.intersectionCount).toBe(1);
+      const retained =
+        kind === "line"
+          ? result.sketch.segments.find((c) => c.id === "arc")
+          : result.sketch.arcs!.find((c) => c.id === "arc");
+      expect(retained).toBeDefined();
+      expect(retained).toMatchObject({
+        id: "arc",
+        a: "start",
+        construction: true,
+      });
+      if (kind === "line") {
+        expect(retained).not.toHaveProperty("center");
+        expect(retained).not.toHaveProperty("clockwise");
+        expect(result.sketch.arcs).toEqual([]);
+        expect(result.sketch.points.some((p) => p.id === "center")).toBe(false);
+      }
+      expect(result.retainedCurveIds).toContain("arc");
+      expect(s).toEqual(before);
+      expect(() => validateSketch(result.sketch)).not.toThrow();
+    },
+  );
+  it.each([false, true])(
+    "converts both retained arc sides and preserves a fixed center (%s)",
+    async (fixedCenter) => {
+      const s = empty(),
+        r = 1000,
+        sweep = 0.003;
+      const point = (t: number, radius = r): [number, number] => [
+        radius * Math.cos(t),
+        radius * Math.sin(t),
+      ];
+      const end = point(sweep);
+      s.points.push(
+        { id: "center", x: 0, y: 0 },
+        { id: "start", x: r, y: 0 },
+        { id: "end", x: end[0], y: end[1] },
+      );
+      s.arcs!.push({
+        id: "arc",
+        a: "start",
+        b: "end",
+        center: "center",
+        clockwise: false,
+      });
+      for (const [id, t] of [
+        ["left", 0.001],
+        ["right", 0.002],
+      ] as const)
+        line(s, id, point(t, r - 1), point(t, r + 1));
+      if (fixedCenter)
+        s.constraints.push({
+          id: "fixed",
+          kind: "fixed",
+          point: "center",
+          x: 0,
+          y: 0,
+        });
+      const result = await trimSketchStroke(s, stroke(point(0.0015), 0.01));
+      expect(result.sketch.arcs).toEqual([]);
+      expect(result.retainedCurveIds).toHaveLength(2);
+      expect(result.retainedCurveIds[0]).toBe("arc");
+      const pieces = result.retainedCurveIds.map((id) =>
+        result.sketch.segments.find((s) => s.id === id)!,
+      );
+      expect(pieces[0].a).toBe("start");
+      expect(pieces[1].b).toBe("end");
+      expect(pieces.every((p) => !("center" in p) && !("clockwise" in p))).toBe(
+        true,
+      );
+      expect(result.sketch.points.some((p) => p.id === "center")).toBe(
+        fixedCenter,
+      );
+      expect(result.sketch.constraints).toEqual(s.constraints);
+      expect(() => validateSketch(result.sketch)).not.toThrow();
+    },
+  );
+  it("keeps a nearly full retained periodic circle curved", async () => {
+    const s = empty();
+    circle(s, "circle", 1000);
+    const x = 1000 * Math.cos(0.0005);
+    line(s, "cut", [x, -2], [x, 2]);
+    const result = await trimSketchStroke(s, stroke([1000, 0], 0.00001));
+    expect(result.changed).toBe(true);
+    expect(result.intersectionCount).toBe(2);
+    expect(result.sketch.arcs).toHaveLength(1);
+    expect(result.sketch.segments).toEqual(s.segments);
+    expect(() => validateSketch(result.sketch)).not.toThrow();
+  });
   it.each([0, Math.PI / 4, Math.PI / 2])(
     "does not use the artificial circle seam as a trim boundary (%s)",
     async (angle) => {

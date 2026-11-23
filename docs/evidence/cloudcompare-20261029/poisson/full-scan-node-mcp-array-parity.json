@@ -1,0 +1,11 @@
+{
+  "scope": "Full actual public-MCP export compared with an independent actual Node WASM run using identical final unit-normal assignment and shared exact mesh cleanup. Complete arrays compared without rounding or sampling.",
+  "nodeFileSha256": "3d5ba2aecdf608cde76fbb7c5d061fdce2cb4c3cf16b0b2592ad9c51f43f0dd6",
+  "mcpFileSha256": "4e0bae490c5cbf5cfdb61b94fc8068d1493fb076f8300ed337c4d7b3198722c1",
+  "nodeVertices": 249999,
+  "mcpVertices": 249999,
+  "nodeTriangles": 495378,
+  "mcpTriangles": 495378,
+  "exactPositionArrayEqual": true,
+  "exactTriangleArrayEqual": true
+}

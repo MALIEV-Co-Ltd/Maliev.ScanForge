@@ -1,0 +1,25 @@
+[15:39:48] [SET LOG FILE] finished in 0.00 s.
+[15:39:48] [AUTO SAVE STATE]
+[15:39:48] Auto-save is disabled
+[15:39:48] [AUTO SAVE STATE] finished in 0.00 s.
+[15:39:48] [NO TIMESTAMP]
+[15:39:48] [NO TIMESTAMP] finished in 0.00 s.
+[15:39:48] [LOAD]
+[15:39:48] Opening file: 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\owner-ply\overlap85\moving.ply'
+[15:39:48] [PLY][Comment] File generated
+[15:39:49] [I/O] File 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\owner-ply\overlap85\moving.ply' loaded successfully
+[15:39:49] Found one mesh with 2697877 faces and 1375494 vertices: 'Mesh'
+[15:39:49] [LOAD] finished in 0.36 s.
+[15:39:49] [LOAD]
+[15:39:49] Opening file: 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\owner-ply\overlap85\fixed.ply'
+[15:39:49] [PLY][Comment] File generated
+[15:39:49] [I/O] File 'C:\Users\Shoung\Downloads\CloudCompare-2.13.2-investigation\owner-ply\overlap85\fixed.ply' loaded successfully
+[15:39:49] Found one mesh with 274154 faces and 140113 vertices: 'Mesh'
+[15:39:49] [LOAD] finished in 0.04 s.
+[15:39:49] [ICP]
+[15:39:49] [ICP] Will use 2 threads
+[15:40:28] Entity 'Mesh' has been registered
+[15:40:28] RMS: 0.77982
+[15:40:28] Number of points used for final step: 19999
+[15:40:28] [ICP] finished in 39.48 s.
+[15:40:28] Processed finished in 39.89 s.

@@ -65,6 +65,13 @@ export async function runGlobalScanController(
           async (matrix) => {
             check();
             queries++;
+            options.onPose?.(
+              pass,
+              ordered.map((s) => ({
+                ...s,
+                matrix: [...(s.id === source.id ? matrix : s.matrix)],
+              })),
+            );
             const value = await pool.execute({
               sourceId: source.id,
               poses: ordered.map((s) => ({
@@ -80,6 +87,21 @@ export async function runGlobalScanController(
           { tolerance: options.localTolerance, signal: options.signal },
         );
         check();
+        options.onPose?.(
+          pass,
+          ordered.map((s) =>
+            s.id === source.id
+              ? {
+                  ...s,
+                  matrix: [...local.matrix],
+                  mean: local.mean,
+                  std: local.std,
+                  converged: local.converged,
+                  stable: local.stable,
+                }
+              : { ...s, matrix: [...s.matrix] },
+          ),
+        );
         localResults.push({
           id: source.id,
           pass,

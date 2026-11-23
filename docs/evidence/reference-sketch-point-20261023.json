@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "Internal stored sketch point selection implemented; source acquisition and public construction remain incomplete",
+  "applicationBehaviorChanged": false,
+  "internalResolverAdded": true,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "sources": [
+    {
+      "path": "src/reference-source-primitives.ts",
+      "sha256": "9e82f9ee0588f3501b30eb8a73a9b9c9a01f8d289332329a34dd5e8664a379de"
+    },
+    {
+      "path": "src/reference-construction-values.ts",
+      "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+    },
+    {
+      "path": "tests/reference-sketch-point.test.ts",
+      "sha256": "f72780eceef13d61a7e94c7768ad43d57617e5a1e62fadcfe6f373042da7f467"
+    },
+    {
+      "path": "tests/reference-source-primitives.test.ts",
+      "sha256": "e29cbf4606e789a891f93a08689e11fa3f0cf3ba499f19e085350f7d2a3072bb"
+    },
+    {
+      "path": "tests/reference-provider-axis.test.ts",
+      "sha256": "bb244af53c6de8b575191eb4a2f9c614df47e528a9c6c1083a93ac475763ecd8"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "0eca29a49566338126e3ff2886a9b76f60813046b128690ee864fba0bae30aee"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "9e9f2cef6e95e62f4629232ddaecaa3e5db9de2d39f9174a81229509c0bf0a72"
+    }
+  ],
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "capture": {
+      "artifact": "native-construction-source-metadata-20261023-sketch-r1/evidence.json",
+      "sha256": "2d50ad01e72dda4420c70ffbaa6bdbcd5e29569c0d13a4e5722397d85673e467",
+      "matchedCodeBytesPerPass": 1415,
+      "selectedTypeBindings": 3,
+      "twoReadsAgree": true,
+      "readBytes": 3918,
+      "regionQueries": 506,
+      "elapsedSeconds": 0.04553380000288598,
+      "peakHelperMemoryBytes": 15790080,
+      "closed": true
+    },
+    "facts": [
+      "The outer sketch object constructs and retains an inner sketch owner.",
+      "Owner virtual slots expose child count and indexed linked-list traversal in stored order.",
+      "Selected line and spline child point-container getters return different stored fields.",
+      "The point helper traverses 80-byte records, reading their first three doubles, and applies the owner frame before comparing with the promoted Float32 pick.",
+      "Strict squared-distance improvement retains first ties and uses promoted FLT_MAX as the initial bound."
+    ],
+    "scope": "Static code and repeated passive metadata binding only. No native functions, geometry-buffer reads, target writes or UI input."
+  },
+  "implemented": [
+    "Already resolved ordered child records and explicit affine frame feed an internal source primitive adapter.",
+    "Recovered multiplication/addition order and sequential squared-distance sum are preserved without reassociation or normalization.",
+    "Picks use Float32 conversion; output retains Float64 values and signed zero produced by the transform.",
+    "Missing sources and existing sources with no qualifying candidate remain distinct. Intermediate overflow or NaN cannot win.",
+    "Finite canonical snapshot validation is an application boundary; input/output data is not mutated or aliased."
+  ],
+  "verification": {
+    "red": "11 behavior failures because the resolver was absent; six negative cases also passed on that absent-function error and are not independent red evidence.",
+    "build": {
+      "passed": true,
+      "heapMiB": 3072,
+      "jobLimitBytes": 4294967296,
+      "elapsedSeconds": 33.24200289999135,
+      "peakAggregateBytes": 2431737856,
+      "bundle": "scanforge-9f1d31f32b856ccc"
+    },
+    "focused": {
+      "passed": 252,
+      "files": 8,
+      "newAnalyticTests": 17
+    },
+    "full": {
+      "passed": 48277,
+      "skipped": 64,
+      "passedFiles": 612,
+      "skippedFiles": 18,
+      "elapsedSeconds": 264.9601987999922,
+      "peakAggregateBytes": 965468160
+    },
+    "receipts": [
+      {
+        "label": "construction-sketch-owner-r1",
+        "sha256": "08dc9f7277ac20d58449a573852d5105ebb26ef4d3023f2c5df2132d77c1ae9a",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.361063499993179,
+        "peakAggregateBytes": 116297728,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-sketch-owner-noanalysis-r1",
+        "sha256": "6012d2824adac7c01694da9cfdc53b2a9b7d46e138bb0d6b90fac61bdf8bd0db",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 11.523236199980602,
+        "peakAggregateBytes": 729018368,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-sketch-inner-r1",
+        "sha256": "c749e172d05f90a41a5e42ee3be2abd9bf6d19bfcdaf9fc12d5d2aeb273dd9eb",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.25854720000643283,
+        "peakAggregateBytes": 124350464,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-sketch-inner-r2",
+        "sha256": "60b59268ad7a52b7e8fdfb380f914bfc47b04255151254e7e24f4266ac521946",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.25857119998545386,
+        "peakAggregateBytes": 94277632,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-sketch-children-r1",
+        "sha256": "171296c354b823500cdbfd8782499aecb09474e5cfba742528a8edb1313076a9",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.3088293999899179,
+        "peakAggregateBytes": 108519424,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-sketch-bindings-r1",
+        "sha256": "b92009201992e608f1e792481d3595b95a218f72f644fc0ab6a518acb1b46dcc",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.2586938999884296,
+        "peakAggregateBytes": 95502336,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-sketch-point-r1-red",
+        "sha256": "3f1d9ea34b1d35208cee2bc879380544072c35a164f2c25df2812ff5eac0b7b9",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "elapsedSeconds": 0.612120000005234,
+        "peakAggregateBytes": 277204992,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-sketch-point-r1-format",
+        "sha256": "3ec59149babc466472b5c7da8c0d29ff4f8fc01bd7a85626c4d36a12d37f8ff9",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.25844159998814575,
+        "peakAggregateBytes": 105209856,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-sketch-point-r1-build",
+        "sha256": "2e2a1d208c8b6a00f34083744a3029e2d485b7e1b8fc97cf9a7ab19ab87e27be",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 33.24200289999135,
+        "peakAggregateBytes": 2431737856,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-sketch-point-r1-green",
+        "sha256": "ffb1426b6d06e638bc236c1ad3ec12569e79cab181662903844ed368a4f05ace",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 2.682922600011807,
+        "peakAggregateBytes": 377425920,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-sketch-point-r1-full",
+        "sha256": "5f55f8f0264b186ced382a46997455acf940383bdde770f9f9fbb82d2af3ce4b",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 264.9601987999922,
+        "peakAggregateBytes": 965468160,
+        "cleanupErrors": []
+      }
+    ],
+    "nativeNumericReplay": false,
+    "renderedGuiMcpAcceptance": false
+  },
+  "mcpParity": "Internal resolver foundation only; no GUI-only behavior or new advertised operation. Planned reference_construction_sources/edit/get/apply must share the resolver through the editor/executor after source acquisition and lifecycle acceptance. Current catalog, schemas, agent usage and import admission remain unchanged.",
+  "limitations": [
+    "Stored-record production, eligibility for other child types and pick/frame acquisition provenance remain unresolved.",
+    "Finite-input analytic cases do not establish original-native numerical replay or malformed-native-input handling.",
+    "Native comparison, persistent construction transactions, dependency lifecycle, save/reopen and rendered GUI/MCP acceptance remain required.",
+    "The separate alternate-provider axis extent remains unresolved; this point calculation does not supply or guess it."
+  ],
+  "privateEvidence": [
+    {
+      "artifact": "construction-helpers-noanalysis-r1/evidence.json",
+      "sha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+    },
+    {
+      "artifact": "construction-sketch-owner-r1.json",
+      "sha256": "1485f6e742b439651b45dadec679aacf7967b1d1c3e93a76ecc9321624db459c"
+    },
+    {
+      "artifact": "construction-sketch-owner-noanalysis-r1/evidence.json",
+      "sha256": "de81be57369072c4249c67467adf71483a4c75b57af95ae1718edbbda58b4cec"
+    },
+    {
+      "artifact": "construction-sketch-inner-r1.json",
+      "sha256": "6c97b33a7f98dcda71014ba2de1361942e68292637d8b3b82fd51be3001f62da"
+    },
+    {
+      "artifact": "construction-sketch-inner-r2.json",
+      "sha256": "dc6bcdfd78dbee86fab548e28a08ba8d018fc0ad9b69a2db30c9414cfaf53bce"
+    },
+    {
+      "artifact": "construction-sketch-children-r1.json",
+      "sha256": "b16dadede892453c8707ca11c116cb899aaebecb114a28176a8edf780d29ac92"
+    },
+    {
+      "artifact": "construction-sketch-code-bindings-r1.json",
+      "sha256": "d390e955d9472b1fec02a06be4eb798e725503f78824096bd08fe17a012fbf33"
+    }
+  ]
+}

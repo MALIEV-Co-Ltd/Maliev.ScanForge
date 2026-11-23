@@ -1,3 +1,5 @@
+import type { AutomaticCadSetup } from "../automatic-cad-setup";
+import { HelpPopover } from "./HelpPopover";
 import { useEffect, useRef, useState } from "react";
 import type { ApplicationApi } from "../automation/api";
 import { buildDatumAlignment, type DatumInstruction } from "../datum-alignment";
@@ -39,6 +41,19 @@ export function DatumAlignmentTools({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const [automatic, setAutomatic] = useState(false);
+  const [setupOptions, setSetupOptions] = useState<AutomaticCadSetup>({
+    referenceEntityId: entity.id,
+    origin: "center",
+    primaryAxis: "X",
+    flipBase: false,
+  });
+  const [setupResult, setSetupResult] =
+    useState<
+      Awaited<
+        ReturnType<typeof import("../automatic-cad-setup").automaticCadSetup>
+      >["diagnostics"]
+    >();
   const [count, setCount] = useState(1),
     [busy, setBusy] = useState(false);
   const [error, setError] = useState(""),
@@ -47,6 +62,14 @@ export function DatumAlignmentTools({
   const [translationPoint, setTranslationPoint] = useState<Vec3>();
   const [parallel, setParallel] = useState(true);
   const [targetIds, setTargetIds] = useState<string[]>([entity.id]);
+  useEffect(() => {
+    if (heldPreview.current) {
+      heldPreview.current = false;
+      queueMicrotask(() => void discard());
+    }
+    setPreview(false);
+    setSetupResult(undefined);
+  }, [setupOptions]);
   async function includeDependents() {
     setBusy(true);
     setError("");
@@ -135,13 +158,17 @@ export function DatumAlignmentTools({
   useEffect(() => {
     disposed.current = false;
     setTargetIds([entity.id]);
+    setSetupOptions((current) => ({
+      ...current,
+      referenceEntityId: entity.id,
+    }));
     return () => {
       disposed.current = true;
       onPickPoint(null);
       onPickFace(null);
       if (activeJob.current)
         void api.invoke("job_cancel", { jobId: activeJob.current });
-      if (heldPreview.current) void discard();
+      if (heldPreview.current) queueMicrotask(() => void discard());
     };
   }, [entity.id]);
   useEffect(() => {
@@ -186,25 +213,29 @@ export function DatumAlignmentTools({
     try {
       const receipt = await api.invoke(command, {
         entityIds: targetIds,
-        constraints: instructions.slice(0, count).map((item, index) =>
-          originReferences[index]
-            ? {
-                kind: "origin",
-                reference: originReferences[index],
-                axis: item.axis,
-                flip: item.flip,
-              }
-            : bindings[index]
-              ? {
-                  kind: "reference",
-                  ...bindings[index],
-                  axis: item.axis,
-                  flip: item.flip,
-                }
-              : item,
-        ),
-        translation,
-        ...(translationPoint ? { translationPoint } : {}),
+        ...(automatic
+          ? { automatic: setupOptions }
+          : {
+              constraints: instructions.slice(0, count).map((item, index) =>
+                originReferences[index]
+                  ? {
+                      kind: "origin",
+                      reference: originReferences[index],
+                      axis: item.axis,
+                      flip: item.flip,
+                    }
+                  : bindings[index]
+                    ? {
+                        kind: "reference",
+                        ...bindings[index],
+                        axis: item.axis,
+                        flip: item.flip,
+                      }
+                    : item,
+              ),
+              translation,
+              ...(translationPoint ? { translationPoint } : {}),
+            }),
         parallel,
         expectedRevision: api.currentRevision(),
         requestId: crypto.randomUUID(),
@@ -221,7 +252,11 @@ export function DatumAlignmentTools({
         const job = response.result as {
           status: string;
           error?: { message: string };
-          result?: { translation?: number[]; referenceAcceptance?: boolean[] };
+          result?: {
+            translation?: number[];
+            referenceAcceptance?: boolean[];
+            automatic?: NonNullable<typeof setupResult>;
+          };
         };
         if (job.status !== "running") {
           if (job.status !== "succeeded")
@@ -229,6 +264,7 @@ export function DatumAlignmentTools({
           heldPreview.current = command === "alignment_preview";
           if (job.result?.translation?.length === 3)
             setTranslation([...job.result.translation] as Vec3);
+          setSetupResult(job.result?.automatic);
           setReferenceAcceptance(job.result?.referenceAcceptance ?? []);
           setPreview(heldPreview.current);
           if (command === "alignment_apply") setOpen(false);
@@ -272,344 +308,515 @@ export function DatumAlignmentTools({
       </button>
     );
   return (
-    <Panel title="Coordinate alignment">
-      <p className="muted">
-        Build a frame from up to three references. Preview preserves the model;
-        Apply records one history step.
-      </p>
-      {entity.surfaceScanId && (
-        <p className="muted" data-source-scan-id={entity.surfaceScanId}>
-          Source scan:{" "}
-          {entities.find((item) => item.id === entity.surfaceScanId)?.name ??
-            entity.surfaceScanId}
+    <Panel
+      title="Coordinate alignment"
+      className="datum-setup-panel tool-panel"
+    >
+      <div className="tool-panel-content">
+        <p className="muted">
+          Build a frame from up to three references. Preview preserves the
+          model; Apply records one history step.
         </p>
-      )}
-      {!entity.parametric && entity.authoringLinks && (
-        <p
-          className="muted"
-          data-authoring-feature-id={entity.authoringLinks.featureId}
-        >
-          Referenced objects:{" "}
-          {entity.authoringLinks.references
-            .map((id) => entities.find((item) => item.id === id)?.name ?? id)
-            .join(", ") || "None"}
-        </p>
-      )}
-      <fieldset disabled={busy}>
-        <button
-          type="button"
-          disabled={!validTargets}
-          onClick={() => void includeDependents()}
-        >
-          Include dependent features
-        </button>
-        {targets.length > 1 && (
-          <fieldset>
-            <legend>Objects to move · {targetIds.length} selected</legend>
-            {targets.map((item) => (
-              <label className="check-row" key={item.id}>
-                <input
-                  type="checkbox"
-                  aria-label={`Move ${item.name}`}
-                  checked={targetIds.includes(item.id)}
-                  disabled={
-                    !targetIds.includes(item.id) && targetIds.length >= 32
-                  }
-                  onChange={(event) => {
-                    if (heldPreview.current) void discard();
-                    heldPreview.current = false;
-                    setPreview(false);
-                    setTargetIds((current) =>
-                      event.target.checked
-                        ? [...current, item.id]
-                        : current.filter((id) => id !== item.id),
-                    );
-                  }}
-                />
-                {item.name}
-              </label>
-            ))}
-          </fieldset>
-        )}
-        {!validTargets && (
-          <p role="alert">
-            Choose at least one available, unlocked object to move.
+        {entity.surfaceScanId && (
+          <p className="muted" data-source-scan-id={entity.surfaceScanId}>
+            Source scan:{" "}
+            {entities.find((item) => item.id === entity.surfaceScanId)?.name ??
+              entity.surfaceScanId}
           </p>
         )}
-        <label className="field">
-          <span>References</span>
-          <select
-            aria-label="Alignment reference count"
-            value={count}
-            onChange={(event) => {
-              void discard();
-              heldPreview.current = false;
-              setPreview(false);
-              setCount(Number(event.target.value));
-            }}
+        {!entity.parametric && entity.authoringLinks && (
+          <p
+            className="muted"
+            data-authoring-feature-id={entity.authoringLinks.featureId}
           >
-            {[1, 2, 3].map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
-        {instructions.slice(0, count).map((item, index) => {
-          let enabledAxes: boolean[] | undefined;
-          try {
-            enabledAxes = buildDatumAlignment(instructions.slice(0, index + 1))
-              .referenceOptions[index].enabledAxes;
-          } catch {
-            /* Keep editing available while numeric input is incomplete. */
-          }
-          return (
-            <fieldset key={index}>
-              <legend>{["Primary", "Secondary", "Tertiary"][index]}</legend>
+            Referenced objects:{" "}
+            {entity.authoringLinks.references
+              .map((id) => entities.find((item) => item.id === id)?.name ?? id)
+              .join(", ") || "None"}
+          </p>
+        )}
+        <fieldset disabled={busy}>
+          <button
+            type="button"
+            disabled={!validTargets}
+            onClick={() => void includeDependents()}
+          >
+            Include dependent features
+          </button>
+          {targets.length > 1 && (
+            <fieldset>
+              <legend>Objects to move · {targetIds.length} selected</legend>
+              {targets.map((item) => (
+                <label className="check-row" key={item.id}>
+                  <input
+                    type="checkbox"
+                    aria-label={`Move ${item.name}`}
+                    checked={targetIds.includes(item.id)}
+                    disabled={
+                      !targetIds.includes(item.id) && targetIds.length >= 32
+                    }
+                    onChange={(event) => {
+                      if (heldPreview.current) void discard();
+                      heldPreview.current = false;
+                      setPreview(false);
+                      setTargetIds((current) =>
+                        event.target.checked
+                          ? [...current, item.id]
+                          : current.filter((id) => id !== item.id),
+                      );
+                    }}
+                  />
+                  {item.name}
+                </label>
+              ))}
+            </fieldset>
+          )}
+          {!validTargets && (
+            <p role="alert">
+              Choose at least one available, unlocked object to move.
+            </p>
+          )}
+          <label className="field">
+            <span>Setup method</span>
+            <select
+              aria-label="Coordinate setup method"
+              value={automatic ? "automatic" : "references"}
+              onChange={(event) => {
+                if (heldPreview.current) void discard();
+                heldPreview.current = false;
+                setPreview(false);
+                setSetupResult(undefined);
+                setAutomatic(event.target.value === "automatic");
+              }}
+            >
+              <option value="automatic">Automatic</option>
+              <option value="references">Manual references</option>
+            </select>
+          </label>
+          {automatic && (
+            <fieldset>
               <label className="field">
-                <span>Origin reference</span>
+                <span>Detect from</span>
                 <select
-                  aria-label={`Reference ${index + 1} origin reference`}
-                  value={originReferences[index] ?? ""}
-                  onChange={(event) => {
-                    const reference = event.target.value as
-                      NativeDatumOriginReference | "";
-                    if (reference)
-                      update(index, {
-                        ...nativeDatumOriginPayload(reference),
-                        flip: false,
-                      });
-                    else update(index, {});
-                    setOriginReferences((current) => {
-                      const next = [...current];
-                      next[index] = reference || undefined;
-                      return next;
-                    });
-                    setRequiredReferences((current) => {
-                      const next = [...current];
-                      next[index] = false;
-                      return next;
-                    });
-                  }}
-                >
-                  <option value="">Manual / object reference</option>
-                  {(["XY", "YZ", "XZ", "X", "Y", "Z", "origin"] as const).map(
-                    (reference) => (
-                      <option key={reference} value={reference}>
-                        {reference === "origin"
-                          ? "Origin point"
-                          : `${reference} ${reference.length === 2 ? "plane" : "axis"}`}
-                      </option>
-                    ),
-                  )}
-                </select>
-              </label>
-              {!originReferences[index] && (
-                <DatumReferencePicker
-                  entities={entities}
-                  index={index}
-                  value={bindings[index]}
-                  read={readReferences}
-                  onPickFace={onPickFace}
-                  onChange={(value, required) => {
-                    setRequiredReferences((current) => {
-                      const next = [...current];
-                      next[index] = required;
-                      return next;
-                    });
-                    if (
-                      value?.reference.point &&
-                      value.reference.kind !== "unsupported"
-                    ) {
-                      update(index, {
-                        kind: value.reference.kind,
-                        point: value.reference.point,
-                        direction: value.reference.direction,
-                        flip: false,
-                      });
-                    } else update(index, {});
-                    setBindings((current) => {
-                      const next = [...current];
-                      next[index] = value
-                        ? {
-                            entityId: value.entityId,
-                            referenceId: value.reference.id,
-                          }
-                        : undefined;
-                      return next;
-                    });
-                  }}
-                />
-              )}
-              <label className="field">
-                <span>Type</span>
-                <select
-                  aria-label={`Reference ${index + 1} type`}
-                  value={item.kind}
-                  onChange={(event) =>
-                    update(index, {
-                      kind: event.target.value as DatumInstruction["kind"],
-                      direction: item.direction ?? [0, 0, 1],
-                      flip: false,
+                  aria-label="CAD setup reference"
+                  value={setupOptions.referenceEntityId}
+                  onChange={(e) =>
+                    setSetupOptions({
+                      ...setupOptions,
+                      referenceEntityId: e.target.value,
                     })
                   }
                 >
-                  <option value="point">Point</option>
-                  <option value="plane">Plane</option>
-                  <option value="direction">Direction</option>
+                  {targets
+                    .filter(
+                      (t) =>
+                        !t.kernelId &&
+                        !t.parametric &&
+                        targetIds.includes(t.id),
+                    )
+                    .map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    ))}
                 </select>
               </label>
-              <VectorField
-                label={`Reference ${index + 1} point (mm)`}
-                value={item.point as Vec3}
-                onChange={(point) => update(index, { point })}
-              />
-              {item.kind !== "point" && (
-                <>
-                  <VectorField
-                    label={`Reference ${index + 1} direction`}
-                    value={(item.direction ?? [0, 0, 1]) as Vec3}
-                    onChange={(direction) => update(index, { direction })}
-                  />
-                  <label className="field">
-                    <span>Target axis</span>
-                    <select
-                      aria-label={`Reference ${index + 1} target axis`}
-                      value={item.axis}
-                      onChange={(event) =>
-                        update(index, {
-                          axis: Number(event.target.value) as 0 | 1 | 2,
-                        })
+              <label className="field">
+                <span>Origin</span>
+                <select
+                  aria-label="CAD setup origin"
+                  value={setupOptions.origin}
+                  onChange={(e) =>
+                    setSetupOptions({
+                      ...setupOptions,
+                      origin: e.target.value as "center" | "corner",
+                    })
+                  }
+                >
+                  <option value="center">Base center</option>
+                  <option value="corner">Base corner</option>
+                </select>
+              </label>
+              <label className="field">
+                <span>Long direction</span>
+                <select
+                  aria-label="CAD setup primary axis"
+                  value={setupOptions.primaryAxis}
+                  onChange={(e) =>
+                    setSetupOptions({
+                      ...setupOptions,
+                      primaryAxis: e.target.value as "X" | "Y",
+                    })
+                  }
+                >
+                  <option>X</option>
+                  <option>Y</option>
+                </select>
+              </label>
+              <label className="field">
+                <span>Plane tolerance (mm)</span>
+                <input
+                  aria-label="CAD setup plane tolerance"
+                  type="number"
+                  min="0.000001"
+                  step="0.01"
+                  placeholder="Automatic"
+                  value={setupOptions.planeTolerance ?? ""}
+                  onChange={(e) =>
+                    setSetupOptions({
+                      ...setupOptions,
+                      planeTolerance:
+                        e.target.value === ""
+                          ? undefined
+                          : Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label className="check-row">
+                <input
+                  type="checkbox"
+                  checked={setupOptions.flipBase}
+                  onChange={(e) =>
+                    setSetupOptions({
+                      ...setupOptions,
+                      flipBase: e.target.checked,
+                    })
+                  }
+                />
+                Flip base
+              </label>
+              <HelpPopover label="Automatic CAD setup help">
+                <p>
+                  Finds a flat supporting face for XY and a bounding rectangle
+                  for X/Y. All chosen objects move together; align scans to each
+                  other first.
+                </p>
+                <p>
+                  Symmetric scans have no unique front or bottom. Review the
+                  preview, flip the base or swap X/Y as needed. No flat face:
+                  use manual references.
+                </p>
+              </HelpPopover>
+            </fieldset>
+          )}
+          {!automatic && (
+            <>
+              <label className="field">
+                <span>References</span>
+                <select
+                  aria-label="Alignment reference count"
+                  value={count}
+                  onChange={(event) => {
+                    void discard();
+                    heldPreview.current = false;
+                    setPreview(false);
+                    setCount(Number(event.target.value));
+                  }}
+                >
+                  {[1, 2, 3].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {instructions.slice(0, count).map((item, index) => {
+                let enabledAxes: boolean[] | undefined;
+                try {
+                  enabledAxes = buildDatumAlignment(
+                    instructions.slice(0, index + 1),
+                  ).referenceOptions[index].enabledAxes;
+                } catch {
+                  /* Keep editing available while numeric input is incomplete. */
+                }
+                return (
+                  <fieldset key={index}>
+                    <legend>
+                      {["Primary", "Secondary", "Tertiary"][index]}
+                    </legend>
+                    <label className="field">
+                      <span>Origin reference</span>
+                      <select
+                        aria-label={`Reference ${index + 1} origin reference`}
+                        value={originReferences[index] ?? ""}
+                        onChange={(event) => {
+                          const reference = event.target.value as
+                            NativeDatumOriginReference | "";
+                          if (reference)
+                            update(index, {
+                              ...nativeDatumOriginPayload(reference),
+                              flip: false,
+                            });
+                          else update(index, {});
+                          setOriginReferences((current) => {
+                            const next = [...current];
+                            next[index] = reference || undefined;
+                            return next;
+                          });
+                          setRequiredReferences((current) => {
+                            const next = [...current];
+                            next[index] = false;
+                            return next;
+                          });
+                        }}
+                      >
+                        <option value="">Manual / object reference</option>
+                        {(
+                          ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"] as const
+                        ).map((reference) => (
+                          <option key={reference} value={reference}>
+                            {reference === "origin"
+                              ? "Origin point"
+                              : `${reference} ${reference.length === 2 ? "plane" : "axis"}`}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    {!originReferences[index] && (
+                      <DatumReferencePicker
+                        entities={entities}
+                        index={index}
+                        value={bindings[index]}
+                        read={readReferences}
+                        onPickFace={onPickFace}
+                        onChange={(value, required) => {
+                          setRequiredReferences((current) => {
+                            const next = [...current];
+                            next[index] = required;
+                            return next;
+                          });
+                          if (
+                            value?.reference.point &&
+                            value.reference.kind !== "unsupported"
+                          ) {
+                            update(index, {
+                              kind: value.reference.kind,
+                              point: value.reference.point,
+                              direction: value.reference.direction,
+                              flip: false,
+                            });
+                          } else update(index, {});
+                          setBindings((current) => {
+                            const next = [...current];
+                            next[index] = value
+                              ? {
+                                  entityId: value.entityId,
+                                  referenceId: value.reference.id,
+                                }
+                              : undefined;
+                            return next;
+                          });
+                        }}
+                      />
+                    )}
+                    <label className="field">
+                      <span>Type</span>
+                      <select
+                        aria-label={`Reference ${index + 1} type`}
+                        value={item.kind}
+                        onChange={(event) =>
+                          update(index, {
+                            kind: event.target
+                              .value as DatumInstruction["kind"],
+                            direction: item.direction ?? [0, 0, 1],
+                            flip: false,
+                          })
+                        }
+                      >
+                        <option value="point">Point</option>
+                        <option value="plane">Plane</option>
+                        <option value="direction">Direction</option>
+                      </select>
+                    </label>
+                    <VectorField
+                      label={`Reference ${index + 1} point (mm)`}
+                      value={item.point as Vec3}
+                      onChange={(point) => update(index, { point })}
+                    />
+                    {item.kind !== "point" && (
+                      <>
+                        <VectorField
+                          label={`Reference ${index + 1} direction`}
+                          value={(item.direction ?? [0, 0, 1]) as Vec3}
+                          onChange={(direction) => update(index, { direction })}
+                        />
+                        <label className="field">
+                          <span>Target axis</span>
+                          <select
+                            aria-label={`Reference ${index + 1} target axis`}
+                            value={item.axis}
+                            onChange={(event) =>
+                              update(index, {
+                                axis: Number(event.target.value) as 0 | 1 | 2,
+                              })
+                            }
+                          >
+                            {["X", "Y", "Z"].map((axis, i) => (
+                              <option
+                                key={axis}
+                                value={i}
+                                disabled={enabledAxes?.[i] === false}
+                              >
+                                {axis}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={!!item.flip}
+                            onChange={(event) =>
+                              update(index, { flip: event.target.checked })
+                            }
+                          />
+                          Flip reference direction
+                        </label>
+                      </>
+                    )}
+                    <button
+                      onClick={() =>
+                        onPickPoint((point) => update(index, { point }))
                       }
                     >
-                      {["X", "Y", "Z"].map((axis, i) => (
-                        <option
-                          key={axis}
-                          value={i}
-                          disabled={enabledAxes?.[i] === false}
-                        >
-                          {axis}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={!!item.flip}
-                      onChange={(event) =>
-                        update(index, { flip: event.target.checked })
-                      }
-                    />
-                    Flip reference direction
-                  </label>
-                </>
-              )}
+                      Pick reference point on canvas
+                    </button>
+                  </fieldset>
+                );
+              })}
               <button
-                onClick={() => onPickPoint((point) => update(index, { point }))}
+                onClick={() =>
+                  update(0, { kind: "point", point: [...center], flip: false })
+                }
               >
-                Pick reference point on canvas
+                Use scan center as origin
               </button>
-            </fieldset>
-          );
-        })}
+            </>
+          )}
+        </fieldset>
+        <fieldset disabled={busy}>
+          {!automatic && (
+            <>
+              <VectorField
+                label="Frame translation (mm)"
+                value={translation}
+                onChange={(value) => {
+                  setTranslationPoint(undefined);
+                  if (heldPreview.current) {
+                    heldPreview.current = false;
+                    void discard();
+                  }
+                  setPreview(false);
+                  setError("");
+                  setTranslation(value);
+                }}
+              />
+              <button
+                onClick={() =>
+                  onPickPoint((point) => {
+                    if (heldPreview.current) {
+                      heldPreview.current = false;
+                      void discard();
+                    }
+                    setPreview(false);
+                    setError("");
+                    setTranslationPoint([...point]);
+                    onPickPoint(null);
+                  })
+                }
+              >
+                Pick translation point on canvas
+              </button>
+            </>
+          )}
+          <label>
+            <input
+              type="checkbox"
+              checked={parallel}
+              onChange={(event) => {
+                if (heldPreview.current) {
+                  heldPreview.current = false;
+                  void discard();
+                }
+                setPreview(false);
+                setParallel(event.target.checked);
+              }}
+            />
+            Use multiple CPU cores for large scans
+          </label>
+        </fieldset>
+        {setupResult && preview && (
+          <section
+            className="mesh-operation-result"
+            aria-label="CAD setup result"
+          >
+            <dl className="mesh-result-metrics">
+              <dt>Base support</dt>
+              <dd>{setupResult.planeSupportPercent.toFixed(1)}%</dd>
+              <dt>Plane RMS</dt>
+              <dd>{setupResult.planeRms.toFixed(4)} mm</dd>
+              <dt>Dimensions</dt>
+              <dd>
+                {setupResult.dimensions.map((v) => v.toFixed(2)).join(" x ")} mm
+              </dd>
+            </dl>
+            <HelpPopover label="CAD setup result notes">
+              {setupResult.warnings.map((w) => (
+                <p key={w}>{w}</p>
+              ))}
+            </HelpPopover>
+          </section>
+        )}
+        {error && <p role="alert">{error}</p>}
+        {preview && (
+          <p role="status">Alignment preview ready · model unchanged</p>
+        )}
+        {preview && referenceAcceptance.some((accepted) => !accepted) && (
+          <p role="status">
+            References{" "}
+            {referenceAcceptance
+              .flatMap((accepted, index) => (accepted ? [] : [index + 1]))
+              .join(", ")}{" "}
+            did not constrain this frame.
+          </p>
+        )}
+      </div>
+      <div className="display-row tool-panel-actions">
         <button
-          onClick={() =>
-            update(0, { kind: "point", point: [...center], flip: false })
-          }
-        >
-          Use scan center as origin
-        </button>
-      </fieldset>
-      <fieldset disabled={busy}>
-        <VectorField
-          label="Frame translation (mm)"
-          value={translation}
-          onChange={(value) => {
-            setTranslationPoint(undefined);
-            if (heldPreview.current) {
-              heldPreview.current = false;
-              void discard();
-            }
-            setPreview(false);
-            setError("");
-            setTranslation(value);
-          }}
-        />
-        <button
-          onClick={() =>
-            onPickPoint((point) => {
-              if (heldPreview.current) {
-                heldPreview.current = false;
-                void discard();
-              }
-              setPreview(false);
-              setError("");
-              setTranslationPoint([...point]);
-              onPickPoint(null);
-            })
-          }
-        >
-          Pick translation point on canvas
-        </button>
-        <label>
-          <input
-            type="checkbox"
-            checked={parallel}
-            onChange={(event) => {
-              if (heldPreview.current) {
-                heldPreview.current = false;
-                void discard();
-              }
-              setPreview(false);
-              setParallel(event.target.checked);
-            }}
-          />
-          Use multiple CPU cores for large scans
-        </label>
-      </fieldset>
-      {error && <p role="alert">{error}</p>}
-      {preview && (
-        <p role="status">Alignment preview ready · model unchanged</p>
-      )}
-      {preview && referenceAcceptance.some((accepted) => !accepted) && (
-        <p role="status">
-          References{" "}
-          {referenceAcceptance
-            .flatMap((accepted, index) => (accepted ? [] : [index + 1]))
-            .join(", ")}{" "}
-          did not constrain this frame.
-        </p>
-      )}
-      <div className="display-row">
-        <button
+          aria-label="Preview alignment"
           disabled={
             busy ||
             !validTargets ||
-            requiredReferences.some(
-              (required, index) =>
-                index < count && required && !bindings[index],
-            )
+            (!automatic &&
+              requiredReferences.some(
+                (required, index) =>
+                  index < count && required && !bindings[index],
+              ))
           }
           onClick={() => void run("alignment_preview")}
         >
-          Preview alignment
+          Preview
         </button>
         <button
+          aria-label="Apply alignment"
           disabled={
             busy ||
             !validTargets ||
             !preview ||
-            requiredReferences.some(
-              (required, index) =>
-                index < count && required && !bindings[index],
-            )
+            (!automatic &&
+              requiredReferences.some(
+                (required, index) =>
+                  index < count && required && !bindings[index],
+              ))
           }
           onClick={() => void run("alignment_apply")}
         >
-          Apply alignment
+          Apply
         </button>
-        <button onClick={() => void cancel()}>Cancel alignment</button>
+        <button aria-label="Cancel alignment" onClick={() => void cancel()}>
+          Cancel
+        </button>
       </div>
     </Panel>
   );

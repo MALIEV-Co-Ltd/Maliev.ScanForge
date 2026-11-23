@@ -6,11 +6,14 @@ import { nativeSurfaceRefinementRequest } from "./native-surface-refinement";
 import { publishedLandmarkRoots } from "./native-landmark-roots";
 
 export interface LandmarkAlignment {
+  referenceWidthPercent?: number;
   moving: Entity;
   fixed?: Entity;
   pickScene?: readonly Entity[];
   picks: { entityId: string; point: Vec3 }[];
   preview?: ProcessingResult;
+  previewStatus?: "idle" | "pending" | "ready" | "error";
+  previewError?: string;
   targetScope?: LandmarkTargetScope;
   refinementScene?: readonly Entity[];
 }
@@ -102,18 +105,17 @@ export function pickLandmark(
   entityId: string,
   point: Vec3,
 ): LandmarkAlignment {
-  if (session.preview)
-    throw new Error("Reset the alignment preview before picking more points.");
   const references = landmarkReferenceEntities(session);
   if (
     entityId !== session.moving.id &&
-    !references.some(
-      (entity) =>
-        entity.id === entityId &&
-        entity.visible &&
-        !entity.locked &&
-        entity.selectable !== false,
-    )
+    ((!!session.fixed && entityId !== session.fixed.id) ||
+      !references.some(
+        (entity) =>
+          entity.id === entityId &&
+          entity.visible &&
+          !entity.locked &&
+          entity.selectable !== false,
+      ))
   )
     throw new Error("Pick a point on the moving scan or the fixed target.");
   if (point.length !== 3 || !point.every(Number.isFinite))
@@ -129,6 +131,8 @@ export function pickLandmark(
   return {
     ...session,
     preview: undefined,
+    previewStatus: "idle",
+    previewError: undefined,
     picks: [...session.picks, { entityId, point: picked }],
   };
 }
@@ -143,9 +147,7 @@ export function landmarkPairs(session: LandmarkAlignment) {
   };
 }
 
-/** Ordinary native builder publishes zero or one matrix. A successful single
- * preview locks Preview until Reset; preloaded multi-matrix producers are separate.
- */
+/** One result, with freely editable original-pose landmark pairs. */
 export function landmarkPreviewControls(session: LandmarkAlignment) {
   const pairs = landmarkPairs(session);
   const candidateCount = session.preview?.registration ? 1 : 0;
@@ -155,9 +157,12 @@ export function landmarkPreviewControls(session: LandmarkAlignment) {
     canPreview:
       pairs.moving.length >= 3 &&
       pairs.moving.length === pairs.fixed.length &&
-      candidateCount !== 1,
-    canReset: !!session.preview,
-    canRemove: !session.preview && session.picks.length > 0,
+      session.previewStatus !== "pending",
+    canReset:
+      !!session.preview ||
+      session.previewStatus === "pending" ||
+      session.previewStatus === "error",
+    canRemove: session.picks.length > 0,
   };
 }
 export function landmarkRequest(
@@ -256,8 +261,6 @@ export async function prepareLandmarkRequest(
   acquireCad: (kernelId: string) => Promise<IndexedMesh>,
   options: LandmarkPreviewOptions = {},
 ) {
-  if (session.preview)
-    throw new Error("Reset the alignment preview before computing it again.");
   const workers = options.workerCount ?? 2,
     parallel = options.parallel ?? true;
   const request = landmarkRequest(session, workers, parallel, false);
@@ -424,21 +427,39 @@ export interface LandmarkEdit {
   action:
     | "pick"
     | "remove-last"
+    | "remove-point"
     | "clear"
     | "reset"
     | "target-scope"
+    | "view-layout"
     | "reference-target";
   fixedId?: string;
   entityId?: string;
   point?: Vec3;
+  pointIndex?: number;
   targetScope?: LandmarkTargetScope;
+  referenceWidthPercent?: number;
 }
-/** Original preview state guards, shared by the canvas, dialog and agent API. */
+/** Editable session shared by picking views, dialog and agent API. */
 export function editLandmarks(
   session: LandmarkAlignment,
   edit: LandmarkEdit,
   scene?: readonly Entity[],
 ): LandmarkAlignment {
+  if (edit.action === "view-layout") {
+    if (
+      typeof edit.referenceWidthPercent !== "number" ||
+      !Number.isFinite(edit.referenceWidthPercent)
+    )
+      throw new Error("Supply a finite referenceWidthPercent for view-layout.");
+    return {
+      ...session,
+      referenceWidthPercent: Math.min(
+        50,
+        Math.max(20, edit.referenceWidthPercent),
+      ),
+    };
+  }
   if (edit.action === "reference-target") {
     const references = scene ?? session.pickScene ?? [];
     const fixed = edit.fixedId
@@ -449,10 +470,13 @@ export function editLandmarks(
       (!fixed || !fixed.visible || fixed.locked || fixed.selectable === false)
     )
       throw new Error("Choose an existing visible unlocked fixed reference.");
-    return beginLandmarkAlignment(session.moving, fixed, {
-      targetScope: fixed ? session.targetScope : "visibleScene",
-      scene: references,
-    });
+    return {
+      ...beginLandmarkAlignment(session.moving, fixed, {
+        targetScope: fixed ? session.targetScope : "visibleScene",
+        scene: references,
+      }),
+      referenceWidthPercent: session.referenceWidthPercent,
+    };
   }
   if (edit.action === "target-scope") {
     if (!edit.targetScope)
@@ -464,27 +488,103 @@ export function editLandmarks(
       }),
       picks: session.picks,
       pickScene: session.pickScene,
+      referenceWidthPercent: session.referenceWidthPercent,
     };
   }
-  if (edit.action === "reset") return { ...session, preview: undefined };
+  if (edit.action === "reset")
+    return {
+      ...session,
+      preview: undefined,
+      previewStatus: "idle",
+      previewError: undefined,
+    };
   if (edit.action === "pick") {
     if (!edit.entityId || !edit.point)
       throw new Error("Supply entityId and point to pick a landmark.");
     return pickLandmark(session, edit.entityId, edit.point);
   }
-  if (session.preview) return session;
+  if (edit.action === "remove-point" && !edit.entityId)
+    throw new Error("Supply entityId and pointIndex to remove a landmark.");
+  if (
+    edit.entityId &&
+    edit.entityId !== session.moving.id &&
+    !landmarkReferenceEntities(session).some(
+      (entity) => entity.id === edit.entityId,
+    )
+  )
+    throw new Error("Choose the moving scan or a captured reference object.");
+  const indices = session.picks.flatMap((pick, index) =>
+    !edit.entityId || pick.entityId === edit.entityId ? [index] : [],
+  );
+  if (
+    edit.action === "remove-point" &&
+    (!Number.isInteger(edit.pointIndex) ||
+      edit.pointIndex! < 0 ||
+      edit.pointIndex! >= indices.length)
+  )
+    throw new Error(
+      "Landmark point index is outside the selected object's points.",
+    );
+  const removed =
+    edit.action === "clear"
+      ? new Set(indices)
+      : new Set([
+          edit.action === "remove-point"
+            ? indices[edit.pointIndex!]
+            : indices.at(-1),
+        ]);
   return {
     ...session,
-    picks: edit.action === "clear" ? [] : session.picks.slice(0, -1),
+    preview: undefined,
+    previewStatus: "idle",
+    previewError: undefined,
+    picks: session.picks.filter((_pick, index) => !removed.has(index)),
   };
 }
 export function landmarkState(session: LandmarkAlignment | null) {
   return session
     ? {
         active: true,
+        layout: {
+          referenceWidthPercent: session.referenceWidthPercent ?? 32,
+          minPercent: 20,
+          maxPercent: 50,
+          minReferenceWidthPx: 220,
+          minResultWidthPx: 360,
+        },
         movingId: session.moving.id,
         fixedId: session.fixed?.id ?? null,
         ...landmarkPreviewControls(session),
+        pairCount: Math.min(
+          landmarkPairs(session).moving.length,
+          landmarkPairs(session).fixed.length,
+        ),
+        previewStatus:
+          session.previewStatus ?? (session.preview ? "ready" : "idle"),
+        previewError: session.previewError ?? null,
+        views: {
+          main: { role: "result" },
+          moving: {
+            role: "picking",
+            position: "bottom-right",
+            entityIds: [session.moving.id],
+            markers: landmarkMarkers({ ...session, preview: undefined }).filter(
+              (marker) => marker.label.startsWith("M"),
+            ),
+          },
+          fixed: {
+            role: "picking",
+            position: "top-right",
+            entityIds: [session.fixed ?? landmarkReferenceEntities(session)[0]]
+              .filter((entity): entity is Entity => !!entity)
+              .map((entity) => entity.id),
+            markers: landmarkMarkers({ ...session, preview: undefined }).filter(
+              (_marker, index) =>
+                session.picks[index].entityId ===
+                (session.fixed ?? landmarkReferenceEntities(session)[0])?.id,
+            ),
+          },
+        },
         referenceIds: landmarkReferenceEntities(session).map(
           (entity) => entity.id,
         ),

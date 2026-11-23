@@ -1,0 +1,9 @@
+{
+  "kind": "pointCloudPoisson",
+  "normalMode": "estimate-provided",
+  "normalNeighbors": 24,
+  "depth": 9,
+  "pointWeight": 2,
+  "samplesPerNode": 1.5,
+  "densityThreshold": 7
+}

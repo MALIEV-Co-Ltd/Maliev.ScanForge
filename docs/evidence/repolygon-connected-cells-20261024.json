@@ -1,0 +1,205 @@
+{
+  "status": "connected-selected-cells-ported-in-private",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 9,
+  "newInstructionAddressesIndependentlyDecoded": 870,
+  "targetExecuted": false,
+  "liveProcessOpened": false,
+  "nativeRuntimeParity": false,
+  "findings": [
+    "Native child index zero is the upper-X/upper-Y/upper-Z octant; bits select lower axes, and center-plane ties select the lower child.",
+    "Corner keys use floor after adding spacing times 0.01, subtracting the map origin and multiplying by reciprocal spacing, followed by signed 32-bit conversion.",
+    "Indexed output-vertex keys truncate Float32 coordinates scaled by 10000 into signed 64-bit integers. The first inserted position is retained; this is not a distance-radius weld.",
+    "Leaf edge vertices are allocated in ascending edge order before triangle case emission.",
+    "The indexed triangle emitter rejects faces unless the squared length of its Float32-rounded cross product is strictly greater than 2^-23.",
+    "Source progression appends absent-distance, zero-direction and clear-boundary slots before advancing each existing corner record.",
+    "The mesh preparation helper clears a per-vertex boundary bit before boundary marking. Source-normal preparation remains unresolved."
+  ],
+  "privatePorts": [
+    {
+      "name": "spatial-keys",
+      "testsPassed": 18,
+      "testsFailed": 0,
+      "redFailuresObserved": 18,
+      "sources": [
+        {
+          "name": "repolygon-spatial-keys-r1.mjs",
+          "sha256": "56ce065549825c289b81841a3d17558d2b872b4ddf70629040d5346b3c9509ff"
+        },
+        {
+          "name": "test-repolygon-spatial-keys-r1.mjs",
+          "sha256": "0d9d713050d7dcb3ad2aef8dab4587c46d2206b28ef6a41431584bd7b130e14e"
+        }
+      ]
+    },
+    {
+      "name": "corner-key",
+      "testsPassed": 9,
+      "testsFailed": 0,
+      "redFailuresObserved": 9,
+      "sources": [
+        {
+          "name": "repolygon-corner-key-r1.mjs",
+          "sha256": "e4745779c21a54ea3c54c9334407a5ea8a3292c3ed9a4e7697fc6f981db98d94"
+        },
+        {
+          "name": "test-repolygon-corner-key-r1.mjs",
+          "sha256": "c2d5e87100b4a8bd3cfc43a61994d05f5dab15fdc80fa47776bb4aa5cfe5512c"
+        }
+      ]
+    },
+    {
+      "name": "connected-cells",
+      "testsPassed": 12,
+      "testsFailed": 0,
+      "redFailuresObserved": 8,
+      "sources": [
+        {
+          "name": "repolygon-connected-cells-r1.mjs",
+          "sha256": "83d55995c35d85d9c097d5c9e4fc678a9f152a8aa1a7e5642b9360f8ee7cef1b"
+        },
+        {
+          "name": "test-repolygon-connected-cells-r1.mjs",
+          "sha256": "a3e3e33c228e9d8b31049db68fe5086677f0b7e4cad680f4909c2215ca9018b8"
+        },
+        {
+          "name": "repolygon-spatial-keys-r1.mjs",
+          "sha256": "56ce065549825c289b81841a3d17558d2b872b4ddf70629040d5346b3c9509ff"
+        },
+        {
+          "name": "repolygon-cell-r1.mjs",
+          "sha256": "91d2a51fe368f2f7aeec4797ee14dfd49c1a07ad1b0112345f1c5796930545db"
+        },
+        {
+          "name": "repolygon-triangle-sample-r1.mjs",
+          "sha256": "c04e6b92550eb1ecf1d75234711c4458b4aca90a86bacd794a81c44cba4d7066"
+        },
+        {
+          "name": "repolygon-segment-sample-r1.mjs",
+          "sha256": "d29449e6ddc116cc1fe73995b6d4f8213df02cf763e988b42e925350b9466286"
+        },
+        {
+          "name": "repolygon-corner-reduction-r1.mjs",
+          "sha256": "bb91b5610ee0e1b31a3188609c82d5abd4b49a44422f161dca26ea7c35aea7dd"
+        },
+        {
+          "name": "repolygon-edge-position-r1.mjs",
+          "sha256": "67991c43b6624d8427855a97247df428dc12248efaaa2654aca0915e0e770eb6"
+        },
+        {
+          "name": "repolygon-case-tables-r1.json",
+          "sha256": "93dff260ddea85eaa60e663c29fe8b04e472d73cbda4aa1bf97bc3263dfdb9de"
+        }
+      ]
+    }
+  ],
+  "connectedControls": {
+    "scope": "Provided neighboring cells and supplied triangle sources with explicit zero initializer",
+    "casesPassed": 12,
+    "nativeEdgeAllocationOrderChecked": true,
+    "nativeCaseTriangleOrderChecked": true,
+    "neighborSharedIdsChecked": true,
+    "negativeCoordinateSeamChecked": true,
+    "quantizationCollapseChecked": true,
+    "strictFaceThresholdChecked": true,
+    "sparseAdmissionIncluded": false,
+    "completePostprocessingIncluded": false,
+    "globalInitializerProven": false,
+    "fullOriginalInputsIncluded": false
+  },
+  "boundedJobs": [
+    {
+      "receipt": "project-index-validation-repolygon-sparse-r1-full.receipt.json",
+      "sha256": "be33d80e955fbca5a7d16863af176be49bd436a9670e664925b233f55bc52f55",
+      "expectedExitCode": 0,
+      "peakBytes": 938409984,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-source-slots-r1-full.receipt.json",
+      "sha256": "c1413ba852d597de6db9b9af6ac8b30a33b4cf5e91403db326c28e515e35b0e9",
+      "expectedExitCode": 0,
+      "peakBytes": 866283520,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-emitter-r1-full.receipt.json",
+      "sha256": "d8c9fcc05cd64631241b56dcccd637393d60128722e34a3c8898481ace637080",
+      "expectedExitCode": 0,
+      "peakBytes": 1099706368,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-spatial-keys-r1-red-full.receipt.json",
+      "sha256": "97347225793ff75f430e6625935262072c3b5f2f9ae17b63688d69a8a2219eed",
+      "expectedExitCode": 1,
+      "peakBytes": 33251328,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-spatial-keys-r1-green-full.receipt.json",
+      "sha256": "bfebc2152ea50e167c23f1b36f7febc17aaf38920bb7c02fd35b3e6ac0436380",
+      "expectedExitCode": 0,
+      "peakBytes": 32919552,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-corner-key-r1-red-full.receipt.json",
+      "sha256": "f1a2afc5307e10e110d2eb1eccd449d719f7c27e56f4702330c48b99d78b325c",
+      "expectedExitCode": 1,
+      "peakBytes": 32952320,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-corner-key-r1-green-full.receipt.json",
+      "sha256": "90ab7481352fceb7676022d20a6acd2785ca250e52607938045e08b92eb634a2",
+      "expectedExitCode": 0,
+      "peakBytes": 32833536,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-connected-cells-r1-red2-full.receipt.json",
+      "sha256": "10a485bf7995435d9330552b99a88bba7f3ea2ebb3d8ab363ae2cce52e305be8",
+      "expectedExitCode": 1,
+      "peakBytes": 32854016,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-connected-cells-r1-green-full.receipt.json",
+      "sha256": "1668978421125ae01e1e24eaa4810707f4d61b83cee8b981fd415e8a11c3ebcf",
+      "expectedExitCode": 0,
+      "peakBytes": 34631680,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "applicationChanged": false,
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false,
+    "pointCloudReconstructionImplemented": false
+  },
+  "remaining": [
+    "Translate full ordered sparse triangle admission and global corner-cache updates.",
+    "Resolve source normals and the accumulator initializer value/write history.",
+    "Implement complete output postprocessing and shared GUI/MCP integration with ownership, cancellation, revision, retries and history.",
+    "Validate full original inputs, topology, project lifecycle and native output before acceptance."
+  ],
+  "limitations": [
+    "Historical code and static bytes only; no fresh native execution or output capture.",
+    "The connected prototype samples supplied triangles for selected cells; it does not reproduce the full sparse admission/update path.",
+    "The initializer reference inventory found no selected direct store to the upstream vector; this is not a complete write-set proof.",
+    "Integer-conversion overflow controls reproduce arithmetic behavior, not native GUI coordinate admission.",
+    "The indexed emitter arithmetic is examined; callback output mode and full output cleanup remain unported."
+  ],
+  "privateProofSha256": "c5c46dc73002a1ba0a293c0749313cf4c0d73c8f31f115757f1d3e97367b1312"
+}

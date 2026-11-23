@@ -1,0 +1,207 @@
+{
+  "status": "single-frontier-admission-ported-quality-open",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 3,
+  "newInstructionAddressesIndependentlyDecoded": 336,
+  "targetExecuted": false,
+  "liveProcessOpened": false,
+  "nativeRuntimeParity": false,
+  "findings": [
+    "The pre-extraction recursive helper counts leaves; it is not established as a neighbor-cell generation stage.",
+    "Coordinator origin arithmetic multiplies by an explicitly zeroed nonvolatile register, so the traced finite-input path assigns a zero map origin under the normal Windows x64 calling convention. This differs from the separately unresolved vector accumulator initializer.",
+    "The candidate loop visits x, then y, then z, from floored triangle minima to floored maxima plus one spacing; plane and nine edge-axis overlap tests filter candidates.",
+    "The private single-frontier reference now creates lazy children, shares corner records by quantized keys, suppresses repeated per-triangle corner work and reduces source samples in order.",
+    "A typed-array control exposed and corrected unintended Float32 relative-coordinate rounding; native overlap arithmetic promotes source values to double."
+  ],
+  "privatePorts": [
+    {
+      "name": "triangle-admission",
+      "testsPassed": 12,
+      "testsFailed": 0,
+      "redFailuresObserved": 1,
+      "sources": [
+        {
+          "name": "repolygon-triangle-admission-r1.mjs",
+          "sha256": "a59ed017e6aaf3fe7e2cdef78cdef205989c1cfa8393791468077a0fc726b459"
+        },
+        {
+          "name": "test-repolygon-triangle-admission-r1.mjs",
+          "sha256": "16f55362a5848f1b13cfe5bf9583825d7962ddcd3ded804c4a308022e9e75f68"
+        }
+      ]
+    },
+    {
+      "name": "sparse-admission",
+      "testsPassed": 9,
+      "testsFailed": 0,
+      "redFailuresObserved": 9,
+      "sources": [
+        {
+          "name": "repolygon-sparse-admission-r1.mjs",
+          "sha256": "e8eb9403b46f2d7f5151041ccfdeae6e822333866dd119ceb6f548332e69cb62"
+        },
+        {
+          "name": "test-repolygon-sparse-admission-r1.mjs",
+          "sha256": "d0c2bf8573d4ef91486d1b7d388ebf8efb488c3a5b7c298730460791883929da"
+        },
+        {
+          "name": "repolygon-triangle-admission-r1.mjs",
+          "sha256": "a59ed017e6aaf3fe7e2cdef78cdef205989c1cfa8393791468077a0fc726b459"
+        },
+        {
+          "name": "repolygon-grid-frame-r1.mjs",
+          "sha256": "e31cd84df26aa6873ba870f554efdf8e19460ec6e60f7e9c3189f9d8c234e957"
+        },
+        {
+          "name": "repolygon-spatial-keys-r1.mjs",
+          "sha256": "56ce065549825c289b81841a3d17558d2b872b4ddf70629040d5346b3c9509ff"
+        },
+        {
+          "name": "repolygon-corner-key-r1.mjs",
+          "sha256": "e4745779c21a54ea3c54c9334407a5ea8a3292c3ed9a4e7697fc6f981db98d94"
+        },
+        {
+          "name": "repolygon-triangle-sample-r1.mjs",
+          "sha256": "c04e6b92550eb1ecf1d75234711c4458b4aca90a86bacd794a81c44cba4d7066"
+        },
+        {
+          "name": "repolygon-segment-sample-r1.mjs",
+          "sha256": "d29449e6ddc116cc1fe73995b6d4f8213df02cf763e988b42e925350b9466286"
+        },
+        {
+          "name": "repolygon-corner-reduction-r1.mjs",
+          "sha256": "bb91b5610ee0e1b31a3188609c82d5abd4b49a44422f161dca26ea7c35aea7dd"
+        }
+      ]
+    }
+  ],
+  "sparseControls": {
+    "discoveredDataLeaves": 9,
+    "sharedCorners": 32,
+    "allocatedNodes": 105,
+    "candidateVisits": 18,
+    "admittedVisits": 16,
+    "triangleCornerUpdates": 60,
+    "repeatedTriangleCornerSkips": 68,
+    "inputImmutabilityChecked": true,
+    "preAbortChecked": true,
+    "explicitPrivateBudgetFailuresChecked": ["nodes", "corners", "candidates"],
+    "parallelFrontierAcceptance": false,
+    "publicExecutorCancellationAcceptance": false
+  },
+  "exactLatticeProbe": {
+    "status": "exact-lattice-geometric-acceptance-open",
+    "nativeRuntimeExecuted": false,
+    "sourceNormalsSupplied": true,
+    "initializerSuppliedAsZero": true,
+    "rows": [
+      {
+        "planeX": 0,
+        "dataLeaves": 9,
+        "corners": 32,
+        "negativeCorners": 0,
+        "crossingLeaves": 0,
+        "caseHistogram": {
+          "0": 9
+        },
+        "diagnostics": {
+          "nodeCount": 105,
+          "candidateVisits": 18,
+          "admittedVisits": 16,
+          "triangleCornerUpdates": 60,
+          "repeatedTriangleCornerSkips": 68,
+          "outsideRootVisits": 0
+        }
+      },
+      {
+        "planeX": 0.25,
+        "dataLeaves": 9,
+        "corners": 32,
+        "negativeCorners": 16,
+        "crossingLeaves": 9,
+        "caseHistogram": {
+          "51": 9
+        },
+        "diagnostics": {
+          "nodeCount": 105,
+          "candidateVisits": 18,
+          "admittedVisits": 16,
+          "triangleCornerUpdates": 60,
+          "repeatedTriangleCornerSkips": 68,
+          "outsideRootVisits": 0
+        }
+      }
+    ],
+    "interpretation": "The reference admission/sample port produces no crossing cells for the aligned fixture. This is a prototype quality concern, not proof of native runtime behavior; source preparation, partition paths and postprocessing remain unresolved."
+  },
+  "boundedJobs": [
+    {
+      "receipt": "project-index-validation-repolygon-admission-r1-full.receipt.json",
+      "sha256": "58af5b6eb0ef43662af638e214ec11d8d63b396126845554b78c97dba9f7b963",
+      "expectedExitCode": 0,
+      "peakBytes": 758423552,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-triangle-admission-r1-red2-full.receipt.json",
+      "sha256": "72ea780175f8d1271b249ceacd7a6fef39ef2c302b3bf00b2f7e9510d4011318",
+      "expectedExitCode": 1,
+      "peakBytes": 32854016,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-triangle-admission-r1-green2-full.receipt.json",
+      "sha256": "9468ed419c6a1e82546a4e550a859858ba2a24b6cd1695fbf8e285edc47a44fa",
+      "expectedExitCode": 0,
+      "peakBytes": 32722944,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-sparse-admission-r1-red-full.receipt.json",
+      "sha256": "d402f3b2fa206045b8339292d61853677e2d4e1d7f4683b32e0cdd1ec739f192",
+      "expectedExitCode": 1,
+      "peakBytes": 33009664,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-sparse-admission-r1-green-full.receipt.json",
+      "sha256": "0e34094ccbd719c0a2b3132e156c5b953582ec90c55f2032a765ba1196f6d56f",
+      "expectedExitCode": 0,
+      "peakBytes": 34308096,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-lattice-probe-r1-full.receipt.json",
+      "sha256": "3a193e713b5f7ae5134a511b3df2ff371a92c488e615579682fec05b20a229b9",
+      "expectedExitCode": 0,
+      "peakBytes": 34586624,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "applicationChanged": false,
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false,
+    "pointCloudReconstructionImplemented": false
+  },
+  "remaining": [
+    "Resolve grid-aligned zero-distance behavior against source preparation and complete extraction/postprocessing; do not treat the aligned-plane probe as passed geometry.",
+    "Translate and verify partitioned work-frontier caches and scheduling semantics.",
+    "Resolve source normals and the vector accumulator initializer.",
+    "Integrate the complete shared GUI/MCP path, then validate full original inputs, geometry, history, cancellation and saved-project lifecycle."
+  ],
+  "limitations": [
+    "Historical code and supplied synthetic geometry only; no fresh native runtime output.",
+    "The private pipeline currently covers a single work frontier and supplied normals/initializer, not the full native controller.",
+    "The exact-lattice probe is a prototype quality concern; it does not prove a native application defect or establish original-scan behavior.",
+    "Private work limits and abort controls are validation safeguards, not native GUI limits or shared executor acceptance."
+  ],
+  "privateProofSha256": "4c3b6f2917289e5213b76ab41f53a390d5a823807441b883153ff43c9a0d4ec3"
+}

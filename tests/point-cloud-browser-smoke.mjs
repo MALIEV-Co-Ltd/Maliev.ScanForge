@@ -107,8 +107,16 @@ try {
     }),
     errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (
+      message.type() === "error" &&
+      /shader|WebGLProgram/i.test(message.text())
+    )
+      errors.push(message.text());
+  });
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -159,6 +167,7 @@ try {
     kind: "pointcloud",
     positions,
     normals: Array.from({ length: 400 }, () => [0, 0, 1]).flat(),
+    pointColors: Array.from({ length: 400 }, () => [255, 255, 255, 255]).flat(),
     visible: true,
     color: "#b4bec4",
     opacity: 1,
@@ -183,20 +192,55 @@ try {
       replace: true,
     }),
   );
+  await mutate("object_select", { entityId: "cloud" });
+  await mutate("command_run", { name: "ribbon:objectColor" });
+  await page.getByLabel("Point size (px)", { exact: true }).fill("3");
+  await page.getByLabel("Point colors", { exact: true }).selectOption("solid");
+  await page.getByLabel("Object color", { exact: true }).fill("#aaff00");
+  const displayState = (await call("object_get", { entityId: "cloud" })).result;
+  assert.equal(displayState.pointSize, 3);
+  assert.equal(displayState.pointColorMode, "solid");
+  assert.equal(displayState.color, "#aaff00");
+  await mutate("viewport_set", { view: "fit" });
+  await page.screenshot({
+    path: fileURLToPath(new URL("point-display-green.png", out)),
+  });
+  await mutate("object_update", {
+    entityId: "cloud",
+    patch: { pointSize: 1.5, pointColorMode: "source" },
+  });
+  assert.equal(
+    await page.getByLabel("Point size (px)", { exact: true }).inputValue(),
+    "1.5",
+  );
+  assert.equal(
+    await page.getByLabel("Point colors", { exact: true }).inputValue(),
+    "source",
+  );
+  await mutate("object_update", {
+    entityId: "cloud",
+    patch: { pointColorMode: "solid" },
+  });
   const geometry = async (id) => {
     const object = (
       await call("object_get", { entityId: id, includeGeometry: true })
     ).result;
-    return JSON.parse(
-      Buffer.from(
-        (
-          await call("artifact_read", {
-            artifactId: object.geometry.artifactId,
-          })
-        ).result.base64,
-        "base64",
-      ).toString(),
-    );
+    const chunks = [];
+    let offset = 0;
+    for (;;) {
+      const part = (
+        await call("artifact_read", {
+          artifactId: object.geometry.artifactId,
+          offset,
+        })
+      ).result;
+      const bytes = Buffer.from(part.base64, "base64");
+      chunks.push(bytes);
+      if (part.eof) break;
+      assert(bytes.length > 0);
+      offset += bytes.length;
+    }
+    return JSON.parse(Buffer.concat(chunks).toString());
   };
   await page.getByRole("button", { name: "Edit scan", exact: true }).click();
   assert(
@@ -303,6 +347,7 @@ try {
     id: "mesh",
     kind: "mesh",
     normals: undefined,
+    pointColors: undefined,
     positions: [
       0, 0, 0, 10, 0, 0, 0, 10, 0, 10, 0, 0, 10, 10, 0, 0, 10, 0, 30, 0, 0, 40,
       0, 0, 30, 10, 0,
@@ -340,6 +385,277 @@ try {
   await page.screenshot({
     path: fileURLToPath(new URL("connected-mesh-browser.png", out)),
   });
+  const dense = {
+    id: "dense",
+    name: "dense.asc",
+    kind: "pointcloud",
+    visible: true,
+    color: "#aaff00",
+    opacity: 1,
+    positions: Array.from({ length: 10000 }, (_, i) => [
+      i % 100,
+      Math.floor(i / 100),
+      0,
+    ]).flat(),
+  };
+  const denseUpload = (
+    await call("artifact_put", {
+      name: "dense.json",
+      offset: 0,
+      base64: Buffer.from(
+        JSON.stringify({ ...project, entities: [dense] }),
+      ).toString("base64"),
+    })
+  ).result;
+  await job(
+    await mutate("project_import", {
+      artifactId: denseUpload.artifactId,
+      replace: true,
+    }),
+  );
+  await mutate("object_select", { entityId: "dense" });
+  await mutate("command_run", { name: "ribbon:objectColor" });
+  assert.equal(
+    await page.getByLabel("Auto density", { exact: true }).isChecked(),
+    true,
+  );
+  assert.equal(
+    await page.getByLabel("Display density", { exact: true }).inputValue(),
+    "100",
+  );
+  await page.getByLabel("Display density", { exact: true }).fill("10");
+  assert.equal(
+    (await call("object_get", { entityId: "dense" })).result.pointDensity,
+    10,
+  );
+  const pose = (z) =>
+    mutate("viewport_control", {
+      action: "camera",
+      projection: "perspective",
+      position: [49.5, 49.5, z],
+      target: [49.5, 49.5, 0],
+      up: [0, 1, 0],
+    });
+  await pose(1000);
+  const diagnostics = async () =>
+    (await call("viewport_get")).result.pointCloudDisplay.find(
+      (e) => e.entityId === "dense",
+    );
+  const farDensity = await diagnostics();
+  assert(farDensity.sampleFraction < 0.5, JSON.stringify(farDensity));
+  const pixelCount = async (name) => {
+    const screenshot = await page
+      .locator(".viewport canvas")
+      .first()
+      .screenshot({ path: fileURLToPath(new URL(name, out)) });
+    return page.evaluate(async (base64) => {
+      const bitmap = await createImageBitmap(
+        await (await fetch(`data:image/png;base64,${base64}`)).blob(),
+      );
+      const canvas = document.createElement("canvas");
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      const context = canvas.getContext("2d");
+      context.drawImage(bitmap, 0, 0);
+      const rgba = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let green = 0;
+      for (let i = 0; i < rgba.length; i += 4)
+        if (
+          rgba[i + 1] > 100 &&
+          rgba[i + 1] > rgba[i] * 1.3 &&
+          rgba[i + 1] > rgba[i + 2] * 1.3
+        )
+          green++;
+      bitmap.close();
+      return green;
+    }, screenshot.toString("base64"));
+  };
+  const autoPixels = await pixelCount("point-density-auto.png");
+  await page.getByLabel("Auto density", { exact: true }).uncheck();
+  assert.equal(
+    (await call("object_get", { entityId: "dense" })).result.pointAutoDensity,
+    false,
+  );
+  assert.equal(
+    await page.getByLabel("Display density", { exact: true }).isDisabled(),
+    true,
+  );
+  assert.equal((await diagnostics()).sampleFraction, 1);
+  const fullPixels = await pixelCount("point-density-full.png");
+  assert(
+    autoPixels > 0 && autoPixels < fullPixels * 0.8,
+    JSON.stringify({ autoPixels, fullPixels }),
+  );
+  await mutate("object_update", {
+    entityId: "dense",
+    patch: { pointAutoDensity: true, pointDensity: 100 },
+  });
+  assert.equal(
+    await page.getByLabel("Auto density", { exact: true }).isChecked(),
+    true,
+  );
+  const mediumDensity = await diagnostics();
+  assert.equal(mediumDensity.samplingMethod, "stable-sample");
+  assert.equal(mediumDensity.cellSizePx, null);
+  assert.equal(mediumDensity.maxScreenOffsetPx, 0);
+  await pose(150);
+  const nearDensity = await diagnostics();
+  assert(nearDensity.sampleFraction > mediumDensity.sampleFraction);
+  await pose(1000);
+  assert.equal(
+    (await diagnostics()).sampleFraction,
+    mediumDensity.sampleFraction,
+  );
+  assert.deepEqual((await geometry("dense")).positions, dense.positions);
+  const offOrigin = positions.map(
+    (value, i) => value + [2000, 1000, -300][i % 3],
+  );
+  const legacyCloud = {
+    ...cloud,
+    id: "legacy",
+    color: "#ffffff",
+    positions: offOrigin,
+  };
+  const legacyProject = { ...project, entities: [legacyCloud] };
+  await page.evaluate(async (legacy) => {
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open("scanforge-project-backups", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      await new Promise((resolve, reject) => {
+        const transaction = db.transaction("backups", "readwrite");
+        transaction.objectStore("backups").put({
+          id: "off-origin-recovery",
+          name: "Legacy cloud",
+          savedAt: Date.now(),
+          file: new Blob([JSON.stringify(legacy)], {
+            type: "application/json",
+          }),
+        });
+        transaction.oncomplete = resolve;
+        transaction.onabort = () => reject(transaction.error);
+      });
+    } finally {
+      db.close();
+    }
+  }, legacyProject);
+  await mutate("viewport_control", {
+    action: "camera",
+    position: [100, -100, 100],
+    target: [0, 0, 0],
+    up: [0, 0, 1],
+  });
+  await job(
+    await mutate("backup_restore", {
+      backupId: "off-origin-recovery",
+      replace: true,
+    }),
+  );
+  const restoredDisplay = (await call("object_get", { entityId: "legacy" }))
+    .result;
+  assert.equal(restoredDisplay.color, "#aaff00");
+  assert.equal(restoredDisplay.pointColorMode, "solid");
+  const assertFramed = async () => {
+    const view = (await call("viewport_get")).result;
+    const center = view.bounds.min.map(
+      (value, i) => (value + view.bounds.max[i]) / 2,
+    );
+    for (let i = 0; i < 3; i++)
+      assert(
+        Math.abs(view.target[i] - center[i]) < 0.01,
+        JSON.stringify({ target: view.target, center }),
+      );
+    return { target: view.target, bounds: view.bounds };
+  };
+  const recoveredCamera = await assertFramed();
+  assert((await pixelCount("point-backup-off-origin.png")) > 100);
+  await mutate("project_new", { discard: true });
+  const input = page.locator('input[type=file][accept*=".stl"]');
+  await input.setInputFiles({
+    name: "off-origin.asc",
+    mimeType: "text/plain",
+    buffer: Buffer.from(
+      Array.from(
+        { length: 400 },
+        (_, i) =>
+          `${offOrigin[i * 3]} ${offOrigin[i * 3 + 1]} ${offOrigin[i * 3 + 2]} 255 255 255`,
+      ).join("\n"),
+    ),
+  });
+  await page.getByRole("button", { name: "Import", exact: true }).click();
+  await page.locator('.status-message[title^="Opened · 1/1 files"]').waitFor();
+  const importedProject = (await call("project_get")).result;
+  const importedId = importedProject.objects[0].id;
+  const importedDisplay = (await call("object_get", { entityId: importedId }))
+    .result;
+  assert.equal(importedDisplay.color, "#aaff00");
+  assert.equal(importedDisplay.pointColorMode, "solid");
+  const importedCamera = await assertFramed();
+  assert((await pixelCount("point-import-off-origin.png")) > 100);
+  const rawUpload = (
+    await call("artifact_put", {
+      name: "mcp-off-origin.asc",
+      offset: 0,
+      base64: Buffer.from(
+        Array.from(
+          { length: 400 },
+          (_, i) =>
+            `${offOrigin[i * 3]} ${offOrigin[i * 3 + 1]} ${offOrigin[i * 3 + 2]} 255 255 255`,
+        ).join("\n"),
+      ).toString("base64"),
+    })
+  ).result;
+  await job(
+    await mutate("project_import", {
+      artifactId: rawUpload.artifactId,
+      replace: true,
+      unit: "mm",
+      ascAttributes: "xyz-rgb",
+      placeAtOrigin: false,
+    }),
+  );
+  const mcpImportedId = (await call("project_get")).result.objects[0].id;
+  const mcpImportedDisplay = (
+    await call("object_get", { entityId: mcpImportedId })
+  ).result;
+  assert.equal(mcpImportedDisplay.color, importedDisplay.color);
+  assert.equal(
+    mcpImportedDisplay.pointColorMode,
+    importedDisplay.pointColorMode,
+  );
+  const mcpImportedCamera = await assertFramed();
+  assert.deepEqual(mcpImportedCamera, importedCamera);
+  let realImport;
+  if (process.env.SCANFORGE_POINT_IMPORT_FILE) {
+    await mutate("project_new", { discard: true });
+    await input.setInputFiles(process.env.SCANFORGE_POINT_IMPORT_FILE);
+    await page.getByRole("button", { name: "Import", exact: true }).click();
+    await page
+      .locator('.status-message[title^="Opened · 1/1 files"]')
+      .waitFor({ timeout: 90000 });
+    const realProject = (await call("project_get")).result;
+    const realObject = (
+      await call("object_get", { entityId: realProject.objects[0].id })
+    ).result;
+    assert.equal(realObject.color, "#aaff00");
+    assert.equal(realObject.pointColorMode, "solid");
+    realImport = {
+      points: realObject.points,
+      camera: await assertFramed(),
+      greenPixels: await pixelCount("point-real-asc-import.png"),
+    };
+    assert(realImport.greenPixels > 100);
+    await mutate("viewport_set", { view: "bottom" });
+    const bottomView = (await call("viewport_get")).result;
+    realImport.adaptiveBottom = {
+      display: bottomView.pointCloudDisplay[0],
+      greenPixels: await pixelCount("point-real-adaptive-bottom.png"),
+    };
+    assert(realImport.adaptiveBottom.greenPixels > 100);
+  }
+  assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
     connectedMeshSelection: true,
@@ -348,6 +664,20 @@ try {
     reducedPoints: 100,
     selectionOnlyMcpSmoothing: true,
     normalsPreserved: true,
+    pointDisplayGuiMcpParity: true,
+    adaptiveDisplay: {
+      autoPixels,
+      fullPixels,
+      farDensity,
+      nearDensity,
+      sourcePoints: 10000,
+    },
+    importRecovery: {
+      recoveredCamera,
+      importedCamera,
+      mcpImportedCamera,
+      realImport,
+    },
     errors,
   };
   console.log(JSON.stringify(ledger.result));

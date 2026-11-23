@@ -1,0 +1,55 @@
+{
+  "status": "static-path-identified-runtime-unverified",
+  "installedExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "targetExecuted": false,
+  "targetMappedExecutable": false,
+  "newNativeRuntimeObservation": false,
+  "defaultAutoAnalysis": false,
+  "functionsDecompiled": 6,
+  "instructionAddressesIndependentlyDecoded": 1614,
+  "boundedJobs": [
+    {
+      "receipt": "project-index-validation-repolygon-static-r1-full.receipt.json",
+      "sha256": "08805f1600f1060b03d9a9d55a707a975414ef189715e8fa6e9a56e6e5f6a3a0",
+      "peakBytes": 836812800,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-geometry-r1-full.receipt.json",
+      "sha256": "ead0175129f1c9470be467556f3e74bed66e01325064ab22f63706a4dfa805e4",
+      "peakBytes": 844906496,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "findings": [
+    "The candidate dialog command reads and stores a Float32 point-resolution setting used by its reconstruction coordinator.",
+    "The coordinator calls a spatial reconstruction constructor, source encoder and output extraction stage.",
+    "The constructor initializes reciprocal spacing and half-spacing values; these do not establish a final surface offset.",
+    "Source encoding conditionally marks triangle boundary vertices when mesh-specific data is present, then obtains the source data iterator outside that conditional branch. Follow-up trace in repolygon-native-field-20261024.json confirms triangle records are consumed; this does not establish point-cloud support."
+  ],
+  "implementationChanged": false,
+  "nativeNumericalAcceptance": false,
+  "currentApplicationNativeParity": false,
+  "mcp": {
+    "existingTool": "mesh_process",
+    "changedContract": false,
+    "guiAndMcpUseSharedOperation": true,
+    "pointCloudReconstructionImplemented": false
+  },
+  "remaining": [
+    "Resolve spatial-grid setup, sample encoding and output extraction helpers.",
+    "Verify final interpolation, surface offset, component and boundary semantics.",
+    "Implement confirmed behavior through the shared GUI/MCP operation and validate full original inputs."
+  ],
+  "limitations": [
+    "Historical captured code, not a fresh native execution or controller result.",
+    "Caller-selected candidate functions and inferred types; stack-probe handling degrades decompiled local variable expressions.",
+    "Independent instruction decoding confirms valid instructions at reported addresses, not complete control-flow or type inference.",
+    "No exception directory was captured; function extents are inferred from code flow.",
+    "No numerical replay, self-intersection proof or point-cloud acceptance was performed."
+  ],
+  "privateProofSha256": "51dd969e87d18d734118d96727fe219f3d08340e0628e6a07073507c1524872d"
+}

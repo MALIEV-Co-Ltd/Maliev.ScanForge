@@ -1,0 +1,34 @@
+[
+  {
+    "Path": "C:\\repo\\alignment-example-files\\ply-1.ply",
+    "Hash": "E2FC6D49404977638222BE9D31B63DEDBC7C0A4ADCA4ABA4AF711168D5783C05"
+  },
+  {
+    "Path": "C:\\repo\\alignment-example-files\\ply-2.ply",
+    "Hash": "3ACF90227BEA8E98E97D0EDDEB57324D6C29767D622C86D65337D927BCA5E75F"
+  },
+  {
+    "Path": "C:\\tools\\CloudCompare-2.13.2\\CloudCompare.exe",
+    "Hash": "6F79A0E283B06C48E618DF145C0A26D0DA39C798B19D08C3E934C07E6212172C"
+  },
+  {
+    "Path": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\ccCommandLineCommands.cpp",
+    "Hash": "9B9CA7EEEEE7FBBD69FBD1ECCC93B20736498FC8133C547D58FFA839379657B8"
+  },
+  {
+    "Path": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap15\\moving.ply",
+    "Hash": "3ACF90227BEA8E98E97D0EDDEB57324D6C29767D622C86D65337D927BCA5E75F"
+  },
+  {
+    "Path": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap15\\fixed.ply",
+    "Hash": "E2FC6D49404977638222BE9D31B63DEDBC7C0A4ADCA4ABA4AF711168D5783C05"
+  },
+  {
+    "Path": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap85\\moving.ply",
+    "Hash": "3ACF90227BEA8E98E97D0EDDEB57324D6C29767D622C86D65337D927BCA5E75F"
+  },
+  {
+    "Path": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\owner-ply\\overlap85\\fixed.ply",
+    "Hash": "E2FC6D49404977638222BE9D31B63DEDBC7C0A4ADCA4ABA4AF711168D5783C05"
+  }
+]

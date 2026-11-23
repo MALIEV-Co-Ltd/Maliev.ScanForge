@@ -1,0 +1,10 @@
+{
+  "evidenceType": "parent-reported execution outcome; this is not reconstructed raw test output",
+  "test": "tests/fine-registration-ply.test.ts: preserves the genuine partial overlap on the owner's PLY thin-wall scans",
+  "executionSession": 31438,
+  "status": "failed_timeout",
+  "configuredTimeoutMs": 300000,
+  "observedElapsedSeconds": 371.7,
+  "observation": "Parent observed the synchronous numerical work finish, followed by failure against the explicit test timeout. This remains a failed validation gate.",
+  "limitation": "The bounded 5000-point sample is separate evidence and does not turn this full-source test into a passing result."
+}

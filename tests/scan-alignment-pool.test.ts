@@ -251,6 +251,29 @@ it("admits shared compact trees under the unchanged cap and rejects oversized ta
   expect(alignmentCanInitializeTogether(lanes, surfaces)).toBe(false);
 });
 
+it("includes private query visit stamps in the unchanged shared pool memory cap", () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const { surfaces } = input(
+    captured.samples.find((sample) => sample.lanes.length > 1)!,
+  );
+  const vertex = { point: [0, 0, 0], normal: [0, 0, 1], flags: 4 };
+  const lanes = [
+    new Array(131071).fill(vertex),
+    new Array(131072).fill(vertex),
+  ];
+  const target = {
+    ...surfaces[0],
+    root: { ...surfaces[0].root, triangles: [0, 0, 0, 0, 0], children: {} },
+  };
+  // 262143 logical vertices + shared face/tree records leave five bytes;
+  // three private two-byte stamps put initialization one byte above 128 MiB.
+  expect(alignmentPoolAdmission(lanes, [target])).toBe(
+    "128 MiB pool memory admission",
+  );
+  expect(alignmentCanInitializeTogether(lanes, [target])).toBe(false);
+});
+
 it.each(["single-core requested", "device memory admission"])(
   "closing a fallback pool rejects work before reading the batch: %s",
   async (reason) => {

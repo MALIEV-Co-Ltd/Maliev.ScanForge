@@ -1,0 +1,26 @@
+[08:13:05] [SET LOG FILE] finished in 0.00 s.
+[08:13:05] [AUTO SAVE STATE]
+[08:13:05] Auto-save is disabled
+[08:13:05] [AUTO SAVE STATE] finished in 0.00 s.
+[08:13:05] [NO TIMESTAMP]
+[08:13:05] [NO TIMESTAMP] finished in 0.00 s.
+[08:13:05] [LOAD]
+[08:13:05] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\200\moving.ply'
+[08:13:05] [PLY][Comment] File generated
+[08:13:05] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\200\moving.ply' loaded successfully
+[08:13:05] Found one mesh with 2697877 faces and 1375494 vertices: 'Mesh'
+[08:13:05] [LOAD] finished in 0.35 s.
+[08:13:05] [LOAD]
+[08:13:05] Opening file: 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\200\fixed.ply'
+[08:13:05] [PLY][Comment] File generated
+[08:13:05] [I/O] File 'C:\repo\Maliev.ScanForge\docs\evidence\cloudcompare-20261029\alignment\owner-native-convergence\200\fixed.ply' loaded successfully
+[08:13:05] Found one mesh with 274154 faces and 140113 vertices: 'Mesh'
+[08:13:05] [LOAD] finished in 0.04 s.
+[08:13:05] [ICP]
+[08:13:05] [ICP][Partial overlap] Selecting 24556 points out of 49949 (49%) for registration
+[08:13:05] [ICP] Will use 2 threads
+[08:14:16] Entity 'Mesh' has been registered
+[08:14:16] RMS: 0.0255736
+[08:14:16] Number of points used for final step: 7492
+[08:14:16] [ICP] finished in 70.83 s.
+[08:14:16] Processed finished in 71.22 s.

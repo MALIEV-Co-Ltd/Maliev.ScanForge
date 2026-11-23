@@ -1,0 +1,32 @@
+{
+  "scope": "437-point synthetic curved surface; XY projection; maximum 3D edge 2 mm. Native CloudCompare 2.13.2 output vs public MCP ScanForge output. Face comparison ignores vertex order within each triangle; normals/shading are not compared.",
+  "nativeSha256": "220f3a7e40c6a5d4deb8966ce1f2ebe9e63e0b21882bcc34f6378cd05c479686",
+  "scanforgeGeometrySha256": "a9e9049d8d29815671d2cbd882a17bc50e8e04dcbc2e7af38cbb541cbfb1c9f0",
+  "vertexEquality": true,
+  "sharedUnorientedFaces": 772,
+  "unorientedTopologyEquality": true,
+  "native": {
+    "vertices": 437,
+    "triangles": 772,
+    "edges": 1204,
+    "boundaryEdges": 92,
+    "nonManifoldEdges": 0,
+    "degenerateTriangles": 0,
+    "positiveZWinding": 772,
+    "negativeZWinding": 0,
+    "maxEdgeLengthMm": 1.9776569792780032,
+    "surfaceAreaMm2": 472.79050883645596
+  },
+  "scanforge": {
+    "vertices": 437,
+    "triangles": 772,
+    "edges": 1204,
+    "boundaryEdges": 92,
+    "nonManifoldEdges": 0,
+    "degenerateTriangles": 0,
+    "positiveZWinding": 772,
+    "negativeZWinding": 0,
+    "maxEdgeLengthMm": 1.9776569792780032,
+    "surfaceAreaMm2": 472.7905088364563
+  }
+}

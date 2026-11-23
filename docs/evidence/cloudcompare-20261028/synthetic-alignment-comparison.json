@@ -1,0 +1,94 @@
+{
+  "evidenceType": "independent synthetic numerical comparison; native CLI output versus current ScanForge solver",
+  "points": 437,
+  "units": "mm",
+  "inputs": {
+    "moving.ply": {
+      "bytes": 24340,
+      "sha256": "0964aef6ebafa010d89670b4facc9454b305ce2bd05cfe0ebc410894299867fd"
+    },
+    "fixed.ply": {
+      "bytes": 23741,
+      "sha256": "bb03641082f9943278f1efec2343f3b91ecb4f7218f1d127b80aab997b2bf1ed"
+    },
+    "truth.json": {
+      "bytes": 650,
+      "sha256": "8e25b01f379160a2f6ade7b63eec6c6b4f6a4b64e9af77d4137d617bdb50cccc"
+    },
+    "moving_REGISTRATION_MATRIX.txt": {
+      "bytes": 249,
+      "sha256": "e6faff0e2b4b5e42ecf83a02e5d6ee1212f2787c9b058b15e2c2f7824b57e042"
+    },
+    "moving_REGISTERED.asc": {
+      "bytes": 20208,
+      "sha256": "dd99d474ffed77efb9a4e8f8a1e38a37a7703abe671538d19c601a46b26a7eff"
+    }
+  },
+  "precision": "PLY float coordinates rounded to Float32 on both inputs; ScanForge output independently rounded to Float32. Native saved ASC retains its printed precision.",
+  "truth": {
+    "rotation": [
+      0.9993908270190958, 0.03489949670250097, 0, -0.03489949670250097,
+      0.9993908270190958, 0, 0, 0, 1
+    ],
+    "translation": [-0.14572068444856426, 0.12516182374766663, -0.3]
+  },
+  "initial": {
+    "correspondingPointRmsMm": 0.5254430243285726,
+    "maximumCorrespondingErrorMm": 0.856347193789984,
+    "rotationMatrixFrobeniusError": 0.0493628597593077,
+    "maximumRotationCoefficientError": 0.03489949670250097,
+    "translationErrorMm": 0.3562302626111375
+  },
+  "native": {
+    "correspondingPointRmsMm": 0.0000013938328610213151,
+    "maximumCorrespondingErrorMm": 0.0000043702851250852586,
+    "rotationMatrixFrobeniusError": 2.1582307907027582e-8,
+    "maximumRotationCoefficientError": 1.3510904284252945e-8,
+    "translationErrorMm": 7.692826308414879e-7,
+    "transform": {
+      "rotation": [
+        0.99939084053, 0.034899491817, -5.021e-9, -0.034899491817,
+        0.99939084053, 1.13e-9, 5.057e-9, -9.54e-10, 1
+      ],
+      "translation": [-0.14572045207, 0.125161126256, -0.299999773502]
+    },
+    "matrixAppliedWithIndependentFloat32Arithmetic": {
+      "correspondingPointRmsMm": 0.0000010966206055930875,
+      "maximumCorrespondingErrorMm": 0.0000026973983046972182
+    }
+  },
+  "scanforge": {
+    "correspondingPointRmsMm": 8.026493598439372e-7,
+    "maximumCorrespondingErrorMm": 0.0000026973983046972182,
+    "rotationMatrixFrobeniusError": 9.31852811070396e-9,
+    "maximumRotationCoefficientError": 4.729760156446661e-9,
+    "translationErrorMm": 9.524567874040729e-8,
+    "transform": {
+      "rotation": [
+        0.9993908271385656, 0.034899493281333405, -3.217414496284321e-9,
+        -0.03489949328133341, 0.9993908271385655, -4.620288574473663e-9,
+        3.0542088044847177e-9, 4.729760156446661e-9, 1
+      ],
+      "translation": [
+        -0.14572067738778643, 0.1251617607671517, -0.3000000711009105
+      ]
+    },
+    "options": {
+      "overlapPercent": 100,
+      "targetRms": 0.00001,
+      "sampleSize": 437,
+      "maxDistance": 10,
+      "tolerance": 1e-7,
+      "maxIterations": 200
+    },
+    "iterations": 3,
+    "terminationReason": "targetReached",
+    "applied": true
+  },
+  "limits": [
+    "One asymmetric synthetic full-overlap fixture establishes local rigid accuracy only.",
+    "CloudCompare CLI and GUI settings differ; this does not establish algorithmic equivalence.",
+    "Corresponding-point quality uses preserved fixture point ordering, not nearest-neighbour residuals or either solver's reported RMS.",
+    "No browser or public MCP execution in this numerical script; separate fine-browser evidence supplies those checks."
+  ]
+}

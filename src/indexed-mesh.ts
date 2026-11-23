@@ -1,6 +1,7 @@
 import type { Entity, IndexedMesh, Positions, Vec3 } from "./types";
 import { transformPositions } from "./geometry";
 import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
+import { meshGeometryNormals } from "./mesh-geometry-normals";
 
 /** Transform coordinates without changing source vertex IDs or face connectivity. */
 export function transformIndexedMesh(
@@ -25,6 +26,12 @@ export function transformIndexedMesh(
   const indexedMesh: IndexedMesh = {
     vertices: transformPositions(source, translation, rotation, scale),
     triangles: indexed.triangles,
+    geometryNormals: transformPositions(
+      meshGeometryNormals(indexed),
+      [0, 0, 0],
+      rotation,
+      1,
+    ),
     ...(indexed.normals
       ? {
           normals: transformPositions(indexed.normals, [0, 0, 0], rotation, 1),
@@ -39,7 +46,8 @@ export function indexedMeshMatches(
   positions: Positions,
 ): value is IndexedMesh {
   if (!value || typeof value !== "object") return false;
-  const { vertices, triangles, normals } = value as IndexedMesh;
+  const { vertices, triangles, normals, geometryNormals } =
+    value as IndexedMesh;
   if (
     !(Array.isArray(vertices) || vertices instanceof Float32Array) ||
     !(Array.isArray(triangles) || triangles instanceof Uint32Array) ||
@@ -52,9 +60,23 @@ export function indexedMeshMatches(
     (normals !== undefined &&
       (!(Array.isArray(normals) || normals instanceof Float32Array) ||
         normals.length !== vertices.length ||
-        !normals.every(Number.isFinite)))
+        !normals.every(Number.isFinite))) ||
+    (geometryNormals !== undefined &&
+      (!(
+        Array.isArray(geometryNormals) ||
+        geometryNormals instanceof Float32Array
+      ) ||
+        geometryNormals.length !== vertices.length))
   )
     return false;
+  // Indexed iteration also rejects sparse ordinary arrays: Array.every skips holes.
+  if (geometryNormals)
+    for (let i = 0; i < geometryNormals.length; i++)
+      if (
+        !Number.isFinite(geometryNormals[i]) ||
+        !Number.isFinite(Math.fround(geometryNormals[i]))
+      )
+        return false;
   for (let slot = 0; slot < triangles.length; slot++) {
     const id = triangles[slot];
     if (!Number.isSafeInteger(id) || id < 0 || id * 3 >= vertices.length)

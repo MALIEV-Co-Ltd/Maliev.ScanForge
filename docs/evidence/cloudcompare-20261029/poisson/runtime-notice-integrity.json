@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "upstreamCommit": "262b0f539d404057d1f36e1adc07fc9388678899",
+  "wasmSha256": "fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425",
+  "verifiedFiles": 5,
+  "requiresEmsdk": false
+}

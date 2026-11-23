@@ -1,0 +1,52 @@
+In file included from C:\repo\Maliev.ScanForge\native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:3163:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.System.inl:3060:11: warning: first argument in call to 'memset' is a pointer to non-trivially copyable type 'D' (aka 'PoissonRecon::Point<float, 3>') [-Wnontrivial-memcall]
+ 3060 |                 memset( _coefficients , 0 , sizeof(D) * _sNodesEnd(maxDepth-1) );
+      |                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:2698:63: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_addFEMConstraints<float, 8U, 8U, 8U, 7U, 7U, 7U, 2U, 2U, 2U, 2U, 2U, 2U, 3U, PoissonRecon::SparseNodeData<PoissonRecon::Point<float, 3>, ParameterPack::Pack<unsigned int, 7, 7, 7>>>' requested here
+ 2698 |                         if     ( typeid(coefficients)==typeid(SparseType) ) return _addFEMConstraints< T >( UIntPack< FEMSigs ... >() , UIntPack< CSigs ... >() , F , static_cast< const SparseType& >( coefficients ) , constraints() , maxDepth );
+      |                                                                                    ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:991:21: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::addFEMConstraints<float, 2U, 2U, 2U, 8U, 8U, 8U, 2U, 2U, 2U, 7U, 7U, 7U, 3U>' requested here
+  991 |                                                 implicit.tree.addFEMConstraints( F , *normalInfo , constraints , solveDepth );
+      |                                                               ^
+C:\repo\Maliev.ScanForge\native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.System.inl:3060:11: note: explicitly cast the pointer to silence this warning
+ 3060 |                 memset( _coefficients , 0 , sizeof(D) * _sNodesEnd(maxDepth-1) );
+      |                         ^
+      |                         (void*)
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.System.inl:3060:11: warning: first argument in call to 'memset' is a pointer to non-trivially copyable type 'D' (aka 'PoissonRecon::Point<float, 3>') [-Wnontrivial-memcall]
+ 3060 |                 memset( _coefficients , 0 , sizeof(D) * _sNodesEnd(maxDepth-1) );
+      |                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:2699:63: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_addFEMConstraints<float, 8U, 8U, 8U, 7U, 7U, 7U, 2U, 2U, 2U, 2U, 2U, 2U, 3U, PoissonRecon::DenseNodeData<PoissonRecon::Point<float, 3>, ParameterPack::Pack<unsigned int, 7, 7, 7>>>' requested here
+ 2699 |                         else if( typeid(coefficients)==typeid( DenseType) ) return _addFEMConstraints< T >( UIntPack< FEMSigs ... >() , UIntPack< CSigs ... >() , F , static_cast< const  DenseType& >( coefficients ) , constraints() , maxDepth );
+      |                                                                                    ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:991:21: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::addFEMConstraints<float, 2U, 2U, 2U, 8U, 8U, 8U, 2U, 2U, 2U, 7U, 7U, 7U, 3U>' requested here
+  991 |                                                 implicit.tree.addFEMConstraints( F , *normalInfo , constraints , solveDepth );
+      |                                                               ^
+C:\repo\Maliev.ScanForge\native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.System.inl:3060:11: note: explicitly cast the pointer to silence this warning
+ 3060 |                 memset( _coefficients , 0 , sizeof(D) * _sNodesEnd(maxDepth-1) );
+      |                         ^
+      |                         (void*)
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.System.inl:3060:11: warning: first argument in call to 'memset' is a pointer to non-trivially copyable type 'D' (aka 'PoissonRecon::Point<float, 3>') [-Wnontrivial-memcall]
+ 3060 |                 memset( _coefficients , 0 , sizeof(D) * _sNodesEnd(maxDepth-1) );
+      |                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:2700:63: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_addFEMConstraints<float, 8U, 8U, 8U, 7U, 7U, 7U, 2U, 2U, 2U, 2U, 2U, 2U, 3U, PoissonRecon::_SparseOrDenseNodeData<PoissonRecon::Point<float, 3>, ParameterPack::Pack<unsigned int, 7, 7, 7>>>' requested here
+ 2700 |                         else                                                return _addFEMConstraints< T >( UIntPack< FEMSigs ... >() , UIntPack< CSigs ... >() , F ,                                   coefficients   , constraints() , maxDepth );
+      |                                                                                    ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:991:21: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::addFEMConstraints<float, 2U, 2U, 2U, 8U, 8U, 8U, 2U, 2U, 2U, 7U, 7U, 7U, 3U>' requested here
+  991 |                                                 implicit.tree.addFEMConstraints( F , *normalInfo , constraints , solveDepth );
+      |                                                               ^
+C:\repo\Maliev.ScanForge\native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.System.inl:3060:11: note: explicitly cast the pointer to silence this warning
+ 3060 |                 memset( _coefficients , 0 , sizeof(D) * _sNodesEnd(maxDepth-1) );
+      |                         ^
+      |                         (void*)
+3 warnings generated.

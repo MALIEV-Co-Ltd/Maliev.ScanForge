@@ -1,0 +1,219 @@
+{
+  "recordedUtc": "2026-10-29T02:12:05.295Z",
+  "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "scope": "Named completion source/test/build inputs only, in a concurrently edited checkout. Does not certify unrelated working changes.",
+  "files": [
+    {
+      "path": ".prettierignore",
+      "sha256": "6fc1267bc5a662fac5c1b24773a3706644141b5ef9d395d77d7f57a8cc3390cd"
+    },
+    {
+      "path": "native/poisson/scanforge-poisson.cpp",
+      "sha256": "cb5cd4ef9a01e2fd6558745aec73b93a3ce078b5d9aa4b9d60fe2aefe3d661bd"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "77ba2a0248a9e22e9fbb6169b70e23fb626c08ec1ae15fe891f3d9563f5471b5"
+    },
+    {
+      "path": "package.json",
+      "sha256": "d87493cfc9ac4300d7a56e6d7c99722789554af899b1c18d54bf29246117304a"
+    },
+    {
+      "path": "public/poisson/LICENSE.txt",
+      "sha256": "deeb52f9b301ce8637d1a0119b754736b4c6f7bd36b5cfea0f5097e911000fa3"
+    },
+    {
+      "path": "public/poisson/poisson.mjs",
+      "sha256": "3bc6f3dda94a446a12b84531b7537f2423e0f6988ce3e8a43995dc4f365bf3d9"
+    },
+    {
+      "path": "public/poisson/poisson.wasm",
+      "sha256": "fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425"
+    },
+    {
+      "path": "public/poisson/provenance.json",
+      "sha256": "d12def2a67e26b3148b71b785b2291b6fc365228798a8b1e92c38bc2c0e89fa7"
+    },
+    {
+      "path": "scripts/analyze-cloudcompare-poisson.mjs",
+      "sha256": "2c44c08e1d58146775953e386a5789165d09f942e6dbfdb884e77d6696c66b93"
+    },
+    {
+      "path": "scripts/build-poisson.mjs",
+      "sha256": "b15d770b4a6117a2d02728b59fdcc042cff913b75eaabfa679a5999738be6773"
+    },
+    {
+      "path": "scripts/normalize-cloudcompare-poisson.mjs",
+      "sha256": "bf5a20df51a418256ea34eddfa02361cfeec492dcfa6babcd5f2ce4157e63f3c"
+    },
+    {
+      "path": "scripts/poisson-wasm-smoke.mjs",
+      "sha256": "9f0b8a819fafe100d9a6d072b6b67e5f3f5e095d00af66765a09787fdcb26fc6"
+    },
+    {
+      "path": "scripts/prepare-poisson-native-input.mjs",
+      "sha256": "4ccd9bf7b693dd97110b4c0e7bb04247d1138bedc53a61076f7b473797c9a185"
+    },
+    {
+      "path": "scripts/verify-poisson-quality.mjs",
+      "sha256": "b3e3cab32c12768e49ace24d71495d3d1b9113fa52ecce7a63b6a01f35c38d31"
+    },
+    {
+      "path": "scripts/verify-poisson-real.mjs",
+      "sha256": "5eaac5d29e86546a981e2bfc97e1ed165ff4668fccc111317521214bcadf5c26"
+    },
+    {
+      "path": "scripts/verify-poisson.mjs",
+      "sha256": "ac75ba0531c717aa135d81a06e52e94a83590838e0c3553aee1f4b1777c3a8ec"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "5b2a5811ca1bfe716acafcf77a9d52ccb0befef17aa2c739719565bbf9a64a67"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "455cb645e84290eda146b2d1c397b299ef7ba3b0bd2b98955d3f25d661302730"
+    },
+    {
+      "path": "src/fine-registration.ts",
+      "sha256": "1127ad38b5a26b9da16aac28ddd56e2b54f9dcb2c116d375b54c7335b403751d"
+    },
+    {
+      "path": "src/point-cloud-normals.ts",
+      "sha256": "55b406065c0cc9578d9b035676baebabb9bad0f5ce22c8f67cea45afe06419b0"
+    },
+    {
+      "path": "src/point-cloud-poisson-input.ts",
+      "sha256": "7b2b0aacc4aece240aab489542e702f6f5aae1766c01b7a8fe45010eb2dd7a6a"
+    },
+    {
+      "path": "src/point-cloud-poisson.ts",
+      "sha256": "66e720f9527acb783df95bc47c09c613ff05f62ba2101316d0d54adb8bbb07d1"
+    },
+    {
+      "path": "src/poisson-mesh-cleanup.ts",
+      "sha256": "d93ff8b599d3f585cf5a855f2c2b88c59fbbe595c9f015a1f8ecb73835230e42"
+    },
+    {
+      "path": "src/poisson-reconstruction.ts",
+      "sha256": "99a7b7dbf5db962252e601a5259b729a33172d690300d35966bd5e40ce6e31f4"
+    },
+    {
+      "path": "src/processing-client.ts",
+      "sha256": "32f66916c8ac6990d2ad177381df10f6e7de0f48403aa6386ac6d4a6432a0c8d"
+    },
+    {
+      "path": "src/processing-worker.ts",
+      "sha256": "93a70679c3f52b34b63309bd2bcf6d775ed18b81e8b6d8ffceeeca0e430323b0"
+    },
+    {
+      "path": "src/scan-alignment-pool.ts",
+      "sha256": "4efad64164c48c2564901e12764f4db1a9cdc226d862f638461732de78252086"
+    },
+    {
+      "path": "src/scan-native-alignment-mesh-query.ts",
+      "sha256": "2f406de38599fba89a3515bb2fbaca5aff24cbc831d878b6044a2addecb2c1e9"
+    },
+    {
+      "path": "src/ui/App.tsx",
+      "sha256": "6292060f44a943f8ab8071f9085b1c3ec0902598212e35fff3dfc1a215ad7e78"
+    },
+    {
+      "path": "src/ui/PointCloudPoissonTools.tsx",
+      "sha256": "f8c0876e900407dfbdeb145874ceeef43389350685653f1c5a582766264f4249"
+    },
+    {
+      "path": "src/ui/PointCloudTools.tsx",
+      "sha256": "d69bc1d5de9da30e39e930248de20730916c721563d861c82927b85e29b51cf7"
+    },
+    {
+      "path": "src/ui/point-cloud-mesh-command.ts",
+      "sha256": "34ca7a70d71ece832dcb722d807f61d8fe09aeedad7f1b5bb8e88fc4fd5b654d"
+    },
+    {
+      "path": "tests/cloudcompare-convergence.mjs",
+      "sha256": "5ad52d1b54b4a6259030de451bf4631f83acac469069369f71cf7c2eb7895eb0"
+    },
+    {
+      "path": "tests/cloudcompare-owner-full-source-comparison.mjs",
+      "sha256": "db4ba09673916bb455e57a6d24b075d839409c8515b0c25e454b279f44952350"
+    },
+    {
+      "path": "tests/cloudcompare-owner-native-convergence.mjs",
+      "sha256": "2a8f9888ff1c0ca59aae03933f6ae88d01b7bfb2673ac613eb6bd837d885d2ed"
+    },
+    {
+      "path": "tests/cloudcompare-owner-transform-stability.mjs",
+      "sha256": "c5745ffa73bab8327565eb6307cbea0562bd0d4acd987c8b3d0147450013c903"
+    },
+    {
+      "path": "tests/original-stl-alignment-coordinate-validation.test.ts",
+      "sha256": "cb714f129d64d10bab9f7e0245a9907a47f44273edbf85d98ec19cfc98b44759"
+    },
+    {
+      "path": "tests/point-cloud-mesh-command.test.ts",
+      "sha256": "a992bbbbb9b3ee28ad820e9cfa9fa615cce9ca9d73f19091b60c9fc36a7b3756"
+    },
+    {
+      "path": "tests/point-cloud-meshing-api.test.ts",
+      "sha256": "5f15d9cbe5db9a261aaad1c17b9bc6e28192e4a9b1fc641f8fe12fad4389602a"
+    },
+    {
+      "path": "tests/point-cloud-normals-capacity.test.ts",
+      "sha256": "d43b538da19f82a6a2c87a14a25691f8726ac05de788e30eb5b4339cd0e61f1f"
+    },
+    {
+      "path": "tests/point-cloud-normals-real.test.ts",
+      "sha256": "1d4dc836d900c1929ae2f385da50617278ac30d0e3fdd40aeed8494a43c70bb1"
+    },
+    {
+      "path": "tests/point-cloud-normals.test.ts",
+      "sha256": "50566abfcf841d06c73119ee869db7e544e6f43ce4a972e08914a0779b255db8"
+    },
+    {
+      "path": "tests/point-cloud-poisson-api.test.ts",
+      "sha256": "3b90ed8aa2b1f4f134d73f91af46d3517f71fc13379db2f1e8036c465b8426ac"
+    },
+    {
+      "path": "tests/point-cloud-poisson-browser.mjs",
+      "sha256": "eeb6f7b5542abcefe02db080043ba977f8b06577b826aca9889ca21a26be4cd0"
+    },
+    {
+      "path": "tests/point-cloud-poisson-input.test.ts",
+      "sha256": "38dfa9a24b9a695c331e48d9a7c2560885ee7073fdb026e2a9b599ba5b590dc2"
+    },
+    {
+      "path": "tests/point-cloud-poisson-ui.test.ts",
+      "sha256": "d5879c3fff6f825f79759dc501f594c32d1652062c66a569313aa1c4837d6bb6"
+    },
+    {
+      "path": "tests/poisson-engine-browser-worker.ts",
+      "sha256": "4c1abfba704ca31865729a4518ebe2b24c08e386e942616c3fdff9c8f13495c2"
+    },
+    {
+      "path": "tests/poisson-engine-browser.mjs",
+      "sha256": "2ec24a005c0863d40a0aa570a4606e6ebbe228afc78007b88b9d4500dbd3ae5c"
+    },
+    {
+      "path": "tests/poisson-mesh-cleanup.test.ts",
+      "sha256": "615eee496bf88fc3a7086152030b96d4970da6f3f362819dcb64b45354cadf91"
+    },
+    {
+      "path": "tests/poisson-production-browser.mjs",
+      "sha256": "9f8b59351a450963b2632392dcac1723987ca1f03cbfdd5bcafc54430ab4d1bd"
+    },
+    {
+      "path": "tests/poisson-quality-analyzer.test.ts",
+      "sha256": "28cf03672d4fcb6dbc9b278964d9c04ad49965f742e2fd85999f892adc6370a7"
+    },
+    {
+      "path": "tests/poisson-reconstruction.test.ts",
+      "sha256": "b123fe0ddf69e3af4f582c8cfcac18dc502096693fa59948571af4af6f21343d"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "3252a2cc5dbe09ff5bb19067afe31b689f6f16a7291e61c8e955ec5fd522ac1f"
+    }
+  ]
+}

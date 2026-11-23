@@ -11,7 +11,10 @@ import {
 export type ShortcutMode =
   "main" | "selection" | "sketch" | "freeform" | "primitive-fit";
 export type ShortcutActionId =
+  | "align-interactive"
   | "rename-objects"
+  | "delete-objects"
+  | "select-all-objects"
   | "repeat-command"
   | "new"
   | "open"

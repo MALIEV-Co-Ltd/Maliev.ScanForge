@@ -1,0 +1,29 @@
+{
+  "files": [
+    {
+      "capturedName": "RegistrationTools-native-version.cpp",
+      "sha256": "d3e53711b411e0a905eb89a827be4d538de41e6bf462db17a6bf9a8a7afd4d1b",
+      "retainedExternalCopy": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\source-corroboration-20261029\\RegistrationTools-native-version.cpp",
+      "originalEvidencePath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\RegistrationTools-native-version.cpp"
+    },
+    {
+      "capturedName": "PoissonReconLib-native-version.cpp",
+      "sha256": "5dea51e81bfec375b38a207db046746c328ed8eef8c6c68770cd005e30004a16",
+      "retainedExternalCopy": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\source-corroboration-20261029\\PoissonReconLib-native-version.cpp",
+      "originalEvidencePath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\native-cloudcompare\\PoissonReconLib-native-version.cpp"
+    },
+    {
+      "capturedName": "PoissonReconLib-native-version.h",
+      "sha256": "cfa5e895a0a1683750ab24ced1844f018a1cd4353d495e260e6476728274e5d7",
+      "retainedExternalCopy": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\source-corroboration-20261029\\PoissonReconLib-native-version.h",
+      "originalEvidencePath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\native-cloudcompare\\PoissonReconLib-native-version.h"
+    },
+    {
+      "capturedName": "qPoissonRecon-native-version.cpp",
+      "sha256": "93c92d3c5b572913c3275d635435ac93ab587e6c1dfbb9c29b80dac8397a2b04",
+      "retainedExternalCopy": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\source-corroboration-20261029\\qPoissonRecon-native-version.cpp",
+      "originalEvidencePath": "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\poisson\\native-cloudcompare\\qPoissonRecon-native-version.cpp"
+    }
+  ],
+  "scope": "External released CloudCompare source corroboration; exact copies retained outside the application repository. Evidence keeps pinned source URLs and hashes; no production source or binaries use these files."
+}

@@ -16,6 +16,8 @@ const verifiedWorkflows: Record<string, string> = {
     "docs/NATIVE_DATUM_ALIGNMENT.md: reference-based coordinate alignment, native owner-scan Apply and GUI/MCP Preview/Apply parity",
   alignNPoints:
     "docs/NATIVE_ALIGNMENT.md: ordinary point-pair command admission, native registration/refinement, source-only sessions, real mesh/cloud canvas picking and shared GUI/MCP preview/reset/accept",
+  surfaceRefinement:
+    "docs/NATIVE_ALIGNMENT_TARGET_GROUPS.md: existing indexed surface refinement GUI and MCP operation; tests/tool-options-scope.test.tsx: dedicated controls",
   fineAlign:
     "docs/NATIVE_ALIGNMENT_TARGET_GROUPS.md: indexed surface refinement; GUI/shared MCP parity and native owner-scan captures",
   reducePolygons:
@@ -49,6 +51,8 @@ const verifiedWorkflows: Record<string, string> = {
   back: "docs/VALIDATION.md: browser standard views",
   wireframe: "docs/VALIDATION.md: browser shading controls",
   objectColor: "docs/VALIDATION.md: browser appearance controls",
+  autoColorize:
+    "docs/AGENT_GUIDE.md: scene auto colors; tests/auto-color-api.test.ts and isolated GUI/MCP color assignment validation",
   settings: "docs/VALIDATION.md: browser light/dark appearance controls",
   delete: "docs/VALIDATION.md: browser deletion and undo with live scan counts",
   exportStep:

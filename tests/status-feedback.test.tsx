@@ -1,3 +1,5 @@
+import { PointerJobStatus } from "../src/ui/PointerJobStatus";
+import { planImportBatch } from "../src/import-batch";
 import { expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
@@ -128,4 +130,40 @@ it("groups progress, command guidance, and model details with shortcuts on the r
   expect(details).toContain("Units: mm");
   expect(details).toContain('aria-label="Keyboard shortcuts"');
   expect(details).toContain("Modeling shortcuts paused while processing.");
+});
+
+it("explains sequential admission alongside the active file progress", async () => {
+  const admission = await planImportBatch(
+    [new File(["scan"], "a.stl"), new File(["scan"], "b.stl")],
+    undefined,
+    { cores: 2, memoryGiB: 8, usedHeapBytes: 0 },
+  );
+  const html = renderToStaticMarkup(
+    <PointerJobStatus
+      message="Importing files"
+      progressDetails={{
+        kind: "importBatch",
+        admission,
+        files: [
+          {
+            index: 0,
+            name: "a.stl",
+            status: "importing",
+            fraction: 0.5,
+            stage: "Importing",
+          },
+          {
+            index: 1,
+            name: "b.stl",
+            status: "queued",
+            fraction: 0,
+            stage: "Queued",
+          },
+        ],
+      }}
+    />,
+  );
+  expect(html).toContain(admission.message);
+  expect(html).toContain("two or fewer CPU threads");
+  expect(html).toContain('aria-label="a.stl"');
 });

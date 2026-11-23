@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-25",
+  "milestone": "M2",
+  "status": "verified_correction_checkpoint_milestone_open",
+  "baseCommit": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "uncommittedCandidate": true,
+  "candidateManifestSha256": "35719e24acf219442150745dd44e28808693a0e75ddc063bbb6def3c21899c2f",
+  "pinnedInputs": 2692,
+  "sourceFiles": [
+    {
+      "path": "src/scan-tools-transforms.ts",
+      "sha256": "8041585f5cfc1cc72b99d57dc532a19a33d12011ae5c9e6e630f3091d761e739"
+    },
+    {
+      "path": "src/scan-native-average.ts",
+      "sha256": "8c9e3a7930d46f032dda1e6d9f29579e2a3e8180125ce8b3055421568457bbed"
+    },
+    {
+      "path": "src/scan-average-request.ts",
+      "sha256": "c674a2d83aa38ccb88dfae20eeccb090485a02403b77cf10333640780072b066"
+    },
+    {
+      "path": "src/scan-tools.ts",
+      "sha256": "1e17fb4baca412a744cdd0c981156f86bff06aef65bde735cf1f8250625e9a74"
+    },
+    {
+      "path": "src/scan-tools-reduction.ts",
+      "sha256": "31f033e0a63e236302e186c86bfb193c5699024c065cf70c03bc7eed170de6d5"
+    },
+    {
+      "path": "src/processing-client.ts",
+      "sha256": "f5cac48ffc7dd51a8eb143a16e592552e6fc03bafdf63e109077fe99bf08f889"
+    },
+    {
+      "path": "src/processing-worker.ts",
+      "sha256": "4c771a99e0b15c83d498c1417a32e8e3f4541cecc9093c7328865dc51fc0e05d"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "dde2079a67abba3bb60ebd6c9d757843f28faf016872a102b14037a2988ce9e6"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "33fb52a121e8c640ad4cef20320b62575149632ce5ee580109044be773017243"
+    },
+    {
+      "path": "src/ui/average-command.ts",
+      "sha256": "cedb64338bab141c8868751a743effbb13744593d180d5c809f99722fc702d22"
+    },
+    {
+      "path": "src/ui/unroll-command.ts",
+      "sha256": "b4a1ad094e45ea5351c265c49d31978c46d029dfda909a3ac6fab98fb9fd5fb4"
+    },
+    {
+      "path": "src/ui/scan-tool-request.ts",
+      "sha256": "13d4dfad53dcc6588878469be808482b4e9218a1062b04e14df0a8d0f9d111c7"
+    },
+    {
+      "path": "src/ui/App.tsx",
+      "sha256": "1cc5d17d01ce5b43948eb536e093f84a8403d1ea6c6b6245af7e56cbbc64103a"
+    },
+    {
+      "path": "src/ui/ScanToolsPanel.tsx",
+      "sha256": "62b3d779493e4599d70b58065dfadc1ed208fc9595e8fdb4fd142894d757ebce"
+    }
+  ],
+  "build": {
+    "command": "npm run build",
+    "buildId": "scanforge-5f403cdc15ae16f0",
+    "receipt": {
+      "sha256": "349a1d0c066f9d1b183dc8737896b88e81a97b355ef1cf1b3af9ccff7706b992",
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "childPeakJobMemoryBytes": 2547712000,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "elapsedSeconds": 37.24286130000837
+    },
+    "inputsStable": true
+  },
+  "focused": {
+    "command": "vitest run --maxWorkers=1 --exclude **/.resources/** [9 explicit files]",
+    "passed": 155,
+    "failed": 0,
+    "skipped": 0,
+    "canonicalFiles": 9,
+    "resultsSha256": "37b15945c41eca72b32c1d447bec2d81a188ab9a6c12e2f29a17a908baed96c0",
+    "receipt": {
+      "sha256": "efd93fcb75dc86f537a9c5982ec635b68eaca533e8e58bf478c404480c80b7db",
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "childPeakJobMemoryBytes": 388763648,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "elapsedSeconds": 4.501185000000987
+    }
+  },
+  "fullSuiteCheckpoint": {
+    "command": "vitest run --maxWorkers=1 --exclude **/.resources/**",
+    "passed": 49018,
+    "failed": 0,
+    "skipped": 64,
+    "canonicalFiles": 694,
+    "resultsSha256": "9f08192788389dde16c9f1bb98f8426c4bec2bd0a6c042339fb78bd7f4f828c7",
+    "inputManifestSha256": "79365ab8410215905ea792613119f7043f6b99cbb4375972c66012c1c3e36dc1",
+    "receipt": {
+      "sha256": "e53abd97c80fb4c2229a997ba4f360ccc24f8e5c0a66ea426558f7d569984e6a",
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "childPeakJobMemoryBytes": 996978688,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "elapsedSeconds": 285.0259413999738
+    },
+    "scope": "Consistent working candidate before the added oblique regression and concurrent fine-alignment test/catalog edits. The pinned candidate was built and reran all focused and browser checks separately."
+  },
+  "native": {
+    "units": "mm",
+    "average": {
+      "fixtures": [
+        "tests/fixtures/average-observed-planes.json",
+        "tests/fixtures/average-observed-open-rim.json"
+      ],
+      "defaultTolerance": 10,
+      "fullOrderedCoordinatesEqual": true
+    },
+    "unroll": {
+      "fixtures": [
+        "tests/fixtures/unroll-observed-cylinder.json",
+        "tests/fixtures/unroll-observed-tilted-cylinder.json"
+      ],
+      "arcRadialCoordinatesAndOrderExact": true,
+      "axialToleranceMm": 1e-12,
+      "verticalCases": [
+        [0, 1, 22],
+        [90, 1, 22],
+        [0, 2, 44]
+      ],
+      "oblique": {
+        "center": [3, 4, 5],
+        "axisParallelTo": [1, 1, 1],
+        "offsetDegrees": 0,
+        "instances": 1,
+        "facets": 22
+      }
+    },
+    "fixtureDigests": [
+      {
+        "path": "tests/fixtures/average-observed-planes.json",
+        "sha256": "077cf71cd333cd21d6da3d6607796bec2054700f4a99b7e5ecb2287cebd7ab58"
+      },
+      {
+        "path": "tests/fixtures/average-observed-open-rim.json",
+        "sha256": "a2e0b39acd73759401cfdff8d4042175bd75968925b581387425bf8875138720"
+      },
+      {
+        "path": "tests/fixtures/unroll-observed-cylinder.json",
+        "sha256": "e19ebe642dd588f77e81dcdc5135cd18d96ec3e2659fe2693d66def63c88d581"
+      },
+      {
+        "path": "tests/fixtures/unroll-observed-tilted-cylinder.json",
+        "sha256": "3e7591e0ac9afc9e8a1d2852a7702c9501e6bcf52de09e750b2ffa6b34bb2a74"
+      }
+    ]
+  },
+  "browser": {
+    "average": {
+      "command": "node tests/scan-average-browser.mjs",
+      "passed": true,
+      "ledgerSha256": "1c20d0ac1ba29eda17e799992c6684be9821b62cb7d7543f8035de123f422177",
+      "screenshot": {
+        "name": "m2-average-validation-20261025.png",
+        "sha256": "c6033e16970067a7f1dc42f0c8d7c3f1bd7c722db937c178a83d0810a1199aa9"
+      },
+      "checks": {
+        "guiMcpEqual": true,
+        "nativeBaseSelection": true,
+        "multipleReferences": true,
+        "sourcePreserved": true,
+        "undoRedo": true,
+        "retryProtected": true,
+        "cancellationRollback": true,
+        "failureRollback": true,
+        "saveReopen": true
+      },
+      "pageErrors": [],
+      "cleanup": [
+        {
+          "port": 52847,
+          "closed": true
+        },
+        {
+          "pid": 5420,
+          "exited": true
+        },
+        {
+          "port": 52848,
+          "closed": true
+        },
+        {
+          "pid": 4432,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "sha256": "c47b0a8bf9c4ef62ed0f88ad763c14df9a5b4219c717a4587b00aaaf04b8c9e2",
+        "exitCode": 0,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "childPeakJobMemoryBytes": 991244288,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "elapsedSeconds": 5.363833000010345
+      }
+    },
+    "unroll": {
+      "command": "node tests/scan-unroll-browser.mjs",
+      "passed": true,
+      "ledgerSha256": "f561cdedf08d44d2f2a6ec65f4bb94c5d9395c3b65764ca759301c7b68f4a4e8",
+      "screenshot": {
+        "name": "m2-unroll-validation-20261025.png",
+        "sha256": "d185ed4d83730996cde32a7256ee5a288726444ac14de6d817bdaa441cc7e3ae"
+      },
+      "checks": {
+        "guiMcpEqual": true,
+        "observedExportEqual": true,
+        "twoInstances": true,
+        "sourcePreserved": true,
+        "undoRedo": true,
+        "retryProtected": true,
+        "cancellationRollback": true,
+        "failureRollback": true,
+        "saveReopen": true
+      },
+      "pageErrors": [],
+      "cleanup": [
+        {
+          "port": 58827,
+          "closed": true
+        },
+        {
+          "pid": 26320,
+          "exited": true
+        },
+        {
+          "port": 58828,
+          "closed": true
+        },
+        {
+          "pid": 44508,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "sha256": "6fa617425b80dc6d1107beeefee40e03d172233594a935eb4488080ce9e0089c",
+        "exitCode": 0,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "childPeakJobMemoryBytes": 1453543424,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "elapsedSeconds": 7.539243699982762
+      }
+    }
+  },
+  "review": {
+    "importantFinding": "New mesh owners inherited a construction order key and could make projects unsaveable.",
+    "resolution": "Use the existing fresh construction identity policy; keyed-source Average/Unroll resolve and serialize regressions passed. Review accepted the correction.",
+    "semanticValidation": "Restored the existing sampled-geometry rejection for semantic reference targets."
+  },
+  "mcpCoverage": {
+    "tool": "mesh_process",
+    "sharedGuiAdapters": ["runAverageCommand", "runUnrollCommand"],
+    "newUnrollParameter": "instances",
+    "publication": "New owner by default; explicit createNew:false retained.",
+    "preserved": [
+      "revision",
+      "retry",
+      "cancellation",
+      "locks",
+      "resource admission",
+      "history",
+      "save/reopen"
+    ]
+  },
+  "remaining": [
+    "Exact original 18425-facet defeature selection unavailable; owner no longer remembers its project/mask path.",
+    "Complete remaining M2 mode/native and lifecycle acceptance inventory.",
+    "Arbitrary imported-cylinder frame conventions and native auxiliary Unroll object publication.",
+    "Further native Average query-tie and preparation cases.",
+    "Review and commit a complete M2 acceptance candidate before issue/milestone closure."
+  ]
+}

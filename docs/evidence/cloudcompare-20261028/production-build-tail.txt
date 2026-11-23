@@ -1,0 +1,38 @@
+Command: npm run build
+Final terminal output (prebuild and tsc invocation appeared in the preceding session chunk).
+Exit code: 0
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 511 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                            0.76 kB │ gzip:   0.41 kB
+dist/assets/scan-noise-worker-Bj2yl9jW.js                  1.37 kB
+dist/assets/scan-smoothing-worker-BiJz00c-.js              1.39 kB
+dist/assets/datum-transform-worker-DSJ-VX6g.js             1.60 kB
+dist/assets/scan-alignment-worker-BeIrQg-V.js              5.83 kB
+dist/assets/global-alignment-input-worker-CVm4OTFi.js      7.16 kB
+dist/assets/interactive-bounds-worker-BLfFs376.js          8.00 kB
+dist/assets/scan-global-scene-worker-CXEyabhO.js           8.76 kB
+dist/assets/surface-worker-O-OueH5t.js                    14.95 kB
+dist/assets/project-encoding-worker-BDLCmz8G.js           47.04 kB
+dist/assets/scan-global-query-worker-DI7V5UFy.js          64.52 kB
+dist/assets/scan-global-controller-worker-SFvwMn01.js    103.66 kB
+dist/assets/project-decoding-worker-DoBkqMIo.js          127.15 kB
+dist/assets/viewport-picking-worker-C1t_UCCA.js          136.86 kB
+dist/assets/screen-selection-worker-DOxtAEg_.js          151.66 kB
+dist/assets/import-worker-C4iASMCp.js                    165.90 kB
+dist/assets/processing-worker-iK_DuUwl.js                473.52 kB
+dist/assets/index-BiXslLIs.css                            77.93 kB │ gzip:  15.28 kB
+dist/assets/global-alignment-input-C2JYPZB1.js             7.93 kB │ gzip:   3.03 kB
+dist/assets/index-DoLiZPBX.js                             12.93 kB │ gzip:   5.17 kB
+dist/assets/scan-global-registration-CEN-RSMP.js          92.65 kB │ gzip:  35.08 kB
+dist/assets/index-DXyZ4xDx.js                            783.62 kB │ gzip: 235.59 kB
+dist/assets/agent-api-DyJY89wg.js                      1,115.07 kB │ gzip: 305.22 kB
+✓ built in 9.13s
+
+> scanforge@0.1.0 postbuild
+> node scripts/offline-manifest.mjs
+
+Offline manifest generated: 274 local assets, scanforge-c368a07fde970567

@@ -1,0 +1,207 @@
+{
+  "installerExit": 0,
+  "plugins": [
+    {
+      "name": "MeshIO.dll",
+      "bytes": 2327040
+    },
+    {
+      "name": "Q3DMASC_PLUGIN.dll",
+      "bytes": 806912
+    },
+    {
+      "name": "QADDITIONAL_IO_PLUGIN.dll",
+      "bytes": 256000
+    },
+    {
+      "name": "QANIMATION_PLUGIN.dll",
+      "bytes": 193024
+    },
+    {
+      "name": "QAUTO_SEG_PLUGIN.dll",
+      "bytes": 422912
+    },
+    {
+      "name": "QBROOM_PLUGIN.dll",
+      "bytes": 227840
+    },
+    {
+      "name": "QCANUPO_PLUGIN.dll",
+      "bytes": 763904
+    },
+    {
+      "name": "QCLOUDLAYERS_PLUGIN.dll",
+      "bytes": 168960
+    },
+    {
+      "name": "QCOLORIMETRIC_SEGMENTER_PLUGIN.dll",
+      "bytes": 176640
+    },
+    {
+      "name": "QCOMPASS_PLUGIN.dll",
+      "bytes": 503808
+    },
+    {
+      "name": "QCORE_IO_PLUGIN.dll",
+      "bytes": 357888
+    },
+    {
+      "name": "QCORK_PLUGIN.dll",
+      "bytes": 446464
+    },
+    {
+      "name": "QCSF_PLUGIN.dll",
+      "bytes": 175104
+    },
+    {
+      "name": "QCSV_MATRIX_IO_PLUGIN.dll",
+      "bytes": 127488
+    },
+    {
+      "name": "QDOT_PRODUCT_IO_PLUGIN.dll",
+      "bytes": 91136
+    },
+    {
+      "name": "QDRACO_IO_PLUGIN.dll",
+      "bytes": 667136
+    },
+    {
+      "name": "QE57_IO_PLUGIN.dll",
+      "bytes": 2387968
+    },
+    {
+      "name": "QEDL_GL_PLUGIN.dll",
+      "bytes": 40960
+    },
+    {
+      "name": "QELLIPSER_PLUGIN.dll",
+      "bytes": 179712
+    },
+    {
+      "name": "QFACETS_PLUGIN.dll",
+      "bytes": 282624
+    },
+    {
+      "name": "QFBX_IO_PLUGIN.dll",
+      "bytes": 7793664
+    },
+    {
+      "name": "QHOUGH_NORMALS_PLUGIN.dll",
+      "bytes": 100864
+    },
+    {
+      "name": "QHPR_PLUGIN.dll",
+      "bytes": 364544
+    },
+    {
+      "name": "QJSON_RPC_PLUGIN.dll",
+      "bytes": 78848
+    },
+    {
+      "name": "QLAS_IO_PLUGIN.dll",
+      "bytes": 309760
+    },
+    {
+      "name": "QM3C2_PLUGIN.dll",
+      "bytes": 417280
+    },
+    {
+      "name": "QMANUAL_SEG_PLUGIN.dll",
+      "bytes": 315904
+    },
+    {
+      "name": "QMESH_BOOLEAN_PLUGIN.dll",
+      "bytes": 1361920
+    },
+    {
+      "name": "QMPLANE_PLUGIN.dll",
+      "bytes": 133632
+    },
+    {
+      "name": "QPCL_IO_PLUGIN.dll",
+      "bytes": 284672
+    },
+    {
+      "name": "QPCL_PLUGIN.dll",
+      "bytes": 769024
+    },
+    {
+      "name": "QPCV_PLUGIN.dll",
+      "bytes": 106496
+    },
+    {
+      "name": "QPHOTOSCAN_IO_PLUGIN.dll",
+      "bytes": 173056
+    },
+    {
+      "name": "QPOISSON_RECON_PLUGIN.dll",
+      "bytes": 1345024
+    },
+    {
+      "name": "QRANSAC_SD_PLUGIN.dll",
+      "bytes": 523776
+    },
+    {
+      "name": "QRDB_IO_PLUGIN.dll",
+      "bytes": 171520
+    },
+    {
+      "name": "QRIEGL_IO_PLUGIN.dll",
+      "bytes": 100864
+    },
+    {
+      "name": "QSRA_PLUGIN.dll",
+      "bytes": 459776
+    },
+    {
+      "name": "QSSAO_GL_PLUGIN.dll",
+      "bytes": 69120
+    },
+    {
+      "name": "QSTEP_IO_PLUGIN.dll",
+      "bytes": 89600
+    },
+    {
+      "name": "QTREEISO_PLUGIN.dll",
+      "bytes": 648192
+    }
+  ],
+  "officialReleasePage": "https://www.cloudcompare.org/release/",
+  "signatureStatus": "Valid",
+  "acquiredOn": "2026-10-28",
+  "ghidraVersion": "12.1.4",
+  "downloadUrl": "https://www.cloudcompare.org/release/CloudCompare_v2.13.2_setup_x64.exe",
+  "publishedInstallerMd5": "2819B430C9ECF640F3CA0491C75EBE8F",
+  "observedVersion": "CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit]",
+  "bundledVCRuntimeInstallerExit": 1638,
+  "reaVersion": "6.7.0",
+  "reaProcessCaptureUnavailable": "Windows descendant cleanup not verified by adapter",
+  "configurationRepairPerformed": false,
+  "reaNativeUiUnavailable": "macOS-only",
+  "files": [
+    {
+      "path": "C:\\Users\\Shoung\\Downloads\\CloudCompare-2.13.2-investigation\\CloudCompare_v2.13.2_setup_x64.exe",
+      "sha256": "2384FAAABDC10BA11D64652B324724481CBA6E2634CE5D1D95B2F9AC457DC163",
+      "bytes": 342569080
+    },
+    {
+      "path": "C:\\tools\\CloudCompare-2.13.2\\CloudCompare.exe",
+      "sha256": "6F79A0E283B06C48E618DF145C0A26D0DA39C798B19D08C3E934C07E6212172C",
+      "bytes": 3601920
+    },
+    {
+      "path": "C:\\tools\\CloudCompare-2.13.2\\CCCoreLib.dll",
+      "sha256": "B602C3F5A8DA0C4EF04AC9DA81E4361B45F8FC7703C7F1EAD98CB1ADD04FFDC9",
+      "bytes": 658944
+    },
+    {
+      "path": "C:\\tools\\CloudCompare-2.13.2\\plugins\\QPOISSON_RECON_PLUGIN.dll",
+      "sha256": "ABFE88C920E57D805522C8F28BAF6D70E3C50ABE82FD3B139BB732D7B1AA85F6",
+      "bytes": 1345024
+    }
+  ],
+  "signer": "E=daniel.girardeau@gmail.com, CN=\"Open Source Developer, Daniel Girardeau-Montaut\", O=Open Source Developer, L=Grenoble, S=Isère, C=FR",
+  "sourcePolicy": "Independent ScanForge implementation; CloudCompare GPL source corroboration only, no copied or linked CloudCompare code.",
+  "installerMd5": "2819B430C9ECF640F3CA0491C75EBE8F",
+  "signerThumbprint": "2A1384A76006F0AEAEFA5CFA9C8265ED2E01D280"
+}

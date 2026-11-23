@@ -1,0 +1,35 @@
+
+> scanforge@0.1.0 prebuild
+> node scripts/resource-check.mjs && node scripts/verify-poisson.mjs && node scripts/prepare-kernel.mjs
+
+Resource admission: 14514 MiB available; 1536 MiB required.
+{"passed":true,"upstreamCommit":"262b0f539d404057d1f36e1adc07fc9388678899","wasmSha256":"fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425","verifiedFiles":5,"requiresEmsdk":false}
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 27 modules transformed.
+rendering chunks...
+computing gzip size...
+public/kernel/sketch-backend.js  118.75 kB │ gzip: 22.62 kB
+✓ built in 179ms
+Local CAD kernel prepared at C:\repo\Maliev.ScanForge\public\kernel\
+
+> scanforge@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 2034 modules transformed.
+✗ Build failed in 6.57s
+error during build:
+[vite:worker-import-meta-url] Invalid value "iife" for option "worker.format" - UMD and IIFE output formats are not supported for code-splitting builds.
+file: C:/repo/Maliev.ScanForge/src/processing-client.ts
+    at getRollupError (file:///C:/repo/Maliev.ScanForge/node_modules/rollup/dist/es/shared/parseAst.js:319:41)
+    at error (file:///C:/repo/Maliev.ScanForge/node_modules/rollup/dist/es/shared/parseAst.js:315:42)
+    at validateOptionsForMultiChunkOutput (file:///C:/repo/Maliev.ScanForge/node_modules/rollup/dist/es/shared/node-entry.js:21740:16)
+    at Bundle.generate (file:///C:/repo/Maliev.ScanForge/node_modules/rollup/dist/es/shared/node-entry.js:21595:17)
+    at async file:///C:/repo/Maliev.ScanForge/node_modules/rollup/dist/es/shared/node-entry.js:24552:27
+    at async catchUnfinishedHookActions (file:///C:/repo/Maliev.ScanForge/node_modules/rollup/dist/es/shared/node-entry.js:23917:16)
+    at async bundleWorkerEntry (file:///C:/repo/Maliev.ScanForge/node_modules/vite/dist/node/chunks/config.js:26932:12)
+    at async workerFileToUrl (file:///C:/repo/Maliev.ScanForge/node_modules/vite/dist/node/chunks/config.js:26965:17)
+    at async Object.handler (file:///C:/repo/Maliev.ScanForge/node_modules/vite/dist/node/chunks/config.js:27889:23)
+    at async transform (file:///C:/repo/Maliev.ScanForge/node_modules/rollup/dist/es/shared/node-entry.js:22255:16)

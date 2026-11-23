@@ -11,12 +11,14 @@ const gold = "#edbe48",
   light = "#ffe294",
   shade = "#b98628";
 /** Each command has independently generated raster artwork. */
-export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> =
-  Object.fromEntries(
+export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
+  ...Object.fromEntries(
     requests
       .filter(({ id }) => id.startsWith("ribbon-"))
       .map(({ id }) => [id.slice(7), id]),
-  );
+  ),
+  surfaceRefinement: "ribbon-fineAlign",
+};
 const freeformCommands = new Set(
   RIBBON_TABS.find((tab) => tab.id === "freeform")!
     .groups.flatMap((group) => group.tools.map((tool) => tool.id))

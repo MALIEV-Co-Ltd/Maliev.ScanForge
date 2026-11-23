@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-25",
+  "scope": "Static scope audit of the native scene bounds query feeding reference-line initialization",
+  "applicationBehaviorChanged": false,
+  "catalogChanged": false,
+  "schemaChanged": false,
+  "nativeFunctionsCalled": false,
+  "freshNativeProcessReads": false,
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "uncommitted; runtime source inputs match the last validated numeric-initialization build"
+  },
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "analysisMode": "Read-only retained-image import with automatic analysis disabled; independent Capstone decode and static data checks.",
+    "procedures": 9,
+    "listedInstructionStarts": 1817,
+    "directFlowsExamined": 260,
+    "emptyBoundsStores": 6,
+    "sourceOperandMinMaxInstructions": 6,
+    "proofSha256": "f1c24eee7ef0815a3235681cf974b846c0578a200d28d791bebe9d27142008dd",
+    "tableQuerySha256": "cf9a216efe2307f35995c73a7a44e1d2eca69e402178f15a9b28213ab6571abe",
+    "receipts": {
+      "tableQuery": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.36027290002675727,
+        "childPeakJobMemoryBytes": 81522688,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "supportProcedures": {
+        "exitCode": 0,
+        "elapsedSeconds": 11.977650799963158,
+        "childPeakJobMemoryBytes": 826105856,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "boundsProcedures": {
+        "exitCode": 0,
+        "elapsedSeconds": 12.331568700028583,
+        "childPeakJobMemoryBytes": 874586112,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "componentProcedures": {
+        "exitCode": 0,
+        "elapsedSeconds": 12.740219899977092,
+        "childPeakJobMemoryBytes": 717393920,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "independentVerification": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.2588392000179738,
+        "childPeakJobMemoryBytes": 90722304,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    }
+  },
+  "findings": [
+    "Controller source/target type descriptors lead to statically validated model vtable candidates and their bounds methods. Live receiver/subclass coverage is not established.",
+    "The base query starts with three positive maximum-Float32 minima and three negative maximum-Float32 maxima. It filters collection entries through an object predicate, excludes one queried interface and unions valid object boxes.",
+    "The concrete model candidate has a special-source branch. A source flag together with a valid special box can return before the ordinary aggregate. Otherwise it obtains ordinary bounds and performs inclusive scalar merges.",
+    "Finite box validity requires ordered minima/maxima on all axes and strict limits inside the extreme Float32 sentinels.",
+    "The valid-source union uses source-operand scalar min/max instructions. Equal finite coordinate choices retain source order, including signed-zero choices.",
+    "The ordinary collector delegates to a distinct enumeration helper with further type, predicate and transform paths. The special-source bounds helper also has backend-specific records and child-bound paths."
+  ],
+  "decision": "Keep the public authoritative scene-bound adapter gated until ordinary enumeration and special-source bindings are mapped. The existing new-draft initializer remains a consumer of an explicit caller-bound snapshot.",
+  "mcpCoverage": {
+    "applicationChanges": null,
+    "existingAgentCapabilitiesPreserved": true,
+    "newNativeSceneBoundsAdvertised": false,
+    "note": "No GUI or MCP operation changed. Viewport inspection remains its existing contract; no new native-equivalence claim is attached to it."
+  },
+  "validation": {
+    "staticChecks": "Final selected static jobs and independent verification passed with terminal cleanup.",
+    "applicationBuildRun": false,
+    "applicationTestsRun": false,
+    "reason": "This checkpoint changes only retained analysis evidence/documentation; all last-build application source inputs were rehashed and matched.",
+    "lastValidatedBuildIdentitySha256": "9c1998054633d8f929cde468e01ff6b7328a2e9efaf54ee97338a67124e7ebf4",
+    "lastApplicationEvidence": "reference-numeric-initialization-20261025.json",
+    "exploratoryLookupFailures": "Two retained report-summary attempts encountered heterogeneous null/list record shapes; bounded type-aware parsing succeeded. These summaries are not the source of the new native contracts."
+  },
+  "remaining": [
+    "Resolve the ordinary candidate enumerator and each object predicate, exclusion and placement branch.",
+    "Bind the special receiver interface, source flag and backend record/child bounds to retained application source state.",
+    "Establish complete scene-provider scope and runtime receiver coverage before public GUI/MCP creation uses this snapshot.",
+    "Original native numeric output, typed-Apply admission and full save/reopen/rendered acceptance remain unverified.",
+    "The complete construction milestone and broader reconstruction objective remain open."
+  ]
+}

@@ -1,0 +1,198 @@
+Window: "CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]", App: CloudCompare.exe.
+	0 window (settable, string) CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1] Secondary Actions: Raise ID: MainWindow
+		18353 window (settable, string) Poisson Surface Reconstruction Secondary Actions: Raise ID: MainWindow.PoissonReconParamDialog
+			18354 title bar (settable, string) Value: Poisson Surface Reconstruction
+				18355 button Close
+			18356 custom (settable, string) ID: MainWindow.PoissonReconParamDialog.ResolutionFrame
+				18357 radio button (selectable, settable, string) Octree depth ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.depthRadioButton
+				18358 spinner (settable, float) Value: 9 ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.depthSpinBox
+				18359 radio button (selectable, settable, string) Resolution ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.resolutionRadioButton
+				18360 spinner (disabled, settable, float) Value: 0.842895 ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.resolutionDoubleSpinBox
+			18361 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget
+				18362 custom (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget
+					18363 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabDensity
+						18364 check box (settable, string) output density as SF ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabDensity.densityCheckBox
+						18365 edit (settable, string) Value: Density is useful to reduce the extents of the output mesh to fit as much as possible the input point cloud. On the output mesh: - Change the SF 'min displayed'' value (in the mesh properties) until the visible part meets your expectations - Eventually export this mesh as a new one with 'Edit > Scalar fields > Filter by Value' (you can delete the 'density' scalar field afterwards) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabDensity.textEdit
+							18366 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabDensity.textEdit.qt_scrollarea_viewport
+				18367 tab (settable, string) Density ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_tabbar
+					18368 tab item (settable, string) Density
+					18369 tab item (settable, string) Advanced
+			18370 group (settable, string) ID: MainWindow.PoissonReconParamDialog.buttonBox
+				18371 button (settable, string) OK
+				18372 button (settable, string) Cancel
+		1 title bar (settable, string) Value: CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]
+			2 menu bar System ID: MenuBar
+				3 menu item System
+			4 button Minimize
+			5 button Maximize
+			6 button Close
+		7 menu bar (settable, string) ID: MainWindow.menubar
+			8 menu item (settable, string) File
+			9 menu item (settable, string) Edit
+			10 menu item (settable, string) Tools
+			11 menu item (settable, string) Display
+			12 menu item (settable, string) Plugins
+			13 menu item (settable, string) 3D Views
+			14 menu item (settable, string) Help
+		15 window (settable, string) DB Tree Secondary Actions: Raise ID: MainWindow.DockableDBTree
+			16 group (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents
+				17 tree (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents.dbTreeView
+					18741 tree item (settable, string) pair.bin (C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028/fixtures)
+					18742 tree item (settable, string) fixed - Cloud
+					18743 tree item (settable, string) moving - Cloud
+					18744 tree item (settable, string) ply-1-oriented-input.ply (C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/poisson)
+					18745 tree item (settable, string) ply-1-oriented-input - Cloud
+			18 button (settable, string) Float ID: MainWindow.DockableDBTree.qt_dockwidget_floatbutton
+		19 status bar ID: MainWindow.statusBar
+			1537 thumb (settable, string)
+		20 tool bar (settable, string) ID: MainWindow.toolBarView
+			21 button (settable, string) Display settings
+			22 button (settable, string) Camera settings
+			23 button (settable, string) Global Zoom
+			24 button (settable, string) Pick rotation center
+			25 check box (settable, string) Auto-pick rotation center
+			26 button (settable, string) Level
+			27 button (settable, string) ZoomCenter
+			28 button (settable, string) Top View
+			29 button (settable, string) Front View
+			30 button (settable, string) Left Side View
+			31 button (settable, string) Back View
+			32 button (settable, string) Right Side View
+			33 button (settable, string) Bottom View
+			34 button (settable, string) Iso 1
+			35 button (settable, string) Iso 2
+			36 check box (settable, string) actionEnableStereo
+			37 button (settable, string)
+			38 button (settable, string)
+		39 window (settable, string) Console Secondary Actions: Raise ID: MainWindow.DockableConsole
+			40 group (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2
+				41 list (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2.consoleWidget
+					5345 list item (selectable, settable, string) [08:10:53] [ccGLWindow] Succesfully initialized PBO for faster depth picking
+					15284 list item (selectable, settable, string) [08:23:29] [BIN] Opening file 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/poisson/ply-1-oriented-input.ply'...
+					15285 list item (selectable, settable, string) [08:23:29] [BIN] Version 1.0
+					15328 list item (selectable, settable, string) [08:24:09] An error occurred while loading 'ply-1-oriented-input': wrong file type (check header)
+					15849 list item (selectable, settable, string) [08:31:08] [PLY][Comment] Full original PLY1 points with explicitly estimated-provided oriented unit normals
+					15880 list item (selectable, settable, string) [08:31:16] [I/O] File 'C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261029/poisson/ply-1-oriented-input.ply' loaded successfully
+			42 button (settable, string) Close ID: MainWindow.DockableConsole.qt_dockwidget_closebutton
+			43 button (settable, string) Float ID: MainWindow.DockableConsole.qt_dockwidget_floatbutton
+		44 tool bar (settable, string) ID: MainWindow.toolBarMainTools
+			1538 check box (settable, string) ID: MainWindow.toolBarMainTools.qt_toolbar_ext_button
+			45 button (settable, string) Open
+			46 button (settable, string) Save
+			47 button (settable, string) Save project (BIN)
+			48 group (settable, string)
+			49 button (settable, string) Point picking
+			50 button (settable, string) Point list picking
+			51 button (settable, string) Trace Polyline
+			52 button (settable, string) Clone
+			53 button (disabled, settable, string) Merge
+			54 button (settable, string) Delete
+			55 group (settable, string)
+			56 button (settable, string) Align (point pairs picking)
+			57 button (disabled, settable, string) Fine registration (ICP)
+			58 button (settable, string) Subsample
+			59 button (disabled, settable, string) Sample points
+			60 button (disabled, settable, string) Cloud/Cloud Dist
+			61 button (disabled, settable, string) Cloud/Mesh Dist
+			62 button (disabled, settable, string) Cloud/Primitive Dist
+			63 button (settable, string) Label Connected Comp.
+			64 button (settable, string) Primitive factory
+			65 button (settable, string) Rasterize (and contour plot)
+		72 tool bar (settable, string) ID: MainWindow.toolBarSFTools
+			1539 check box (settable, string) ID: MainWindow.toolBarSFTools.qt_toolbar_ext_button
+			73 button (disabled, settable, string) Show histogram
+		80 window (settable, string) Properties Secondary Actions: Raise ID: MainWindow.DockableProperties
+			81 group (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4
+				82 tree (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4.propertiesTreeView
+					18746 header (settable, string) Property
+					18747 header (settable, string) State/Value
+					18748 tree item (settable, string)
+					18749 tree item (settable, string)
+					18750 tree item (settable, string) Name
+					18751 tree item (settable, string) ply-1-oriented-input - Cloud
+					18752 tree item (settable, string) Visible
+					18753 tree item (settable, string)
+					18754 tree item (settable, string) Normals
+					18755 tree item (settable, string)
+					18756 tree item (settable, string) Show name (in 3D)
+					18757 tree item (settable, string)
+					18758 tree item (settable, string) Box dimensions
+					18759 tree item (settable, string) X: 105.597 (-32.8736 : 72.7237) Y: 111.354 (-38.4989 : 72.855) Z: 69.7741 (-331.615 : -261.841)
+					18760 tree item (settable, string) Shifted box center
+					18761 tree item (settable, string) X: 19.925 Y: 17.1781 Z: -296.728
+					18762 tree item (settable, string) Global box center
+					18763 tree item (settable, string) X: 19.925043 Y: 17.178061 Z: -296.728180
+			83 button (settable, string) Float ID: MainWindow.DockableProperties.qt_dockwidget_floatbutton
+		84 tool bar (settable, string) Plugins ID: MainWindow.Main Plugin Toolbar
+			85 button (disabled, settable, string) Animation
+			86 button (settable, string) CEA Virtual Broom
+			87 button (settable, string) Compass
+			88 button (disabled, settable, string) Cork
+			89 button (settable, string) CSF Filter
+			90 button (settable, string) Hough Normals Computation
+			91 button (settable, string) Hidden Point Removal
+			92 button (disabled, settable, string) M3C2 Distance
+			93 button (disabled, settable, string) Mesh Boolean
+			94 button (settable, string) PCV / ShadeVis
+			95 button (settable, string) PoissonRecon
+			96 button (settable, string) RANSAC Shape Detection
+			97 button (settable, string) AutoSeg
+			98 button (settable, string) Cloud layers
+			99 button (settable, string) Ellipse marking
+			100 check box (settable, string) Json RPC (Standard Plugin)
+			101 button (settable, string) ManualSeg
+			102 button (settable, string) MPlane
+			103 button (settable, string) TreeIso
+		104 tool bar (settable, string) GL Filters ID: MainWindow.GL Plugin Toolbar
+			105 button (disabled, settable, string) Remove Filter
+			106 check box (settable, string) EDL Shader
+			107 check box (settable, string) SSAO Shader
+		108 custom (settable, string)
+			109 window (settable, string) 3D View 1 Secondary Actions: Raise
+				110 group (settable, string)
+		111 tool bar (settable, string) CANUPO toolbar ID: MainWindow.CANUPO
+			1540 check box (settable, string) ID: MainWindow.CANUPO.qt_toolbar_ext_button
+			112 button (settable, string) Train classifier
+		114 tool bar (settable, string) Facet/fracture detection toolbar ID: MainWindow.Facet/fracture detection
+			1541 check box (settable, string) ID: MainWindow.Facet/fracture detection.qt_toolbar_ext_button
+			115 button (settable, string) Extract facets (Kd-tree)
+		121 tool bar (settable, string) PCL wrapper toolbar ID: MainWindow.PCL wrapper
+			1542 check box (settable, string) ID: MainWindow.PCL wrapper.qt_toolbar_ext_button
+			122 button (disabled, settable, string) Fast Global Registration, by Zhou et al.
+		125 tool bar (settable, string) Surface of Revolution Analysis toolbar ID: MainWindow.Surface of Revolution Analysis
+			1543 check box (settable, string) ID: MainWindow.Surface of Revolution Analysis.qt_toolbar_ext_button
+			126 button (settable, string) Load profile
+		129 tool bar (settable, string) 3DMASC toolbar ID: MainWindow.3DMASC
+			1544 check box (settable, string) ID: MainWindow.3DMASC.qt_toolbar_ext_button
+			130 button (settable, string) Train classifier
+		132 tool bar (settable, string) Colorimetric Segmenter toolbar ID: MainWindow.Colorimetric Segmenter
+			1545 check box (settable, string) ID: MainWindow.Colorimetric Segmenter.qt_toolbar_ext_button
+			133 button (disabled, settable, string) Filter RGB
+		18353 window (settable, string) Poisson Surface Reconstruction Secondary Actions: Raise ID: MainWindow.PoissonReconParamDialog
+			18354 title bar (settable, string) Value: Poisson Surface Reconstruction
+				18355 button Close
+			18356 custom (settable, string) ID: MainWindow.PoissonReconParamDialog.ResolutionFrame
+				18357 radio button (selectable, settable, string) Octree depth ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.depthRadioButton
+				18358 spinner (settable, float) Value: 9 ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.depthSpinBox
+				18359 radio button (selectable, settable, string) Resolution ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.resolutionRadioButton
+				18360 spinner (disabled, settable, float) Value: 0.842895 ID: MainWindow.PoissonReconParamDialog.ResolutionFrame.resolutionDoubleSpinBox
+			18361 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget
+				18362 custom (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget
+					18363 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabDensity
+						18364 check box (settable, string) output density as SF ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabDensity.densityCheckBox
+						18365 edit (settable, string) Value: Density is useful to reduce the extents of the output mesh to fit as much as possible the input point cloud. On the output mesh: - Change the SF 'min displayed'' value (in the mesh properties) until the visible part meets your expectations - Eventually export this mesh as a new one with 'Edit > Scalar fields > Filter by Value' (you can delete the 'density' scalar field afterwards) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabDensity.textEdit
+							18366 group (settable, string) ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_stackedwidget.tabDensity.textEdit.qt_scrollarea_viewport
+				18367 tab (settable, string) Density ID: MainWindow.PoissonReconParamDialog.tabWidget.qt_tabwidget_tabbar
+					18368 tab item (settable, string) Density
+					18369 tab item (settable, string) Advanced
+			18370 group (settable, string) ID: MainWindow.PoissonReconParamDialog.buttonBox
+				18371 button (settable, string) OK
+				18372 button (settable, string) Cancel
+
+Document text: ```
+Density is useful to reduce the extents of the output mesh to fit as much as possible the input point cloud.
+
+On the output mesh:
+- Change the SF 'min displayed'' value (in the mesh properties) until the visible part meets your expectations
+- Eventually export this mesh as a new one with 'Edit > Scalar fields > Filter by Value' (you can delete the 'density' scalar field afterwards)
+```

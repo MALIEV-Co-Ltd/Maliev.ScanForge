@@ -116,9 +116,9 @@ it("keeps only matching legacy expanded normals on unsupported topology", () => 
   });
 });
 
-it("checks compact buffer shapes without accepting ordinary array indices", () => {
+it("checks compact buffer shapes and validates ordinary indices before conversion", () => {
   for (const change of [
-    { triangles: [2, 0, 1, 0, 3, 1] },
+    { triangles: [4294967296, 0, 1, 0, 3, 1] },
     { triangles: new Uint32Array([2, 0, 1]) },
     { vertices: new Float32Array(14) },
   ]) {

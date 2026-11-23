@@ -1,0 +1,37 @@
+{
+  "arguments": [
+    "-SILENT",
+    "-LOG_FILE",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\partial-with-authored-outliers\\native-first\\native.log",
+    "-AUTO_SAVE",
+    "OFF",
+    "-C_EXPORT_FMT",
+    "ASC",
+    "-NO_TIMESTAMP",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\partial-with-authored-outliers\\native-first\\moving.ply",
+    "-O",
+    "C:\\repo\\Maliev.ScanForge\\docs\\evidence\\cloudcompare-20261029\\alignment\\partial-with-authored-outliers\\native-first\\fixed.ply",
+    "-ICP",
+    "-OVERLAP",
+    "80",
+    "-MIN_ERROR_DIFF",
+    "1e-7",
+    "-RANDOM_SAMPLING_LIMIT",
+    "866",
+    "-MAX_TCOUNT",
+    "2",
+    "-SAVE_CLOUDS"
+  ],
+  "durationMs": 1897.6103000000003,
+  "deadlineMs": 120000,
+  "movingSha256": "3f68c0520ff9f932310c3adccbe02cd189dadf7aa5a9d26a9d5492f4f92b4f45",
+  "fixedSha256": "6872459d015f9b542ffaeaaf4f5254738118ff14261edeacc41393a57cc2a9ac",
+  "transform": {
+    "rotation": [
+      0.99939084053, 0.034899495542, 2.4e-10, -0.034899495542, 0.99939084053,
+      -7.7e-11, -2.42e-10, 6.9e-11, 1
+    ],
+    "translation": [-0.145720690489, 0.125161826611, -0.300000011921]
+  }
+}

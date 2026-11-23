@@ -1,0 +1,114 @@
+{
+  "date": "2026-10-24",
+  "scope": "Internal reference construction cached-session core; host/API/editor integration pending",
+  "behavior": [
+    "Explicit numeric writes remain separate from evaluation.",
+    "Detached cached definition, geometry, state and diagnostics retain no mutable resolver input.",
+    "Successful edits increment the version and renew a 60-second lease; failed edits preserve both.",
+    "Changed private workspace token, expiry, cancellation and disposal retire the cache.",
+    "Apply publishes the exact cached proposal synchronously once and prevents reentrant changes.",
+    "Rejected publication retains the cache; detached publisher mutation cannot alter it."
+  ],
+  "sources": [
+    {
+      "path": "src/reference-construction-session.ts",
+      "sha256": "cebbefab1fe51d0e8884d0335328fb92565300ea080bbf5ccd13c313addbc19d"
+    },
+    {
+      "path": "tests/reference-construction-session.test.ts",
+      "sha256": "0dee91756562a46084147181e18a4d0996379cb72e2bade7b7b6a7746dc9fee6"
+    },
+    {
+      "path": "src/reference-construction-evaluation.ts",
+      "sha256": "dd3ae08f06af9eb1155dc5b0805f3b6dbdda99ceb2b84686bf3603c9b24503f9"
+    },
+    {
+      "path": "src/reference-construction.ts",
+      "sha256": "5bf220e2f19129251b47bd6287cfd2721a9b8aac93e70286d22e143adbaa6b20"
+    }
+  ],
+  "validation": {
+    "red": {
+      "receiptSha256": "8ce858017dfbf4c6708930c6870184df0040969eb9aaf31bcc2c26d53da4cd62",
+      "exitCode": 1,
+      "elapsedSeconds": 0.6126963999995496,
+      "peakJobMemoryBytes": 279986176
+    },
+    "redReason": "New session module absent.",
+    "build": {
+      "receiptSha256": "c14f3bfef7c96044897cfb6adbef828827b0a22c1f7b16325a9e934fc13f2528",
+      "exitCode": 0,
+      "elapsedSeconds": 34.10427929999423,
+      "peakJobMemoryBytes": 2491908096
+    },
+    "focused": {
+      "receiptSha256": "658bfe0adb889297de104e283f4cc6e8e9953b02ee9e50fde5268416b9f1da00",
+      "exitCode": 0,
+      "elapsedSeconds": 1.3700537000258919,
+      "peakJobMemoryBytes": 310980608
+    },
+    "format": {
+      "receiptSha256": "73a194da22c84c638ccd324d910668bf1b5e130bf73f2e0836832ac651dc0707",
+      "exitCode": 0,
+      "elapsedSeconds": 0.20862280001165345,
+      "peakJobMemoryBytes": 106672128
+    },
+    "testsPassed": 196,
+    "newSessionTests": 15,
+    "testFiles": [
+      {
+        "path": "tests/reference-average-empty-sources.test.ts",
+        "passed": 7
+      },
+      {
+        "path": "tests/reference-construction-evaluation.test.ts",
+        "passed": 33
+      },
+      {
+        "path": "tests/reference-construction-session.test.ts",
+        "passed": 15
+      },
+      {
+        "path": "tests/reference-construction.test.ts",
+        "passed": 49
+      },
+      {
+        "path": "tests/reference-line-evaluation.test.ts",
+        "passed": 55
+      },
+      {
+        "path": "tests/reference-point-evaluation.test.ts",
+        "passed": 37
+      }
+    ],
+    "buildIdentitySha256": "0ef42c6925d9d939554e76a4c3c02e07d8b724ecd3af1cc030d3e9d709bf8b2e",
+    "memoryCapBytes": 4294967296,
+    "cpuRate": 2500,
+    "priorRenderedViewportSourcesUnchanged": true,
+    "renderedSessionWorkflowTested": false
+  },
+  "mcp": {
+    "schemaChanged": false,
+    "catalogChanged": false,
+    "publicConstructionActivated": false,
+    "sharedCore": "ReferenceConstructionSession",
+    "requiredHostIntegration": [
+      "Authoritative model/source binding independent of selection-only API revision changes.",
+      "API revisions/retries, context mutation, lock/resource checks and exact source resolution.",
+      "Host registry, competing previews, timer/display ownership, cancellation and API disposal.",
+      "Atomic identity/dependency/history publication and shared GUI/editor commands."
+    ]
+  },
+  "limitations": [
+    "The private token is a caller contract, not a public request revision or scene fingerprint.",
+    "The core owns no GPU resources or timer; the host must release its display on expiry.",
+    "Publication must be synchronous and atomic; arbitrary callback side effects cannot be rolled back here.",
+    "No public-MCP session, full editor or native lifecycle acceptance."
+  ],
+  "acceptance": {
+    "internalSessionRegression": true,
+    "guiMcpSessionWorkflow": false,
+    "nativeLifecycle": false,
+    "completeReferenceFeature": false
+  }
+}

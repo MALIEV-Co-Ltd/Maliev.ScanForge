@@ -9,6 +9,12 @@
   flex-direction: column;
   gap: 4px;
 }
+.point-cloud-tools details > label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
 .point-cloud-tools input[type="number"] {
   width: 100%;
   box-sizing: border-box;

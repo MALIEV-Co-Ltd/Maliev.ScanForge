@@ -20,12 +20,8 @@ it("keeps preview and accept unavailable until their prerequisites and permits c
       session={beginLandmarkAlignment(moving, fixed)}
       targets={[fixed]}
       busy={true}
-      pickSide="moving"
-      onPickSide={noop}
       onTarget={noop}
       onTargetScope={noop}
-      onRemoveLast={noop}
-      onRemoveAll={noop}
       onPreview={noop}
       onAccept={noop}
       onCancel={noop}
@@ -37,6 +33,10 @@ it("keeps preview and accept unavailable until their prerequisites and permits c
   );
   expect(markup).toMatch(/<button disabled="">OK<\/button>/);
   expect(markup).toContain("<button>Cancel</button>");
-  expect(markup).toContain('aria-label="Moving landmarks"');
-  expect(markup).toContain('aria-label="Fixed landmarks"');
+  expect(markup).not.toContain("Pick moving points");
+  expect(markup).not.toContain("Pick fixed points");
+  expect(markup).not.toContain('aria-label="Moving landmarks"');
+  expect(markup).not.toContain('aria-label="Fixed landmarks"');
+  expect(markup).toContain("top-right Fixed");
+  expect(markup).toContain("bottom-right Moving");
 });

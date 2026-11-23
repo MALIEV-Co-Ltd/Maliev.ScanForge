@@ -1,0 +1,311 @@
+shared:INFO: (Emscripten: Running sanity checks)
+warning: unknown warning option '-Wno-invalid-offset'; did you mean '-Wno-invalid-offsetof'? [-Wunknown-warning-option]
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:58:
+C:\tools\PoissonRecon-scanforge\Src\NestedVector.h:301:23: error: in-class initializer for static data member is not a constant expression
+  301 |                 static const size_t _MaxSize = ((size_t)1)<<(LogSize*(Depth+1));
+      |                                     ^          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:494:58: note: in instantiation of template class 'PoissonRecon::NestedVector<int, 1>' requested here
+  494 |                 NestedVector< node_index_type , NESTED_VECTOR_LEVELS > _indices;
+      |                                                                        ^
+C:\tools\PoissonRecon-scanforge\Src\NestedVector.h:301:45: note: shift count 40 >= width of type 'size_t' (aka 'unsigned long') (32 bits)
+  301 |                 static const size_t _MaxSize = ((size_t)1)<<(LogSize*(Depth+1));
+      |                                                           ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:814:47: error: no member named 'size' in 'PoissonRecon::SparseNodeData<PoissonRecon::Point<float, 3>, ParameterPack::Pack<unsigned int, 7, 7, 7>>'
+  814 |                                         ThreadPool::ParallelFor( 0 , normalInfo->size() , [&]( unsigned int , size_t i ){ (*normalInfo)[i] *= (Real)-1.; } );
+      |                                                                      ~~~~~~~~~~  ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:873:37: error: type 'SparseNodeData<Point<float, 3U>, NormalSigs>' (aka 'SparseNodeData<Point<float, 3U>, Pack<unsigned int, 7U, 7U, 7U>>') does not provide a call operator
+  873 |                                                                                         Point< Real , Dim > *n = (*normalInfo)( node );
+      |                                                                                                                  ^~~~~~~~~~~~~
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:872:11: note: while substituting into a lambda expression here
+  872 |                                                                                 {
+      |                                                                                 ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:870:9: note: while substituting into a lambda expression here
+  870 |                                                                 {
+      |                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:991:21: error: no matching member function for call to 'addFEMConstraints'
+  991 |                                                 implicit.tree.addFEMConstraints( F , *normalInfo , constraints , solveDepth );
+      |                                                 ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:2691:8: note: candidate template ignored: could not match '_SparseOrDenseNodeData' against 'SparseNodeData'
+ 2691 |                 void addFEMConstraints( typename BaseFEMIntegrator::template Constraint< UIntPack< FEMDegrees ... > , UIntPack< CDegrees ... > , CDim >& F , const _SparseOrDenseNodeData< Point< T , CDim > , UIntPack< CSigs ... > >& coefficients , DenseNodeData< T , UIntPack< FEMSigs ... > >& constraints , LocalDepth maxDepth ) const
+      |                      ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:2704:8: note: candidate template ignored: could not match 'BaseFEMIntegrator::template Constraint' against 'FEMIntegrator::template Constraint'
+ 2704 |                 void addFEMConstraints( typename BaseFEMIntegrator::template Constraint< UIntPack< FEMDegrees ... > , UIntPack< CDegrees ... > , 1 >& F , const _SparseOrDenseNodeData< T , UIntPack< CSigs ... > >& coefficients , DenseNodeData< T , UIntPack< FEMSigs ... > >& constraints , LocalDepth maxDepth ) const
+      |                      ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:2717:8: note: candidate template ignored: could not match 'BaseFEMIntegrator::template System' against 'FEMIntegrator::template Constraint'
+ 2717 |                 void addFEMConstraints( typename BaseFEMIntegrator::template System< UIntPack< FEMDegrees ... > >& F , const _SparseOrDenseNodeData< T , UIntPack< FEMSigs ... > >& coefficients , DenseNodeData< T , UIntPack< FEMSigs ... > >& constraints , LocalDepth maxDepth ) const
+      |                      ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:3162:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.WeightedSamples.inl:161:17: error: no member named 'reserve' in 'PoissonRecon::FEMTree<3, float>::DensityEstimator<2>'
+  161 |         densityWeights.reserve( nodeCount() );
+      |         ~~~~~~~~~~~~~~ ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:815:65: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_addWeightContribution<true, 1U, 2U>' requested here
+  815 |                 if( d>=minSplatDepth && d<=maxSplatDepth && sample.weight>0 ) _addWeightContribution< true , CoDim >( nodeAllocator , density , node , sample.data / sample.weight , densityKey , sample.weight );
+      |                                                                               ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:866:17: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::updateDensityEstimator<1U, 2U>' requested here
+  866 |         this->template updateDensityEstimator< CoDim , DensityDegree >( *density , samples , 0 , splatDepth );
+      |                        ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:792:48: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::setDensityEstimator<1U, 2U>' requested here
+  792 |                                         implicit.density = implicit.tree.template setDensityEstimator< 1 , Reconstructor::WeightDegree >( *samples , params.kernelDepth , params.samplesPerNode );
+      |                                                                                   ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:3162:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.WeightedSamples.inl:182:15: error: no viable overloaded operator[] for type 'DensityEstimator<2U>'
+  182 |                         AddAtomic( densityWeights[ node ] , (Real)scratch[Dim] );
+      |                                    ^~~~~~~~~~~~~~  ~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.WeightedSamples.inl:179:2: note: while substituting into a lambda expression here
+  179 |         {
+      |         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:815:65: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_addWeightContribution<true, 1U, 2U>' requested here
+  815 |                 if( d>=minSplatDepth && d<=maxSplatDepth && sample.weight>0 ) _addWeightContribution< true , CoDim >( nodeAllocator , density , node , sample.data / sample.weight , densityKey , sample.weight );
+      |                                                                               ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:866:17: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::updateDensityEstimator<1U, 2U>' requested here
+  866 |         this->template updateDensityEstimator< CoDim , DensityDegree >( *density , samples , 0 , splatDepth );
+      |                        ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:792:48: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::setDensityEstimator<1U, 2U>' requested here
+  792 |                                         implicit.density = implicit.tree.template setDensityEstimator< 1 , Reconstructor::WeightDegree >( *samples , params.kernelDepth , params.samplesPerNode );
+      |                                                                                   ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:3162:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.WeightedSamples.inl:208:88: error: type 'const DensityEstimator<2U>' does not provide a call operator
+  208 |                 [&]( typename Neighbors::StaticWindow::data_type node ){ if( node ){ const Real *w = densityWeights( node ) ; if( w ) weight += (Real)( scratch[Dim] * (*w) ); } } ,
+      |                                                                                                      ^~~~~~~~~~~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.WeightedSamples.inl:208:58: note: while substituting into a lambda expression here
+  208 |                 [&]( typename Neighbors::StaticWindow::data_type node ){ if( node ){ const Real *w = densityWeights( node ) ; if( w ) weight += (Real)( scratch[Dim] * (*w) ); } } ,
+      |                                                                        ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.WeightedSamples.inl:237:24: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_getSamplesPerNode<2U, PoissonRecon::PointSupportKey<ParameterPack::Pack<unsigned int, 2, 2, 2>>>' requested here
+  237 |         Real samplesPerNode = _getSamplesPerNode( densityWeights , temp , position , weightKey );
+      |                               ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.WeightedSamples.inl:324:3: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_getSampleDepthAndWeight<2U, PoissonRecon::PointSupportKey<ParameterPack::Pack<unsigned int, 2, 2, 2>>>' requested here
+  324 |                 _getSampleDepthAndWeight( densityWeights , temp , position , weightKey , depth , weight );
+      |                 ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:944:55: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_splatPointData<true, true, 2U, PoissonRecon::Point<float, 3>, 7U, 7U, 7U>' requested here
+  944 |                                         if( density ) pointDepthAndWeightSums[thread] += _splatPointData< true , true , DensityDegree , OutData >( zero , nodeAllocator , *density , minDepthCutoff , p , out , dataField , densityKey , oneKey ? *( (DataKey*)&densityKey ) : dataKey , minDepth , maxDepth , Dim , depthBias ) * sample.weight;
+      |                                                                                          ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:896:9: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::setInterpolatedDataField<7U, 7U, 7U, 2U, PoissonRecon::DirectSum<float, PoissonRecon::Point<float, 3>, PoissonRecon::DirectSum<float>>, PoissonRecon::Point<float, 3>>' requested here
+  896 |         return setInterpolatedDataField( zero , UIntPack< DataSigs ... >() , samples , data , density , minDepth , maxDepth , minDepthCutoff , pointDepthAndWeight , ConversionAndBiasFunction );
+      |                ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:812:34: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::setInterpolatedDataField<7U, 7U, 7U, 2U, PoissonRecon::DirectSum<float, PoissonRecon::Point<float, 3>, PoissonRecon::DirectSum<float>>, PoissonRecon::Point<float, 3>>' requested here
+  812 |                                         *normalInfo = implicit.tree.setInterpolatedDataField( Point< Real , Dim >() , NormalSigs() , *samples , *sampleNormalAndAuxData , implicit.density , params.baseDepth , params.depth , params.lowDepthCutOff , pointDepthAndWeight , ConversionFunction );
+      |                                                                     ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:3162:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.WeightedSamples.inl:298:90: error: no member named 'at' in 'PoissonRecon::SparseNodeData<PoissonRecon::Point<float, 3>, ParameterPack::Pack<unsigned int, 7, 7, 7>>'
+  298 |                 [&]( FEMTreeNode* node ){ if( IsActiveNode< Dim >( node ) ) Atomic< V >::Add( dataInfo.at( node , zero ) , v * (Real)scratch[Dim] ); } ,
+      |                                                                                               ~~~~~~~~ ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.WeightedSamples.inl:298:27: note: while substituting into a lambda expression here
+  298 |                 [&]( FEMTreeNode* node ){ if( IsActiveNode< Dim >( node ) ) Atomic< V >::Add( dataInfo.at( node , zero ) , v * (Real)scratch[Dim] ); } ,
+      |                                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:955:7: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_splatPointData<true, true, PoissonRecon::Point<float, 3>, 7U, 7U, 7U>' requested here
+  955 |                                                 _splatPointData< true , true , OutData >( zero , nodeAllocator , _leaf< true >( nodeAllocator , p , maxDepth ) , p , out / (Real)pow( width , Dim ) , dataField , oneKey ? *( (DataKey*)&densityKey ) : dataKey );
+      |                                                 ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:896:9: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::setInterpolatedDataField<7U, 7U, 7U, 2U, PoissonRecon::DirectSum<float, PoissonRecon::Point<float, 3>, PoissonRecon::DirectSum<float>>, PoissonRecon::Point<float, 3>>' requested here
+  896 |         return setInterpolatedDataField( zero , UIntPack< DataSigs ... >() , samples , data , density , minDepth , maxDepth , minDepthCutoff , pointDepthAndWeight , ConversionAndBiasFunction );
+      |                ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:812:34: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::setInterpolatedDataField<7U, 7U, 7U, 2U, PoissonRecon::DirectSum<float, PoissonRecon::Point<float, 3>, PoissonRecon::DirectSum<float>>, PoissonRecon::Point<float, 3>>' requested here
+  812 |                                         *normalInfo = implicit.tree.setInterpolatedDataField( Point< Real , Dim >() , NormalSigs() , *samples , *sampleNormalAndAuxData , implicit.density , params.baseDepth , params.depth , params.lowDepthCutOff , pointDepthAndWeight , ConversionFunction );
+      |                                                                     ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1595:33: error: no member named 'index' in 'PoissonRecon::SparseNodeData<PoissonRecon::DualPointInfo<3, float, float, 0>, ParameterPack::Pack<unsigned int, 0, 0, 0>>'
+ 1595 |                                 node_index_type idx = iData.index( node );
+      |                                                       ~~~~~ ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1605:4: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::range' requested here
+ 1605 |                         ApproximatePointInterpolationInfo( ConstraintDual constraintDual , SystemDual systemDual , bool constrainsDCTerm ) : _constraintDual( constraintDual ) , _systemDual( systemDual ) , _constrainsDCTerm( constrainsDCTerm ) { }
+      |                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1914:91: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::ApproximatePointInterpolationInfo' requested here
+ 1914 |                         ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >* a = new ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >( constraintDual , systemDual , constrainsDCTerm );
+      |                                                                                                                ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:948:78: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::InitializeApproximatePointInterpolationInfo<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>' requested here
+  948 |                                         else                            iInfo = FEMTree< Dim , Real >::template InitializeApproximatePointInterpolationInfo< Real , 0 > ( implicit.tree , *samples , Poisson::ConstraintDual< Dim , Real >( targetValue , params.pointWeight * pointDepthAndWeight.value()[1] ) , Poisson::SystemDual< Dim , Real >( params.pointWeight * pointDepthAndWeight.value()[1] ) , true , params.depth , 1 );
+      |                                                                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1601:124: error: type 'const SparseNodeData<DualPointInfo<3U, float, float, 0U>, ZeroUIntPack<3U>>' (aka 'const SparseNodeData<DualPointInfo<3U, float, float, 0U>, Pack<unsigned int, 0U, 0U, 0U>>') does not provide a subscript operator
+ 1601 |                         Point< T , CumulativeDerivatives< Dim , PointD >::Size > operator() ( size_t pointIdx ) const { return _constraintDual( iData[ pointIdx ].position ); }
+      |                                                                                                                                                 ^~~~~  ~~~~~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1605:4: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::operator()' requested here
+ 1605 |                         ApproximatePointInterpolationInfo( ConstraintDual constraintDual , SystemDual systemDual , bool constrainsDCTerm ) : _constraintDual( constraintDual ) , _systemDual( systemDual ) , _constrainsDCTerm( constrainsDCTerm ) { }
+      |                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1914:91: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::ApproximatePointInterpolationInfo' requested here
+ 1914 |                         ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >* a = new ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >( constraintDual , systemDual , constrainsDCTerm );
+      |                                                                                                                ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:948:78: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::InitializeApproximatePointInterpolationInfo<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>' requested here
+  948 |                                         else                            iInfo = FEMTree< Dim , Real >::template InitializeApproximatePointInterpolationInfo< Real , 0 > ( implicit.tree , *samples , Poisson::ConstraintDual< Dim , Real >( targetValue , params.pointWeight * pointDepthAndWeight.value()[1] ) , Poisson::SystemDual< Dim , Real >( params.pointWeight * pointDepthAndWeight.value()[1] ) , true , params.depth , 1 );
+      |                                                                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1602:194: error: type 'const SparseNodeData<DualPointInfo<3U, float, float, 0U>, ZeroUIntPack<3U>>' (aka 'const SparseNodeData<DualPointInfo<3U, float, float, 0U>, Pack<unsigned int, 0U, 0U, 0U>>') does not provide a subscript operator
+ 1602 |                         Point< T , CumulativeDerivatives< Dim , PointD >::Size > operator() ( size_t pointIdx , const Point< T , CumulativeDerivatives< Dim , PointD >::Size >& dValues ) const { return _systemDual( iData[ pointIdx ].position , dValues ); }
+      |                                                                                                                                                                                                                       ^~~~~  ~~~~~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1605:4: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::operator()' requested here
+ 1605 |                         ApproximatePointInterpolationInfo( ConstraintDual constraintDual , SystemDual systemDual , bool constrainsDCTerm ) : _constraintDual( constraintDual ) , _systemDual( systemDual ) , _constrainsDCTerm( constrainsDCTerm ) { }
+      |                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1914:91: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::ApproximatePointInterpolationInfo' requested here
+ 1914 |                         ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >* a = new ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >( constraintDual , systemDual , constrainsDCTerm );
+      |                                                                                                                ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:948:78: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::InitializeApproximatePointInterpolationInfo<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>' requested here
+  948 |                                         else                            iInfo = FEMTree< Dim , Real >::template InitializeApproximatePointInterpolationInfo< Real , 0 > ( implicit.tree , *samples , Poisson::ConstraintDual< Dim , Real >( targetValue , params.pointWeight * pointDepthAndWeight.value()[1] ) , Poisson::SystemDual< Dim , Real >( params.pointWeight * pointDepthAndWeight.value()[1] ) , true , params.depth , 1 );
+      |                                                                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1603:204: error: type 'const SparseNodeData<DualPointInfo<3U, float, float, 0U>, ZeroUIntPack<3U>>' (aka 'const SparseNodeData<DualPointInfo<3U, float, float, 0U>, Pack<unsigned int, 0U, 0U, 0U>>') does not provide a subscript operator
+ 1603 |                         Point< double , CumulativeDerivatives< Dim , PointD >::Size > operator() ( size_t pointIdx , const Point< double , CumulativeDerivatives< Dim , PointD >::Size >& dValues ) const { return _systemDual( iData[ pointIdx ].position , dValues ); }
+      |                                                                                                                                                                                                                                 ^~~~~  ~~~~~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1605:4: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::operator()' requested here
+ 1605 |                         ApproximatePointInterpolationInfo( ConstraintDual constraintDual , SystemDual systemDual , bool constrainsDCTerm ) : _constraintDual( constraintDual ) , _systemDual( systemDual ) , _constrainsDCTerm( constrainsDCTerm ) { }
+      |                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1914:91: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::ApproximatePointInterpolationInfo' requested here
+ 1914 |                         ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >* a = new ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >( constraintDual , systemDual , constrainsDCTerm );
+      |                                                                                                                ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:948:78: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::InitializeApproximatePointInterpolationInfo<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>' requested here
+  948 |                                         else                            iInfo = FEMTree< Dim , Real >::template InitializeApproximatePointInterpolationInfo< Real , 0 > ( implicit.tree , *samples , Poisson::ConstraintDual< Dim , Real >( targetValue , params.pointWeight * pointDepthAndWeight.value()[1] ) , Poisson::SystemDual< Dim , Real >( params.pointWeight * pointDepthAndWeight.value()[1] ) , true , params.depth , 1 );
+      |                                                                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1600:97: error: type 'const SparseNodeData<DualPointInfo<3U, float, float, 0U>, ZeroUIntPack<3U>>' (aka 'const SparseNodeData<DualPointInfo<3U, float, float, 0U>, Pack<unsigned int, 0U, 0U, 0U>>') does not provide a subscript operator
+ 1600 |                         const DualPointInfo< Dim , Real , T , PointD >& operator[]( size_t pointIdx ) const { return iData[ pointIdx ]; }
+      |                                                                                                                      ^~~~~  ~~~~~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1605:4: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::operator[]' requested here
+ 1605 |                         ApproximatePointInterpolationInfo( ConstraintDual constraintDual , SystemDual systemDual , bool constrainsDCTerm ) : _constraintDual( constraintDual ) , _systemDual( systemDual ) , _constrainsDCTerm( constrainsDCTerm ) { }
+      |                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1914:91: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::ApproximatePointInterpolationInfo' requested here
+ 1914 |                         ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >* a = new ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >( constraintDual , systemDual , constrainsDCTerm );
+      |                                                                                                                ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:948:78: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::InitializeApproximatePointInterpolationInfo<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>' requested here
+  948 |                                         else                            iInfo = FEMTree< Dim , Real >::template InitializeApproximatePointInterpolationInfo< Real , 0 > ( implicit.tree , *samples , Poisson::ConstraintDual< Dim , Real >( targetValue , params.pointWeight * pointDepthAndWeight.value()[1] ) , Poisson::SystemDual< Dim , Real >( params.pointWeight * pointDepthAndWeight.value()[1] ) , true , params.depth , 1 );
+      |                                                                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1635:101: error: no member named '_remapIndices' in 'PoissonRecon::SparseNodeData<PoissonRecon::DualPointInfo<3, float, float, 0>, ParameterPack::Pack<unsigned int, 0, 0, 0>>'
+ 1635 |                         void _remapIndices( ConstPointer( node_index_type )oldNodeIndices , size_t newNodeCount ){ iData._remapIndices( oldNodeIndices , newNodeCount ); }
+      |                                                                                                                    ~~~~~ ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1605:4: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::_remapIndices' requested here
+ 1605 |                         ApproximatePointInterpolationInfo( ConstraintDual constraintDual , SystemDual systemDual , bool constrainsDCTerm ) : _constraintDual( constraintDual ) , _systemDual( systemDual ) , _constrainsDCTerm( constrainsDCTerm ) { }
+      |                         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1914:91: note: in instantiation of member function 'PoissonRecon::FEMTree<3, float>::ApproximatePointInterpolationInfo<float, 0, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>::ApproximatePointInterpolationInfo' requested here
+ 1914 |                         ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >* a = new ApproximatePointInterpolationInfo< T , PointD , ConstraintDual , SystemDual >( constraintDual , systemDual , constrainsDCTerm );
+      |                                                                                                                ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:948:78: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::InitializeApproximatePointInterpolationInfo<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>' requested here
+  948 |                                         else                            iInfo = FEMTree< Dim , Real >::template InitializeApproximatePointInterpolationInfo< Real , 0 > ( implicit.tree , *samples , Poisson::ConstraintDual< Dim , Real >( targetValue , params.pointWeight * pointDepthAndWeight.value()[1] ) , Poisson::SystemDual< Dim , Real >( params.pointWeight * pointDepthAndWeight.value()[1] ) , true , params.depth , 1 );
+      |                                                                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:3160:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1760:55: error: no viable overloaded operator[] for type 'SparseNodeData<DualPointInfo<3U, float, float, 0U>, IsotropicUIntPack<3U, FEMTrivialSignature>>' (aka 'SparseNodeData<DualPointInfo<3U, float, float, 0U>, Pack<unsigned int, 0U, 0U, 0U>>')
+ 1760 |                         DualPointInfo< Dim , Real , T , PointD >& _pData = iInfo[node];
+      |                                                                            ^~~~~ ~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1844:2: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_densifyInterpolationInfoAndSetDualConstraints<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>>' requested here
+ 1844 |         _densifyInterpolationInfoAndSetDualConstraints( iInfo , samples , constraintDual , maxDepth , adaptiveExponent );
+      |         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1915:20: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_densifyInterpolationInfoAndSetDualConstraints<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>>' requested here
+ 1915 |                         a->iData = tree._densifyInterpolationInfoAndSetDualConstraints< T , PointD >( samples , constraintDual , maxDepth , adaptiveExponent );
+      |                                         ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:948:78: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::InitializeApproximatePointInterpolationInfo<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>' requested here
+  948 |                                         else                            iInfo = FEMTree< Dim , Real >::template InitializeApproximatePointInterpolationInfo< Real , 0 > ( implicit.tree , *samples , Poisson::ConstraintDual< Dim , Real >( targetValue , params.pointWeight * pointDepthAndWeight.value()[1] ) , Poisson::SystemDual< Dim , Real >( params.pointWeight * pointDepthAndWeight.value()[1] ) , true , params.depth , 1 );
+      |                                                                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:3160:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1770:37: error: no member named 'size' in 'PoissonRecon::SparseNodeData<PoissonRecon::DualPointInfo<3, float, float, 0>, ParameterPack::Pack<unsigned int, 0, 0, 0>>'
+ 1770 |         ThreadPool::ParallelFor( 0 , iInfo.size() , [&]( unsigned int , size_t i )
+      |                                      ~~~~~ ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1781:54: error: type 'SparseNodeData<DualPointInfo<3U, float, float, 0U>, IsotropicUIntPack<3U, FEMTrivialSignature>>' (aka 'SparseNodeData<DualPointInfo<3U, float, float, 0U>, Pack<unsigned int, 0U, 0U, 0U>>') does not provide a call operator
+ 1781 |                         DualPointInfo< Dim , Real , T , PointD >* pData = iInfo( node );
+      |                                                                           ^~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1778:2: note: while substituting into a lambda expression here
+ 1778 |         {
+      |         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1844:2: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_densifyInterpolationInfoAndSetDualConstraints<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>>' requested here
+ 1844 |         _densifyInterpolationInfoAndSetDualConstraints( iInfo , samples , constraintDual , maxDepth , adaptiveExponent );
+      |         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1915:20: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_densifyInterpolationInfoAndSetDualConstraints<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>>' requested here
+ 1915 |                         a->iData = tree._densifyInterpolationInfoAndSetDualConstraints< T , PointD >( samples , constraintDual , maxDepth , adaptiveExponent );
+      |                                         ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:948:78: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::InitializeApproximatePointInterpolationInfo<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>' requested here
+  948 |                                         else                            iInfo = FEMTree< Dim , Real >::template InitializeApproximatePointInterpolationInfo< Real , 0 > ( implicit.tree , *samples , Poisson::ConstraintDual< Dim , Real >( targetValue , params.pointWeight * pointDepthAndWeight.value()[1] ) , Poisson::SystemDual< Dim , Real >( params.pointWeight * pointDepthAndWeight.value()[1] ) , true , params.depth , 1 );
+      |                                                                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:3160:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1740:10: error: no viable overloaded operator[] for type 'SparseNodeData<PoissonRecon::DualPointInfo<3, float, float, 0>, IsotropicUIntPack<3U, FEMTrivialSignature>>' (aka 'SparseNodeData<PoissonRecon::DualPointInfo<3, float, float, 0>, Pack<unsigned int, 0U, 0U, 0U>>')
+ 1740 |                                 t += interpolationInfo[ node->children + c ];
+      |                                      ^~~~~~~~~~~~~~~~~  ~~~~~~~~~~~~~~~~~~
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1768:2: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_setInterpolationInfoFromChildren<PoissonRecon::DualPointInfo<3, float, float, 0>>' requested here
+ 1768 |         _setInterpolationInfoFromChildren( _spaceRoot , iInfo );
+      |         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1844:2: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_densifyInterpolationInfoAndSetDualConstraints<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>>' requested here
+ 1844 |         _densifyInterpolationInfoAndSetDualConstraints( iInfo , samples , constraintDual , maxDepth , adaptiveExponent );
+      |         ^
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:1915:20: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::_densifyInterpolationInfoAndSetDualConstraints<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>>' requested here
+ 1915 |                         a->iData = tree._densifyInterpolationInfoAndSetDualConstraints< T , PointD >( samples , constraintDual , maxDepth , adaptiveExponent );
+      |                                         ^
+C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:948:78: note: in instantiation of function template specialization 'PoissonRecon::FEMTree<3, float>::InitializeApproximatePointInterpolationInfo<float, 0U, PoissonRecon::Reconstructor::Poisson::ConstraintDual<3, float>, PoissonRecon::Reconstructor::Poisson::SystemDual<3, float>>' requested here
+  948 |                                         else                            iInfo = FEMTree< Dim , Real >::template InitializeApproximatePointInterpolationInfo< Real , 0 > ( implicit.tree , *samples , Poisson::ConstraintDual< Dim , Real >( targetValue , params.pointWeight * pointDepthAndWeight.value()[1] ) , Poisson::SystemDual< Dim , Real >( params.pointWeight * pointDepthAndWeight.value()[1] ) , true , params.depth , 1 );
+      |                                                                                                                 ^
+native\poisson\scanforge-poisson.cpp:56:77: note: in instantiation of member function 'PoissonRecon::Reconstructor::Poisson::Solver<float, 3, ParameterPack::Pack<unsigned int, 8, 8, 8>>::Solve' requested here
+   56 |     std::unique_ptr<Reconstructor::Implicit<float,3,Sigs>> implicit(Solver::Solve(stream,params));
+      |                                                                             ^
+In file included from native\poisson\scanforge-poisson.cpp:3:
+In file included from C:\tools\PoissonRecon-scanforge\Src\Reconstructors.h:35:
+In file included from C:\tools\PoissonRecon-scanforge\Src\FEMTree.h:3160:
+C:\tools\PoissonRecon-scanforge\Src\FEMTree.inl:1743:53: error: no viable overloaded operator[] for type 'SparseNodeData<PoissonRecon::DualPointInfo<3, float, float, 0>, IsotropicUIntPack<3U, FEMTrivialSignature>>' (aka 'SparseNodeData<PoissonRecon::DualPointInfo<3, float, float, 0>, Pack<unsigned int, 0U, 0U, 0U>>')
+ 1743 |                 if( hasChildData && IsActiveNode< Dim >( node ) ) interpolationInfo[ node ] += t;
+      |                                                                   ^~~~~~~~~~~~~~~~~  ~~~~
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+1 warning and 20 errors generated.
+em++: error: ''C:\tools\emsdk-scanforge/upstream/bin\clang++.exe' -target wasm32-unknown-emscripten -femscripten-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\tools\emsdk-scanforge\upstream\emscripten\cache\sysroot' -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' '-IC:\tools\PoissonRecon-scanforge\Src' -std=c++17 -O2 -fexceptions -Wno-invalid-offset -Wno-dangling-else -c 'native\poisson\scanforge-poisson.cpp' -o 'C:\Users\Shoung\AppData\Local\Temp\emscripten_temp_t40r90ml\scanforge-poisson.o'' failed (returned 1)

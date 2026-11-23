@@ -1,5 +1,86 @@
 # ScanForge MCP agent guide
 
+Scan selection uses original point/triangle slots throughout. `selection_modify`
+and `selection_saved` support point clouds as well as meshes and exclude hidden
+slots when selecting. `selection_set` also excludes hidden slots.
+
+Open Edit scan with `command_run` (`ribbon:editScan`) after `object_select`.
+`scan_selection_get` reports the editor tool, through mode, world-mm clip box,
+selected/hidden counts and selection Undo/Redo availability.
+`scan_selection_control` configures `tool`, `through` or `clip` (`null` disables),
+or performs `hide`, `isolate`, `reveal`, `undo` or `redo`. Configure options cannot
+be combined with other actions. These change selection/display state, not model
+geometry history; clip/tool/through state is also readable under
+`project_get.settings.scanSelection` and participates in revision checks.
+Configuration also accepts `angleDegrees` (0–90), `brushRadiusPx` (2–500 CSS
+pixels), and `allConnected`. These use the editor's sensitivity and brush limits.
+Boundary highlighting does not replace the facet selection: read
+`scan_selection_get.boundaryPathCount` and `boundaryCoordinateCount`, and obtain
+the exact source boundary paths through `mesh_process` with
+`operation:{kind:"scanEdit",action:"inventory",tolerance:0.001}`.
+
+Mesh `selection_edit` copy/cut/delete and the corresponding GUI actions share
+`partitionMeshSelection`. They retain exact expanded corner-normal slots and
+invalidate derived topology, fitting and display caches. Undo restores the
+complete original indexed mesh and scanner-normal carriers.
+
+`scan_select_region` is a cancellable job using the same viewport worker as GUI
+gestures. Pass rectangle/circle `start` and `end`, or brush/lasso `points` and
+`radius`, in CSS pixels relative to the viewport top-left (`viewport_get` supplies
+dimensions and camera matrices). Lasso is filled freehand; brush is an open stroke,
+with two points representing a straight stroke. `through` defaults to false;
+`operation` defaults to `replace`, with `add` and `subtract` also supported.
+Hidden slots and active clipping remain excluded. The target must be the selected,
+visible, unlocked scan and Edit scan must remain open. Poll `job_get`, cancel with
+`job_cancel`, and read exact source slots through `selection_get`'s artifact.
+Failed, cancelled or stale-revision jobs publish no selection. One successful
+selection change records one selection-history step. Obtain a fresh revision
+after camera/editor changes and use a new request ID after correcting a rejected
+request; exact retries retain the original receipt.
+
+The internal new-draft initializer now distinguishes constructor/scene seeding
+from typed input writes, including the native zero-span line behavior. It does
+not enable public construction commands or an agent-selectable completion word.
+The common GUI/MCP editor and source-bound scene admission remain unfinished.
+
+The internal reference geometry bounds adapter preserves native Float32 point
+padding and line endpoint tie rules separately from precise semantic bounds.
+It is not a whole-scene bounds provider and does not enable construction tools.
+Scene filtering, placement and special-source admission remain required before
+the common editor can use it for public GUI/MCP construction.
+
+Stored semantic point/line inputs can now be bound internally by exact source
+identity to the shared construction evaluator. Common sources retain canonical
+order; line records retain duplicates and pick order. This reads already
+refreshed geometry, not display samples, and does not perform dependency refresh
+or enable public construction commands. Unbound source families reject explicitly.
+The existing `viewport_get` preview inspection reports the resulting display;
+source changes invalidate its owner through the shared workspace binding.
+
+Reference construction acceptance remains internal; no public construction tool
+has been added. Its numeric Apply helper uses the shared revision/mutation and
+retry machinery and one commit for cached geometry. Acceptance clears common
+dependencies, retains ordered line picks and finalizes the state to `0x100`.
+Inactive draft sources do not acquire keys. The trusted identity-migration commit
+policy remains internal and is not an MCP input parameter. Derived acceptance
+and edits requiring dependency rebuild remain
+unavailable until their shared source/editor lifecycle is implemented.
+
+Preview-producing commands return `BUSY` while a reference construction preview
+or its pending display cleanup owns the workspace. The GUI producers use the
+same admission check. Reads, selection and cancellation remain available. After
+the owning preview is released, use a fresh request ID for a previously rejected
+command: retrying the same ID and arguments returns the retained `BUSY` receipt.
+Reference construction itself remains internal and is not listed in discovery.
+
+React effect cleanup temporarily disconnects the workspace gateway and cancels
+active work. Synchronous effect replay preserves the same gateway, revision and
+request retry receipts. True workspace unmount permanently disconnects it. After
+`DISCONNECTED`, inspect the connected workspace before retrying; keep the same
+request ID and arguments when recovering an uncertain request. A new workspace
+requires a fresh inspection and revision. In-flight work from an earlier owner
+cannot publish a late result through the gateway.
+
 Settings uses a height-bounded dialog with Appearance, SpaceMouse, Scan import and
 AI agents tabs. `ui_set` accepts `settingsOpen: true` and `settingsSection`
 (`appearance`, `spacemouse`, `import` or `agents`); `application_inspect` reports the
@@ -31,6 +112,32 @@ BVH comparison index instead of failing at the native octree's node budget;
 small surfaces retain the recovered comparison behavior. Comparison never limits
 smoothing.
 
+## Average meshes
+
+The GUI's Average mesh and `mesh_process` use the same public operation. Pass
+`operation:{kind:"scanTools",operation:{kind:"averageMesh",tolerance:10}}`,
+`entityId` for one participating raw mesh and `targetIds` for one to 32 additional
+distinct raw meshes. The legacy singular `targetId` remains an alias; omit it when
+using `targetIds`. Meshes must already be aligned. The input with the most facets
+becomes the base; ties and reference contributions follow object-list order.
+
+Average creates and selects a new mesh by default, retaining every input. Explicit
+`createNew:false` retains the replacement capability and replaces the chosen base.
+The result's `average.baseEntityId` and `average.referenceEntityIds` identify the
+actual inputs; `entityIds` identifies the output. Use revision/request guards and
+poll `job_get`. Locks, cancellation, errors and one-step geometry history remain
+enforced; cancellation or failure publishes no partial result.
+
+Search tolerance is narrowed to positive finite Float32 millimetres (the existing
+application default remains 10 mm). Matches exactly at that radius and closest
+hits on an open boundary region are excluded. Each accepted surface point and
+the original base point contribute equally, with Float32 accumulation in object
+order. Original indexed vertex identities are retained during query preparation;
+duplicate seam vertices are not welded together. Plain facet streams use the
+recovered STL indexing path. The existing three-million aggregate input-facet
+limit remains. These corrections do not establish full native dialog/default or
+original-scan parity; see [the M2 ledger](M2_ACCEPTANCE.md).
+
 ## Background mesh preparation
 
 GUI and MCP imports stream the packed little-endian PLY scanner schema (XYZ and
@@ -55,8 +162,11 @@ cancellation, the same selected source can resume within its existing preparatio
 lease; disposal or replacement cancels that retry. Exceptions from import completion
 callbacks reject the import and release its lease. Tool parameters and schemas are
 unchanged. The original three-scan import and navigation replay passes under the
-existing 2 GiB diagnostic Job limit with bounded speculative admission. A longer
-replay still exceeds that cap when automatic backup encoding starts; full native
+historical 2 GiB diagnostic Job limit with bounded speculative admission. That
+longer replay exceeded its cap when automatic backup encoding started; it does
+not describe the current validation limit. The later full-history 736 MB GUI/MCP
+project round trip passes under 4 GiB in a persistent browser profile; see
+[large-project transfer evidence](LARGE_PROJECT_MCP_TRANSFER.md). Full native
 alignment remains unverified. See [import scheduling evidence](VIEWPORT_PERFORMANCE.md#imports-and-speculative-topology-preparation).
 
 Loading or selecting a raw triangle scan schedules topology preparation after
@@ -200,8 +310,30 @@ count. Hovering does not run mesh generation. Picking uses the existing display
 index for large scans; source clipping and occluding surfaces still apply.
 
 Use `landmark_edit` to begin a picked-point session and add corresponding world
-XYZ picks, then call `landmark_preview` with a fresh revision/request ID. Poll its
-job through `job_get`; preview changes no committed geometry or model history.
+XYZ picks in the same order on each object. There is no fixed pair-count cap.
+Three complete pairs automatically start a preview, and each subsequent complete
+pair recomputes it through the same GUI/MCP operation. Edits cancel superseded
+work and invalidate acceptance until a new result is ready. Poll `landmark_get`
+for `previewStatus` (`idle`, `pending`, `ready`, `error`), `previewError` and
+`pairCount`. Picks and removal remain available after preview. Unequal point
+groups do not solve and cannot be accepted. Preview changes no committed geometry
+or model history. For explicit recalculation or worker options, call
+`landmark_preview` with a fresh revision/request ID and poll its job using `job_get`.
+Reset drops the result and cancels computation, retaining picks without
+immediately restarting; Preview or another complete-pair edit restarts it.
+
+The GUI shows a large result view and two independent Fixed (top-right) and Moving (bottom-right) picking
+views. Picking views preserve original poses, numbered landmarks and their own
+rotate/pan/zoom cameras. GUI entry selects the first eligible reference; use
+**Reference object** to choose another. `landmark_get.views` reports picking-view
+`entityIds` and original-pose `markers`. `viewport_get`, `viewport_control` and
+`viewport_pick` accept optional `view: "main" | "moving" | "fixed"` (default
+`main`). The small views exist only during an active session; unavailable views
+return an operation error. `viewport_pick` is read-only: pass its world-mm hit
+coordinates to `landmark_edit` with `action: "pick"` and `entityId` to add a point.
+For a reproducible isolated reference view, supply `fixedId` when beginning.
+Unbound sessions still permit agent picks from any eligible captured reference;
+the small reference view displays only the first eligible reference.
 `landmark_get` exposes preview markers, coarse registration, surface refinement,
 execution diagnostics and selected-triangle count. Indexed meshes default to two
 logical lanes and bounded CPU parallelism; `workerCount` and `parallel` are
@@ -287,7 +419,11 @@ the usual `single-core requested` reason.
 This behavior is shared by GUI preview and `landmark_preview`. Standalone fine
 alignment still requires distinct usable fixed surfaces.
 
-`landmark_get` reports `targetScope` and ordered `refinementTargetIds`. Change scope
+`landmark_get` reports `targetScope` and ordered `refinementTargetIds`. In internal
+semantic workspaces, dependent reference points and lines preserve their CAD
+source's target eligibility under the native primitive exemption policy, just
+as planes, cylinders, cones and spheres do. The references themselves are not
+refinement surfaces. Public reference creation/import remains gated. Change scope
 with `landmark_edit { action: "target-scope", targetScope: "fixed" | "visibleScene" }`;
 this clears the preview and retains the picks. Scene target geometry, visibility,
 membership or order changes invalidate a visible-scene preview. Appearance-only
@@ -367,7 +503,30 @@ Use `backup_delete` with the selected `backupId`, `expectedRevision`, and a fres
 
 Backups are local to the paired browser origin and save changed data at 30-second intervals. Refresh or shutdown may lose work since the last completed interval. Stable project identities are shared across file copies; two tabs working on the same identity share its backup, with the last completed write taking precedence. New documents have separate identities. See [project files and recovery](PROJECT_FILES.md).
 
-Save/export and automatic backups encode numeric geometry in canonical chunks of at most 1 MiB and stream compressed payloads into Blobs. MCP project export uses the same codec, with unchanged project formats, geometry hashes, history and cancellation. This bounds numeric staging, not total memory: compressed output, browser storage and BRep text remain additional allocations. No new parameter is needed.
+GUI and MCP document replacement release the previous pending automatic-backup
+snapshot immediately. Saved-state change detection does not retain old geometry
+or undo history. An already active backup can retain its snapshot until completion
+or cancellation; the 30-second save interval and recovery contracts are unchanged.
+
+Binary restoration decompresses directly into final readonly shared buffers when
+cross-origin isolation is available, avoiding a second complete decompressed
+geometry copy. GUI opening, MCP `project_import`, and `backup_restore` retain
+the same chunk hash checks, buffer aliases, history, cancellation and fallback.
+
+Browser binary project saves/exports of at least 64 MiB use temporary IndexedDB backing before
+publication. MCP uploads checkpoint their accumulated bytes to the same disk
+backing at each 64 MiB boundary. Successful staging deletes the temporary database
+record; live immutable Blobs retain the bytes through browser-managed ownership.
+Storage failures preserve the previous upload and report an operation failure;
+retry from its reported size. Interrupted staging records expire after 15 minutes
+and are swept on subsequent staging. Each open/transaction has a 30-second timeout.
+Environments without IndexedDB retain ordinary Blob storage. Logical artifact
+quotas, read/upload chunk limits and the process validation cap are unchanged.
+Use a normal persistent browser profile for disk-backed large transfers. Chromium
+private/incognito contexts keep IndexedDB Blobs in memory; they do not provide
+the same memory reduction, even when IndexedDB APIs are available.
+
+Save/export and automatic backups encode numeric geometry in canonical chunks of at most 1 MiB and stream compressed payloads into Blobs. Completed payloads are checkpointed through temporary Blob storage when the pending batch reaches 64 MiB, before encoding further payloads. A batch can exceed that threshold by its last payload; this is not a total-memory cap. MCP `project_export` uses the same codec, with unchanged project formats, geometry hashes, history and cancellation. A checkpoint failure rejects the save/export; automatic backups retain the previous successful file. Persistent profiles provide disk backing; private contexts and hosts without IndexedDB retain memory backing. Browser storage, individual compressed payloads and BRep text remain additional allocations. No new parameter is needed.
 
 1. Read `scanforge://agent-guide`, then discover tool schemas.
 2. Call `project_get`. Retain object IDs, feature IDs, units and the response's top-level `revision`.
@@ -378,20 +537,58 @@ Save/export and automatic backups encode numeric geometry in canonical chunks of
 
 Never infer that an operation succeeded from a status message or transport success. Check `ok`, the job's terminal status and its result. Read the model state after modeling changes.
 
-Project and backup restoration decode, validate and prepare current mesh display buffers in one leased background worker before replacing the workspace. GUI opening and MCP `project_import`/`backup_restore` share cancellation, failure handling and the two-minute lease. Failed or cancelled restoration preserves the open project. Large ordinary numeric arrays travel in lossless Float64 staging buffers with cooperative reconstruction, avoiding blocking structured-clone work during restore and automatic backup. Only newly created staging buffers or decoded worker-owned buffers transfer; existing authored and history buffers stay attached. Binary format 2/3, source geometry, scanner normals, selections and undo/redo history remain unchanged. Derived display normals preserve previous restore shading. See `docs/PROJECT_LOAD_PERFORMANCE.md` for measurements and limits.
+Project and backup restoration decode, validate and prepare current mesh display buffers in one leased background worker before replacing the workspace. GUI opening and MCP `project_import`/`backup_restore` share cancellation, failure handling and the two-minute lease. Failed or cancelled restoration preserves the open project. Large ordinary numeric arrays travel in lossless Float64 staging buffers with cooperative reconstruction, avoiding blocking structured-clone work during restore and automatic backup. Only newly created staging buffers or decoded worker-owned buffers transfer; existing authored and history buffers stay attached. Source geometry, scanner normals, selections and undo/redo history remain intact. Indexed display buffers borrow stored computed normals; older active indexed meshes initialize absent computed normals from their topology. See `docs/PROJECT_LOAD_PERFORMANCE.md` for earlier measurements and limits.
+
+GUI Save, automatic backup and MCP `project_export` share concurrent encoding of
+the same immutable snapshot. Each caller retains its own cancellation: cancelling
+one export leaves another caller's backup running; the last cancellation retires
+the worker. Different geometry, history, metadata or authoring state remains
+serialized separately. The last completed file has only a weak cache reference;
+existing consumers own its lifetime, and a collected result is encoded afresh.
+
+GUI opening, MCP `project_import` and `backup_restore` can reuse matching immutable
+shared chunk backing from an earlier restore. The decoder still reads every
+incoming payload, compares its bytes and verifies its SHA-256 before publication.
+A differing cached chunk receives independent backing without modifying its old
+consumer. The browser keeps at most 128 weak backing references; this cache does
+not retain a closed project, and page exit clears it. Hosts without cross-origin
+isolation/shared buffers retain ordinary independent decoding. Public schemas,
+geometry, history, revision checks, cancellation and failure recovery are unchanged.
 
 Normal buffers may use compact Float32 storage internally. GUI opening and MCP `project_import` / `project_export` share validation and retain exact binary normal values, including signed zero; JSON exports continue to use numeric arrays. No format version changes. The connected Global Fine Align controller now has the bounded raw-mesh [preview workflow](#global-fine-align-preview-apply-and-cancel); exact-CAD support and complete original-application parity remain gated. It is distinct from the supported `mesh_process` coarse-registration kind `global`. See `docs/NATIVE_GLOBAL_FINE_ALIGNMENT.md`.
 
-Global Fine Align derives command-local alignment normals from each mesh's
-topology during shared GUI/MCP preparation. Imported object normals, including
-scanner-provided PLY normals, remain preserved on the source object.
-The same preparation excludes boundary vertices from source sampling using
-command-local mask-1 flags derived from the native directed-edge neighbor
-semantics. This applies to GUI and `global_alignment_preview`; original topology,
-positions and scanner normals remain unchanged. Flags cost four bytes per indexed
-vertex. Adjacency scratch is checked as allocated under the existing 512 MiB
-preparation admission; a storage failure settles the preview job without applying
-geometry. See `docs/GLOBAL_ALIGNMENT_SOURCE_FLAGS.md` for evidence and limits.
+Undo/Redo and timeline selection initialize missing computed normals when an older
+indexed history entity becomes active. GUI and MCP history operations share this
+path; retained snapshots and authored scanner values stay unchanged. Existing
+computed fields are reused, and `object_get` exposes the activated state.
+
+Indexed meshes may contain `geometryNormals`, separate from scanner-authored
+`normals`. It stores three finite Float32 computed components per original vertex,
+including unused vertices. Import initializes this field with native angle-weighted
+normals. Alignment and rigid transforms rotate the stored vectors through each
+Float32 stage without regenerating or normalizing them. JSON exports represent the
+field as a numeric array; binary project/backup codecs retain its exact Float32
+values in current, undo and redo records without a format-version change.
+`object_get(includeGeometry:true)` includes the field in its geometry artifact;
+`object_geometry_digest` exposes `indexedMesh.geometryNormals` independently from
+`indexedMesh.normals`, with the existing count, encoding, storage and SHA-256 data.
+
+Global Fine Align borrows validated stored computed normals during shared GUI/MCP
+preparation. Legacy indexed meshes without the field derive it in a disposable
+worker and retain it on private acceptance entities; preview/cancel never changes
+the original objects. The preparation summary reports actual derivation workers,
+which can be zero for already prepared meshes. Malformed computed fields reject
+preparation. Scanner-provided PLY normals remain separate and preserved.
+The same preparation uses source mask `0`, retaining boundary vertices in source
+sampling. `global_alignment_state` and the preview result expose this value in
+`inputSummary.mask`. The earlier mask-1 boundary exclusion confused the native
+target-index stride with its separate source mask. GUI and
+`global_alignment_preview` share the correction; original topology, positions
+and scanner normals remain unchanged. Preparation returns zeroed flags
+at four bytes per indexed vertex without building boundary adjacency. Existing
+512 MiB preparation admission and failure handling remain enforced; a storage
+failure settles the preview job without applying geometry. See
+`docs/GLOBAL_ALIGNMENT_SOURCE_FLAGS.md` for evidence and validation limits.
 
 ### Response contract
 
@@ -444,6 +641,13 @@ Call `screenshot_capture` with:
 The tool returns an MCP `{ "type": "image", "data": "...", "mimeType": "image/png" }` content block that a vision-capable agent can view directly. Structured metadata includes dimensions, scope, timestamp, redaction policy and an image artifact ID. `scope: "viewport"` focuses on geometry; `format: "jpeg"` and `quality: 0.85` reduce transfer size. Read the artifact through `artifact_read` when saving or comparing image bytes, then delete it when no longer needed.
 
 Captures render the current WebGL frame and the application DOM, including visible panels and dialogs. They exclude password/token controls, browser chrome, OS dialogs and other applications. DOM-to-image rendering can differ from browser-native screenshots, especially for nonembedded fonts. Limits are 2048 pixels per output dimension, 1 MiB per encoded image, 16 megapixels of source DOM area, 8 MiB for the frozen source viewport PNG and a ten-second deadline. `CAPTURE_TOO_LARGE` requires smaller dimensions or JPEG; `CAPTURE_BUSY` means retry after the current capture; `CAPTURE_UNSUPPORTED_ASSET` rejects remote assets; `CAPTURE_FAILED`/`CAPTURE_UNAVAILABLE` require inspecting browser readiness. There is no saved-thumbnail fallback.
+
+The world-origin axes and plane-picking guides scale with camera zoom and viewport
+height in both projections. Each axis uses a 60 CSS pixel length at origin depth
+(its projected length varies with orientation); the origin dot stays six pixels
+across. GUI navigation and `viewport_control` share this rendering, observable via
+`screenshot_capture`. `settings_set.patch.originVisible` controls visibility; these
+guides do not change world coordinates, sketch planes, or modeling history.
 
 `viewport_get` reports projection, camera position/target/up/zoom, scene bounds and viewport dimensions. Use `viewport_control` with a fresh revision and request ID:
 
@@ -516,17 +720,20 @@ Supply it to `cad_create` with `name`, the current `expectedRevision`, a fresh `
 
 Upload bytes through `artifact_put` with the original filename, base64 content and `offset:0`. For files larger than a chunk, append subsequent chunks with the returned `artifactId`, the same filename and the exact current byte offset. Each chunk is at most 1 MiB decoded; do not send the entire large scan as one MCP message. An empty first chunk can create the upload handle.
 
-`capabilities_get.limits` reports `artifactBytes` (512 MiB aggregate),
+`capabilities_get.limits` reports `artifactBytes` (1 GiB aggregate),
 `artifactCount` (64 handles), `artifactChunkBytes` (1 MiB) and
 `artifactLeaseSeconds` (900 seconds of inactivity). Delete transfer artifacts
 when finished to release capacity. An expired upload cannot be resumed; start
 a new handle and upload from offset zero. Rejected appends preserve the retained
 artifact. These are logical transfer-byte limits, not process-memory guarantees;
-the shared importer's geometry and worker admissions still apply.
+the shared importer's geometry and worker admissions still apply. The larger
+transfer budget admits full-history aligned projects above 512 MiB without
+changing the 4 GiB validation-process cap. Download and delete an exported
+artifact before uploading another large copy to avoid charging both copies.
 
 Call `project_import` with the completed `artifactId`, `unit:"mm"`, current revision and request ID. Units may be `mm`, `cm`, `m`, `in`, or `ft`; all workspace coordinates are millimetres. Importing a project requires `replace:true`, which replaces the workspace and its authoring/history. Export unsaved work before replacement. STEP/IGES/BREP units follow the existing CAD importer.
 
-For several scans/CAD files, use `project_import_batch` with `artifactIds` in import order, a common `unit`, current `expectedRevision`, and a fresh `requestId`. GUI drop and file-picker imports use the same sequential queue. Workers prepare smooth normals, bounds and statistics before transfer; import completion waits for a viewport draw and paint opportunity. Full resolution is retained unless sampled preview was explicitly chosen. Each completed file is an independent model undo step. A batch returns `completed` import results plus `failed` entries containing the original zero-based file `index` and `error`. A failed file does not discard successful imports; cancellation stops the remaining queue and retains committed objects. Inspect `project_get` after cancelling. Project files must be opened separately; they cannot be mixed into a batch.
+For several scans/CAD files, use `project_import_batch` with `artifactIds` in import order, a common `unit`, current `expectedRevision`, and a fresh `requestId`. GUI drop and file-picker imports use the same bounded parallel scheduler. Workers prepare smooth normals, bounds and statistics before transfer; import completion waits for a viewport draw and paint opportunity. Full resolution is retained unless sampled preview was explicitly chosen. Each completed file is an independent model undo step. A batch returns `completed` import results plus `failed` entries containing the original zero-based file `index` and `error`. A failed file does not discard successful imports; cancellation stops the remaining queue and retains committed objects. Inspect `project_get` after cancelling. Project files must be opened separately; they cannot be mixed into a batch.
 
 GUI scan imports and MCP `project_import` / `project_import_batch` preserve file
 coordinates by default. Set `placeAtOrigin:true` to center each scan's XY bounds
@@ -545,11 +752,25 @@ are retained. Each accepted import still creates its own undo step.
 
 PLY mesh import retains supplied finite vertex normals and expands them in original triangle order, alongside the indexed topology. GUI import and `project_import` share the same parser/worker transfer. `object_get` with `includeGeometry:true` exposes these normals in its geometry artifact; project save/reopen retains them. Files without normals keep the existing generated display normals. This does not enable the still-unverified main Align controller.
 
-`object_select` accepts `toggle:true` (Ctrl/Command-click) and `range:true` (Shift-click); combining them adds a range. Range order follows the Objects list and skips locked/unselectable objects. The range anchor is the last ordinary/toggle selection; repeated Shift-clicks retain it. `project_get` reports `selectedIds`, `selectedId` (active object for single-object tools), and `selectionAnchorId`. Omitting `entityId` clears the object set. GUI and MCP share these semantics; selecting several objects does not make single-object modeling commands operate on every object.
+**Ctrl+A** (Command+A on macOS) in the main workspace selects all eligible objects
+in Objects-panel order, including hidden objects, and suppresses browser page-text
+selection. Locked/unselectable objects are skipped. Text inputs, dialogs, busy
+operations and mesh/sketch editing modes retain their existing keyboard behavior.
+MCP uses `object_select` with `all:true` (plus revision/request ID); do not combine
+`all:true` with `entityId`, `toggle` or `range`. The active object and range anchor
+are retained when valid, otherwise a valid selected object becomes active. This
+changes selection only and adds no modeling history. `project_get` exposes the
+resulting object set. Omitting both `entityId` and `all` still clears selection.
+
+`object_select` accepts `toggle:true` (Ctrl/Command-click) and `range:true` (Shift-click); combining them adds a range. Range order follows the Objects list and skips locked/unselectable objects. The range anchor is the last ordinary/toggle selection; repeated Shift-clicks retain it. `project_get` reports `selectedIds`, `selectedId` (active object for single-object tools), and `selectionAnchorId`. Omitting both `entityId` and `all` clears the object set. GUI and MCP share these semantics; selecting several objects does not make single-object modeling commands operate on every object.
 
 Ctrl+Z/Ctrl+Y use model history in the main workspace. Mesh selection uses its local undo/redo while a local step exists, then falls back to model history. Text fields and modal dialogs keep their native keyboard behavior. MCP retains explicit `history_undo`, `history_redo`, and triangle-selection operations.
 
 Press **V** to toggle each selected object's visibility, retaining the object selection. The entire set changes atomically, using the existing display behavior outside modeling history. Agents use `object_visibility_toggle` with optional `entityIds`; omitting IDs uses the current object selection. Explicit IDs support hidden and locked objects because visibility is a display setting. Empty/stale targets fail before mutation. Geometry and triangle selections remain unchanged. Typing, visible dialogs and busy operations keep V inactive.
+
+**Scan Data → Colors → Auto colorize** assigns a different solid `#RRGGBB` sRGB object color to every object in scene order, including hidden and locked objects. It starts with a restrained CAD-style palette and extends it deterministically, checking uniqueness after RGB quantization. Repeating on an unchanged scene keeps the same assignments; adding, removing or reordering objects can change subsequent assignments on the next click. Up to 10,000 objects are supported, with no partial changes for empty or oversized scenes. Object colors persist in projects. Auto colorize disables the grey/red Normals view to reveal the assigned colors immediately. Selection, opacity, geometry and captured per-point RGB buffers remain intact; captured RGB and analysis overlays retain their existing rendering precedence. This follows existing display-metadata history semantics: modeling Undo/Redo does not revert colors. Agents call `scene_auto_color` with `expectedRevision` and `requestId`, receiving `changed`, `normalsDisplay: false` and `objects: [{entityId, color}]`; `object_get` and `project_get` expose the same assigned colors. The ribbon uses that same executor and its revision, retry and busy guards. No selection is required.
+
+Press **Delete** in the main workspace to delete all selected objects in one Undo step. Text fields, dialogs, busy operations and mesh/sketch editing modes retain their own keyboard handling; holding Delete does not repeat deletion. Keyboard, ribbon and context-menu deletion use the shared `object_delete` operation. Agents can supply `entityId` for one object, `entityIds` (1–10,000 unique IDs) for a batch, or omit both to use the current object selection. Supplying both is invalid. The operation validates every target before committing: locked/missing objects, retained dependent features and split-output restrictions prevent the entire deletion. It returns deleted `entityIds`, plus the compatible `entityId` for a single target. Revision checks, retry receipts and modeling Undo/Redo remain in effect.
 
 PLY mesh imports retain original vertex order and triangle indices. Full-resolution
 binary STL imports retain connectivity reconstructed by the verified native reader
@@ -572,6 +793,149 @@ Selection-driven ICP still moves and preserves the entire source mesh. A partial
 geometry extraction does not inherit whole-object topology. Other geometry edits
 invalidate it; metadata edits retain it. A malformed or stale indexed topology in an imported project is
 rejected. Older projects and other mesh formats can lack this optional metadata.
+
+Fine alignment uses the shared GUI/MCP worker. Mesh targets use closest points
+on their visible triangles (`matching:"fullTargetSurface"`); cloud targets use
+all target points (`matching:"fullTargetPointToPoint"`). Call
+`mesh_process` with moving `entityId`, fixed `targetId`, and for example:
+
+```json
+{
+  "kind": "icp",
+  "targetRms": 0.5,
+  "overlapPercent": 60,
+  "maxDistance": 10,
+  "maxIterations": 200,
+  "sampleSize": 50000,
+  "targetSampleSize": 20000,
+  "tolerance": 0.00001
+}
+```
+
+Place that object in `operation` and supply the usual revision and request ID.
+The moving `entityId` and fixed `targetId` must identify different objects.
+All ICP options are optional: `operation:{"kind":"icp"}` uses 200 iterations,
+20,000 fitting samples, numerical tolerance 0.00001, 85% expected overlap and
+0.5 mm target overlap RMS. Omitted `maxDistance` uses the same 10 mm search
+distance as the GUI through the shared application operation.
+`targetSampleSize` is optional compatibility input and has no effect.
+
+The GUI identifies the moving scan and fixed registration target. Its primary
+accuracy controls are **Target overlap RMS (mm)** and **Expected overlap (%)**.
+**Advanced ICP settings** contains maximum iterations and the **Fitting sample
+count** slider, with the chosen count displayed beside it. Indexed surface refinement has its own **Surface refinement** menu, available
+through `ui_set.workspace: "surfaceRefinement"` or
+`command_run` with `name: "ribbon:surfaceRefinement"`. Its controls do not
+configure the ordinary ICP action. Execute it through the existing
+`mesh_process` operation `kind: "nativeRefine"`; ICP still uses `kind: "icp"`.
+Command menus use compact rows and collapsed advanced settings. A question-mark
+button beside **Fine align scans** opens structured help on hover, focus or click;
+Escape or clicking outside dismisses it without changing settings. The helper
+preserves the same ICP options and structured MCP diagnostics.
+Results show the accuracy outcome separately from whether alignment was applied,
+with overlap RMS, target RMS and whole-cloud RMS in labelled metric rows.
+Coverage stays separate from the requested overlap; additional computation
+information is available under **Diagnostics**. A plateau can report
+`converged:true` without reaching target accuracy, so the GUI success state uses
+`targetReached`. Display rounding does not change the full-precision
+`mesh_process` response; unavailable overlap RMS remains null in MCP.
+The slider supports mouse/keyboard adjustment across 3–100,000; MCP continues
+to use the same exact integer `sampleSize`. `targetRms` defaults to 0.5 mm and must be finite and
+positive. `overlapPercent` defaults to 85, must be finite and greater than zero
+and at most 100, and describes the portion of eligible source points expected
+to match. `sampleSize` is an integer from 3 to 100,000; the GUI defaults to
+20,000 and uses at most the number of eligible points. Sampling controls fitting
+cost independently of expected overlap. All visible target triangles or cloud
+points participate. Hidden fixed mesh triangles are excluded. Original indexed
+topology is retained when available and validated against render coordinates;
+meshes without indexed metadata use their current triangle soup as a surface.
+The source and fixed geometry and normal buffers are bound internally from
+workspace objects; clients cannot supply `targetSurface`, `sourceNormals` or
+`targetNormals` in `operation`.
+`targetSampleSize` remains accepted for existing clients but does not decimate
+the fine target. `tolerance` controls numerical stagnation independently of
+requested accuracy. Global coarse registration is unchanged.
+
+For compatibility, clients may supply `trimFraction` in (0,1] instead of
+`overlapPercent`; the resolved percentage is `100 * trimFraction`. Supplying
+both fails explicitly. The required overlap count is now based on **all eligible
+source points**, including for legacy fraction requests, rather than a fraction
+of only the matches already inside the search radius.
+
+For meshes, coordinate-aligned source normals are used when available; otherwise
+triangle face normals are computed. Cloud normals are optional. When source and
+fixed normals are available, correspondences require their directions to differ
+by at most 60 degrees, with source normals rotated by the trial pose. Target
+surface normals come from triangle geometry. Clouds without normals retain
+point matching without this compatibility test. `normalCompatibility` reports
+whether the test was active and `rejectedNormalPoints` counts source points
+whose closest match failed it.
+
+Final verification independently measures every eligible source point against
+the full visible target surface or cloud, including actual Float32 output storage and native composed
+cloud placement. `wholeCloudRms` (also legacy `rms`), `maxError`, and `pairs`
+include all those points without trimming or search-distance rejection.
+`overlapRms` and `overlapPoints` (also `inlierRms` and `inlierPairs`) measure the
+closest requested normal-compatible portion within `maxDistance`. `requiredOverlapPoints` is
+`max(3, ceil(evaluatedPoints * overlapPercent / 100))`. If fewer than that count
+are within the radius, overlap RMS describes the available subset,
+`overlapSatisfied` is false, and **targetReached cannot be true**, even when
+that subset's RMS is tiny. `overlapFraction` is the compatible fraction inside
+the search distance before trimming; `rejectedPoints` includes distance and
+normal rejection. Whole-cloud RMS still measures all eligible source points,
+including opposite-normal matches, so it does not establish a valid overlap.
+If no compatible points remain, `overlapRms` and legacy `inlierRms` are `null`,
+never zero; the GUI displays unavailable. Whole-cloud RMS remains measured.
+
+When normal compatibility is active and the initial compatible coverage is less
+than the requested overlap, the result is `terminationReason:"insufficientOverlap"`,
+`applied:false`, `iterations:0`, `converged:false` and `targetReached:false`.
+Geometry, native cloud pose and history remain unchanged; no replacement geometry
+is published. Lower `overlapPercent` to reflect the shared region, or improve
+the initial alignment before retrying. A large expected overlap on thin or
+partly overlapping scans can otherwise pull unrelated surfaces together.
+
+Without normal compatibility, initially insufficient distance-gated overlap may
+improve during fitting. If final verified coverage still misses the requested
+overlap, the result likewise reports `terminationReason:"insufficientOverlap"`,
+`applied:false`, `converged:false` and `targetReached:false`, retaining the actual
+iteration count. No replacement geometry or history step is published. Its
+transform and residuals describe the evaluated candidate, not a committed pose.
+
+The accuracy basis is explicitly `targetRmsBasis:"overlap"`. `targetReached`
+requires both sufficient overlap and `overlapRms <= targetRms`; whole-cloud RMS
+can remain high for partially overlapping scans. Do not compare legacy `rms`
+to `targetRms` to infer success. `terminationReason` is `targetReached`,
+`stoppedImproving`, `iterationLimit`, or `insufficientOverlap`. `converged:true` requires
+sufficient overlap and includes a plateau
+and does not by itself establish accuracy. `applied` reports whether a result was
+published. The GUI shows both RMS values and
+an insufficient-overlap warning when necessary.
+
+`registration` and `diagnostics` expose both RMS values, accuracy basis,
+resolved `overlapPercent`, requested `sampleSize`, actual `fittingSamples`,
+overlap counts/sufficiency, target, termination reason, `evaluatedPoints`, and
+`targetPoints`, `normalCompatibility`, `rejectedNormalPoints` and `applied`.
+Diagnostics identify `algorithm:fullTargetSurface` or `fullTargetPointToPoint`;
+registration uses `matching` for the same value. For meshes, `selectionOnly:true`
+uses selected visible triangles; omitting it uses all visible triangles. The
+GUI uses selected visible triangles when present, otherwise all visible ones.
+Point clouds use the whole cloud.
+
+The solver retains the best independently measured pose, prioritizing sufficient
+coverage and then overlap RMS, with whole-cloud RMS breaking ties. Every iteration independently verifies overlap accuracy across all eligible
+source points; fitting samples only bound the pose solve. This extra verification
+can increase runtime on large clouds but prevents later sampled fits from
+discarding a better measured overlap pose.
+Distances are directional source-to-target point distances and include point
+spacing and scan noise. A smaller expected overlap can fit an incorrect local
+region; it is not evidence that the estimate is correct. Start approximately
+aligned and inspect the result and coverage.
+
+The conservative extra workspace estimate, including index/sort scratch and
+fitting data, is limited to 256 MiB, excluding already admitted input buffers.
+Exhaustion fails explicitly; simplify scans and retry. Cancellation, revision/
+retry protection, locks, native cloud pose, topology and Undo/Redo are preserved.
 
 For recovered surface refinement, call `mesh_process` with moving `entityId`,
 fixed `targetId`, and `operation:{kind:"nativeRefine",sampleBudget:500,initialRadius:10}`.
@@ -615,7 +979,21 @@ references** panel in Object properties. Pass `entityId`, optionally `centerAt`
 (1–100, default 50). This native job returns a `jobId`; use `job_get` to await
 completion and `job_cancel` to cancel. It returns `units`, `total`, `nextOffset`
 and reference records with stable object-local IDs, kind, source, point,
-direction and optional length. CAD records include face index and the matching
+direction and optional length. Semantic reference points and lines, when present
+in an internal workspace, return `source: "referenceConstruction"` with IDs
+`<entityId>/reference/point` and `<entityId>/reference/direction`. Points copy
+stored XYZ; lines expose the existing datum adapter's finite-segment midpoint,
+raw direction and nonnegative stored extent as `length` (retaining signed zero).
+A line does not also expose
+a point constraint. `centerAt` has no effect on these stored point/line sources.
+Invalid semantic payloads and nonfinite derived midpoints fail the job without
+changing the source. These IDs can bind `alignment_preview` and `alignment_apply`
+for supported moving scans/CAD; reference constructions remain read-only sources,
+including when locked. The GUI source selector and properties inspection use the
+same discovery path. Creation and project import remain gated pending the rest
+of construction integration and rendered/native acceptance. Historical numerical
+fixtures cover the adapter; this is not a new native GUI capture.
+CAD records include face index and the matching
 display triangle range. Fitted primitives expose only supported reference types;
 unsupported CAD surfaces remain explicit unsupported records. When an exact
 body also retains fitted primitive metadata, both sources are listed with
@@ -770,7 +1148,7 @@ This shared workflow does not establish numerical parity with the native fitter.
 
 - One operation admission lane protects the owning model. Lightweight state reads and job/artifact tools remain available while a job runs. A second geometry operation returns `BUSY`.
 - Jobs expire after 15 minutes; mesh/surface/import workers also retain their existing shorter inactivity/hard leases. CAD retains its existing 90-second per-operation timeout. Cancellation is cooperative: synchronous native CAD may finish before its output is discarded and the lane is released. Poll the terminal job status; do not assume `job_cancel` completed native cleanup immediately.
-- The latest 32 geometry jobs are retained. Artifact storage is limited to 64 artifacts totaling 512 MiB, with a 15-minute inactivity lease and 1 MiB decoded upload chunks. These are automation transfer limits; they do not change the shared importer's geometry/worker admissions or the editor's manual file limits. Delete completed transfer artifacts before the next large upload when needed.
+- The latest 32 geometry jobs are retained. Artifact storage is limited to 64 artifacts totaling 1 GiB, with a 15-minute inactivity lease and 1 MiB decoded upload chunks. These are automation transfer limits; they do not change the shared importer's geometry/worker admissions or the editor's manual file limits. Delete completed transfer artifacts before the next large upload when needed.
 - Primitive fits use at most 20,000 sampled vertices. Point-cloud selection slots identify XYZ records; mesh selection slots identify facets. Existing `analysis_fit` arithmetic is retained: `selectionOnly:true` extracts selected coordinates into Float32 storage before sampling; omitted/false uses original whole-source coordinates. Hidden metadata does not independently filter this primitive-fit operation. GUI empty selection retains whole-input fallback, while explicit MCP selection requires a nonempty mask. Synchronous section/deviation analysis is capped at 250,000 triangles; reduce a separate copy or a supported selected region when needed. Modeling estimates are not certified metrology.
 - Locked objects and affected locked dependents cannot be edited. Geometry changes invalidate stale triangle selection/authoring where applicable. Individual split outputs cannot be deleted alone.
 - Edge/face references remain kernel indices. Refresh state and revision after topology changes. Persistent topology naming is not implemented.
@@ -832,9 +1210,129 @@ transaction is constant-time. Undo/Redo, preview discard and project recovery
 retain the pose. Geometry-changing edits discard inherited placement when they
 replace the world-coordinate buffers. Binary exports containing posed clouds use
 manifest version 3, or version 4 when cloud attributes are present, and share
-local buffers across history; the reader also accepts version 2. JSON exports
-include both world compatibility geometry and placement, using wire version 2
-when cloud attributes are present.
+local buffers across history; the reader also accepts version 2. Construction
+identity metadata selects binary manifest version 5, which also preserves cloud
+attributes and placement. JSON exports include both world compatibility geometry
+and placement, using wire version 2 for cloud attributes or version 3 for
+construction identity metadata.
+
+Ordinary objects may carry a persisted `constructionOrderKey`, exposed by
+`object_get` as 32 lowercase hexadecimal characters. It is read-only through
+`object_update`; duplicate an object through `object_duplicate` to receive a new
+identity. GUI duplication uses the same operation. Project save/reopen and model
+Undo/Redo preserve these keys, and duplicate or malformed keys within one scene
+are rejected. Keys may recur across different history states for the same object.
+
+Point/line reference construction remains under implementation. Its internal
+codecs preserve precise semantic geometry and recipes, but GUI project opening,
+MCP `project_import` and `backup_restore` reject files containing these objects
+in the current scene, Undo history or Redo history. The failure leaves the open
+workspace intact and reports that reference construction objects are not yet
+supported. Such files must wait for reference rendering and operation support;
+changing their version tags or removing semantic metadata is not a migration.
+No reference construction command is advertised yet.
+
+The internal cached-session core now checks versions and a 60-second lease and
+consumes an exact cached Apply proposal. Public session commands, source
+resolution and editor integration are still pending; agents cannot start these
+sessions yet. See [session evidence](evidence/reference-construction-session-20261024.json).
+
+The internal workspace binding preserves selection-only changes while retiring
+cached results after model/history changes. It follows immutable geometry-carrier
+publication and compares precise reference payloads through the lossless codec;
+it does not hash scan buffers or admit native sources. Public session integration
+is still gated. See [binding evidence](evidence/reference-construction-binding-20261024.json).
+
+An internal host preview owner now supplies timer expiry, owner-scoped release,
+display-restoration failure handling and cleanup-pending diagnostics after a
+committed Apply. Its callbacks now reach the production viewport and stable host
+proxy, but public session commands remain unavailable. See
+[owner evidence](evidence/reference-construction-preview-20261024.json) and
+[adapter evidence](evidence/reference-preview-adapter-20261024.json).
+
+When an internal construction preview is present, `viewport_get` includes
+`referenceConstructionPreview` with `ownerId`, `state` (`ready` or `retiring`),
+`pendingDisposals`, `units: "mm"`, geometry, lossless `geometryEncoding` and bounds.
+The preview is excluded from project/history counts and object picking.
+Application inspection reports its `referenceConstruction` preview flag, including
+retained cleanup. Timer expiry and API disposal now release this actual display;
+failed cleanup stays owner-scoped for retry. This does not advertise a way to
+begin/edit/apply a construction yet.
+
+Production semantic display cleanup now retries unfinished detach/geometry/material
+phases and staged replacement retirement. Shared GUI/MCP viewport picking remains
+consistent after recovery. This is verified with real WebGL fault injection;
+the complete construction preview adapter and public sessions remain gated. See
+[display cleanup evidence](evidence/reference-display-cleanup-20261024.json).
+
+An isolated rendered-viewport fixture verifies existing `project_get`,
+`object_get`, `viewport_get`, `viewport_pick` and `viewport_control` with semantic
+references. This does not open project admission or construction authoring.
+See [rendered evidence](evidence/reference-rendered-viewport-20261024.json).
+
+The internal projected-candidate selector returns an original index only. The
+earlier CAD projection-to-axis composition was removed: correspondence between
+its provider paths was unestablished. No reference construction tool was exposed
+or removed. Source/provider resolution and shared lifecycle remain unfinished.
+See [the correction evidence](evidence/reference-projection-selection-20261024.json).
+
+Internal integration fixtures now expose stored reference common-source links
+through existing `alignment_targets` dependency discovery. Transitive references
+are reported in `dependentIds`/`references`; semantic objects remain blocked
+movement targets. This does not enable reference import or authoring. Ordered
+pick records alone do not create dependency links. See
+[dependency evidence](evidence/reference-dependencies-20261024.json).
+
+The internal shared average-line evaluator skips record binding when its common
+source set is empty, retaining definition validation and prior-endpoint
+finalization. Pair construction still requires record binding. This does not open
+the construction admission gate. See
+[the focused evidence](evidence/reference-empty-average-20261024.json).
+
+The reference inspection contract is implemented for integration testing while
+that admission gate remains closed. `object_get` and `project_get` report semantic
+`points`, `lines`, `triangles` and Float64 `bounds.min/max` in millimeters.
+`reference.geometry` and `reference.definition` contain readable saved values;
+`geometryEncoding` and `definitionEncoding` retain exact numeric bits, including
+signed zeros, across JSON transport. `includeGeometry` returns a geometry artifact
+with `units`, `semantic` and `encoding`, rather than an empty triangle buffer.
+The encoded form is authoritative when comparing bits.
+
+`reference.evaluation` reports `{status:"stored", outcome:null}` because the
+persisted internal completion word does not identify the last evaluation outcome.
+Inspection does not evaluate the recipe or claim a successful/fallback result.
+`sourceBindings` reports `identity-matched`, `missing-object`, `unassigned-key` or
+`identity-mismatch` in saved common-source order. `recordBindings` retains each
+line record's index and object presence, including duplicates; presence does not
+establish a resolved geometric pick. Inspection never assigns keys or repairs
+links. Mesh-copy, sampled analysis/editing and element-selection paths reject
+semantic references before worker dispatch or mutation. These contracts do not
+enable creation, import or dependency propagation.
+
+The GUI geometry inspector and status bar use these same semantic counts and
+precise bounds. A reference shows point/line counts and its position or bounds;
+it does not show triangle vertices, surface area or mesh volume. Bounds-derived
+display statistics refresh when the semantic payload changes, even if the empty
+display carrier is reused. These display centers are bounding-box centers, not
+the datum adapter's arithmetic convention. `ui_set` rejects brush/section modes
+and sampled-geometry panels for reference selections before changing interface
+state; choose a sampled mesh/cloud or CAD object for those tools. GUI navigation
+uses the same validator. Element selection and section analysis also retain
+their shared sampled-geometry rejection. Reference imports remain gated and
+server-rendered inspector tests do not establish rendered/native GUI acceptance.
+
+Reference viewport integration remains behind that import gate. Its point/line
+display path is separate from triangle meshes and preserves authoritative
+Float64 bounds for scene and object framing. Display vertices use Float32 offsets
+from the stored start/point; offsets outside finite Float32 range fail explicitly
+without replacing saved geometry. Canvas and `viewport_pick` use precise semantic
+hit points and report `referenceKind:"point"|"line"`, `triangleIndex:null` and no
+cloud `pointIndex`. Visibility, locking, selectability and clipping affect hits;
+visible locked objects still contribute to the scene-scaled hit tolerance.
+Reference picks remain outside triangle/point-cloud brush selection. Decorative
+CAD edge lines do not become semantic reference hits. These CPU scene/raycast
+contracts have automated coverage; rendered GPU/native acceptance, GUI statistics
+and datum consumers remain outstanding.
 
 The first alignment of a cloud loaded from a JSON project retains the active
 point selection while converting local storage to Float32. Subsequent poses and
@@ -890,11 +1388,45 @@ Preview/Apply. Identity placement preserves recipes and needs no baking.
 
 ### Command-specific tool panels
 
-`ui_set.workspace` accepts individual command panels: `fineAlign`, `repairMesh`, `segmentMesh`, `smoothMesh`, `decimateMesh`, `globalAlignment`, `landmarkAlignment`, `loft`, `sweep`, `fillet`, `chamfer`, `surfaceOffset`, `sewSurfaces`, `shell`, `surfaceThicken`, `splitSolid`, `linearPattern`, `circularPattern`, `mirrorBody`, `extrude`, `revolve`, and `boolean`. Panels share the inspector layout but mount only controls relevant to the active command. `application_inspect` reports that specific workspace and its accessible controls. Legacy `processing`, `advancedCad`, and `reconstruct` navigation resolves to `repairMesh`, `loft`, and `extrude`, respectively. Existing mesh and CAD semantic operations are unchanged.
+`ui_set.workspace` accepts individual command panels: `fineAlign`, `surfaceRefinement`, `repairMesh`, `segmentMesh`, `smoothMesh`, `decimateMesh`, `globalAlignment`, `landmarkAlignment`, `loft`, `sweep`, `fillet`, `chamfer`, `surfaceOffset`, `sewSurfaces`, `shell`, `surfaceThicken`, `splitSolid`, `linearPattern`, `circularPattern`, `mirrorBody`, `extrude`, `revolve`, and `boolean`. Command panels share compact title strips with close controls at the right edge, consistent option rows and action buttons, and a single outer border. Long menus scroll within the panel. This also applies to standalone alignment, sketch-section and surface-fit dialogs; their title close buttons invoke the same cancel operations as their existing Cancel actions. Panels mount only controls relevant to the active command. `application_inspect` reports that specific workspace and its accessible controls. Legacy `processing`, `advancedCad`, and `reconstruct` navigation resolves to `repairMesh`, `loft`, and `extrude`, respectively. Existing mesh and CAD semantic operations are unchanged.
 
 Primitive fit controls are available in the `fit` workspace. Point-cloud reduction and noise controls use `pointReduce` and `pointNoise`; GUI Reduce polygons / Reduce noise routes to these when a point cloud is selected. Their existing semantic `mesh_process` point-cloud operations remain available. Unsupported mesh-only commands report a mesh prerequisite instead of opening an unrelated point-cloud editor.
 
-`objectColor` opens the focused color control; `properties` retains the complete object inspector. Existing `object_update` color changes are unchanged.
+`objectColor` opens the focused color control; `properties` retains the complete object inspector.
+
+**Adaptive point display:** Auto density is enabled by default for point clouds,
+including older projects. Set `object_update` patch fields `pointAutoDensity`
+(boolean, default true) and `pointDensity` (10–100 percent, default 100); both are
+available in the GUI display panels through the same operation. Higher density
+shows more points. Disabling Auto density shows every eligible point. Read
+effective settings from `object_get`. Main `viewport_get.pointCloudDisplay`
+reports `entityId`, `autoDensity`, `density`, `eligiblePoints` (excluding hidden
+slots), `sampleFraction`, `estimatedDisplayedPoints`, and `samplingMethod`
+(`stable-sample` or `full`). Compatibility fields `cellSizePx` and
+`maxScreenOffsetPx` are always null and zero: there is no display grid or point
+displacement. Count estimates are before clipping/occlusion, not exact selected
+vertices or GPU primitive counts. Explicit saved density and Auto on/off choices
+are preserved; absent values use 100% with Auto density enabled.
+
+The uniform screen-grid display has been reverted. Adaptive display uses a
+deterministic original-vertex-ID hash to select a stable nested sample. Retained
+points keep their original rendered positions, RGB and depth. Zooming in raises
+the budget; density scales projected area divided by `(pointSize+1)^2`, with a
+256-point budget floor. Sparse clouds and near-plane intersections retain full
+display. Auto density off shows every eligible point. Hidden indexing, picking,
+measurement, processing and exports remain full resolution. Very small isolated
+features may require higher density or full display. This does not build a spatial
+LOD tree or avoid processing source vertices on the GPU. Settings persist through
+projects, backups and modeling undo. MCP revision/retry protection is unchanged.
+
+Point clouds expose **Point size (px)** in both display panels (1–10 screen pixels, default 1). New ASC imports start in solid lime green `#aaff00`, including files with white or other RGB values; imported RGB stays available. For clouds with RGB, **Point colors** switches between file RGB and solid object color. Choosing an object color in the GUI also selects solid mode. The shared MCP operation is `object_update` with `patch: {pointSize: 1, pointColorMode: "solid", color: "#aaff00"}` plus the usual `entityId`, `expectedRevision`, and unique `requestId`. `pointColorMode: "source"` restores file RGB, falling back to object color when RGB is absent. `object_get` returns effective `pointSize` and `pointColorMode`; invalid sizes/modes and point-option updates to non-cloud objects fail atomically. RGB bytes and geometry remain unchanged. Display options persist through JSON/binary save, backups and modeling undo. On project/backup load, legacy clouds with no explicit `pointColorMode` and a previous white (`#ffffff`) or neutral (`#a6a6a6`) default migrate to solid green, including retained history. Explicit saved solid/source modes and other custom colors are preserved. Old projects otherwise use 1 px and source mode when fields are absent.
+
+Project import and backup restore frame the restored visible geometry after it is
+published to the viewport and await presentation before reporting completion.
+This retains off-origin scan coordinates; it does not relocate geometry. GUI
+recovery and MCP `backup_restore` share the project import path. Use `viewport_get`
+to inspect the fitted `target` and visible `bounds`, and `object_get` to verify
+the effective color/mode.
 
 Reference-axis options are now computed by the same native-derived resolver in
 GUI and MCP. `alignment_preview` and `alignment_apply` job results include
@@ -948,8 +1480,9 @@ separate incomplete path, and the point-pair ribbon remains independently gated.
 
 ### Indexed scanner normals in alignment
 
-PLY normals are retained both as display normals and as optional `indexedMesh.normals`
-in original vertex order, including unused vertices. `object_get` with
+PLY scanner normals are retained as authored corner normals and as optional
+`indexedMesh.normals` in original vertex order, including unused vertices. These
+authored fields are distinct from the derived display-cache normals. `object_get` with
 `includeGeometry:true` returns those indexed normals in its geometry artifact.
 JSON, streamed JSON and binary project save/reopen preserve them. Older projects
 without this optional field remain supported.
@@ -960,8 +1493,12 @@ Meshes without this data use the existing native-derived normal generator.
 Paired/ICP/global and origin/reference alignment rotate indexed normals with the
 scan; metadata changes retain them and invalidated topology is discarded.
 `mesh_transform` preserves normals through rotation, without applying translation
-or uniform scale to the vectors. The GUI and MCP derive display normals from the
-same transformed indexed records. No new operation parameter is required.
+or uniform scale to the vectors. GUI and MCP alignment share the same staging
+operation, which derives display-cache normals from the transformed indexed
+geometry. It does not use the authored scanner normals for that cache. Native
+rendering parity remains unverified; see
+[the original PLY staging comparison](NATIVE_GLOBAL_ORIGINAL_PLY_STAGING.md).
+No new operation parameter is required.
 
 # Picked-point alignment session editing
 
@@ -1087,14 +1624,16 @@ When an Interactive mirror display provider is installed, `viewport_get` also re
 
 Use `interactive_alignment_get` to inspect the active session, immutable target references, Double poses, Float32 measured bounds, version, settings and worker diagnostics. `interactive_alignment_edit` with `action: begin` accepts one to 32 distinct selected raw mesh or point-cloud IDs (or the current selection). Hidden, locked, unselectable, empty, exact-CAD and parametric targets are rejected. Finish competing previews/dialogs first.
 
+In the GUI, press `R` in Main or Mesh selection mode to begin Interactive alignment for the current eligible selection. The shortcut invokes the same `interactive_alignment_edit` operation with `action: begin`; agents can begin directly through MCP and inspect the session with `interactive_alignment_get`. Typing, held keys, busy operations and active dialogs block the shortcut. Right view uses `Shift+R`; sketch mode retains `R` for three-point arcs.
+
 Subsequent edits require `sessionId`, `expectedSessionVersion`, the current project `expectedRevision` and a fresh `requestId`. Supported actions are `configure` (integer drag strength 0–100, mesh mirror preview and XY/YZ/XZ plane), `step` (rotatePositive/rotateNegative/translatePositive/translateNegative, axis 0–2 and finite value), `reset`, `currentView` and `drag`. Drag points are normalized top-left viewport coordinates; pointer capture may extend beyond the viewport. Handles 1–3 translate in YZ/XZ/XY planes, 4–6 translate X/Y/Z, and 10–12 rotate X/Y/Z. Other native handle modes are not advertised. Mirror preview requires a selected mesh; point clouds retain ordinary pose preview. Native rendering/pixel parity is not claimed.
 
 GUI and MCP share these operations and the same live session store. Preview changes GPU matrices without baking authored geometry or adding history. Measured bounds are fresh after numeric steps and Current View; fast drags, Begin and Reset do not publish measured bounds. `viewport_get.interactiveMirror` reports asynchronous mirror readiness/failure. Unrelated geometry, selection, launchers, import, history and preview edits are blocked while the session owns the scans. Camera navigation remains available.
 
-`interactive_alignment_apply` returns a cancellable job receipt. Poll `job_get`; success bakes the poses once and creates one history entry if geometry changed. Use `preview_discard` with `target: interactive` (or GUI Cancel/Escape) to cancel and release the session pool/display without changing committed geometry. It does not invoke another preview's discard handler. Refresh session versions after each accepted edit; identical requests retain the existing retry contract. See [native alignment evidence](NATIVE_INTERACTIVE_ALIGNMENT.md).
-Camera navigation picks the surface under the pointer once at orbit start and keeps that world point fixed throughout the drag, without changing the initial framing. While a visible large mesh has no ready CPU surface index, a temporary one-pixel GPU depth pass picks the visible triangle surface with transforms and clipping, without a synchronous full-scan query. Empty space uses the view-center surface, then the previous pivot/target. Large point clouds retain the camera fallback independently of measured-point selection. Ordinary selection and MCP `viewport_pick` retain their exact hit and triangle-ID contracts.
+`interactive_alignment_apply` returns a cancellable job receipt. Poll `job_get`; success bakes the poses once and creates one history entry if geometry changed. Computed viewport scale and effective grid spacing remain observable in `project_get.settings` but do not change the project revision, so camera motion or layout updates during Apply do not cause a workspace conflict. Actual project and authored setting changes still invalidate running work. Use `preview_discard` with `target: interactive` (or GUI Cancel/Escape) to cancel and release the session pool/display without changing committed geometry. It does not invoke another preview's discard handler. Refresh session versions after each accepted edit; identical requests retain the existing retry contract. See [native alignment evidence](NATIVE_INTERACTIVE_ALIGNMENT.md).
+Camera navigation picks the surface under the pointer once at orbit start and keeps that world point fixed throughout the drag, without changing the initial framing. While a visible large mesh has no ready CPU surface index, a temporary GPU depth pass picks the visible mesh, point-cloud or line surface with transforms and clipping, without a synchronous full-scan query. Each new gesture uses the pointer surface, then the view-center surface, then the center ray at the depth of the visible model bounds center; previous gesture pivots are never reused. Large point clouds use rendered depth too, including the displayed point size, transforms and clipping. Ordinary selection and MCP `viewport_pick` retain their exact hit and triangle-ID contracts.
 
-MCP `viewport_control` with `action: "rotate"` accepts optional paired `x`/`y` coordinates in normalized top-left `[0,1]` space. Supply them to rotate around that visible surface using the same surface picker and orbit correction as mouse navigation; a missing surface returns an error without moving the camera. Omit both for the existing target-centered rotation. Read `viewport_get` before/after to inspect the camera result.
+MCP `viewport_control` with `action: "rotate"` accepts optional paired `x`/`y` coordinates in normalized top-left `[0,1]` space. Supply them to rotate around that visible surface using the same surface picker and orbit correction as mouse navigation; a pointer miss uses the view-center surface and then screen center at the depth of the visible model bounds center, matching mouse rotation. Omit both for the same frame-centered rotation. The camera look-at target can have an unrelated depth after earlier surface rotations or panning and is used only if there is no model depth to resolve. Read `viewport_get` before/after to inspect the camera result.
 
 A small green rotation-center dot appears while middle-button orbit is held, at the fixed world-space pivot (or actual target fallback), and hides on release/cancellation. It is clipped outside the view and does not intercept pointer input. `viewport_get.orbitCenter` reports `source` (`mouse`, `spacemouse`, or null), world-mm `point` (or null), and `markerVisible`; this is the same state used to draw the dot.
 
@@ -1305,7 +1844,7 @@ same counts, and the GUI status bar retains the final outcome summary.
 
 ### Parallel mesh batch imports
 
-`project_import_batch` prepares up to two STL/OBJ/PLY/ASC files concurrently using the same scheduler and parser as the GUI. Scene publication is serialized, appends to the current workspace, and retains one undo step per file. Results and failures retain input order; scene insertion follows readiness order. CAD imports remain serialized and project replacement stays separate. The batch fits the view once after scan publication.
+`project_import_batch` prepares up to two STL/OBJ/PLY/ASC files concurrently using the same scheduler and parser as the GUI. Scene publication is serialized, appends to the current workspace, and retains one undo step per file. Results and failures retain input order; scene insertion follows readiness order. CAD imports remain serialized and project replacement stays separate. Each completed file fits all currently visible objects before its viewport presentation, including while other files are still importing. Successful imports remain framed if a later file fails or the batch is cancelled.
 
 Cross-origin isolation lets indexed PLY/STL imports share immutable expanded positions and PLY corner normals with project encoding workers, reducing copies during save/export/automatic backup. Packed binary PLY also shares final indexed vertices, normals and triangle indices; binary STL shares final indexed vertices and triangle indices. The general PLY loader keeps ordinary indexed buffers, and ordinary buffers remain the fallback without isolation. No agent parameter is required. Source geometry, history, cancellation and project formats retain the same contract.
 
@@ -1313,7 +1852,9 @@ Background mesh preparation may remain `scheduled` while imports or queued/activ
 
 Automatic backups wait during priority preparation and can postpone an in-progress automatic attempt when imports or picking begin. The previous backup remains available through `backup_list`; the latest eligible revision retries on a later 30-second interval. A postponed attempt is not marked saved. Explicit project save/export jobs keep their existing behavior and cancellation contract.
 
-Admission uses device CPU/memory hints, reported JavaScript heap headroom where available, a 64 MiB per-file threshold, and a conservative 512 MiB decoded batch estimate. Inputs above these limits remain supported through one parser; browser hints cannot guarantee physical memory availability.
+Admission estimates the two largest active imports, rather than summing queued files. ASC files use up to three 64 KiB samples (start/middle/end), parsed by the shared ASC reader. The highest sampled point density estimates the full point count; 64 bytes per point allows CPU/GPU buffers and selection, doubled for density variation, plus 32 MiB per parser for temporary/runtime storage. Sampling is advisory: failure falls back to the conservative source-size estimate and does not accept or reject a file. Other formats retain a 12-times-source-size estimate plus 32 MiB. The memory budget is one quarter of browser-reported device memory (4 GiB assumed when unavailable), minus observed main-thread heap usage. The main-thread heap limit is not treated as worker capacity. There is no per-file size cutoff; batches with fewer than two scan files, two or fewer reported CPU threads, or an estimated pair exceeding this budget select one parser. CAD publication remains serialized. These estimates cannot guarantee physical RAM or GPU availability, especially for heterogeneous files or growing workspaces.
+
+Both `job_get.progressDetails.admission` and the completed batch result's `admission` report `concurrency` (1 or 2), `reason` (`parallel`, `single-file`, `format`, `cpu`, or `memory`), human-readable `message`, `estimatedPeakBytes`, `memoryBudgetBytes`, and per-file `estimates` (`index`, `bytes`, `basis`: `sampled-asc` or `source-size`). The GUI displays the same message beside per-file progress, including the reason for sequential loading. This changes scheduling only; full parsing, revision guards, cancellation, scene/history publication and artifact limits remain in effect.
 
 Poll `job_get`: `progressDetails.kind` is `importBatch`, with `files` containing `index`, `name`, `status` (`queued`, `importing`, `rendering`, `complete`, `failed`, `cancelled`), `fraction` (0-1), and `stage`. The cursor overlay shows the active filenames and bars plus completed/queued/failed counts. `job_cancel` stops queued and active scan work, waits for worker cleanup, and retains committed objects. Per-file errors do not stop other imports. Native CAD cancellation still waits for native work to settle.
 
@@ -1420,6 +1961,8 @@ The `global_alignment_preview` job result, `global_alignment_state` and `global_
 Read `sketch_get`, then call `sketch_trim_stroke` with `stroke:[[u,v],...]`, positive `radiusMm` and the usual revision/request fields. Coordinates and radius are sketch-local millimetres; stroke coordinates are unsnapped. One point paints a disk; consecutive points paint the union of capsules. The operation removes entire line/arc/circle intervals bounded by actual analytic intersections or open endpoints, using the original draft for the whole stroke. A two-arc circle is periodic when its geometry and construction policy agree; its storage seam is not a trim boundary. Unrelated records, placement, scan references and constraints are preserved.
 
 The response has `changed`, `removedCurveIds` (original IDs deleted completely), `retainedCurveIds` (retained pieces of affected curves; the first piece can reuse its original ID) and `intersectionCount` (distinct geometric intersections across the input, not just painted hits). Use `sketch_get` for exact retained curves and shared point IDs. A no-hit returns `changed:false` without adding history or changing revision. Changed results call the same draft operation once, giving one sketch Undo/Redo edit independently of model history. Reuse the same request ID only for an identical retry.
+
+A retained piece of an ordinary nonperiodic arc becomes a straight segment when the absolute normalized chord-direction dot product about its evaluated midpoint is strictly greater than `0.9999996192282494`; equality retains an arc. Both small sweeps and nearly full sweeps can qualify. Periodic circles keep their existing curved replacement policy. Conversion preserves the curve ID and construction flag; read both `segments` and `arcs` in `sketch_get` rather than assuming that an ID stays in the same collection. An unused center point is removed unless other geometry or a point constraint still references it. Affected constraints remain an atomic rejection. This classification uses application analytic curve evaluation; complete native numerical trim equivalence is not established.
 
 Affected curve/endpoint constraints, ambiguous coincident overlaps, invalid geometry and resource limits fail atomically. The error identifies affected constraint IDs; remove relations explicitly before retrying. This conservative policy is an application contract, not verified native constraint transfer. Limits are 4096 stroke samples, 32768 input/output points, 4096 constraints, 512 stored input curves, 65536 distinct intersections, 8192 output curves and 2000000 counted work units including conservative validation cost. Inputs below individual count limits can still exceed the work budget. The helper yields and checks ownership/cancellation; no partial result is published.
 
@@ -1534,7 +2077,9 @@ See the [historical failure evidence](ORIGINAL_STL_WORKFLOW.md).
 
 Poll the terminal `job_get.status`: the historical failures reported `progress: 1`, which
 is not success. They leave the session active with all twelve picks retained,
-`preview:false`, `canPreview:true` and `canReset:false`. Both failed previews
+`preview:false`, `canPreview:true` and historically `canReset:false`.
+Current live sessions additionally expose `previewStatus:error` and
+`previewError`, and enable Reset after an error. Both historical failed previews
 preserved all nine committed geometry carriers and the three-import history.
 Identical request retries return the same job receipt; its job stays failed and
 no second solve runs. For an intentional new attempt, supply a new request ID
@@ -1607,3 +2152,242 @@ worker-owned storage; retained model/history buffers never detach. Public schema
 revision/retry/cancellation rules, worker leases and file formats are unchanged.
 `object_geometry_digest` reports the actual shared or private backing and the same
 canonical hashes. See [restoration validation](PROJECT_LOAD_PERFORMANCE.md#binary-topology-and-history-publication).
+
+## Converted line kernel compatibility
+
+The internal converted-line backend preserves prepared direction bits through
+a checked adapter for the bundled kernel. When replacing kernel bindings, run
+`tests/kernel-line-direction-fidelity-smoke.mjs` under owned resource admission
+and a finite lease, alongside the existing CAD checks. Unsupported binding or
+layout errors require a compatible adapter/kernel pair; do not bypass the
+checks or infer a successful native body from a candidate. See
+[CAD direction fidelity](CAD_DIRECTION_FIDELITY.md). Public sketch tools and
+schemas are unchanged by this internal correction.
+
+Also run `tests/kernel-line-open-topology-smoke.mjs` for converted-line kernel
+compatibility: it checks distinct endpoint identities, orientation, short spans
+and retirement. Its passing open-edge fixtures do not authorize closed-profile
+or complete native admission claims.
+
+`tests/kernel-line-child-smoke.mjs` also checks line-child source projection into
+the ordered collection, staged replacement and collection-owned retirement.
+`tests/sketch-line-collection.test.ts` covers retained and empty sources,
+owner/child placements, source codec and shared pick resolution. These are
+internal integration checks; the unfinished ordered editor and complete native
+admission are not advertised as available public sketch operations.
+
+Also run `tests/kernel-line-draft-fork-smoke.mjs` when changing the line draft or
+kernel bindings. It checks independently owned copies of partial draft state,
+rejected-wire preservation, cancellation, source changes, cleanup failures and
+100 retirement cycles. This application staging copy is not native cloning or a
+completed public editor capability.
+
+### N-point view divider
+
+Drag the vertical divider between the result and picking views to resize the
+picking-view column. Focus the divider and use Left/Right (two percentage points)
+or Home/End (20/50 percent). The default is 32 percent; requested widths are
+clamped to 20-50 percent. Responsive layout keeps at least 220 px for the picking
+column and 360 px for the result where available, so the rendered percentage can
+differ from the requested value in a narrow window. Layout is scoped to the
+alignment session and survives point edits, preview/reset and reference changes.
+
+Agents use `landmark_edit { action: "view-layout", referenceWidthPercent: 40,
+expectedRevision, requestId }`; missing/nonfinite values fail, and finite values
+outside the limits clamp. Read `landmark_get.layout` for the configured width,
+limits and pixel minima, and `viewport_get` for actual rendered dimensions.
+Resizing changes no geometry, picks, camera poses or history and does not cancel
+or restart pending automatic previews. The existing busy/revision/retry guards
+remain in force. The main result region stays accessible by its name and MCP
+view role; its redundant top-left caption was removed to avoid peeking behind
+the floating alignment panel.
+
+### Direct N-point picking and deselection
+
+The top-right canvas always adds **fixed** points and the bottom-right canvas
+always adds **moving** points. There are no pick-mode buttons or point coordinate
+lists in the floating panel. Each canvas has **Undo point**, **Clear**, and **Fit**.
+Click a numbered marker button to deselect that point; this does not add a new
+point through the canvas. Fixed and moving markers remain independently editable.
+
+MCP uses the same shared edits: `landmark_edit` action `remove-point` requires
+`entityId` and zero-based `pointIndex` within that entity's filtered `landmark_get.picks`
+sequence. Invalid/missing indices and unrelated objects fail. `remove-last` and
+`clear` accept optional `entityId` to remove only that canvas's points; omitting
+it preserves the existing whole-session behavior. Removal invalidates the result,
+cancels superseded work and automatically recomputes when at least three equally
+sized point groups remain. Other-side picks and committed geometry/history are
+preserved. Markers renumber after removal: refresh `landmark_get` before selecting
+another index. `landmark_get.views.fixed.position` is `top-right`, and
+`views.moving.position` is `bottom-right`; original-pose markers, point coordinates
+and diagnostics remain available through MCP after removing their panel lists.
+
+Point-cloud rotation uses a bounded 6 CSS-pixel neighborhood when the exact
+pointer pixel falls between rendered scan dots. The nearest displayed depth
+sample supplies depth on the original pointer ray, so clicking inside a dense
+cloud keeps the pivot under the cursor. Exact pixel hits take priority; objects
+outside that neighborhood do not count as pointer hits. Only a local miss uses
+the screen-center/model-depth fallback. Mouse and viewport_control rotate(x,y)
+share this behavior, including adaptive sampling and clipping; viewport_get
+orbitCenter exposes the actual active pivot. Mesh-only picking remains exact.
+
+### Application context menus
+
+Chrome's native context menu is disabled throughout the application document,
+including the ribbon, blank areas, fields and portal dialogs. Releasing a
+right-button pan outside its canvas cannot invoke browser UI. App context-menu
+handlers retain their normal events and actions. Agents continue to use the
+existing semantic tools for those actions; `application_inspect.contextMenuPolicy`
+reports `application-only`. No native browser-menu capability is exposed.
+
+## Projected point-cloud meshing
+
+Use `mesh_process` with
+`operation:{kind:"pointCloudMesh",plane:"xy",maxEdgeLength:2}`. `plane` is
+required (`xy`, `xz` or `yz`); `maxEdgeLength` is a finite nonnegative length in
+mm, defaulting to zero. The source must be an unlocked raw point cloud with
+3 to 500,000 points and no hidden points. Omit `selectionOnly`, `targetId` and
+`targetIds`; `createNew:false` is unsupported. The GUI's **Edit scan → Mesh a
+projected surface** submits this same operation.
+
+The original cloud is preserved and a new mesh is selected with one history
+entry. Read `entityIds` and `diagnostics` from the completed job, then inspect
+the mesh using `object_get` and geometry artifacts. Diagnostics report the
+projection plane, point/duplicate counts, triangle/pruned counts and resolved
+edge limit. Normals are not required. Existing revision checks, retries, locks,
+job leases, `job_cancel`, Undo and Redo apply.
+
+This reconstructs one surface height per projected location. A zero edge limit
+fills the convex hull, including holes; a positive limit removes every triangle
+with any full 3D edge longer than that limit. It is not a closed-object or
+Poisson reconstruction. Collinear projections, conflicting heights at one
+projected location, invalid Float32 coordinates, excessive inputs or pruning
+all triangles fail without publishing a mesh or history step. Exact duplicate
+XYZ samples are deduplicated for triangulation. Choose another plane or extract
+a single surface for conflicting heights; reduce larger clouds first. See
+[the native comparison and limits](CLOUDCOMPARE_PROJECTED_MESHING.md).
+
+## General 3D Poisson point-cloud reconstruction
+
+Use `mesh_process` with `operation:{kind:"pointCloudPoisson",normalMode:"provided",depth:8,densityThreshold:0}`.
+The GUI's **Edit scan → Reconstruct a 3D surface** submits this same revisioned
+application job. It runs actual screened Poisson reconstruction in a disposable
+browser worker. It processes a whole visible unlocked raw point cloud with 3 to
+500,000 points, creates and selects a separate mesh, and preserves the source
+cloud, normals and placement with one history step. Omit `selectionOnly`,
+`targetId` and `targetIds`; `createNew:false` is refused. Operation arguments
+cannot supply positions or normals; these bind internally from the source.
+
+Choose the normal orientation explicitly:
+
+- `provided` (default) validates and normalizes every existing vector. All must
+  be finite and nonzero; the caller asserts their orientation is consistent.
+- `estimate-provided` estimates local PCA normals for every point, propagates
+  consistent signs through a neighbor spanning forest, and orients each component
+  using valid existing source normals. Invalid anchors are counted without
+  dropping points; components without a decisive orientation fail.
+- `estimate-outward` uses PCA and a consistent neighbor forest, then chooses the
+  sign by aggregate outward flux. It assumes closed surface components; avoid it
+  on open scan patches.
+- `estimate-viewpoint` instead chooses each component's sign toward a single
+  scanner. Supply `viewpoint:[x,y,z]` in current world millimeters.
+
+`normalNeighbors` defaults to 24 and accepts integers 8–48. The exact neighbor
+search has a 16,384-node work cap per point; pathological dense/duplicate input
+fails rather than silently approximating. Reduce the cloud or neighbors before
+retrying. Estimation uses less than 128 MiB of owned typed buffers at its maximum
+input/neighbor settings; source, application and solver memory are additional.
+
+Solver parameters are `depth` 6–10 (integer, default 8), `pointWeight` 0–100
+(default 2), `samplesPerNode` 0.1–100 (default 1.5), and `densityThreshold` 0–32
+(default 0). Degree 2, Neumann boundary, scale 1.1 and one solver thread are fixed.
+Depth controls detail and memory; input coordinate units remain millimeters.
+Density is estimated sampling depth, not a distance in mm. Zero threshold keeps
+the complete surface and can close holes or extend beyond open scans. A positive
+threshold removes triangles whose minimum vertex density falls below it, which
+can open boundaries or split the mesh. This is explicit trimming, not a guarantee
+that holes or unsupported regions will be detected automatically.
+
+The WASM heap starts at 64 MiB and cannot exceed 1 GiB. Native output is bounded
+to two million vertices and four million triangles before expansion; the scene,
+normal preparation and JavaScript output consume additional memory. Exact equal
+Float32 vertices are welded, exact collapsed/duplicate faces removed, and unused
+vertices compacted; no tolerance-based geometric repair is performed.
+
+Read `entityIds` and flat `diagnostics` from the terminal job. These expose the
+engine pin, resolved solver settings, source/output counts, normal mode,
+`normalOrientationAnchors`, `normalInvalidOrientationAnchors`, component count
+and orientation assumption, untrimmed density minimum/median/P95/maximum,
+merged/removed/trimmed counts and observed WASM heap size. Inspect the new mesh
+through `object_get` geometry artifacts. Existing revision checks, retry receipts,
+lock checks, `job_cancel`, Undo and Redo apply. Cancellation terminates the actual
+worker even during the synchronous native solve. Invalid normals/parameters,
+input/output limits, memory failure, empty trimming and cancellation publish no
+mesh or history step. Improve normals, reduce depth/point count, or lower an
+excessive density threshold before retrying.
+
+The full owner scan acceptance run used **all 140,113 points**, estimated using
+source orientations, depth 9 and density threshold 7; that is a recorded tested
+configuration, not a universal scan preset. Its open mesh passes independent
+full-point bidirectional distance and topology/intersection gates. See
+[engine provenance and limits](POISSON_BROWSER_ENGINE.md) and
+[the investigation index](CLOUDCOMPARE_INVESTIGATION.md) for actual receipts.
+
+## Cylindrical Unroll
+
+Use `mesh_process` with `operation:{kind:"scanTools",operation:{kind:"unroll",center:[0,0,0],axis:[0,0,1],radius:2,offsetDegrees:90,instances:2}}`. Coordinates and radius are millimetres; the offset is degrees. `instances` defaults to 1 and must be a positive safe integer. The conservative input-times-instances bound is 3 million facets. There is no resource-limit override.
+
+Positive offsets rotate the radial frame. Radial frame components narrow to Float32 before the acos/sign calculation. Facets touching both the first and last angular quadrants are removed, using swap-last deletion order; no seam triangles are synthesized. Copies translate along X using a Float32 circumference translation. Output XY contains arc length and axial distance, with radial residual in Z. The GUI invokes the same public operation and shared worker. A successful operation creates and selects a separate mesh owner by default, preserving the original. `createNew:false` retains explicit replacement support. Read `entityIds` and diagnostics from the terminal job result. Existing revision, retry, cancellation, lock, history and persistence checks apply.
+
+The radial frame projects world X onto the axis-normal plane, using world Y when the axis is near world X. The original cylinder's reference tangent is currently not retained by the reference binding. Observed exports verify a +Z cylinder at 0 and 90 degrees and two instances; arbitrary imported tangent/frame conventions remain an acceptance gap. Finite Float32 output and triangle-collapse checks remain enforced. If every facet crosses the seam, the operation fails without publication. Cap and axis points follow the same mapping; geometrically collapsed results fail atomically.
+
+### Automatic global initialization and live progress
+
+`global_alignment_preview` defaults to `initialization:"automatic"`; use
+`initialization:"current"` to refine scans already placed with N-point alignment
+or another registration operation. Automatic initialization uses bounded
+principal-axis candidates and sampled rigid ICP before the existing native
+global refinement. It anchors the largest scan. The sample fit is provisional
+and does not establish final full-surface accuracy.
+
+While a job runs, poll `global_alignment_state.progress`: `sequence`, `phase`,
+optional `stage`, `pass`, and `poses` contain per-scan `id`, row-major 3x4
+`matrix`, and exact `matrixBits` in the existing Float64 little-endian format.
+The GUI uses these same poses for live display, without changing geometry or
+history. A trial pose may subsequently be rejected. Cancellation, failure,
+input invalidation and expiry clear the live display. Read `initialization`
+for the anchor and sampled fit diagnostics; read `outer` and `converged` for
+final native refinement diagnostics. Preview is not an accuracy acceptance.
+
+See [the workflow and evidence boundary](GLOBAL_ALIGNMENT_LIVE_PREVIEW.md).
+
+### Automatic scan setup on CAD axes
+
+`alignment_preview` / `alignment_apply` accept `automatic` instead of `constraints` and manual translation:
+
+```json
+{
+  "entityIds": ["scan-a", "scan-b"],
+  "automatic": {
+    "referenceEntityId": "scan-a",
+    "origin": "center",
+    "primaryAxis": "X",
+    "flipBase": false,
+    "planeTolerance": 0.1
+  },
+  "expectedRevision": 12,
+  "requestId": "unique-receipt"
+}
+```
+
+Register the scans to each other first. One rigid frame moves all targets together. `referenceEntityId` must identify a raw mesh or point cloud included in `entityIds`. CAD targets can move with the detected group but cannot supply the detection reference. Origin is base center (default) or base corner; long footprint direction maps to X (default) or Y. Plane tolerance is mm, positive and at most 1e6; omission selects max(0.01, sample diagonal * 0.003). The bounded plane/footprint detector fails when there is no reliable flat support; recover using manual plane/direction references. Review symmetry and outlier warnings before Apply. Do not combine `automatic` with `constraints`, `translation` or `translationPoint`.
+
+Job results expose `automatic` diagnostics (sample count, plane support/RMS, axes, origin, dimensions, tolerance, origin mode, primary axis, warnings), alongside existing frame/matrix/target bounds and execution results. The GUI uses these same operations. Preview/cancel preserve originals; Apply is one history step with existing Undo/Redo and revision safeguards.
+
+Automatic global alignment now retains native `outer` diagnostics separately from final full-surface fitting. Use `global_alignment_state.coordinateStages` (also returned by Apply) to reproduce actual final coordinates: each per-ID matrix is row-major 3x4, with exact `matrixBits` in Float64 little-endian hex and translation in mm; store Float32 after every stage. `outer.applications` alone omits automatic coarse/surface stages. `initialization: "current"` preserves the native-only refinement path.
+
+The automatic reference is selected by estimated triangle surface area rather than point count. Final surface fitting uses up to 2,000 sample points per scan against complete mesh surfaces, keeps that reference fixed, and visits the strongest overlapping next scan first. `surfaceRefinement` exposes `anchorId`, `order` and fit records: `beforeRms`/`rms` have basis `cappedSurfaceSamples` (same sample IDs, capped at absolute search tolerance); `fittingRms` uses the selected `trimFraction` (0.4 or 0.8); `samplePoints`, `initialOverlapPoints` and `overlapPoints` report support. `iterations`, `converged` and `ambiguous` describe fitting stability/ambiguity, not physical scanner accuracy. Native convergence still describes the earlier native pass. The surface worker has an estimated 512 MiB index-workspace limit and 180-second lease; insufficient overlap or exhausted admission fails without committing. There is no cap override. Live poses include real working trials that may be reverted, and are cleared on cancellation/failure.
+
+Automatic surface fitting includes one bounded revisit of each moving scan against the completed group, excluding its own surface. The fixed reference stays anchored, and each revisit accepts only a non-increasing capped distance on the same fitting sample IDs. `surfaceRefinement.order` records the initial overlap-driven insertion order; returned poses and diagnostics describe the final visit.
+
+The reference is also fitted once against the completed group, then all final poses are rebased to restore its fixed frame. This prevents the first imperfect scan pair from permanently defining group alignment. Surface diagnostics remain fitting statistics; `coordinateStages` remains authoritative for final geometry.

@@ -1,0 +1,107 @@
+{
+  "name": "deduplicated",
+  "count": 10000,
+  "instrument": false,
+  "preparationMs": 457.3698999999997,
+  "queryMs": 396.1867000000002,
+  "queriesPerSecond": 25240.625190093444,
+  "rms": 1.6779535349239683,
+  "counters": {
+    "nodes": 0,
+    "leaves": 0,
+    "evaluations": 0,
+    "duplicates": 0
+  },
+  "top": [
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 109
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 43
+    },
+    {
+      "function": "noiseTriangleDistance",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 39
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 14
+    },
+    {
+      "function": "(garbage collector)",
+      "url": "",
+      "hits": 10
+    },
+    {
+      "function": "noiseTriangleDistance",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 8
+    },
+    {
+      "function": "",
+      "url": "",
+      "hits": 7
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 5
+    },
+    {
+      "function": "",
+      "url": "",
+      "hits": 5
+    },
+    {
+      "function": "",
+      "url": "file:///C:/repo/Maliev.ScanForge/.resources/profile-alignment-query.mjs",
+      "hits": 4
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 3
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 3
+    },
+    {
+      "function": "",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 3
+    },
+    {
+      "function": "noiseTriangleDistance",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-deviation.ts",
+      "hits": 3
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 2
+    },
+    {
+      "function": "dispatch",
+      "url": "",
+      "hits": 1
+    },
+    {
+      "function": "query",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-native-alignment-mesh-query.ts",
+      "hits": 1
+    },
+    {
+      "function": "visit",
+      "url": "file:///C:/repo/Maliev.ScanForge/src/scan-noise-octree-query.ts",
+      "hits": 1
+    }
+  ]
+}

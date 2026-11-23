@@ -1,0 +1,166 @@
+Window: "CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]", App: CloudCompare.exe.
+	0 window (settable, string) CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1] Secondary Actions: Raise ID: MainWindow
+		1109 window (settable, string) Registration info Secondary Actions: Raise
+			1110 title bar (settable, string) Value: Registration info
+				1111 menu bar System ID: MenuBar
+					1112 menu item System
+				1113 button Close
+			1114 image
+			1115 text Final RMS*: 1.30248e-06 (computed on 437 points) (* RMS is potentially weighted, depending on the selected options) ---------------- Transformation matrix 0.999 0.035 -0.000 -0.146 -0.035 0.999 0.000 0.125 0.000 -0.000 1.000 -0.300 0.000 0.000 0.000 1.000 ---------------- Scale: fixed (1.0) ---------------- Theoretical overlap: 100% ---------------- This report has been output to Console (F8)
+			1116 group (settable, string)
+				1117 button (settable, string) OK
+		1 title bar (settable, string) Value: CloudCompare v2.13.2 (Kharkiv - Jul 6 2024) [64-bit] - [3D View 1]
+			2 menu bar System ID: MenuBar
+				3 menu item System
+			4 button Minimize
+			5 button Maximize
+			6 button Close
+		7 menu bar (settable, string) ID: MainWindow.menubar
+			8 menu item (settable, string) File
+			9 menu item (settable, string) Edit
+			10 menu item (settable, string) Tools
+			11 menu item (settable, string) Display
+			12 menu item (settable, string) Plugins
+			13 menu item (settable, string) 3D Views
+			14 menu item (settable, string) Help
+		15 window (settable, string) DB Tree Secondary Actions: Raise ID: MainWindow.DockableDBTree
+			16 group (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents
+				17 tree (settable, string) ID: MainWindow.DockableDBTree.dockWidgetContents.dbTreeView
+					1118 tree item (settable, string) pair.bin (C:/repo/Maliev.ScanForge/docs/evidence/cloudcompare-20261028/fixtures)
+					1119 tree item (settable, string) fixed - Cloud
+					1120 tree item (settable, string) moving - Cloud.registered
+			21 button (settable, string) Float ID: MainWindow.DockableDBTree.qt_dockwidget_floatbutton
+		22 status bar ID: MainWindow.statusBar
+			23 thumb (settable, string)
+		24 tool bar (settable, string) ID: MainWindow.toolBarView
+			25 button (settable, string) Display settings
+			26 button (settable, string) Camera settings
+			27 button (settable, string) Global Zoom
+			28 button (settable, string) Pick rotation center
+			29 check box (settable, string) Auto-pick rotation center
+			30 button (settable, string) Level
+			31 button (settable, string) ZoomCenter
+			32 button (settable, string) Top View
+			33 button (settable, string) Front View
+			34 button (settable, string) Left Side View
+			35 button (settable, string) Back View
+			36 button (settable, string) Right Side View
+			37 button (settable, string) Bottom View
+			38 button (settable, string) Iso 1
+			39 button (settable, string) Iso 2
+			40 check box (settable, string) actionEnableStereo
+			41 button (settable, string)
+			42 button (settable, string)
+		43 window (settable, string) Console Secondary Actions: Raise ID: MainWindow.DockableConsole
+			44 group (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2
+				45 list (settable, string) ID: MainWindow.DockableConsole.dockWidgetContents_2.consoleWidget
+					1121 list item (selectable, settable, string) [15:34:11] 0.999390840530 0.034899491817 -0.000000005021 -0.145720452070 -0.034899491817 0.999390840530 0.000000001130 0.125161126256 0.000000005057 -0.000000000954 1.000000000000 -0.299999773502 0.000000000000 0.000000000000 0.000000000000 1.000000000000
+					1122 list item (selectable, settable, string) [15:34:11] Hint: copy it (CTRL+C) and apply it - or its inverse - on any entity with the 'Edit > Apply transformation' tool
+					1123 list item (selectable, settable, string) [15:34:11] [Register] Scale: fixed (1.0)
+					1124 list item (selectable, settable, string) [15:34:11] [Register] Theoretical overlap: 100%
+			52 button (settable, string) Close ID: MainWindow.DockableConsole.qt_dockwidget_closebutton
+			53 button (settable, string) Float ID: MainWindow.DockableConsole.qt_dockwidget_floatbutton
+		54 tool bar (settable, string) ID: MainWindow.toolBarMainTools
+			55 check box (settable, string) ID: MainWindow.toolBarMainTools.qt_toolbar_ext_button
+			56 button (settable, string) Open
+			57 button (settable, string) Save
+			58 button (settable, string) Save project (BIN)
+			59 group (settable, string)
+			60 button (settable, string) Point picking
+			61 button (settable, string) Point list picking
+			62 button (settable, string) Trace Polyline
+			63 button (settable, string) Clone
+			64 button (disabled, settable, string) Merge
+			65 button (settable, string) Delete
+			66 group (settable, string)
+			67 button (settable, string) Align (point pairs picking)
+			68 button (disabled, settable, string) Fine registration (ICP)
+			69 button (settable, string) Subsample
+			70 button (disabled, settable, string) Sample points
+			71 button (disabled, settable, string) Cloud/Cloud Dist
+			72 button (disabled, settable, string) Cloud/Mesh Dist
+			73 button (disabled, settable, string) Cloud/Primitive Dist
+			74 button (settable, string) Label Connected Comp.
+			75 button (settable, string) Primitive factory
+			76 button (settable, string) Rasterize (and contour plot)
+		77 tool bar (settable, string) ID: MainWindow.toolBarSFTools
+			78 check box (settable, string) ID: MainWindow.toolBarSFTools.qt_toolbar_ext_button
+			79 button (disabled, settable, string) Show histogram
+		80 window (settable, string) Properties Secondary Actions: Raise ID: MainWindow.DockableProperties
+			81 group (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4
+				82 tree (settable, string) ID: MainWindow.DockableProperties.dockWidgetContents_4.propertiesTreeView
+					1125 header (settable, string) Property
+					1126 header (settable, string) State/Value
+					1127 tree item (settable, string)
+					1128 tree item (settable, string)
+					1129 tree item (settable, string) Name
+					1130 tree item (settable, string) fixed - Cloud
+					1131 tree item (settable, string) Visible
+					1132 tree item (settable, string)
+					1133 tree item (settable, string) Show name (in 3D)
+					1134 tree item (settable, string)
+					1135 tree item (settable, string) Box dimensions
+					1136 tree item (settable, string) X: 22.138 (-0.0680259 : 22.07) Y: 18.0997 (-0.0497089 : 18.05) Z: 17.3533 (0 : 17.3533)
+					1137 tree item (settable, string) Shifted box center
+					1138 tree item (settable, string) X: 11.001 Y: 9.00014 Z: 8.67663
+					1139 tree item (settable, string) Global box center
+					1140 tree item (settable, string) X: 11.000980 Y: 9.000145 Z: 8.676632
+					1141 tree item (settable, string) Info
+					1142 tree item (settable, string) Object ID: 261 - Children: 0
+			83 button (settable, string) Float ID: MainWindow.DockableProperties.qt_dockwidget_floatbutton
+		84 tool bar (settable, string) Plugins ID: MainWindow.Main Plugin Toolbar
+			85 button (disabled, settable, string) Animation
+			86 button (settable, string) CEA Virtual Broom
+			87 button (settable, string) Compass
+			88 button (disabled, settable, string) Cork
+			89 button (settable, string) CSF Filter
+			90 button (settable, string) Hough Normals Computation
+			91 button (settable, string) Hidden Point Removal
+			92 button (disabled, settable, string) M3C2 Distance
+			93 button (disabled, settable, string) Mesh Boolean
+			94 button (settable, string) PCV / ShadeVis
+			95 button (settable, string) PoissonRecon
+			96 button (settable, string) RANSAC Shape Detection
+			97 button (settable, string) AutoSeg
+			98 button (settable, string) Cloud layers
+			99 button (settable, string) Ellipse marking
+			100 check box (settable, string) Json RPC (Standard Plugin)
+			101 button (settable, string) ManualSeg
+			102 button (settable, string) MPlane
+			103 button (settable, string) TreeIso
+		104 tool bar (settable, string) GL Filters ID: MainWindow.GL Plugin Toolbar
+			105 button (disabled, settable, string) Remove Filter
+			106 check box (settable, string) EDL Shader
+			107 check box (settable, string) SSAO Shader
+		108 custom (settable, string)
+			109 window (settable, string) 3D View 1 Secondary Actions: Raise
+				110 group (settable, string)
+		111 tool bar (settable, string) CANUPO toolbar ID: MainWindow.CANUPO
+			112 check box (settable, string) ID: MainWindow.CANUPO.qt_toolbar_ext_button
+			113 button (settable, string) Train classifier
+		114 tool bar (settable, string) Facet/fracture detection toolbar ID: MainWindow.Facet/fracture detection
+			115 check box (settable, string) ID: MainWindow.Facet/fracture detection.qt_toolbar_ext_button
+			116 button (settable, string) Extract facets (Kd-tree)
+		117 tool bar (settable, string) PCL wrapper toolbar ID: MainWindow.PCL wrapper
+			118 check box (settable, string) ID: MainWindow.PCL wrapper.qt_toolbar_ext_button
+			119 button (disabled, settable, string) Fast Global Registration, by Zhou et al.
+		120 tool bar (settable, string) Surface of Revolution Analysis toolbar ID: MainWindow.Surface of Revolution Analysis
+			121 check box (settable, string) ID: MainWindow.Surface of Revolution Analysis.qt_toolbar_ext_button
+			122 button (settable, string) Load profile
+		123 tool bar (settable, string) 3DMASC toolbar ID: MainWindow.3DMASC
+			124 check box (settable, string) ID: MainWindow.3DMASC.qt_toolbar_ext_button
+			125 button (settable, string) Train classifier
+		126 tool bar (settable, string) Colorimetric Segmenter toolbar ID: MainWindow.Colorimetric Segmenter
+			127 check box (settable, string) ID: MainWindow.Colorimetric Segmenter.qt_toolbar_ext_button
+			128 button (disabled, settable, string) Filter RGB
+		1109 window (settable, string) Registration info Secondary Actions: Raise
+			1110 title bar (settable, string) Value: Registration info
+				1111 menu bar System ID: MenuBar
+					1112 menu item System
+				1113 button Close
+			1114 image
+			1115 text Final RMS*: 1.30248e-06 (computed on 437 points) (* RMS is potentially weighted, depending on the selected options) ---------------- Transformation matrix 0.999 0.035 -0.000 -0.146 -0.035 0.999 0.000 0.125 0.000 -0.000 1.000 -0.300 0.000 0.000 0.000 1.000 ---------------- Scale: fixed (1.0) ---------------- Theoretical overlap: 100% ---------------- This report has been output to Console (F8)
+			1116 group (settable, string)
+				1117 button (settable, string) OK
+
+The focused UI element is 1109 window (settable, string) Registration info Secondary Actions: Raise.

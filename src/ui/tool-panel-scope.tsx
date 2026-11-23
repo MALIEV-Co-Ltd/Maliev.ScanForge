@@ -4,6 +4,7 @@ export const commandWorkspaces = {
   objectColor: ["objectColor", "Object color"],
   pointNoise: ["pointNoise", "Reduce point noise"],
   pointReduce: ["pointReduce", "Reduce points"],
+  surfaceRefinement: ["processing", "Surface refinement"],
   fineAlign: ["processing", "Fine alignment"],
   repairMesh: ["processing", "Repair topology"],
   segmentMesh: ["processing", "Segment surfaces"],
