@@ -127,9 +127,9 @@ it("sends large artifact replies with exact JSON and pairing headers", async () 
   );
   try {
     const reply = await delivered;
-    expect(reply.body).toBeInstanceOf(Blob);
+    expect(reply.body).toBeInstanceOf(Uint8Array);
     expect(reply.authorization).toBe(`Bearer ${token}`);
-    expect(JSON.parse(await (reply.body as Blob).text())).toEqual({
+    expect(JSON.parse(new TextDecoder().decode(reply.body as Uint8Array))).toEqual({
       sessionId: "session",
       id: "request",
       result: { ok: true, revision: 0, result: { base64 } },

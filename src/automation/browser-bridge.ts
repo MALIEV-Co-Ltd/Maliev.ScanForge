@@ -37,10 +37,9 @@ export async function connectBrowserBridge(
         Authorization: `Bearer ${token}`,
         ...(body === undefined ? {} : { "Content-Type": "application/json" }),
       },
-      // Blob bodies avoid retaining large serialized responses in the renderer.
       body:
         payload !== undefined && payload.length >= 65536
-          ? new Blob([payload], { type: "application/json" })
+          ? new TextEncoder().encode(payload)
           : payload,
       signal: AbortSignal.any([controller.signal, AbortSignal.timeout(10000)]),
       cache: "no-store",
