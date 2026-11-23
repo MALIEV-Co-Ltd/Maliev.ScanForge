@@ -269,16 +269,18 @@ scope.onmessage = async ({ data: incoming }) => {
           throw new Error(
             "Scan edit indices do not match the source geometry.",
           );
-        const topology = analyzeIndexedMesh(
-          Float64Array.from(request.sourceIndexed.vertices),
-          Uint32Array.from(request.sourceIndexed.triangles),
-          { tolerance: request.tolerance ?? 1e-6, onProgress: progress },
-        );
-        topologyCache = {
-          positions: request.positions,
-          tolerance: request.tolerance ?? 1e-6,
-          topology,
-        };
+        if (request.action !== "split" || request.plane) {
+          const topology = analyzeIndexedMesh(
+            Float64Array.from(request.sourceIndexed.vertices),
+            Uint32Array.from(request.sourceIndexed.triangles),
+            { tolerance: request.tolerance ?? 1e-6, onProgress: progress },
+          );
+          topologyCache = {
+            positions: request.positions,
+            tolerance: request.tolerance ?? 1e-6,
+            topology,
+          };
+        }
       }
       let selectedVertices: Float64Array<ArrayBuffer> | undefined;
       if (request.action === "smoothSelected") {
@@ -305,6 +307,20 @@ scope.onmessage = async ({ data: incoming }) => {
           : undefined,
       });
       result.diagnostics = result.scanEdit.diagnostics;
+      if (result.scanEdit.indexedMesh) {
+        if (
+          !result.scanEdit.positions ||
+          !indexedMeshMatches(
+            result.scanEdit.indexedMesh,
+            result.scanEdit.positions,
+          )
+        )
+          throw new Error(
+            "Scan edit indexed output does not match its positions.",
+          );
+        result.indexedMesh = result.scanEdit.indexedMesh;
+        delete result.scanEdit.indexedMesh;
+      }
       if (
         (request.action === "boundarySmooth" ||
           request.action === "smoothSelected") &&
@@ -711,10 +727,11 @@ scope.onmessage = async ({ data: incoming }) => {
       topologyCache.positions = successor;
       canonicalPositions = successor;
       if (result.pointCloudEdit?.positions)
-        result.pointCloudEdit.positions = successor.slice();
+        result.pointCloudEdit.positions =
+          result.pointCloudEdit.positions.slice();
       else if (result.scanEdit?.positions)
-        result.scanEdit.positions = successor.slice();
-      else result.positions = successor.slice();
+        result.scanEdit.positions = result.scanEdit.positions.slice();
+      else if (result.positions) result.positions = result.positions.slice();
     }
     if (result.pointCloudEdit?.positions)
       transfers.push(result.pointCloudEdit.positions.buffer);
@@ -724,12 +741,24 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.pointCloudEdit.selection.buffer);
     if (result.pointCloudEdit?.sourceIndices)
       transfers.push(result.pointCloudEdit.sourceIndices.buffer);
-    if (result.scanEdit?.positions)
+    if (result.scanEdit?.positions instanceof Float32Array)
       transfers.push(result.scanEdit.positions.buffer);
     if (result.scanEdit?.selection)
       transfers.push(result.scanEdit.selection.buffer);
     for (const segment of result.scanEdit?.segments ?? [])
-      transfers.push(segment.buffer);
+      if (segment instanceof Float32Array) transfers.push(segment.buffer);
+    for (const mesh of result.scanEdit?.segmentIndexedMeshes ?? []) {
+      if (!mesh) continue;
+      for (const values of [
+        mesh.vertices,
+        mesh.triangles,
+        mesh.normals,
+        mesh.geometryNormals,
+        mesh.facetNormals,
+      ])
+        if (values instanceof Float32Array || values instanceof Uint32Array)
+          transfers.push(values.buffer);
+    }
     if (result.selection) transfers.push(result.selection.buffer);
     // Display borrows the computed state already transformed with the mesh.
     if (result.indexedMesh && result.positions) {

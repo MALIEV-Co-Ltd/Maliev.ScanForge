@@ -1,6 +1,7 @@
 import { scanSplitCutter, isScanSplitCutter } from "../scan-split-cutter";
 import { scanSegmentPublication } from "../scan-segment-publication";
 import { assertReferenceConstructionSceneAdmission } from "../reference-construction-lifecycle";
+import { indexedMeshMatches } from "../indexed-mesh";
 import type { SavedInspection } from "../inspection-definition";
 import type { InspectionDisplay } from "../automation/inspection-operations";
 import {
@@ -267,7 +268,14 @@ import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
 import { ImportUnitsDialog } from "./ImportUnitsDialog";
 import { SCAN_UNITS, type ScanUnit } from "../import-units";
-import type { Entity, FitResult, KernelPrimitive, Vec3 } from "../types";
+import type {
+  Entity,
+  FitResult,
+  KernelPrimitive,
+  KernelMesh,
+  Positions,
+  Vec3,
+} from "../types";
 import { Viewport } from "../viewport";
 import { applyWandRegion } from "../wand-selection";
 import { Field, Panel, VectorField } from "./controls";
@@ -1962,7 +1970,7 @@ export function App() {
     }
   }
   function replaceScanPositions(
-    positions: Float32Array,
+    positions: Positions,
     label: string,
     retainFacetSelection = false,
     indexedMesh?: Entity["indexedMesh"],
@@ -2109,6 +2117,10 @@ export function App() {
           positions: selected.positions,
           tolerance: SCAN_TOPOLOGY_TOLERANCE,
           ...operation,
+          ...(operation.action === "split" &&
+          indexedMeshMatches(selected.indexedMesh, selected.positions)
+            ? { sourceIndexed: selected.indexedMesh }
+            : {}),
         },
         {
           signal: controller.signal,
@@ -2130,7 +2142,12 @@ export function App() {
           result.indexedMesh,
         );
       if (result.scanEdit?.segments)
-        createSegments(result.scanEdit.segments, label);
+        createSegments(
+          result.scanEdit.segments,
+          label,
+          undefined,
+          result.scanEdit.segmentIndexedMeshes,
+        );
       if (
         operation.action === "fillHoles" &&
         operation.mode !== "bridge" &&
@@ -4572,9 +4589,10 @@ export function App() {
     );
   }
   function createSegments(
-    parts: Float32Array[],
+    parts: Entity["positions"][],
     label: string,
     classifications?: RegionClassification[],
+    indexedParts?: (Entity["indexedMesh"] | undefined)[],
   ) {
     if (!selected)
       throw Error("Choose the source object before publishing mesh segments.");
@@ -4583,6 +4601,8 @@ export function App() {
       selected.id,
       parts,
       classifications,
+      undefined,
+      indexedParts,
     );
     operationLabel.current = `${label} (${publication.created.length} meshes)`;
     try {
@@ -6499,7 +6519,9 @@ export function App() {
                 onReplace={(positions, label, indexedMesh) =>
                   replaceScanPositions(positions, label, false, indexedMesh)
                 }
-                onCreate={createSegments}
+                onCreate={(parts, label, indexedParts) =>
+                  createSegments(parts, label, undefined, indexedParts)
+                }
                 onSelection={changeSelection}
                 onBoundaryHighlight={setScanBoundaryPaths}
                 onBridgeSession={setScanBridgeSession}

@@ -4,6 +4,11 @@ import { scanSplitCutter, isScanSplitCutter } from "../src/scan-split-cutter";
 import { DEFAULT_PART_COLOR } from "../src/appearance";
 import type { Entity } from "../src/types";
 import type { RegionClassification } from "../src/mesh-processing";
+import { analyzeIndexedMesh, analyzeMesh } from "../src/mesh-processing";
+import {
+  encodeProjectFileLocally,
+  decodeProjectFile,
+} from "../src/project-file";
 const triangle = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
 const source: Entity = {
   id: "source",
@@ -74,6 +79,79 @@ it("rejects locked, empty and malformed publication without mutating source or c
   ).toThrow();
   expect(triangle).toEqual(before);
   expect(source.visible).toBe(true);
+});
+it("retains matching indexed topology for each published segment", () => {
+  const indexed = {
+    vertices: triangle.slice(),
+    triangles: new Uint32Array([0, 1, 2]),
+  };
+  const result = scanSegmentPublication(
+    [source],
+    source.id,
+    [new Float32Array(), triangle],
+    undefined,
+    () => "part",
+    [undefined, indexed],
+  );
+  expect(result.created[0].indexedMesh).toBe(indexed);
+  expect(result.created[0].positions).toBe(triangle);
+});
+it("rejects mismatched indexed segment data atomically", () => {
+  const indexed = {
+    vertices: new Float32Array([0, 0, 0, 2, 0, 0, 0, 1, 0]),
+    triangles: new Uint32Array([0, 1, 2]),
+  };
+  expect(() =>
+    scanSegmentPublication(
+      [source],
+      source.id,
+      [triangle],
+      undefined,
+      () => "part",
+      [indexed],
+    ),
+  ).toThrow(/indices.*match/i);
+  expect(source.visible).toBe(true);
+});
+it("retains distinct coincident segment vertices through binary reopening", async () => {
+  const vertices = new Float32Array([
+    0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0,
+  ]);
+  const triangles = new Uint32Array([0, 1, 2, 3, 4, 5]);
+  const positions = Float32Array.from(
+    [...triangles].flatMap((id) => [...vertices.slice(id * 3, id * 3 + 3)]),
+  );
+  const indexed = { vertices, triangles };
+  const published = scanSegmentPublication(
+    [source],
+    source.id,
+    [positions],
+    undefined,
+    () => "part",
+    [indexed],
+  );
+  const file = await encodeProjectFileLocally({
+    project: {
+      format: "maliev-scanforge",
+      version: 1,
+      name: "Segment",
+      units: "mm",
+      entities: published.entities,
+    },
+    history: [],
+    future: [],
+  });
+  const reopened = (await decodeProjectFile(file)).project.entities.find(
+    (entity) => entity.id === "part",
+  )!;
+  expect([...reopened.indexedMesh!.triangles]).toEqual([...triangles]);
+  expect(
+    analyzeIndexedMesh(
+      Float64Array.from(reopened.indexedMesh!.vertices),
+      Uint32Array.from(reopened.indexedMesh!.triangles),
+    ).boundaryEdges,
+  ).toBe(6);
+  expect(analyzeMesh(reopened.positions).boundaryEdges).toBe(4);
 });
 it("filters non-triangle cutters and validates persisted reference-plane geometry", () => {
   const pointCloud = { ...source, kind: "pointcloud" as const };
