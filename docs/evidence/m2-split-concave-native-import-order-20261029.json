@@ -1,0 +1,22 @@
+{
+  "scope": "Pinned native saved concave-cutter indexed mesh and original binary STL.",
+  "nativeScenePath": "C:\\repo\\alignment-example-files\\m2-native-split-controls-20261027-r1\\native-concave-scene-20261029.qsf",
+  "nativeSceneSha256": "48d5087946bd243c05680b74f626cf7d6dac972226d37582520f845c03a27799",
+  "stlPath": "C:\\repo\\alignment-example-files\\m2-native-split-controls-20261027-r1\\concave-cutter.stl",
+  "stlSha256": "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+  "method": "Read a candidate little-endian indexed mesh block from the saved native scene: u32 count, xyz f32 vertices, u32 count, and u32 triangle indices. Verify all indices in range and match each decoded unordered facet uniquely to one input STL facet. Compare ordered corners separately. This recognizes one block, not the complete QSF format.",
+  "vertexCountOffset": 1730,
+  "vertexCount": 16,
+  "triangleCountOffset": 1926,
+  "triangleCount": 28,
+  "nativeFacetToInputFacet": [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+    21, 22, 23, 24, 25, 26, 27
+  ],
+  "orderedCornersEqual": 28,
+  "orderedCornerDifferentFacetIndices": [],
+  "limitations": [
+    "One native scene and one fixture only; the saved block is inferred from exact geometry match, not a complete QSF specification.",
+    "This says nothing about intermediate tree insertion, pointer allocation, or ordering of other imports."
+  ]
+}

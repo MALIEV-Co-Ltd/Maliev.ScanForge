@@ -1,0 +1,29 @@
+{
+  "scope": "Bounded static disassembly of the Split intersection worker in the runtime analysis image.",
+  "candidate": "0x14032b140",
+  "observedBody": "[[14032b140, 14032be92]]",
+  "instructionCount": 753,
+  "decompileCompleted": true,
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "evidencePath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-worker-static-20261029-r4\\evidence.json",
+  "evidenceSha256": "d4da5613a9390d614dad747956a440afc9bba99a733ad63975f842ae364d2546",
+  "launcherPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-worker-static-20261029-r4\\launch.json",
+  "launcherSha256": "f46507efce01903ac0214daff2aa2390526caf5c3252d94ab66868cbca8fdcf4",
+  "guardReceiptPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-worker-static-guard-20261029-r4.json",
+  "guardReceiptSha256": "03c7a66af5cf1a73c7414c0d52c5571c2b118377a3b48cfa264e688f565258c7",
+  "observations": [
+    "The worker calls 0x140336010 with a source triangle bounding box and a collector object.",
+    "It follows a linked candidate list, applies a pointer-keyed duplicate check and additional intersection tests, then appends an 80-byte record to its worker buffer for accepted candidates.",
+    "The candidate list is consumed in list order; the captured worker alone does not establish the spatial query traversal or global order across workers."
+  ],
+  "qualification": "Inferred from decompiler output with a bounded disassembly range; types and control flow require runtime validation. Entry binding and parent call observed separately in live capture. No equivalence claim for untested geometry or worker concurrency.",
+  "timeoutDiagnosis": "A live jcmd stack from the prior bounded run showed Ghidra recursively enumerating the broad script path; the isolated script directory enabled this run to complete. This was a setup delay, not a confirmed memory exhaustion or disassembler hang.",
+  "entryPrefixBinding": {
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-worker-query-binding-20261029.json",
+    "sha256": "8d52cfc74eece262175afad18b42c0b672cb058552c620a93bcbc5ca795d5aec",
+    "pid": 10796,
+    "prefixBytesCompared": 32,
+    "equal": true,
+    "scope": "Both worker and query entry prefixes match the current running process; this does not verify every instruction or prove query invocation."
+  }
+}

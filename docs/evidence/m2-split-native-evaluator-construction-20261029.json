@@ -1,0 +1,49 @@
+{
+  "scope": "Static construction path of the native PointEvaluator object observed on the existing split source; not a subdivision policy reconstruction.",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "runtimeVtable": "0x1411a07e8",
+  "vtableReferenceCandidates": [
+    {
+      "instruction": "0x140559308",
+      "bytes": "488d05d974c400",
+      "functionStart": null,
+      "functionEnd": null
+    },
+    {
+      "instruction": "0x14055944d",
+      "bytes": "488d059473c400",
+      "functionStart": null,
+      "functionEnd": null
+    }
+  ],
+  "findings": [
+    "Disassembly identifies 0x140559280 as the evaluator cache lookup/allocation path; when absent it allocates 0x348 bytes, calls 0x140a7f230, assigns the observed evaluator vtable and installs an interface in the source cache.",
+    "The constructor calls 0x14031fee0 on object offset 0x68; that initializes a further member at object offset 0xa0 through 0x140324a70.",
+    "The member initialization clears its pointer at offset 0x30, matching the observed root pointer at evaluator offset 0xd0, and initializes an integer at member offset 0x10 to 8. The meaning of that integer and later tree-building path are not established.",
+    "The second vtable reference at 0x14055944d belongs to a destructor-like path and is not evidence of construction."
+  ],
+  "evidenceFiles": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-evaluator-vtable-xrefs-20261029.json",
+      "sha256": "f474493ea237268c464456238fd2d6e6dc37a82ef6b7d0b7a3ad7f5d70cded30"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-evaluator-constructor-static-20261029-r1\\evidence.json",
+      "sha256": "242679660d76de6913ef2f3ad9f6004a8976bc1c337454e9e3ad0f03dd7b4ce6"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-evaluator-member-static-20261029-r1\\evidence.json",
+      "sha256": "163ca3f9a1dc9cfa4962e54b95fc8a4592127bdc88ec8cf0cf8fefca4cd60474"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-tree-member-static-20261029-r1\\evidence.json",
+      "sha256": "de3861a1db0dc6a10e01ccba39f69bcfabd23c91020cb65bd002eae4c835ebc3"
+    }
+  ],
+  "guardPeakBytes": 705191936,
+  "limitations": [
+    "Static snapshot and read-only object evidence; function types and virtual dispatch are inferred.",
+    "The snapshot executable is runtime-analysis-only; installed executable binding uses the earlier retained prefix receipt.",
+    "Initialization does not identify the tree population, subdivision policy, endpoint orientation or application parity."
+  ]
+}

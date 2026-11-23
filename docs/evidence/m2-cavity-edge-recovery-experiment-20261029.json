@@ -1,0 +1,23 @@
+{
+  "scope": "Isolated Split cavity diagnostics and candidate experiment; not a production change or native-equivalence proof",
+  "diagnosis": "In the rejected connected-cavity candidate, source face 1 first develops a singly incident interior edge during insertion 9. The inserted point has exact orientation zero against that edge; the cavity reconstruction omits the zero-area triangle, leaving the other side of the edge uncovered.",
+  "failedHoleTracePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-connected-cavity-hole-trace-20261029/rotated-hole-trace.json",
+  "failedHoleTraceSha256": "91aa0b3e3d321d2fdf65828510dce3411729dd44c249601905d7b5c7b93c9659",
+  "broadExperiment": "Splitting every detected edge before cavity construction eliminates the rotated fallback and matches all 36 native facets after an oracle-directed vertex replacement, but regresses four previously matching native controls. The fifth failure, wider radius below, was already failing in the baseline. Of 169 tests, 163 passed, one was expected to fail, and five failed.",
+  "broadGuardSha256": "e1dcbd4d2636beffaea32ad11657cc65a422b1a3e1013a4d187f2fa69c251ed1",
+  "narrowExperiment": "Retain original cavity behavior except when an interior point on an existing edge would otherwise leave a zero-orientation cavity boundary; in that case split the existing edge. Keep the directed-edge safety fallback.",
+  "narrowResult": "The rotated test triggers one edge recovery and no topology fallback. Its 38 output facets become 36 matching native facets only after the previously described oracle-directed replacement. In 170 focused tests, 168 passed, one was expected to fail, and the wider-radius-below native comparison failed. The matching convex, concave, cyclic and dense native facet assertions pass.",
+  "baselineComparison": "The same 169 focused tests without the added rotated test gave 167 passed, one expected failure and the same wider-radius-below failure. The baseline guard terminated remaining owned descendants after the root exited and confirmed cleanup.",
+  "sourcePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-edge-recovery-20261029/src/scan-split-finite-face.ts",
+  "sourceSha256": "0687149b58d9c749fc844eb58385fbe1b0f9ed34f9e3c9ed0351a307d22da437",
+  "diagnosticSha256": "0fabd54c366e4e55a2f6f4df4b242612733d233fd73b41ffa353337d01f445c2",
+  "baselineGuardSha256": "c3f590964a7bb5852e590978f39523192d89e1ba3119033f5122ff49f9d1f056",
+  "candidateGuardSha256": "cdc25d5696876b41235f345b0373377c3c05418eceab2c61b65a48e9e78de40d",
+  "candidatePeakBytes": 390340608,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The rotated vertex replacement uses native output as an oracle and is not a validated general rule.",
+    "The narrow candidate is not integrated and retains open memory, broader geometry, GUI/MCP and native validation gates.",
+    "The wider-radius native mismatch remains unresolved."
+  ]
+}

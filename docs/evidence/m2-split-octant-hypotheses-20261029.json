@@ -1,0 +1,41 @@
+{
+  "scope": "Offline candidate models of spatial ordering for the concave cutter, no native invocation or product change.",
+  "rootBounds": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      2.0,
+      1.0
+    ]
+  ],
+  "parameterCases": 2688,
+  "maxSatisfiedOf18ObservedAdjacentConstraints": 16,
+  "scoreHistogram": {
+    "9": 72,
+    "10": 36,
+    "11": 216,
+    "12": 534,
+    "13": 432,
+    "14": 624,
+    "15": 696,
+    "16": 78
+  },
+  "exactMatches": [],
+  "model": "Split root AABB at midpoints, leaf at specified capacity or maximum depth, preserve facet file order within leaves, visit octants by tested bit mapping, deduplicate by first occurrence. Facets assigned by overlapping AABB or box centroid. Every node is filtered by intersection with the source-triangle AABB.",
+  "limitations": [
+    "Models are hypotheses, not native tree implementation. Zero-extent bounds, split stopping, per-face filtering, ordering, tolerances and insertion behavior are not established.",
+    "This control alone cannot establish equivalence; any matches require independent construction evidence and broader fixtures."
+  ],
+  "controlSha256": "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+  "scriptPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-octant-order-hypotheses-20261029.py",
+  "scriptSha256": "703b6c7e5154ba06d483785bdd8e9c67c22c3ccf4db27dd6776597e7c9c8d613",
+  "guardReceiptPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-octant-order-hypotheses-guard-20261029-r3.json",
+  "guardReceiptSha256": "ab10c7b3ed28afa9d1b403ae05dedb3cd078ae19eb18eb5c74e612f8b0eaeab8",
+  "referenceEvidence": "m2-split-native-shared-query-order-20261029.json",
+  "caveat": "The exact first native query list was not captured; ordered records are used as a conditional filtered-subsequence constraint. This experiment does not rule out native-like octrees with other parameters, insertion order or overlap rules.",
+  "supersededExperiment": "An earlier external draft omitted query-box filtering and must not be used; the recorded result here includes it."
+}

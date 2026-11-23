@@ -1,0 +1,27 @@
+{
+  "scope": "Cross-preview concave-control comparison of native grouped segment order with native point-vector order.",
+  "recordsEvidence": "docs/evidence/m2-split-native-record-order-20261029.json",
+  "recordsSha256": "73ee4f57955c1d8454c32778849ec44fbfa60a731b9a6376f72360c7e55df850",
+  "pointsEvidence": "docs/evidence/m2-split-native-pointer-order-20261029.json",
+  "pointsSha256": "e98d70208427a11e8496919c08dea75809c27704fbdd90ff3e68be281dce6dfa",
+  "method": "Traverse face-group records in observed order, take endpoint A then B, deduplicate exact coordinates globally, and filter the resulting sequence to each face. Compare with that face point list after its three source corners.",
+  "faces": [
+    {
+      "face": 0,
+      "intersectionCount": 9,
+      "sequenceMatches": true
+    },
+    {
+      "face": 1,
+      "intersectionCount": 9,
+      "sequenceMatches": true
+    }
+  ],
+  "observation": "Both nine-intersection sequences match.",
+  "limitations": [
+    "Cross-preview capture on one scene; address values are not used for matching.",
+    "Exact coordinate deduplication models only this control; native point-search tolerance and identity behavior require separate handling.",
+    "Native record traversal order and original vertex allocation order remain unresolved.",
+    "No production change or GUI/MCP parity claim."
+  ]
+}

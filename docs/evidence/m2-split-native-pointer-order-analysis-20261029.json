@@ -1,0 +1,12 @@
+{
+  "scope": "Checks on four recorded native point-vector entries from two consecutive concave previews.",
+  "capture": "docs/evidence/m2-split-native-pointer-order-20261029.json",
+  "captureSha256": "e98d70208427a11e8496919c08dea75809c27704fbdd90ff3e68be281dce6dfa",
+  "observations": "Each recorded 12-point list has ascending point addresses and stored zero-based indexes. Corresponding 3D sequences match across the two previews while starting addresses differ. Source corners and some intersection points recur across both face lists.",
+  "limitations": [
+    "Two previews in one process are insufficient to prove deterministic order across scenes or devices.",
+    "The recorded object addresses and inferred field layout are implementation details and are not suitable application sorting keys.",
+    "Point creation and traversal order remain unresolved.",
+    "No application code or GUI/MCP parity claim."
+  ]
+}

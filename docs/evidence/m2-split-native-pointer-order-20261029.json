@@ -1,0 +1,542 @@
+{
+  "scope": "Point object address and sequence observations for two consecutive concave Split previews.",
+  "fixture": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/square-source.stl",
+  "cutter": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/concave-cutter.stl",
+  "mode": "Split with another body or mesh, envelope unchecked, Preview twice",
+  "identityReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-triangle-state-binding-20261029.json",
+  "method": "At the previously observed constructor entry, read caller stack pointer vector, source XYZ float32 and 32-bit index at offset 0x1c; first four calls, max 64 points each.",
+  "scriptSha256": "a99693983c2d0e02d16ad5849aac05fe2bee1b4614d09e552cf64f28b6c72527",
+  "reaEvidence": {
+    "evidence_id": "ev_c6a1587d417001c1424151b34d32528db3b183b9a136c93431af8535a86e1e1e",
+    "subject": null,
+    "provider": {
+      "id": "frida",
+      "name": "Frida",
+      "version": null
+    },
+    "analysis_profile": null,
+    "predicate_type": "rea.frida.instrumentation-observation",
+    "operation": "frida_session_status",
+    "parameters": {
+      "session_id": "7fc939b2-5c8c-41f8-8e8f-76fc0c751ad6"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "session_id": "7fc939b2-5c8c-41f8-8e8f-76fc0c751ad6",
+      "device_id": "local",
+      "state": "running",
+      "target": "QuickSurface.exe (pid 10796)",
+      "pid": 10796,
+      "mode": "attach",
+      "scripts": [
+        {
+          "script_id": "f3c3661e-e257-4075-a0c1-79cc85e3805c",
+          "name": "rea-f3c3661e-e257-4075-a0c1-79cc85e3805c"
+        }
+      ],
+      "messages": [
+        {
+          "script_id": "f3c3661e-e257-4075-a0c1-79cc85e3805c",
+          "type": "send",
+          "payload": {
+            "kind": "ready",
+            "pid": 10796
+          }
+        },
+        {
+          "script_id": "f3c3661e-e257-4075-a0c1-79cc85e3805c",
+          "type": "send",
+          "payload": {
+            "kind": "pointer-order",
+            "call": 1,
+            "count": 12,
+            "points": [
+              {
+                "pointer": "0x62631040",
+                "index": 0,
+                "source": [
+                  3,
+                  3,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631070",
+                "index": 1,
+                "source": [
+                  -1,
+                  -1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x626310a0",
+                "index": 2,
+                "source": [
+                  3,
+                  -1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x626310d0",
+                "index": 3,
+                "source": [
+                  2,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631100",
+                "index": 4,
+                "source": [
+                  2,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631130",
+                "index": 5,
+                "source": [
+                  2,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631160",
+                "index": 6,
+                "source": [
+                  1.5,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631190",
+                "index": 7,
+                "source": [
+                  1,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x626311c0",
+                "index": 8,
+                "source": [
+                  1,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x626311f0",
+                "index": 9,
+                "source": [
+                  0.5,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631220",
+                "index": 10,
+                "source": [
+                  0,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631250",
+                "index": 11,
+                "source": [
+                  1.5,
+                  0,
+                  0.5
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "script_id": "f3c3661e-e257-4075-a0c1-79cc85e3805c",
+          "type": "send",
+          "payload": {
+            "kind": "pointer-order",
+            "call": 2,
+            "count": 12,
+            "points": [
+              {
+                "pointer": "0x62631010",
+                "index": 0,
+                "source": [
+                  -1,
+                  3,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631040",
+                "index": 1,
+                "source": [
+                  3,
+                  3,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631070",
+                "index": 2,
+                "source": [
+                  -1,
+                  -1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631190",
+                "index": 3,
+                "source": [
+                  1,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631220",
+                "index": 4,
+                "source": [
+                  0,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631280",
+                "index": 5,
+                "source": [
+                  1,
+                  1.5,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x626312b0",
+                "index": 6,
+                "source": [
+                  1,
+                  2,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x626312e0",
+                "index": 7,
+                "source": [
+                  0.5,
+                  2,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631310",
+                "index": 8,
+                "source": [
+                  0,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631340",
+                "index": 9,
+                "source": [
+                  0,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x62631370",
+                "index": 10,
+                "source": [
+                  0,
+                  2,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x626313a0",
+                "index": 11,
+                "source": [
+                  0,
+                  1.5,
+                  0.5
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "script_id": "f3c3661e-e257-4075-a0c1-79cc85e3805c",
+          "type": "send",
+          "payload": {
+            "kind": "pointer-order",
+            "call": 3,
+            "count": 12,
+            "points": [
+              {
+                "pointer": "0x5c6dcc90",
+                "index": 0,
+                "source": [
+                  3,
+                  3,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dccc0",
+                "index": 1,
+                "source": [
+                  -1,
+                  -1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dccf0",
+                "index": 2,
+                "source": [
+                  3,
+                  -1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcd20",
+                "index": 3,
+                "source": [
+                  2,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcd50",
+                "index": 4,
+                "source": [
+                  2,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcd80",
+                "index": 5,
+                "source": [
+                  2,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcdb0",
+                "index": 6,
+                "source": [
+                  1.5,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcde0",
+                "index": 7,
+                "source": [
+                  1,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dce10",
+                "index": 8,
+                "source": [
+                  1,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dce40",
+                "index": 9,
+                "source": [
+                  0.5,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dce70",
+                "index": 10,
+                "source": [
+                  0,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcea0",
+                "index": 11,
+                "source": [
+                  1.5,
+                  0,
+                  0.5
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "script_id": "f3c3661e-e257-4075-a0c1-79cc85e3805c",
+          "type": "send",
+          "payload": {
+            "kind": "pointer-order",
+            "call": 4,
+            "count": 12,
+            "points": [
+              {
+                "pointer": "0x5c6dcc60",
+                "index": 0,
+                "source": [
+                  -1,
+                  3,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcc90",
+                "index": 1,
+                "source": [
+                  3,
+                  3,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dccc0",
+                "index": 2,
+                "source": [
+                  -1,
+                  -1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcde0",
+                "index": 3,
+                "source": [
+                  1,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dce70",
+                "index": 4,
+                "source": [
+                  0,
+                  0,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dced0",
+                "index": 5,
+                "source": [
+                  1,
+                  1.5,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcf00",
+                "index": 6,
+                "source": [
+                  1,
+                  2,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcf30",
+                "index": 7,
+                "source": [
+                  0.5,
+                  2,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcf60",
+                "index": 8,
+                "source": [
+                  0,
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcf90",
+                "index": 9,
+                "source": [
+                  0,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcfc0",
+                "index": 10,
+                "source": [
+                  0,
+                  2,
+                  0.5
+                ]
+              },
+              {
+                "pointer": "0x5c6dcff0",
+                "index": 11,
+                "source": [
+                  0,
+                  1.5,
+                  0.5
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "messages_truncated": false
+    },
+    "confidence": "observed",
+    "authority": "external-service",
+    "environment": null,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "The target operating system and architecture were not reported by this observation."
+    ],
+    "relationship_coverage": null,
+    "locations": [],
+    "evidence_links": []
+  },
+  "limitations": [
+    "Preview repeats reused the same scene and process; absence of allocator variation is not established.",
+    "No output was exported; native GUI or MCP parity not established.",
+    "Pointer order depends on the native allocation strategy; copying actual addresses into ScanForge would be invalid.",
+    "Frida modifies target entries during tracing."
+  ]
+}

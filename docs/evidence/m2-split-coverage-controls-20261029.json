@@ -1,0 +1,31 @@
+{
+  "scope": "Shared Split coverage controls for one original scan face and a manufactured 128-facet cutter.",
+  "tests": [
+    {
+      "path": "tests/m2-split-real-face-precision.test.ts",
+      "sha256": "12dd36a481d64822bd5e296f044704b27ec49f55e5e476914c63d779bf6d913e"
+    },
+    {
+      "path": "tests/m2-split-dense-cutter.test.ts",
+      "sha256": "a83f39a57efdbb46ea68e897ac44fe480892c4cd44237c92bd0aa3e5e2b6ceb9"
+    },
+    {
+      "path": "tests/split-coverage-utils.ts",
+      "sha256": "0f99b7585bebfef2db35ca1e69216445e0e03919e8538f6ef5d17ecac6103ded"
+    }
+  ],
+  "result": "Three tests pass, including an independent clipping sanity check. For both outputs, projected facets have positive orientation, output corners remain within the respective source domain and plane, total projected area matches, and pairwise clipped intersection areas remain below stated tolerances.",
+  "tolerances": {
+    "densePairOverlapArea": 1e-10,
+    "realFacePairOverlapArea": 1e-12,
+    "realFacePlaneDot": 1e-12,
+    "realFaceBoundaryCross": 1e-12
+  },
+  "guardPeakBytes": 346296320,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "Floating-point clipping and per-pair tolerances provide bounded evidence for these two controls, not exact proof or general equivalence.",
+    "No new GUI/public-MCP replay, native tree observation, or native output comparison was performed.",
+    "No application or MCP behavior changed."
+  ]
+}

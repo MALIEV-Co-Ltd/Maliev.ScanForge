@@ -1,0 +1,95 @@
+{
+  "scope": "Dense-cutter Split rendered GUI and public-MCP lifecycle on retained M2 build.",
+  "build": "scanforge-0c3cfeae80a65b03",
+  "browserRoute": "Browser plugin skill unavailable; existing isolated Playwright lifecycle harness used.",
+  "fixtureDirectory": "C:/repo/alignment-example-files/m2-native-tree-depth-control-20261029",
+  "testScript": "tests/scan-split-browser.mjs",
+  "testScriptSha256": "eb4aa213bf3caa225e578d8881fa36c4e5af4cd717b8cba0fbbe8278e8865ec8",
+  "result": {
+    "name": "dense-tree-cutter",
+    "sourceFileSha256": "930d69565f9b94989a465b7a5f4b4b79f48da8f0d1410c2b21134eea504b057e",
+    "cutterFileSha256": "e8609260000042e973da8557b7c53c3ebccf6193918768f8f4505791d14b3ec0",
+    "outputDigest": [
+      {
+        "path": "positions",
+        "encoding": "f64",
+        "elements": 612,
+        "sha256": "2ed2f253b3839115316bcbba2ee68898e5e1e40b9e66ae827b1c09f0731b66ae"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f64",
+        "elements": 204,
+        "sha256": "6dcea72e33faf4df229e1f3c45047e5f31e52fcb951cf22c20e72462836e68d0"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 204,
+        "sha256": "d2292f87d8c37beb1601b32867d70a6c5182443ffc3d64d3297f89795c991edf"
+      }
+    ],
+    "outputArea": 13.5,
+    "diagnostics": {
+      "affectedFaces": 2,
+      "sourceFaces": 2,
+      "parts": 1,
+      "cutEdges": 16,
+      "sourceIdentity": "retained-indexed",
+      "changed": true
+    },
+    "guiMcpGeometry": true,
+    "undoRedo": true,
+    "binaryReopen": true,
+    "mcpHeldResultCancellation": true,
+    "guiCloseCancellation": true,
+    "guiRedoCanvasPngIdentical": true,
+    "facetPrecision": {
+      "maxOriginalNormalError": 0,
+      "maxFloat32OracleError": 0
+    },
+    "normalCaches": {
+      "initial": {
+        "geometryNormals": null,
+        "facetNormals": null
+      },
+      "guiRedo": {
+        "geometryNormals": "efe4bdc0ec6dadb8276e3e49cce009fd2b7beeb9a77bf613482f064885d749d4",
+        "facetNormals": "efe4bdc0ec6dadb8276e3e49cce009fd2b7beeb9a77bf613482f064885d749d4"
+      },
+      "mcpRedo": {
+        "geometryNormals": "efe4bdc0ec6dadb8276e3e49cce009fd2b7beeb9a77bf613482f064885d749d4",
+        "facetNormals": "efe4bdc0ec6dadb8276e3e49cce009fd2b7beeb9a77bf613482f064885d749d4"
+      },
+      "reopened": {
+        "geometryNormals": "efe4bdc0ec6dadb8276e3e49cce009fd2b7beeb9a77bf613482f064885d749d4",
+        "facetNormals": "efe4bdc0ec6dadb8276e3e49cce009fd2b7beeb9a77bf613482f064885d749d4"
+      }
+    }
+  },
+  "pageErrors": [],
+  "screenshots": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-dense-browser-20261029-r2\\dense-tree-cutter-initial.png",
+      "sha256": "b25338153da0cb291f4e30ec607286dfbeb734fbb381c37e044ebf0b8bf73e61"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-dense-browser-20261029-r2\\dense-tree-cutter-redo.png",
+      "sha256": "b25338153da0cb291f4e30ec607286dfbeb734fbb381c37e044ebf0b8bf73e61"
+    }
+  ],
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 925454336,
+    "cleanupConfirmed": true
+  },
+  "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-dense-browser-20261029-r2\\split-lifecycle-browser-ledger.json",
+  "ledgerSha256": "66113abe0dcd4bdbe56932132b4c9fd97a331f13426cb49f4503d3b8c0842006",
+  "limitations": [
+    "The retained isolated build is not a clean current PR commit or the live 5173 preview.",
+    "The canvas after initial Split and Redo was pixel-identical, but the seam is not visually distinguishable in the screenshot.",
+    "Cancellation holds the result before publication; it does not establish cancellation latency in every worker stage.",
+    "Binary reopen uses public MCP; GUI file-open is not covered by this replay.",
+    "Native operation and native equivalence remain unverified."
+  ]
+}

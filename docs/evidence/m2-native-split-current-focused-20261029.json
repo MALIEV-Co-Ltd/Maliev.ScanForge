@@ -1,0 +1,44 @@
+{
+  "scope": "Current source focused native Split control tests; expected failures are open mismatches, not parity passes.",
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/m2-native-convex-split.test.ts",
+    "tests/m2-native-cyclic-split.test.ts",
+    "tests/m2-native-concave-split.test.ts",
+    "tests/m2-native-concave-import-order.test.ts",
+    "--maxWorkers=1"
+  ],
+  "sourceSha256": {
+    "src/scan-edit-general-split.ts": "ebfb6a3488c4625b963586a7214d8b1e17c926c6a9a58aeeeb98f09ff00a97db",
+    "src/scan-split-finite-face.ts": "b73ccd73df45d1084a338edeb305cd4c3cdbc5f116461d02e72f361dab21510a",
+    "src/scan-split-finite-pipeline.ts": "322e05b7bb45e4efbbabc504d8610c1f5fd131484feadcc6b436741d05053c77",
+    "src/scan-native-stl-topology.ts": "2b7fcaed2c4a954b4951ed0d74167942dbcab6f2ee4e2d687024df2dfdd3148b"
+  },
+  "testSha256": {
+    "tests/m2-native-convex-split.test.ts": "9c828b558757ea0c10fc924cdb17645a3ff6309a247e8afd317799bf9e6016d5",
+    "tests/m2-native-cyclic-split.test.ts": "0385dddacdf9012aaa7598c112d656289980033abcf906188671835bf9db64f1",
+    "tests/m2-native-concave-split.test.ts": "eea70447ce8a438f17e770f7184ecd0854de9109ccccb549c8c7af60f486a1d2",
+    "tests/m2-native-concave-import-order.test.ts": "8b5ea79a60d3393c9cbbd6e77c5556952ca60745c440ccbdfec8509b18097469"
+  },
+  "summary": {
+    "files": 4,
+    "passingTests": 5,
+    "expectedFailures": 3,
+    "unexpectedFailures": 0
+  },
+  "expectedFailures": [
+    "matches native convex mesh Split facets on the pinned inputs",
+    "matches native Split for a cyclic source vertex order",
+    "matches native concave mesh Split facets on the pinned inputs"
+  ],
+  "guardPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-split-current-focused-guard-20261029.json",
+  "guardSha256": "fbf2871530bab0103d87e6348dbb7d19a6f66aa942ec309d92ce36604d8bc696",
+  "peakJobBytes": 357863424,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "Runner success includes three intentionally expected failures and does not establish native geometry equivalence.",
+    "Focused tests do not replace GUI/public MCP, performance, resource, or full M2 acceptance."
+  ]
+}

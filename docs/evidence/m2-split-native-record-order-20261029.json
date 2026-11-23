@@ -1,0 +1,366 @@
+{
+  "scope": "Native grouped intersection records at per-face routine entry during concave Split preview.",
+  "source": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/square-source.stl",
+  "cutter": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/concave-cutter.stl",
+  "mode": "Split with another body or mesh; envelope unchecked; Preview",
+  "identityReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-triangle-state-binding-20261029.json",
+  "method": "Bounded hook at 0x1403290a0 reads vector passed as argument three, 80-byte records with six double coordinates and two point pointers as inferred from retained caller decompilation. Maximum 64 records per face.",
+  "scriptSha256": "aaa3c0f70ae7863eb8526772dafea7b429578f50b9e399cf5ef658e03cfb935b",
+  "reaEvidence": {
+    "evidence_id": "ev_2777fa1c28d9d9f6ce8ba20b48abb4d79640402123ba0e0849fde2e9ae840b9e",
+    "subject": null,
+    "provider": {
+      "id": "frida",
+      "name": "Frida",
+      "version": null
+    },
+    "analysis_profile": null,
+    "predicate_type": "rea.frida.instrumentation-observation",
+    "operation": "frida_session_status",
+    "parameters": {
+      "session_id": "42c83e83-7ce8-484e-b14c-364683c5c798"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "session_id": "42c83e83-7ce8-484e-b14c-364683c5c798",
+      "device_id": "local",
+      "state": "running",
+      "target": "QuickSurface.exe (pid 10796)",
+      "pid": 10796,
+      "mode": "attach",
+      "scripts": [
+        {
+          "script_id": "bc279d61-9509-4bb4-8154-4054375961bf",
+          "name": "rea-bc279d61-9509-4bb4-8154-4054375961bf"
+        }
+      ],
+      "messages": [
+        {
+          "script_id": "bc279d61-9509-4bb4-8154-4054375961bf",
+          "type": "send",
+          "payload": {
+            "kind": "ready",
+            "pid": 10796
+          }
+        },
+        {
+          "script_id": "bc279d61-9509-4bb4-8154-4054375961bf",
+          "type": "send",
+          "payload": {
+            "kind": "face-records",
+            "call": 1,
+            "records": [
+              {
+                "a": [
+                  2,
+                  1,
+                  0.5
+                ],
+                "b": [
+                  2,
+                  0.5,
+                  0.5
+                ],
+                "pointA": "0x626310d0",
+                "pointB": "0x62631100"
+              },
+              {
+                "a": [
+                  2,
+                  0,
+                  0.5
+                ],
+                "b": [
+                  2,
+                  0.5,
+                  0.5
+                ],
+                "pointA": "0x62631130",
+                "pointB": "0x62631100"
+              },
+              {
+                "a": [
+                  1.5,
+                  1,
+                  0.5
+                ],
+                "b": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "pointA": "0x62631160",
+                "pointB": "0x62631190"
+              },
+              {
+                "a": [
+                  1.5,
+                  1,
+                  0.5
+                ],
+                "b": [
+                  2,
+                  1,
+                  0.5
+                ],
+                "pointA": "0x62631160",
+                "pointB": "0x626310d0"
+              },
+              {
+                "a": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "b": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "pointA": "0x62631190",
+                "pointB": "0x62631190"
+              },
+              {
+                "a": [
+                  1,
+                  0,
+                  0.5
+                ],
+                "b": [
+                  0.5,
+                  0,
+                  0.5
+                ],
+                "pointA": "0x626311c0",
+                "pointB": "0x626311f0"
+              },
+              {
+                "a": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "b": [
+                  0.5,
+                  0,
+                  0.5
+                ],
+                "pointA": "0x62631220",
+                "pointB": "0x626311f0"
+              },
+              {
+                "a": [
+                  2,
+                  0,
+                  0.5
+                ],
+                "b": [
+                  1.5,
+                  0,
+                  0.5
+                ],
+                "pointA": "0x62631130",
+                "pointB": "0x62631250"
+              },
+              {
+                "a": [
+                  1,
+                  0,
+                  0.5
+                ],
+                "b": [
+                  1.5,
+                  0,
+                  0.5
+                ],
+                "pointA": "0x626311c0",
+                "pointB": "0x62631250"
+              },
+              {
+                "a": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "b": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "pointA": "0x62631220",
+                "pointB": "0x62631220"
+              }
+            ]
+          }
+        },
+        {
+          "script_id": "bc279d61-9509-4bb4-8154-4054375961bf",
+          "type": "send",
+          "payload": {
+            "kind": "face-records",
+            "call": 2,
+            "records": [
+              {
+                "a": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "b": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "pointA": "0x62631190",
+                "pointB": "0x62631190"
+              },
+              {
+                "a": [
+                  1,
+                  1.5,
+                  0.5
+                ],
+                "b": [
+                  1,
+                  2,
+                  0.5
+                ],
+                "pointA": "0x62631280",
+                "pointB": "0x626312b0"
+              },
+              {
+                "a": [
+                  1,
+                  1.5,
+                  0.5
+                ],
+                "b": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "pointA": "0x62631280",
+                "pointB": "0x62631190"
+              },
+              {
+                "a": [
+                  1,
+                  2,
+                  0.5
+                ],
+                "b": [
+                  0.5,
+                  2,
+                  0.5
+                ],
+                "pointA": "0x626312b0",
+                "pointB": "0x626312e0"
+              },
+              {
+                "a": [
+                  0,
+                  1,
+                  0.5
+                ],
+                "b": [
+                  0,
+                  0.5,
+                  0.5
+                ],
+                "pointA": "0x62631310",
+                "pointB": "0x62631340"
+              },
+              {
+                "a": [
+                  0,
+                  2,
+                  0.5
+                ],
+                "b": [
+                  0.5,
+                  2,
+                  0.5
+                ],
+                "pointA": "0x62631370",
+                "pointB": "0x626312e0"
+              },
+              {
+                "a": [
+                  0,
+                  1,
+                  0.5
+                ],
+                "b": [
+                  0,
+                  1.5,
+                  0.5
+                ],
+                "pointA": "0x62631310",
+                "pointB": "0x626313a0"
+              },
+              {
+                "a": [
+                  0,
+                  2,
+                  0.5
+                ],
+                "b": [
+                  0,
+                  1.5,
+                  0.5
+                ],
+                "pointA": "0x62631370",
+                "pointB": "0x626313a0"
+              },
+              {
+                "a": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "b": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "pointA": "0x62631220",
+                "pointB": "0x62631220"
+              },
+              {
+                "a": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "b": [
+                  0,
+                  0.5,
+                  0.5
+                ],
+                "pointA": "0x62631220",
+                "pointB": "0x62631340"
+              }
+            ]
+          }
+        }
+      ],
+      "messages_truncated": false
+    },
+    "confidence": "observed",
+    "authority": "external-service",
+    "environment": null,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "The target operating system and architecture were not reported by this observation."
+    ],
+    "relationship_coverage": null,
+    "locations": [],
+    "evidence_links": []
+  },
+  "limitations": [
+    "Layout and grouping semantics inferred from assembly and observed values; broader geometry not validated.",
+    "Retained pointer-order capture was a separate preview, so address equality is incidental and not a cross-run identity guarantee.",
+    "No instrumented output exported or application behavior changed.",
+    "Frida temporarily modifies target function entry."
+  ]
+}

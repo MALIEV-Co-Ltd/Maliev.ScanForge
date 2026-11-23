@@ -1,0 +1,42 @@
+{
+  "scope": "Original PLY-3 GUI Split/Extract, save and in-place reopen with explicit post-import stage markers.",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "build": "m2-shared-brep-build-20261029-r1",
+  "scriptSha256": "c1ff5bf25f07718cc58110bd67c069faa0c4c094b24cf84d5d57206a1e76e588",
+  "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-inplace-attribution-20261029-r1\\split-lifecycle-browser-ledger.json",
+  "ledgerSha256": "2e22a417e1707a49ec1b95b72b34a71ba47f9ec6abef0f860e1d3fda7ddc4f69",
+  "logPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-inplace-attribution-20261029-r1.log",
+  "logSha256": "c030049c08bbf33b984b025edcd03adda39ca2ff00bb0d99155376da4804ef12",
+  "guardPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-inplace-attribution-guard-20261029-r1.json",
+  "guardSha256": "706c30b7b3b31310de9097ee8668384b569f98fac1e7a7fcf3796339ef0f5d8a",
+  "stages": [
+    "source-imported",
+    "source-digest",
+    "cutter-imported",
+    "gui-split-started",
+    "gui-split-committed",
+    "gui-output-digest",
+    "component-inventory-opened",
+    "component-inventory-ready",
+    "gui-extract-committed",
+    "gui-extract-undone",
+    "gui-extract-undo-digest-verified",
+    "gui-extract-project-exported",
+    "gui-extract-project-imported",
+    "gui-extract-artifact-delete-started",
+    "gui-extract-artifact-deleted",
+    "gui-extract-reopen-part-digest-started"
+  ],
+  "failedBridgeCommand": "job_get",
+  "error": "{\"ok\":false,\"error\":{\"code\":\"BRIDGE_UNAVAILABLE\",\"message\":\"Browser command timed out\"}}",
+  "aggregateLimitBytes": 4294967296,
+  "peakJobBytes": 4295741440,
+  "cleanupConfirmed": true,
+  "result": "Save, import and export-artifact deletion completed; the Extract digest was requested, and a job_get bridge request timed out before digest verification. This run did not meet the resource or geometry equality gates.",
+  "limitations": [
+    "The job_get timeout does not prove whether hashing, event-loop scheduling, bridge communication or memory pressure caused the stall.",
+    "One instrumented run; peak is a job-level measurement, not an allocation attribution.",
+    "The added stage observations may affect timing."
+  ],
+  "buildQualification": "This older 03:56 build does not contain the later numeric reuse candidate. Search for its unique Invalid numeric reuse limits diagnostic string finds it in the 10:xx current-source build and not in this build. This is not a validation of current source."
+}

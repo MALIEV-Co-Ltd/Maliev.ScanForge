@@ -1,0 +1,17 @@
+{
+  "scope": "Cross-preview reconstruction of one native convex Split export from two native point arrays and initial triangulation vectors.",
+  "pointEvidence": "docs/evidence/m2-split-native-paired-point-order-20261029.json",
+  "pointSha256": "fc8784956bd9c6394e5e00b74cd5a56155fa757bad9f6cef350a814accf162a5",
+  "triangleEvidence": "docs/evidence/m2-split-native-triangulation-state-20261029.json",
+  "triangleSha256": "14c219e5cf1900cc6439af6453c7992f4200316748d5069d6f54d3e9b4973fe7",
+  "export": "C:\\repo\\alignment-example-files\\m2-native-split-controls-20261027-r1\\native-convex-result-20261029.stl",
+  "exportSha256": "6e08cdde5035399ed82c103a4fbd9a973846a1f824f3e77ad5792f8d2bfb7b15",
+  "comparison": "All 18 unordered Float32 coordinate-triple facets match as a multiset.",
+  "observations": "The constructor output index triples agree with the corresponding post-constraint snapshots in this control; each observed constraint names an edge already present in those triples.",
+  "limitations": [
+    "Point arrays and triangle snapshots were captured in separate previews; this match corroborates their pairing only for this case.",
+    "STL does not encode indexed seam identity.",
+    "General constraints may alter triangulation; this observation is not a universal rule.",
+    "No shared ScanForge operation has been changed or validated against these snapshots."
+  ]
+}

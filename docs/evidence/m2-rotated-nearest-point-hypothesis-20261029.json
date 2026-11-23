@@ -1,0 +1,29 @@
+{
+  "scope": "Offline hypothesis using the pinned native output as an oracle; not a native point-tree observation",
+  "method": "Measure the two already-traced precise triangle-contact endpoints against distinct Float32 vertices in the rotated native output, using the 0.00009999999747378752 value inferred for a conditional native point-search path.",
+  "nativeOutputVertices": 21,
+  "neighborsWithinCandidateRadius": [1, 1],
+  "nearestNativeVertex": [
+    3.2092130184173584, -1.8834589719772339, 5.456369400024414
+  ],
+  "distancesMm": [8.42936585545253e-8, 1.0284965267615193e-7],
+  "firstContactFloat32": [
+    3.2092130184173584, -1.8834589719772339, 5.456369400024414
+  ],
+  "secondContactFloat32": [
+    3.2092130184173584, -1.8834590911865234, 5.456369400024414
+  ],
+  "interpretation": "Both endpoints are close to the same observed native vertex, and the first rounds to it. This is consistent with, but does not establish, native point reuse if that record was already in the searched tree.",
+  "diagnosticPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-projection-trace-20261029/tests/m2-nearest-point-hypothesis.test.ts",
+  "diagnosticSha256": "c537339c532c0d3f4fed0af946f26c4f60ee163c16ab262ce71f85346f1689fd",
+  "resultSha256": "6b0cd6b4384d6b78b6e96e70242bc7899073a611a80ba246008af6f61f96b14f",
+  "guardSha256": "3424f7d18885d7dd95561ae5497169b6ae2d826249f71e651e25ba4e6e6bb089",
+  "guardPeakBytes": 322945024,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The native output is used to select the target, and the native tree and insertion order were not observed.",
+    "The helper radius comes from a conditional static candidate path and is not established as a universal rule.",
+    "The distinct stored input segment is real; generic distance welding may remove meaningful geometry.",
+    "No production, GUI/MCP or native parity claim follows."
+  ]
+}

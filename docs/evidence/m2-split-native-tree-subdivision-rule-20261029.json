@@ -1,0 +1,49 @@
+{
+  "scope": "Static candidate facet spatial-tree construction and subdivision path, with live function-entry-prefix binding and previously captured leaf-count controls.",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "findings": [
+    "The candidate evaluator setup at 0x140a7f470 resets the tree, sets its depth limit to 10, initializes the root, appends each accepted facet to intersecting root children in source enumeration order, and dispatches subdivision of child slots.",
+    "Initialization at 0x140387c40 sets the leaf reference threshold to 25 and stores a caller-supplied Float32 size parameter. It creates the root and its eight initial children before distributing facets.",
+    "Recursive routine 0x1403895d0 subdivides a non-null node only if facet-reference count is at least the configured threshold, x-width is strictly greater than the stored Float32 size parameter, and node depth is strictly below the configured depth limit.",
+    "Routine 0x140389680 tests each existing facet against child boxes, appends matching facets in existing order, and clears the parent facet range after redistribution.",
+    "Previously observed controls have at most 16 references per leaf for convex, concave and cyclic-source, and 18 for the split square source; all are below 25. These data are consistent with the inferred threshold but do not exercise it."
+  ],
+  "controlLeafCounts": {
+    "convex": [6, 6, 6, 6, 6, 6, 6, 6],
+    "concave": [13, 14, 14, 16, 13, 14, 14, 16],
+    "cyclic-source": [2, 2, 2, 2, 2, 2, 2, 2]
+  },
+  "liveEntryPrefixBinding": {
+    "pid": 10796,
+    "bytesPerFunction": 32,
+    "allMatch": true
+  },
+  "sourceEvidence": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-evaluator-operation-static-20261029-r1\\evidence.json",
+      "sha256": "93b0ffa3f5c0743ed79e8e0d21784ffe30ba7dcb3baf1deb6fb82d7264387f6a"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-tree-build-helpers-20261029-r1\\evidence.json",
+      "sha256": "2c5ccfce0c9ccf31b9f5d293ba50f10c79b16bf89e681a46fabc2acda5f94e45"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-tree-subdivision-20261029-r1\\evidence.json",
+      "sha256": "9ec33f61ddb0170527561f48d4ca43c7feccf15c0a423d8a8f41766b07846ef6"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-tree-recursion-20261029-r1\\evidence.json",
+      "sha256": "b272fbf34d361217d5ce020301215339291cafcdc360710623bb834e1a59d78d"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-tree-builder-live-prefix-20261029.json",
+      "sha256": "2416de35e446ef0a3de92f4910e852d9f724825fd00b76bb3809744996d20d0b"
+    }
+  ],
+  "limitations": [
+    "Static inference plus live prefix matches; no observed live call proves this exact construction path executes for these fixtures.",
+    "The caller-supplied size parameter and general construction behavior need independent verification.",
+    "The earlier root-cube prototype does not model every Float32 rounding step evident in the native helper.",
+    "No control has exercised the 25-reference, size or depth boundary; no Split application behavior or parity has changed."
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "scope": "Isolated native-style one-level traversal and alternative projection/cavity experiments on three pinned Split controls.",
+  "comparison": {
+    "baseline": [
+      {
+        "name": "convex",
+        "native": 18,
+        "application": 18,
+        "matches": 12
+      },
+      {
+        "name": "concave",
+        "native": 34,
+        "application": 34,
+        "matches": 22
+      },
+      {
+        "name": "cyclic",
+        "native": 18,
+        "application": 18,
+        "matches": 10
+      }
+    ],
+    "nativeStyleOrderBarycentricCavity": [
+      {
+        "name": "convex",
+        "native": 18,
+        "application": 18,
+        "matches": 13
+      },
+      {
+        "name": "concave",
+        "native": 34,
+        "application": 34,
+        "matches": 17
+      },
+      {
+        "name": "cyclic",
+        "native": 18,
+        "application": 18,
+        "matches": 13
+      }
+    ],
+    "nativeStyleOrderEuclideanMetric": [
+      {
+        "name": "convex",
+        "native": 18,
+        "application": 18,
+        "matches": 13
+      },
+      {
+        "name": "concave",
+        "native": 34,
+        "application": 34,
+        "matches": 25
+      },
+      {
+        "name": "cyclic",
+        "native": 18,
+        "application": 18,
+        "matches": 16
+      }
+    ],
+    "nativeStyleOrderCapturedFaceFrames": [
+      {
+        "name": "convex",
+        "native": 18,
+        "application": 18,
+        "matches": 16
+      },
+      {
+        "name": "concave",
+        "native": 34,
+        "application": 34,
+        "matches": 34
+      },
+      {
+        "name": "cyclic",
+        "native": 18,
+        "application": 18,
+        "matches": 16
+      }
+    ]
+  },
+  "capturedProjectionSquaredEdgeRatios": {
+    "originalFirstFace": [0.0625, 0.0625, 0.0625],
+    "originalSecondFace": [0.078125, 0.03125, 0.078125],
+    "cyclicFirstFace": [0.0625, 0.0625, 0.0625],
+    "cyclicSecondFace": [0.0625, 0.0625, 0.0625]
+  },
+  "method": "Use a one-level native-style octant order, preserve application segment order and perform exact-incircle cavity insertion. Compare the current barycentric metric, an orthonormalized face metric, and affine frames reconstructed from the three captured native corner projections. Count unordered output facet multiset matches.",
+  "staticObservation": "The retained per-face native routine builds and inverts a local frame, casts projected values and per-axis scale denominators through Float32, and normalizes the two axes independently. The two static helper decompilations are retained for further analysis; exact signatures and general behavior remain to be verified.",
+  "candidateSources": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-cavity-integration-experiment-20261029\\src\\scan-split-finite-face.ts",
+      "sha256": "4bc4f39723816cf9a0072893c5e627774912b1cdcf6adbd81dae557c82fe0e38"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-cavity-integration-experiment-20261029\\src\\scan-edit-general-split.ts",
+      "sha256": "83de93bc32a5fac86b2277f265a18c1d375aed3167e2d6853631e1c69f9427e9"
+    }
+  ],
+  "projectionHelperEvidence": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-projection-helpers-20261029-r1\\evidence.json",
+  "projectionHelperSha256": "093ab6f7810d309542732b190483871dd417888dcd3849382850ab24ec0676d5",
+  "maxGuardPeakBytes": 675995648,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The captured-frame variant injects native oracle data for each face; it is not a general implementation or independent validation.",
+    "The native-style tree is only one level and has no general subdivision implementation.",
+    "The result does not establish arbitrary input behavior, constraints, performance, public MCP or GUI lifecycle.",
+    "Facet counts compare unordered geometry, not orientation, normals or native object lifecycle.",
+    "No candidate was applied to the application."
+  ]
+}

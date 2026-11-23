@@ -121,6 +121,29 @@ try {
     }
     if (!cloudPlacement(decoded.project.entities[1]))
       throw Error("Native cloud pose lost");
+    const precise = Array.from({ length: 65538 }, (_, i) =>
+      i === 0 ? -0 : i / 7,
+    );
+    const preciseMesh = { ...mesh, id: "precise", positions: precise };
+    const preciseSession = {
+      ...session,
+      project: { ...session.project, entities: [preciseMesh] },
+      history: [{ label: "Import", entities: [preciseMesh] }],
+      future: [],
+    };
+    const preciseFile = await encodeProjectFile(preciseSession);
+    const preciseRestored = await decodeProjectFile(preciseFile);
+    const restoredPositions = preciseRestored.project.entities[0].positions;
+    if (
+      !Array.isArray(restoredPositions) ||
+      restoredPositions.length !== precise.length ||
+      restoredPositions.some((value, i) => !Object.is(value, precise[i])) ||
+      preciseRestored.history[0].entities[0].positions !== restoredPositions
+    )
+      throw Error(
+        "Precise project geometry or history alias changed during restore",
+      );
+
     let rejected = false;
     try {
       await encodeProjectFile({
@@ -156,6 +179,7 @@ try {
       authoredBuffersIntact: true,
       cloudPoseRetained: true,
       repeatRestoreSharesBacking: true,
+      preciseArrayRestore: true,
       invalidGeometryRejected: true,
       queueRecovered: true,
       cancellationReleased: true,

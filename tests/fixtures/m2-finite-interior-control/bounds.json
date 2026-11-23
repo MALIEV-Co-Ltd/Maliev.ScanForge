@@ -1,0 +1,11 @@
+{
+  "max": [1, 1, 0],
+  "min": [0, 0, 0],
+  "finiteInteriorControl": true,
+  "cutterVertices": [
+    [0.5, 0.1, -1],
+    [0.5, 0.3, -1],
+    [0.5, 0.1, 1]
+  ],
+  "sha256": "f20c233f4ed72559e073627d34a18ba4fc65c07a00311c7afe0c8283858a4229"
+}

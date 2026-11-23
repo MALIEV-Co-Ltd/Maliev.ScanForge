@@ -1,0 +1,20 @@
+{
+  "scope": "Offline fitted hypothesis only; no native internal observation or application implementation",
+  "experiment": "In the isolated native-order candidate, snap output vertices within 0.001 mm of an original source corner and omit planar output triangles with area less than 0.0001 square mm",
+  "controls": "Five existing planar native exports",
+  "result": "All five unordered Float32 facet sets matched",
+  "guardSha256": "164b1444f5392774b619fb8a8c160075943e0c9616d08050e515dd2a34b6d635",
+  "peakJobBytes": 338554880,
+  "cleanupConfirmed": true,
+  "scaledControl": {
+    "sourceSha256": "801dceabede6cb79df0d9bc0c9855edc5b1131fabe3e56ff7c746b6c6bbaa04e",
+    "cutterSha256": "13f6e668866e0585394359d2dc2bb86ac1bdce9e1c89ceac13db7ef4c1a1d7ee",
+    "nativeOutput": "not observed",
+    "description": "Source enlarged tenfold while cutter x is unchanged; shared-operation finite area preservation passed"
+  },
+  "limitations": [
+    "Thresholds were selected after examining the five examples; the agreement is not independent validation",
+    "This rule can remove real geometry and is not suitable for production on this evidence",
+    "Native intermediate points, scaling policy, GUI and MCP behavior remain unknown"
+  ]
+}

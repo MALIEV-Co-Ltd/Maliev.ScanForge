@@ -1,0 +1,124 @@
+{
+  "scope": "Read-only live tree settings and offline Float32 root-cube arithmetic comparison for existing native Split controls.",
+  "objects": [
+    {
+      "object": "convex-cutter",
+      "depthLimit": 10,
+      "referenceThreshold": 25,
+      "minimumWidth": 0.5,
+      "rootDepth": 0,
+      "rootBounds": [
+        -0.009999990463256836, -0.009999990463256836, -0.009999990463256836,
+        1.0099999904632568, 1.0099999904632568, 1.0099999904632568
+      ]
+    },
+    {
+      "object": "concave-cutter",
+      "depthLimit": 10,
+      "referenceThreshold": 25,
+      "minimumWidth": 0.5,
+      "rootDepth": 0,
+      "rootBounds": [
+        -0.009999990463256836, -0.009999990463256836, -0.5099999904632568,
+        2.009999990463257, 2.009999990463257, 1.5099999904632568
+      ]
+    },
+    {
+      "object": "square-source-cyclic",
+      "depthLimit": 10,
+      "referenceThreshold": 25,
+      "minimumWidth": 0.5,
+      "rootDepth": 0,
+      "rootBounds": [
+        -1.0099999904632568, -1.0099999904632568, -1.5099999904632568,
+        3.009999990463257, 3.009999990463257, 2.509999990463257
+      ]
+    },
+    {
+      "object": "square-source",
+      "depthLimit": 10,
+      "referenceThreshold": 25,
+      "minimumWidth": 0.5,
+      "rootDepth": 0,
+      "rootBounds": [
+        -1.0099999904632568, -1.0099999904632568, -1.5099999904632568,
+        3.009999990463257, 3.009999990463257, 2.509999990463257
+      ]
+    }
+  ],
+  "roundingControls": [
+    {
+      "name": "convex",
+      "min": [0, 0, 0],
+      "max": [1, 1, 1],
+      "expected": [
+        -0.009999990463256836, -0.009999990463256836, -0.009999990463256836,
+        1.0099999904632568, 1.0099999904632568, 1.0099999904632568
+      ],
+      "actual": [
+        -0.009999990463256836, -0.009999990463256836, -0.009999990463256836,
+        1.0099999904632568, 1.0099999904632568, 1.0099999904632568
+      ],
+      "exact": true
+    },
+    {
+      "name": "concave",
+      "min": [0, 0, 0],
+      "max": [2, 2, 1],
+      "expected": [
+        -0.009999990463256836, -0.009999990463256836, -0.5099999904632568,
+        2.009999990463257, 2.009999990463257, 1.5099999904632568
+      ],
+      "actual": [
+        -0.009999990463256836, -0.009999990463256836, -0.5099999904632568,
+        2.009999990463257, 2.009999990463257, 1.5099999904632568
+      ],
+      "exact": true
+    },
+    {
+      "name": "cyclic-source",
+      "min": [-1, -1, 0.5],
+      "max": [3, 3, 0.5],
+      "expected": [
+        -1.0099999904632568, -1.0099999904632568, -1.5099999904632568,
+        3.009999990463257, 3.009999990463257, 2.509999990463257
+      ],
+      "actual": [
+        -1.0099999904632568, -1.0099999904632568, -1.5099999904632568,
+        3.009999990463257, 3.009999990463257, 2.509999990463257
+      ],
+      "exact": true
+    }
+  ],
+  "syntheticRoundingDifference": {
+    "min": [0.01730000041425228, -0.30000001192092896, -0.699999988079071],
+    "max": [0.14075669646263123, 0.8999999761581421, 1.2999999523162842],
+    "nativeRoundingHypothesis": [
+      -0.930971622467041, -0.7100000381469727, -0.7100000381469727,
+      1.0890283584594727, 1.309999942779541, 1.309999942779541
+    ],
+    "earlierHypothesis": [
+      -0.9309716420248151, -0.7100000083446503, -0.7100000083446503,
+      1.0890283389016986, 1.3099999725818634, 1.3099999725818634
+    ]
+  },
+  "method": "Decode the statically identified fields of four name- and vtable-validated native evaluator objects. Separately evaluate padding and Float32 operations inferred from the retained static initialization and cube-helper decompilations against three captured root boxes.",
+  "guardPeakBytes": 27004928,
+  "cleanupConfirmed": true,
+  "sources": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-live-tree-settings-20261029.json",
+      "sha256": "b75d8416fddc109f86a0e7018a728a68c6e5a4f5cf48897b7bdce7de0976ffd2"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-root-float-rounding-20261029.json",
+      "sha256": "4183886d16db682de641985140a0e9d9448a91dcc3c2a6ea9d231619182c8e14"
+    }
+  ],
+  "limitations": [
+    "Read-only values are not evidence of a newly executed construction.",
+    "Native behavior for the synthetic rounding difference was not observed.",
+    "The four configurations do not establish a global default; no test exercises subdivision thresholds, width equality or the depth limit.",
+    "No production operation or MCP contract changed."
+  ]
+}

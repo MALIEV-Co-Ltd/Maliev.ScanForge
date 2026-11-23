@@ -1,0 +1,12 @@
+{
+  "scope": "Fresh native Split control session readiness; no native Split operation or geometry observation.",
+  "timestamp": "2026-10-29T03:42:46+07:00",
+  "laneHandoff": "The M5 task confirmed that its prior QuickSurface session was released, no QuickSurface process was present, and it held no native reservation. Its interrupted fillet comparison was not resumed.",
+  "preLaunch": "Computer-use inventory returned QUICKSURFACE 2026 stopped with no windows.",
+  "launch": "The supported app launch returned GetCursorPos failed: Access is denied (0x80070005) before a window opened.",
+  "postLaunch": "A fresh app inventory returned QuickSurface stopped with no windows.",
+  "limitations": [
+    "No modeling input, Split command, source/cutter selection, geometry, or native result was observed.",
+    "This is a readiness failure, not evidence of native or application Split equivalence."
+  ]
+}

@@ -1,0 +1,1068 @@
+{
+  "scope": "Native concave-cutter Split preview with paired points and triangulation snapshots in the same run.",
+  "fixture": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/square-source.stl",
+  "cutter": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/concave-cutter.stl",
+  "scene": "Original source and concave cutter visible; earlier objects hidden.",
+  "mode": "Split with another body or mesh, envelope unchecked, Preview",
+  "identityReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-triangle-state-binding-20261029.json",
+  "scriptSha256": "09c0ecd11ee4f0623fd3913930f9ba9b71e1aa6d52135eea98fabb4536a509b2",
+  "method": "Bounded Frida hooks capture paired 3D and projected inputs, index vectors after constructor and finalizer, and packed constraint arguments.",
+  "reaEvidence": {
+    "evidence_id": "ev_6bf40ccbec5729c7cfb18f603367032e6a26614114d8a7336160b378d361514e",
+    "subject": null,
+    "provider": {
+      "id": "frida",
+      "name": "Frida",
+      "version": null
+    },
+    "analysis_profile": null,
+    "predicate_type": "rea.frida.instrumentation-observation",
+    "operation": "frida_session_status",
+    "parameters": {
+      "session_id": "813b9969-9028-4259-a49b-6f6b2932fcfa"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "session_id": "813b9969-9028-4259-a49b-6f6b2932fcfa",
+      "device_id": "local",
+      "state": "running",
+      "target": "QuickSurface.exe (pid 10796)",
+      "pid": 10796,
+      "mode": "attach",
+      "scripts": [
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "name": "rea-5fdc5abd-cc40-43bf-8275-ee263da5f376"
+        }
+      ],
+      "messages": [
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "ready",
+            "pid": 10796,
+            "base": "0x140000000"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "points",
+            "object": "0x15e110",
+            "count": 12,
+            "points": [
+              {
+                "source": [
+                  3,
+                  3,
+                  0.5
+                ],
+                "projected": [
+                  1,
+                  1
+                ]
+              },
+              {
+                "source": [
+                  -1,
+                  -1,
+                  0.5
+                ],
+                "projected": [
+                  0,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  3,
+                  -1,
+                  0.5
+                ],
+                "projected": [
+                  1,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  2,
+                  1,
+                  0.5
+                ],
+                "projected": [
+                  0.75,
+                  0.5
+                ]
+              },
+              {
+                "source": [
+                  2,
+                  0.5,
+                  0.5
+                ],
+                "projected": [
+                  0.75,
+                  0.375
+                ]
+              },
+              {
+                "source": [
+                  2,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.75,
+                  0.25
+                ]
+              },
+              {
+                "source": [
+                  1.5,
+                  1,
+                  0.5
+                ],
+                "projected": [
+                  0.625,
+                  0.5
+                ]
+              },
+              {
+                "source": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "source": [
+                  1,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  0.25
+                ]
+              },
+              {
+                "source": [
+                  0.5,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.375,
+                  0.25
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.25,
+                  0.25
+                ]
+              },
+              {
+                "source": [
+                  1.5,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.625,
+                  0.25
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "final",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                3,
+                2,
+                0
+              ],
+              [
+                4,
+                2,
+                3
+              ],
+              [
+                8,
+                1,
+                2
+              ],
+              [
+                5,
+                2,
+                4
+              ],
+              [
+                6,
+                3,
+                0
+              ],
+              [
+                6,
+                4,
+                3
+              ],
+              [
+                7,
+                6,
+                0
+              ],
+              [
+                10,
+                1,
+                9
+              ],
+              [
+                9,
+                1,
+                8
+              ],
+              [
+                9,
+                8,
+                7
+              ],
+              [
+                10,
+                9,
+                7
+              ],
+              [
+                11,
+                2,
+                5
+              ],
+              [
+                11,
+                4,
+                6
+              ],
+              [
+                11,
+                5,
+                4
+              ],
+              [
+                11,
+                6,
+                7
+              ],
+              [
+                11,
+                7,
+                8
+              ],
+              [
+                11,
+                8,
+                2
+              ]
+            ]
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "initial",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                3,
+                2,
+                0
+              ],
+              [
+                4,
+                2,
+                3
+              ],
+              [
+                8,
+                1,
+                2
+              ],
+              [
+                5,
+                2,
+                4
+              ],
+              [
+                6,
+                3,
+                0
+              ],
+              [
+                6,
+                4,
+                3
+              ],
+              [
+                7,
+                6,
+                0
+              ],
+              [
+                10,
+                1,
+                9
+              ],
+              [
+                9,
+                1,
+                8
+              ],
+              [
+                9,
+                8,
+                7
+              ],
+              [
+                10,
+                9,
+                7
+              ],
+              [
+                11,
+                2,
+                5
+              ],
+              [
+                11,
+                4,
+                6
+              ],
+              [
+                11,
+                5,
+                4
+              ],
+              [
+                11,
+                6,
+                7
+              ],
+              [
+                11,
+                7,
+                8
+              ],
+              [
+                11,
+                8,
+                2
+              ]
+            ]
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x400000003"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x400000005"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x700000006"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x300000006"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x900000008"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x90000000a"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0xb00000005"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0xb00000008"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "final",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                3,
+                2,
+                0
+              ],
+              [
+                4,
+                2,
+                3
+              ],
+              [
+                8,
+                1,
+                2
+              ],
+              [
+                5,
+                2,
+                4
+              ],
+              [
+                6,
+                3,
+                0
+              ],
+              [
+                6,
+                4,
+                3
+              ],
+              [
+                7,
+                6,
+                0
+              ],
+              [
+                10,
+                1,
+                9
+              ],
+              [
+                9,
+                1,
+                8
+              ],
+              [
+                9,
+                8,
+                7
+              ],
+              [
+                10,
+                9,
+                7
+              ],
+              [
+                11,
+                2,
+                5
+              ],
+              [
+                11,
+                4,
+                6
+              ],
+              [
+                11,
+                5,
+                4
+              ],
+              [
+                11,
+                6,
+                7
+              ],
+              [
+                11,
+                7,
+                8
+              ],
+              [
+                11,
+                8,
+                2
+              ]
+            ]
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "points",
+            "object": "0x15e110",
+            "count": 12,
+            "points": [
+              {
+                "source": [
+                  -1,
+                  3,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  1
+                ]
+              },
+              {
+                "source": [
+                  3,
+                  3,
+                  0.5
+                ],
+                "projected": [
+                  1,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  -1,
+                  -1,
+                  0.5
+                ],
+                "projected": [
+                  0,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.25,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  1,
+                  1.5,
+                  0.5
+                ],
+                "projected": [
+                  0.5625000263417808,
+                  0.125
+                ]
+              },
+              {
+                "source": [
+                  1,
+                  2,
+                  0.5
+                ],
+                "projected": [
+                  0.6250000105367123,
+                  0.25
+                ]
+              },
+              {
+                "source": [
+                  0.5,
+                  2,
+                  0.5
+                ],
+                "projected": [
+                  0.5625000263417808,
+                  0.3749999894632877
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  1,
+                  0.5
+                ],
+                "projected": [
+                  0.3749999894632877,
+                  0.25
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  0.5,
+                  0.5
+                ],
+                "projected": [
+                  0.31250000526835614,
+                  0.125
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  2,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  1.5,
+                  0.5
+                ],
+                "projected": [
+                  0.4375000158050685,
+                  0.3749999894632877
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "final",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                6,
+                5,
+                1
+              ],
+              [
+                5,
+                3,
+                1
+              ],
+              [
+                7,
+                1,
+                0
+              ],
+              [
+                7,
+                6,
+                1
+              ],
+              [
+                9,
+                5,
+                8
+              ],
+              [
+                9,
+                4,
+                3
+              ],
+              [
+                8,
+                5,
+                6
+              ],
+              [
+                9,
+                8,
+                2
+              ],
+              [
+                9,
+                2,
+                4
+              ],
+              [
+                9,
+                3,
+                5
+              ],
+              [
+                10,
+                7,
+                0
+              ],
+              [
+                11,
+                0,
+                2
+              ],
+              [
+                11,
+                7,
+                10
+              ],
+              [
+                11,
+                2,
+                8
+              ],
+              [
+                11,
+                6,
+                7
+              ],
+              [
+                11,
+                8,
+                6
+              ],
+              [
+                11,
+                10,
+                0
+              ]
+            ]
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "initial",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                6,
+                5,
+                1
+              ],
+              [
+                5,
+                3,
+                1
+              ],
+              [
+                7,
+                1,
+                0
+              ],
+              [
+                7,
+                6,
+                1
+              ],
+              [
+                9,
+                5,
+                8
+              ],
+              [
+                9,
+                4,
+                3
+              ],
+              [
+                8,
+                5,
+                6
+              ],
+              [
+                9,
+                8,
+                2
+              ],
+              [
+                9,
+                2,
+                4
+              ],
+              [
+                9,
+                3,
+                5
+              ],
+              [
+                10,
+                7,
+                0
+              ],
+              [
+                11,
+                0,
+                2
+              ],
+              [
+                11,
+                7,
+                10
+              ],
+              [
+                11,
+                2,
+                8
+              ],
+              [
+                11,
+                6,
+                7
+              ],
+              [
+                11,
+                8,
+                6
+              ],
+              [
+                11,
+                10,
+                0
+              ]
+            ]
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x600000005"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x300000005"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x700000006"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x900000008"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x70000000a"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0xb00000008"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0xb0000000a"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x900000004"
+          }
+        },
+        {
+          "script_id": "5fdc5abd-cc40-43bf-8275-ee263da5f376",
+          "type": "send",
+          "payload": {
+            "kind": "final",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                6,
+                5,
+                1
+              ],
+              [
+                5,
+                3,
+                1
+              ],
+              [
+                7,
+                1,
+                0
+              ],
+              [
+                7,
+                6,
+                1
+              ],
+              [
+                9,
+                5,
+                8
+              ],
+              [
+                9,
+                4,
+                3
+              ],
+              [
+                8,
+                5,
+                6
+              ],
+              [
+                9,
+                8,
+                2
+              ],
+              [
+                9,
+                2,
+                4
+              ],
+              [
+                9,
+                3,
+                5
+              ],
+              [
+                10,
+                7,
+                0
+              ],
+              [
+                11,
+                0,
+                2
+              ],
+              [
+                11,
+                7,
+                10
+              ],
+              [
+                11,
+                2,
+                8
+              ],
+              [
+                11,
+                6,
+                7
+              ],
+              [
+                11,
+                8,
+                6
+              ],
+              [
+                11,
+                10,
+                0
+              ]
+            ]
+          }
+        }
+      ],
+      "messages_truncated": false
+    },
+    "confidence": "observed",
+    "authority": "external-service",
+    "environment": null,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "The target operating system and architecture were not reported by this observation."
+    ],
+    "relationship_coverage": null,
+    "locations": [],
+    "evidence_links": []
+  },
+  "limitations": [
+    "No instrumented mesh was exported.",
+    "Earlier hidden objects could affect allocation order.",
+    "One fixture does not establish general native triangulation or constraint behavior.",
+    "Frida modifies function entry points temporarily."
+  ]
+}

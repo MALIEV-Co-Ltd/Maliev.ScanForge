@@ -1,0 +1,298 @@
+{
+  "scope": "Frida entry and backtrace observations during native Split preview of freshly imported original two-facet square source with convex cutter.",
+  "source": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/square-source.stl",
+  "sourceSha256": "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+  "cutter": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/convex-cutter.stl",
+  "cutterSha256": "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
+  "scene": "Original source imported as square-source(1), two facets. Prior 18-facet source hidden; cutter visible.",
+  "mode": "Split with another body or a mesh, convex-cutter, envelope unchecked, Preview",
+  "identityReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-byte-binding-post-reboot-20261029.json",
+  "instrumentation": {
+    "method": "Frida Interceptor entry hooks; first three entries per function; raw register arguments and accurate backtraces",
+    "scriptSha256": "73f7cd7aa2b3ee4b31bfe1ea5a22810c8148d47489cf2b65d794965df362bd09"
+  },
+  "reaEvidence": {
+    "evidence_id": "ev_633c528dd6905e0e3651f6ef216d67536987a3ac29903e455146ad8dda75c782",
+    "subject": null,
+    "provider": {
+      "id": "frida",
+      "name": "Frida",
+      "version": null
+    },
+    "analysis_profile": null,
+    "predicate_type": "rea.frida.instrumentation-observation",
+    "operation": "frida_session_status",
+    "parameters": {
+      "session_id": "a8d24ef3-598a-48d6-8f1d-fa915f16c45f"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "session_id": "a8d24ef3-598a-48d6-8f1d-fa915f16c45f",
+      "device_id": "local",
+      "state": "running",
+      "target": "QuickSurface.exe (pid 10796)",
+      "pid": 10796,
+      "mode": "attach",
+      "scripts": [
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "name": "rea-287c0275-9f19-429e-97c1-b2a4ebaff71d"
+        }
+      ],
+      "messages": [
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "type": "send",
+          "payload": {
+            "kind": "ready",
+            "base": "0x140000000",
+            "pid": 10796
+          }
+        },
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "type": "send",
+          "payload": {
+            "kind": "entry",
+            "name": "caller",
+            "rva": "0x67df80",
+            "threadId": 16076,
+            "args": [
+              "0x5df259d0",
+              "0x41b",
+              "0x0",
+              "0x0"
+            ],
+            "stack": [
+              "0x7ffba9975e14",
+              "0x7ffba99a0122",
+              "0x7ffba9a28c89",
+              "0x7ffba9a27da1",
+              "0x7ffba9a27d02",
+              "0x7ffba9a2556e",
+              "0x7ffba9a25934",
+              "0x7ffba98c8279",
+              "0x7ffc26ea52e6",
+              "0x7ffc26ea4b6c"
+            ]
+          }
+        },
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "type": "send",
+          "payload": {
+            "kind": "entry",
+            "name": "mesh_wrapper",
+            "rva": "0x67cec0",
+            "threadId": 16076,
+            "args": [
+              "0x5df259d0",
+              "0x2f016f0",
+              "0x15e558",
+              "0x0"
+            ],
+            "stack": [
+              "main+0x67e276",
+              "0x7ffba9975e14",
+              "0x7ffba99a0122",
+              "0x7ffba9a28c89",
+              "0x7ffba9a27da1",
+              "0x7ffba9a27d02",
+              "0x7ffba9a2556e",
+              "0x7ffba9a25934",
+              "0x7ffba98c8279",
+              "0x7ffc26ea52e6"
+            ]
+          }
+        },
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "type": "send",
+          "payload": {
+            "kind": "entry",
+            "name": "geometry",
+            "rva": "0x32a500",
+            "threadId": 16076,
+            "args": [
+              "0x15e620",
+              "0x530007",
+              "0xfffffff1fff7fd7f",
+              "0x60"
+            ],
+            "stack": [
+              "main+0x67d15b",
+              "main+0x67e276",
+              "0x7ffba9975e14",
+              "0x7ffba99a0122",
+              "0x7ffba9a28c89",
+              "0x7ffba9a27da1",
+              "0x7ffba9a27d02",
+              "0x7ffba9a2556e",
+              "0x7ffba9a25934",
+              "0x7ffba98c8279"
+            ]
+          }
+        },
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "type": "send",
+          "payload": {
+            "kind": "entry",
+            "name": "enumerate",
+            "rva": "0x3290a0",
+            "threadId": 16076,
+            "args": [
+              "0x5e3843a0",
+              "0x5b0c6040",
+              "0x5e446b68",
+              "0x5e1c1420"
+            ],
+            "stack": [
+              "main+0x32ac30",
+              "main+0x67d15b",
+              "main+0x67e276",
+              "0x7ffba9975e14",
+              "0x7ffba99a0122",
+              "0x7ffba9a28c89",
+              "0x7ffba9a27da1",
+              "0x7ffba9a27d02",
+              "0x7ffba9a2556e",
+              "0x7ffba9a25934"
+            ]
+          }
+        },
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "type": "send",
+          "payload": {
+            "kind": "entry",
+            "name": "triangulate_a",
+            "rva": "0x32c400",
+            "threadId": 16076,
+            "args": [
+              "0x15e110",
+              "0x400000003",
+              "0x15e010",
+              "0x1b"
+            ],
+            "stack": [
+              "main+0x329bbd",
+              "main+0x32ac30",
+              "main+0x67d15b",
+              "main+0x67e276",
+              "0x7ffba9975e14",
+              "0x7ffba99a0122",
+              "0x7ffba9a28c89",
+              "0x7ffba9a27da1",
+              "0x7ffba9a27d02",
+              "0x7ffba9a2556e"
+            ]
+          }
+        },
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "type": "send",
+          "payload": {
+            "kind": "entry",
+            "name": "triangulate_a",
+            "rva": "0x32c400",
+            "threadId": 16076,
+            "args": [
+              "0x15e110",
+              "0x400000005",
+              "0x15e010",
+              "0x2"
+            ],
+            "stack": [
+              "main+0x329bbd",
+              "main+0x32ac30",
+              "main+0x67d15b",
+              "main+0x67e276",
+              "0x7ffba9975e14",
+              "0x7ffba99a0122",
+              "0x7ffba9a28c89",
+              "0x7ffba9a27da1",
+              "0x7ffba9a27d02",
+              "0x7ffba9a2556e"
+            ]
+          }
+        },
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "type": "send",
+          "payload": {
+            "kind": "entry",
+            "name": "triangulate_a",
+            "rva": "0x32c400",
+            "threadId": 16076,
+            "args": [
+              "0x15e110",
+              "0x700000005",
+              "0x15e010",
+              "0x2"
+            ],
+            "stack": [
+              "main+0x329bbd",
+              "main+0x32ac30",
+              "main+0x67d15b",
+              "main+0x67e276",
+              "0x7ffba9975e14",
+              "0x7ffba99a0122",
+              "0x7ffba9a28c89",
+              "0x7ffba9a27da1",
+              "0x7ffba9a27d02",
+              "0x7ffba9a2556e"
+            ]
+          }
+        },
+        {
+          "script_id": "287c0275-9f19-429e-97c1-b2a4ebaff71d",
+          "type": "send",
+          "payload": {
+            "kind": "entry",
+            "name": "enumerate",
+            "rva": "0x3290a0",
+            "threadId": 16076,
+            "args": [
+              "0x5e447310",
+              "0x5b0c6090",
+              "0x5e446c08",
+              "0x5e1c1420"
+            ],
+            "stack": [
+              "main+0x32ac30",
+              "main+0x67d15b",
+              "main+0x67e276",
+              "0x7ffba9975e14",
+              "0x7ffba99a0122",
+              "0x7ffba9a28c89",
+              "0x7ffba9a27da1",
+              "0x7ffba9a27d02",
+              "0x7ffba9a2556e",
+              "0x7ffba9a25934"
+            ]
+          }
+        }
+      ],
+      "messages_truncated": false
+    },
+    "confidence": "observed",
+    "authority": "external-service",
+    "environment": null,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "The target operating system and architecture were not reported by this observation."
+    ],
+    "relationship_coverage": null,
+    "locations": [],
+    "evidence_links": []
+  },
+  "interpretation": "On one thread, observed backtraces connect entries at RVAs 0x67cec0, 0x32a500, 0x3290a0 and 0x32c400 to callers in the preceding candidate routines. This identifies observed call-chain membership for this preview, not argument types or a complete triangulation algorithm.",
+  "limitations": [
+    "Frida hooks temporarily patch function entries; effect on output is not established.",
+    "Raw register values are not typed or interpreted.",
+    "Absence of a recorded entry does not establish unreachability.",
+    "No resulting mesh was exported from this instrumented preview; native parity remains open.",
+    "The native viewport is white."
+  ]
+}

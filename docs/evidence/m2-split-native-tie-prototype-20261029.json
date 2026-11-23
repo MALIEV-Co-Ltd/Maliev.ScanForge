@@ -1,0 +1,74 @@
+{
+  "scope": "Disposable Delaunator plus cocircular index tie hypothesis evaluated on six captured native faces. No application behavior change.",
+  "method": "Run Delaunator on native captured projected points; for exactly zero floating-point incircle determinant, flip a convex interior edge if the alternate diagonal contains the greatest point index. Compare unordered index triples with the native constructor snapshots.",
+  "results": [
+    {
+      "control": "convex",
+      "face": 0,
+      "flips": 1,
+      "matched": 9,
+      "nativeCount": 9,
+      "exact": true
+    },
+    {
+      "control": "convex",
+      "face": 1,
+      "flips": 0,
+      "matched": 9,
+      "nativeCount": 9,
+      "exact": true
+    },
+    {
+      "control": "cyclic",
+      "face": 0,
+      "flips": 1,
+      "matched": 9,
+      "nativeCount": 9,
+      "exact": true
+    },
+    {
+      "control": "cyclic",
+      "face": 1,
+      "flips": 1,
+      "matched": 9,
+      "nativeCount": 9,
+      "exact": true
+    },
+    {
+      "control": "concave",
+      "face": 0,
+      "flips": 1,
+      "matched": 17,
+      "nativeCount": 17,
+      "exact": true
+    },
+    {
+      "control": "concave",
+      "face": 1,
+      "flips": 0,
+      "matched": 17,
+      "nativeCount": 17,
+      "exact": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-tie-hypothesis-control-20261029.mjs",
+      "sha256": "95bc34504962d8cedb7e2b41707e15a31593197a5b501c8bd3a714a324316ca1"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-tie-hypothesis-control-20261029.json",
+      "sha256": "7eb267306114db002bd3e9afe8f805d19d0a5c7931cbfda8931687008e2d2dd7"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-tie-hypothesis-control-guard-20261029.json",
+      "sha256": "ae2d72c80ce41eb4c63561dcac438127e7ec9547075f2105d1d0e28d38f12320"
+    }
+  ],
+  "limitations": [
+    "The test uses observed native point orders directly; ScanForge does not currently reproduce those orders.",
+    "The rule is a hypothesis inferred and evaluated on the same small controls, not independent validation.",
+    "Floating arithmetic uses exact zero rather than a robust exact predicate and is not suitable as production behavior.",
+    "Constraint recovery, edge identities, cancellation, memory, arbitrary geometry, GUI and MCP are not tested."
+  ]
+}

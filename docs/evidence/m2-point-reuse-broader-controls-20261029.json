@@ -1,0 +1,46 @@
+{
+  "scope": "Offline fitted 0.001 mm point-reuse model tested on four further native Split output vertex sets; not native parity",
+  "method": "Apply the previously specified first-seen Float32 point model to the existing experimental collector's precise hits and compare distinct coordinates to pinned native exports. Radius and model were chosen before these four comparisons but after the original six controls.",
+  "cases": [
+    {
+      "name": "convex",
+      "sourceSha256": "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+      "cutterSha256": "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
+      "nativeSha256": "6e08cdde5035399ed82c103a4fbd9a973846a1f824f3e77ad5792f8d2bfb7b15",
+      "vertices": 12
+    },
+    {
+      "name": "concave",
+      "sourceSha256": "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+      "cutterSha256": "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+      "nativeSha256": "590bab9d40c4a026bc5bb7ed3a6b240436a439c2d2a06e0e64058ec6b4f6acca",
+      "vertices": 20
+    },
+    {
+      "name": "cyclic",
+      "sourceSha256": "683913baca0fe49e7d1ac803030896bcf65d6da418704e9c129084cd323c5a09",
+      "cutterSha256": "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
+      "nativeSha256": "f815bf0459131a4ecc665f3bf45b282bff3d9cc9ceccc779affd904b748e4aa9",
+      "vertices": 12
+    },
+    {
+      "name": "dense",
+      "sourceSha256": "930d69565f9b94989a465b7a5f4b4b79f48da8f0d1410c2b21134eea504b057e",
+      "cutterSha256": "e8609260000042e973da8557b7c53c3ebccf6193918768f8f4505791d14b3ec0",
+      "nativeSha256": "da52d7afd8d4e9b1cb316e8598cd213422680381b56280008ae53c5de40381f7",
+      "vertices": 21
+    }
+  ],
+  "result": "All four modeled distinct point sets equal their corresponding native output point sets.",
+  "diagnosticPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-projection-trace-20261029/tests/m2-point-reuse-independent-controls.test.ts",
+  "diagnosticSha256": "8d49dc6ce59d278c307babda8a58e1a72a7ccbcbedef9587eaf26e7103cc02aa",
+  "resultSha256": "7090c274c3cbb6a9c24a677393925b4479b0c7a27578290db4488f1c8196cca8",
+  "guardSha256": "2c9a80320661cfddf155aef5fe39fa8ff891af3395c32d47598082ea4213e2f9",
+  "guardPeakBytes": 348323840,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "These fixtures were already known and have well-separated points, so they do not independently establish the numerical threshold.",
+    "The diagnostic compares sets, not native triangulation, topology, source preservation or GUI/MCP lifecycle.",
+    "Native tree membership and traversal order were not observed; the model remains isolated and may discard real detail."
+  ]
+}

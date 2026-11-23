@@ -1,0 +1,24 @@
+{
+  "scope": "Three pinned Split point-radius controls on retained seam-change build; native at and below observed; above native unobserved",
+  "buildId": "scanforge-a00193930136ca3d",
+  "guiMcpGeometry": true,
+  "cases": ["below", "at", "above"],
+  "appFacetsPerCase": 5,
+  "appAreaPerCase": 0.5,
+  "undoRedo": true,
+  "binaryReopen": true,
+  "mcpHeldResultCancellation": true,
+  "guiCloseCancellation": true,
+  "pageErrors": [],
+  "nativeAtSha256": "42a605d8460e99a367abaef2efbe52d45a69380196f07cc6e2facf91f3a5dfc6",
+  "nativeAtFacets": 2,
+  "peakJobBytes": 925003776,
+  "cleanupConfirmed": true,
+  "guardSha256": "7bed6c8a3ad3c639a5fad5ad5a3cab022eac0434ea337bcf833ddbeb0d80c7aa",
+  "limitations": [
+    "At-threshold native intermediate arithmetic and exact-boundary classification are unobserved",
+    "Native at and below outputs differ from application; native above remains unobserved",
+    "Native viewport was white; exports carry geometry evidence",
+    "Retained build predates later unrelated changes"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "scope": "Float32 seam guard experiments and shared precise Split regression on one original scan face.",
+  "test": {
+    "path": "C:/Users/Shoung/.codex/worktrees/m2-split-precision/Maliev.ScanForge/tests/m2-split-real-face-precision.test.ts",
+    "result": "Shared runScanEdit precise Split yields two connected components with positive oriented facets, no nonmanifold edges, conserved signed projected area to 10 decimal places, and unchanged inputs.",
+    "limitations": [
+      "One source face and cutter; signed area can hide compensating gaps and overlaps.",
+      "This is a shared operation test, not a new rendered GUI or public MCP replay or native result comparison."
+    ],
+    "sha256AtOriginalRun": "a6bfc09e6e7fd558fb02416a048a6d99c11f0b050d66e974c7d34a8e2aaeed6d"
+  },
+  "discardedGuards": [
+    "Per-edge relative displacement at 1e-6 rejected the existing original-scan face control.",
+    "Per-refined-face displacement area at 1e-4 also rejected that control. Both experiments were removed; a threshold adjustment alone is not established as correct."
+  ],
+  "focusedTests": {
+    "files": 6,
+    "passed": 27,
+    "expectedFailures": 4,
+    "guardPeakBytes": 344719360,
+    "cleanupConfirmed": true
+  },
+  "failedAttemptReceipts": [
+    "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-float-seam-green-guard-20261029.json",
+    "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-float-seam-area-guard-20261029.json"
+  ],
+  "limitations": [
+    "The Float32 seam coverage expected failure and three native Split facet expected failures remain.",
+    "No application behavior, MCP schema or production implementation changed."
+  ],
+  "coverageFollowup": "docs/evidence/m2-split-coverage-controls-20261029.json"
+}

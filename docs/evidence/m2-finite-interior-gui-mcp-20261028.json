@@ -1,0 +1,39 @@
+{
+  "scope": "Manufactured one-face finite-interior cutter control on shared GUI and public MCP Split; no native comparison",
+  "build": "scanforge-0ab35f091c0584bc",
+  "sourceFixture": "tests/fixtures/m2-finite-interior-control/source.stl",
+  "sourceSha256": "f20c233f4ed72559e073627d34a18ba4fc65c07a00311c7afe0c8283858a4229",
+  "cutterVertices": [
+    [0.5, 0.1, -1],
+    [0.5, 0.3, -1],
+    [0.5, 0.1, 1]
+  ],
+  "inputFaces": 1,
+  "outputFaces": 7,
+  "cutEdges": 1,
+  "outputComponents": 1,
+  "finiteSeamBoundaryLength": 0.20000001043081284,
+  "checks": [
+    "GUI boundary edges lie on the original perimeter or finite intersection interval",
+    "GUI and public MCP positions and indexed geometry digests match",
+    "Undo restores original source; Redo retains positions and indexed geometry",
+    "Cutter geometry is unchanged through both operations and binary reopen",
+    "Binary reopen retains output positions and indexed geometry",
+    "No browser page or console errors"
+  ],
+  "focusedSuite": {
+    "passed": 77,
+    "expectedFailures": 1,
+    "scope": "The expected failure concerns Float32 midpoint area distortion in the experimental non-precise seam mode; this control uses the production precise route."
+  },
+  "guard": {
+    "limitBytes": 4294967296,
+    "peakBytes": 981590016,
+    "cleanupConfirmed": true
+  },
+  "driver": "tests/m2-original-split-browser-local.mjs",
+  "limitations": [
+    "One manufactured open-cutter input does not establish general finite-cutter behavior or native parity.",
+    "The original-scan combined Extract memory gate, other M2 acceptance gates, review and merge remain open."
+  ]
+}

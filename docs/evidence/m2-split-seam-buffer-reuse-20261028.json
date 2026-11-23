@@ -1,0 +1,36 @@
+{
+  "scope": "M2 Split seam construction buffer reuse",
+  "change": "Materialize union-find roots before reusing their buffer as the root-to-output mapping, avoiding a separate corner-sized mapping array.",
+  "focused": {
+    "testsPassed": 117,
+    "expectedFailures": 1,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-reuse-regressions-20261028-r1.json"
+  },
+  "bundle": {
+    "manifest": "scanforge-bc90d472eda7d0b6",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-reuse-bundle-20261028-r1-guard.json"
+  },
+  "precisionBrowser": {
+    "guiMcpGeometryEqual": true,
+    "undoRedo": true,
+    "saveReopen": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-reuse-browser-precision-20261028-r1-guard.json"
+  },
+  "originalPly3": {
+    "inputFaces": 3691133,
+    "outputFaces": 3700757,
+    "guiMcpGeometryEqual": true,
+    "sourceUndo": true,
+    "cutterPreserved": true,
+    "repeatedRedo": true,
+    "consoleAndPageErrors": 0,
+    "peakJobBytes": 4346634240,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-reuse-original-ply3-20261028-r1-guard.json"
+  },
+  "limitations": [
+    "The workflow completed, but measured peak job memory exceeded the 4 GiB validation gate by 51666944 bytes.",
+    "This is not native Split equivalence, large-project persistence acceptance, or M2 closure."
+  ]
+}

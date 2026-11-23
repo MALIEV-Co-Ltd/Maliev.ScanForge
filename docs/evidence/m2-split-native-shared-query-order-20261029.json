@@ -1,0 +1,45 @@
+{
+  "scope": "Ordering constraints inferred from two native concave-control face intersection sequences.",
+  "inputEvidence": "m2-split-native-collector-comparison-20261029.json",
+  "inputEvidenceSha256": "d3a4bd83568129c2b1f0fbfa79c67dcbc88d8f8cfcf620aeefed97edf8d76492",
+  "nativeFaceOrders": [
+    [
+      14,
+      15,
+      16,
+      17,
+      23,
+      4,
+      5,
+      12,
+      13,
+      6
+    ],
+    [
+      16,
+      22,
+      23,
+      25,
+      7,
+      24,
+      26,
+      27,
+      5,
+      6
+    ]
+  ],
+  "sharedCutterFacetsInOrder": [
+    16,
+    23,
+    5,
+    6
+  ],
+  "sharedFacetOrderIdentical": true,
+  "distinctIntersectingCutterFacets": 16,
+  "linearExtensionsOfObservedPairwiseConstraints": 12,
+  "interpretation": "A common candidate ordering is consistent with both observed sequences. The two source triangle axis-aligned bounding boxes both equal [-1,-1,0.5] to [3,3,0.5]. The static query accepts a bounding box; if both calls query the same unchanged tree and ordering is deterministic, the 12 interleavings are necessary constraints on the relative order of these intersecting cutter facets.",
+  "limitations": [
+    "This does not observe the full query list, non-intersecting facets, tree construction, or actual query invocation.",
+    "The same-tree and deterministic-order assumptions remain to be verified at runtime; these constraints are not sufficient to establish general native equivalence."
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "scope": "Fitted offline point-reuse hypothesis and pre-native scaled prediction; not a production rule",
+  "method": "Repeat the first-seen point-reuse model with a 0.001 mm Euclidean radius, the second constant observed in a static candidate call. Seed the model with unique source vertices and use the experimental collector order.",
+  "existingControls": {
+    "rotated": 21,
+    "below": 4,
+    "at": 4,
+    "above": 4,
+    "wide-below": 5,
+    "wide-above": 6
+  },
+  "existingControlResult": "All six modeled distinct vertex sets equal their native output vertex sets. These comparisons were known before selecting the radius; triangle facets were not compared.",
+  "independentScaledPrediction": {
+    "nativeOutputAtPredictionTime": "not observed",
+    "sourceSha256": "801dceabede6cb79df0d9bc0c9855edc5b1131fabe3e56ff7c746b6c6bbaa04e",
+    "cutterSha256": "13f6e668866e0585394359d2dc2bb86ac1bdce9e1c89ceac13db7ef4c1a1d7ee",
+    "predictedVertices": [
+      [0, 0, 0],
+      [10, 0, 0],
+      [0, 10, 0],
+      [0.00011000000085914508, 5, 0]
+    ],
+    "smallerRadiusModelVertexCount": 6,
+    "limitation": "This predicts vertex membership only, not native triangle facets or whether native preserves coverage."
+  },
+  "existingModelScriptSha256": "9e5e223ece34ae4760585b61a0d0836ddd67695db1679ca1a31c3f14f4cc344e",
+  "existingModelResultSha256": "2604967a918dee3ba015761faea66976c9992e7cebd9375343f2bf350a2a393e",
+  "existingModelGuardSha256": "e7dfdfe0142f8b151d9ce64a1e1e18c47120ac5702b3d1320b64286603131837",
+  "scaledPredictionScriptSha256": "669869fab2b8d3c5c803621c5a53e0ab71585dbe1f94d7724cd588733f63d072",
+  "scaledPredictionResultSha256": "90f2a28e0bdc9d6b2f887ec8006e3503a373b2ca4955ab790d983424bf7c3f65",
+  "scaledPredictionGuardSha256": "f35cc1d4b495a6789e4255f72a79d87d20e8f0957bc077dcefd0ef6d57f06390",
+  "peakJobBytes": 342659072,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The second native constant is stored on a candidate path; it has not been shown to be the point-search radius or used in this way.",
+    "The radius was chosen after observing the six controls; the native scaled result is needed for an independent check.",
+    "Native tree membership and traversal order remain unobserved and generic snapping can discard real geometry.",
+    "No application code, GUI/MCP behavior or native parity is established."
+  ]
+}

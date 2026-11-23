@@ -1,0 +1,138 @@
+{
+  "scope": "Disposable native spatial-tree construction hypothesis on two pinned cutter fixtures.",
+  "method": "Compute STL bounding-box center, set cubic half-width to Float32(maximum axis span / 2 + 0.01), split at the center, enumerate children in high-to-low axis-bit order, and populate each leaf in STL facet order when Three.js triangle-box intersection passes. Compare all constructed bounds and facet sequences with the live tree snapshots.",
+  "results": [
+    {
+      "control": "convex",
+      "slot": 0,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "convex",
+      "slot": 1,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "convex",
+      "slot": 2,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "convex",
+      "slot": 3,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "convex",
+      "slot": 4,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "convex",
+      "slot": 5,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "convex",
+      "slot": 6,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "convex",
+      "slot": 7,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "concave",
+      "slot": 0,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "concave",
+      "slot": 1,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "concave",
+      "slot": 2,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "concave",
+      "slot": 3,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "concave",
+      "slot": 4,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "concave",
+      "slot": 5,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "concave",
+      "slot": 6,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "concave",
+      "slot": 7,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-tree-construction-hypothesis-20261029.mjs",
+      "sha256": "906fdc391e66dae146f917574bfd1c69046228ef2bbd50d623bb7dedfa379abc"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-tree-construction-hypothesis-20261029.json",
+      "sha256": "779ddb1a484029d4aecdb83dfd61ee588824dd21ab4b5b7f145fedd045f7e6e4"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-tree-construction-hypothesis-guard-20261029.json",
+      "sha256": "94d0b2bb0dc251ead30ef5498e4bb1a64ec42122f506f91bfa427e7a9db639a2"
+    }
+  ],
+  "conclusion": "Predicted root bounds, child bounds and ordered leaf contents match all 16 leaves across the two captured cutters.",
+  "limitations": [
+    "The parameters were inferred and evaluated on these same two fixtures, not independently validated.",
+    "Tree depth and subdivision policy, degenerate/large coordinate behavior, intersection tolerances, concurrent ordering and native endpoint orientation remain unknown.",
+    "This is not a production implementation or a GUI/MCP/native acceptance result."
+  ]
+}

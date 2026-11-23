@@ -1,0 +1,32 @@
+{
+  "scope": "Digest-bound static check of one conditional native Split candidate point-search radius; no native operation or geometry output observed.",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "callChain": ["0x14067cec0", "0x14032a500", "0x1403342c0"],
+  "rawConstants": [
+    {
+      "address": "0x14126ae50",
+      "bytes": "f168e388b5f8e43e",
+      "value": 1e-5
+    },
+    {
+      "address": "0x14126aee8",
+      "bytes": "fca9f1d24d62503f",
+      "value": 0.001
+    },
+    {
+      "address": "0x14126b5ec",
+      "bytes": "00002041",
+      "value": 10.0
+    }
+  ],
+  "derivedFloat32Radius": 9.999999747378752e-5,
+  "derivedRadiusLittleEndianBytes": "17b7d138",
+  "observation": "The candidate call site loads double constants 1e-5 and 0.001. The candidate kernel stores those arguments, converts the first to Float32, multiplies it by Float32 10, and passes the resulting Float32 by pointer to the point-search helper. In the retained helper decompilation, a finite squared distance equal to the squared search radius is not rejected by the compared branch.",
+  "validation": "Twelve selected instruction addresses and operands were independently decoded with Capstone 5.0.6 from the digest-bound retained image and checked against the recorded Ghidra instruction starts. The 4 GiB guarded job completed with clean process cleanup.",
+  "privateEvidenceSha256": "bc06a1737439444494fa66110c2a5f676c43274e88a3b9bf1ea57d09b222efde",
+  "limitations": [
+    "The image is runtime-derived, not the installed file itself; no runtime reachability or native Split result was observed.",
+    "The search radius is an internal condition on this candidate path, not an established global Split tolerance or an application/native mismatch.",
+    "No geometry, ownership, GUI, MCP, or native acceptance claim follows from these constants."
+  ]
+}

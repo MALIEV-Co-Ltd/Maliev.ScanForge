@@ -1,0 +1,61 @@
+{
+  "scope": "Offline first-seen point-reuse hypothesis against six pinned native output vertex sets; not native execution or a production algorithm",
+  "method": "Seed a simple list with unique Float32 source vertices. Visit precise experimental-collector endpoints in face/hit order, reuse an existing point within the inferred conditional radius, otherwise insert the endpoint rounded to Float32. Compare distinct model points with distinct native output vertices.",
+  "radiusMm": 0.00009999999747378752,
+  "results": [
+    {
+      "case": "rotated",
+      "nativeVertices": 21,
+      "modelVertices": 21,
+      "missingNative": 0,
+      "extraModel": 0
+    },
+    {
+      "case": "below",
+      "nativeVertices": 4,
+      "modelVertices": 5,
+      "missingNative": 0,
+      "extraModel": 1
+    },
+    {
+      "case": "at",
+      "nativeVertices": 4,
+      "modelVertices": 5,
+      "missingNative": 0,
+      "extraModel": 1
+    },
+    {
+      "case": "above",
+      "nativeVertices": 4,
+      "modelVertices": 6,
+      "missingNative": 0,
+      "extraModel": 2
+    },
+    {
+      "case": "wide-below",
+      "nativeVertices": 5,
+      "modelVertices": 6,
+      "missingNative": 0,
+      "extraModel": 1
+    },
+    {
+      "case": "wide-above",
+      "nativeVertices": 6,
+      "modelVertices": 6,
+      "missingNative": 0,
+      "extraModel": 0
+    }
+  ],
+  "interpretation": "This simple first-seen model reproduces the rotated and wide-above vertex sets but leaves extra points in the other four controls. It is not a complete explanation for native behavior and is not suitable as a generic merge rule.",
+  "diagnosticPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-projection-trace-20261029/tests/m2-point-reuse-model-diagnostic.test.ts",
+  "diagnosticSha256": "541489454ddba679b851bc893abb184bb198e5c19c689ac3d852aa0b47b3c1df",
+  "resultSha256": "774ea16673e8cb91459aeda195fa061c9a408f81fb14240a2ebfae1b14ce5d91",
+  "guardSha256": "3e165d58cecd1e3a317cc1550375e2d9c4c61ecf9cc2fdb11419927bd90673b3",
+  "guardPeakBytes": 342532096,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "Collector order and initial tree membership are hypotheses, not observed native state.",
+    "Only vertex sets are compared; no triangulation, ownership, GUI/MCP or native parity claim follows.",
+    "The native controls omit some real geometry, so a distance rule must not be adopted merely to fit these outputs."
+  ]
+}

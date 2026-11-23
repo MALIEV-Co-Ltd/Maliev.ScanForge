@@ -1,0 +1,265 @@
+{
+  "scope": "Native input point sequences paired with 3D float coordinates on original two-facet convex Split preview.",
+  "sourceEvidence": "docs/evidence/m2-split-original-live-trace-20261029.json",
+  "priorProjectedSequence": "docs/evidence/m2-split-native-projected-points-20261029.json",
+  "identityReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-point-sequence-binding-20261029.json",
+  "method": "Frida hook at 0x14032d360. Based on selected caller assembly, read pointer vector at caller stack +0x78 and paired projected doubles from the third argument; max 64 points, four calls. Source coordinates are 32-bit floats.",
+  "scriptSha256": "ababd6faebfa7d6253cb8e413e114782a23cc1f5c739a5455d7a2d2b6a991807",
+  "reaEvidence": {
+    "evidence_id": "ev_6a78603f18919af88cd819376e88e189c08e193bd5933a655843e397a6468cd3",
+    "subject": null,
+    "provider": {
+      "id": "frida",
+      "name": "Frida",
+      "version": null
+    },
+    "analysis_profile": null,
+    "predicate_type": "rea.frida.instrumentation-observation",
+    "operation": "frida_session_status",
+    "parameters": {
+      "session_id": "314c0079-22b8-4072-a4cf-5b11ce1eec40"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "session_id": "314c0079-22b8-4072-a4cf-5b11ce1eec40",
+      "device_id": "local",
+      "state": "running",
+      "target": "QuickSurface.exe (pid 10796)",
+      "pid": 10796,
+      "mode": "attach",
+      "scripts": [
+        {
+          "script_id": "78807407-f3d6-487f-8516-889fb1d5dd82",
+          "name": "rea-78807407-f3d6-487f-8516-889fb1d5dd82"
+        }
+      ],
+      "messages": [
+        {
+          "script_id": "78807407-f3d6-487f-8516-889fb1d5dd82",
+          "type": "send",
+          "payload": {
+            "kind": "ready",
+            "pid": 10796,
+            "base": "0x140000000"
+          }
+        },
+        {
+          "script_id": "78807407-f3d6-487f-8516-889fb1d5dd82",
+          "type": "send",
+          "payload": {
+            "kind": "paired-input",
+            "count": 8,
+            "points": [
+              {
+                "source": [
+                  3,
+                  3,
+                  0.5
+                ],
+                "projected": [
+                  1,
+                  1
+                ]
+              },
+              {
+                "source": [
+                  -1,
+                  -1,
+                  0.5
+                ],
+                "projected": [
+                  0,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  3,
+                  -1,
+                  0.5
+                ],
+                "projected": [
+                  1,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "source": [
+                  1,
+                  0.5,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  0.375
+                ]
+              },
+              {
+                "source": [
+                  1,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  0.25
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.25,
+                  0.25
+                ]
+              },
+              {
+                "source": [
+                  0.5,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.375,
+                  0.25
+                ]
+              }
+            ],
+            "threadId": 16076
+          }
+        },
+        {
+          "script_id": "78807407-f3d6-487f-8516-889fb1d5dd82",
+          "type": "send",
+          "payload": {
+            "kind": "paired-input",
+            "count": 8,
+            "points": [
+              {
+                "source": [
+                  -1,
+                  3,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  1
+                ]
+              },
+              {
+                "source": [
+                  3,
+                  3,
+                  0.5
+                ],
+                "projected": [
+                  1,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  -1,
+                  -1,
+                  0.5
+                ],
+                "projected": [
+                  0,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  1,
+                  1,
+                  0.5
+                ],
+                "projected": [
+                  0.5,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  0,
+                  0.5
+                ],
+                "projected": [
+                  0.25,
+                  0
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  1,
+                  0.5
+                ],
+                "projected": [
+                  0.3749999894632877,
+                  0.25
+                ]
+              },
+              {
+                "source": [
+                  0.5,
+                  1,
+                  0.5
+                ],
+                "projected": [
+                  0.4375000158050685,
+                  0.125
+                ]
+              },
+              {
+                "source": [
+                  0,
+                  0.5,
+                  0.5
+                ],
+                "projected": [
+                  0.31250000526835614,
+                  0.125
+                ]
+              }
+            ],
+            "threadId": 16076
+          }
+        }
+      ],
+      "messages_truncated": false
+    },
+    "confidence": "observed",
+    "authority": "external-service",
+    "environment": null,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "The target operating system and architecture were not reported by this observation."
+    ],
+    "relationship_coverage": null,
+    "locations": [],
+    "evidence_links": []
+  },
+  "observations": "Two arrays of eight point pairs. Each begins with the three source triangle corners followed by five intersection points. First face intersection sequence: (1,1), (1,0.5), (1,0), (0,0), (0.5,0); second: (1,1), (0,0), (0,1), (0.5,1), (0,0.5). All source Z coordinates are 0.5.",
+  "limitations": [
+    "Pointer identities and allocation order may affect enumeration; this one scene does not establish a general sort rule.",
+    "Actual downstream triangulation and indexed seam semantics remain to be verified.",
+    "No instrumented output was exported; GUI/MCP parity is not established.",
+    "Prior 18-facet copy remained hidden in scene; allocator effects are unknown."
+  ]
+}

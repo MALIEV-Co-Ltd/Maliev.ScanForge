@@ -1,0 +1,45 @@
+{
+  "scope": "Candidate scan and static inspection of node-layout matches in the runtime analysis snapshot; subdivision builder remains unidentified.",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "method": "Stream Capstone over the first executable section in four independently guarded slices. Identify candidates touching the same register at both node facet-range offsets and at least three bound offsets. Decompile four filtered candidates using isolated Ghidra.",
+  "parts": [
+    {
+      "part": 0,
+      "candidateCount": 24,
+      "sha256": "44b776b0226a332df780d4e37490fe17a9ee0cb762bc105015af18c00a60e992",
+      "peakJobBytes": 91467776
+    },
+    {
+      "part": 1,
+      "candidateCount": 23,
+      "sha256": "b917bb2a39e668e82c090d7323299a90569a3d823b28310561e44f6ca4f93053",
+      "peakJobBytes": 91492352
+    },
+    {
+      "part": 2,
+      "candidateCount": 41,
+      "sha256": "34dca791cb52a6fa054a8d7497a14817b6a9c70023a189292887b1a7b8070071",
+      "peakJobBytes": 93569024
+    },
+    {
+      "part": 3,
+      "candidateCount": 20,
+      "sha256": "d4bcbc7b53fd1babdfac06772c6121b25c5db052fca3637d14fc65a0df63ab0b",
+      "peakJobBytes": 90959872
+    }
+  ],
+  "findings": [
+    "0x140213e90 and 0x1403999e0 are recursive nearest-face search routines with the same child and leaf-range layout, using float and double query inputs respectively.",
+    "0x14082d4d0 is a recursive query routine, not established as a builder.",
+    "0x14089cb10 uses similar tree bounds and children for a different point-oriented query; its input is not shown to be the Split facet tree.",
+    "The filtered candidates do not establish subdivision or tree population."
+  ],
+  "limitations": [
+    "Chunk boundaries can begin within instructions, so this heuristic scan can miss functions; matching offsets do not establish object identity.",
+    "Register filtering excludes stack/frame-pointer bases and optimized writes; builder code may use helpers or different offset patterns.",
+    "The initial unchunked disassembly failed with a 4,295,245,824-byte peak and cleaned up; a chunked unsliced attempt timed out at 94,572,544 bytes and cleaned up. Neither produced search results.",
+    "No new live native behavior, application behavior, GUI/MCP parity, or Split parity was established."
+  ],
+  "decompilationEvidence": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-tree-layout-candidates-20261029-r1\\evidence.json",
+  "decompilationSha256": "95158c0e23800eb2c3eb80aad69347ff126c904fc2fe6e587c025ef376c6d6dd"
+}

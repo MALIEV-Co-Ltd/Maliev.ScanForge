@@ -1,0 +1,120 @@
+{
+  "scope": "Mixed CAD plus edited original scan project save and reopen in an isolated browser",
+  "build": "Same corrected build as m2-shared-brep-project-reopen-20261029.json",
+  "driver": "tests/m2-shared-brep-reopen-browser-local.mjs",
+  "driverSha256": "a977b8978039298527551164003efa4b777065d43da64ebd6f19b63ce4c63ece",
+  "result": {
+    "crossOriginIsolated": true,
+    "fileSha256": "25393d4d6406a09cf9c7317454a9174733844b4a69e26a383df538eaad8fb5f7",
+    "fileBytes": 17530027,
+    "mcpReopen": true,
+    "guiReopen": true,
+    "geometry": [
+      {
+        "path": "positions",
+        "encoding": "f64",
+        "elements": 103392,
+        "sha256": "0bcb04c66485ccebf4db4b7ad6fa268e7d44efed6fbb95bd6ffa52b33ff1df08"
+      },
+      {
+        "path": "normals",
+        "encoding": "f64",
+        "elements": 103392,
+        "sha256": "e55c540fab2a58141848495820caa32179cda32c429a25286156dfd1f21ca1e3"
+      },
+      {
+        "path": "edgePositions",
+        "encoding": "f64",
+        "elements": 228,
+        "sha256": "c906de7061d3a72044ec42554cbfa421f6f048d9075b2e3876528ff51a780f41"
+      }
+    ],
+    "scanInputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "scanEdit": "flipNormals",
+    "scanGeometry": [
+      {
+        "path": "positions",
+        "encoding": "f32",
+        "elements": 2458251,
+        "sha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 819417,
+        "sha256": "8e666b8dcc2ba069af440c63ac31f98e7baef07e83be2f1663f76dbb5986240e"
+      },
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "d7d85da0137d48dac79f4ff157d91dfd0ba87a166a339e8eb671d3dad71cf84c"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 819417,
+        "sha256": "676f1b093753d6504b2752366db1fd0bf1fd971d9012583d680935595f5a9d5b"
+      }
+    ],
+    "scanOriginalGeometry": [
+      {
+        "path": "positions",
+        "encoding": "f32",
+        "elements": 2458251,
+        "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 819417,
+        "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+      }
+    ],
+    "scanUndoRedoAfterBothReopens": true,
+    "pageErrors": []
+  },
+  "guard": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 2114146304,
+    "cleanupConfirmed": true,
+    "activeAfter": 0
+  },
+  "cleanup": [
+    {
+      "port": 54155,
+      "closed": true
+    },
+    {
+      "pid": 29672,
+      "exited": true
+    },
+    {
+      "port": 54156,
+      "closed": true
+    },
+    {
+      "pid": 43520,
+      "exited": true
+    }
+  ],
+  "limitations": [
+    "One 273139-facet original scan and one generated CAD sphere; not native equivalence or arbitrary project coverage.",
+    "The scan edit and post-reopen Undo/Redo were executed via public MCP; reopen used both public MCP and GUI.",
+    "The larger original PLY-3 Split/Extract in-place reopening memory gate remains open.",
+    "The first attempt rejected an incorrectly transcribed expected input hash before import; its failed guard receipt is retained."
+  ]
+}

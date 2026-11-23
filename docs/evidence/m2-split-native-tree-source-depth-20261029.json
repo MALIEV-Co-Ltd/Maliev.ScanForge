@@ -1,0 +1,24 @@
+{
+  "scope": "Read-only cached native tree inspection for previously split 18-facet square source.",
+  "source": "square-source, 18 facets in existing native scene",
+  "method": "Verified object name and vtable, resolved its cached PointEvaluator, then read all reachable tree nodes and their facet-reference ranges without invoking the native application.",
+  "rootBounds": [
+    -1.0099999904632568, -1.0099999904632568, -1.5099999904632568,
+    3.009999990463257, 3.009999990463257, 2.509999990463257
+  ],
+  "maxDepth": 1,
+  "leafFacetReferenceCounts": [9, 12, 11, 18, 9, 12, 11, 18],
+  "observation": "The root has eight leaf children; two leaves contain 18 facet references without further subdivision. This excludes any unconditional leaf-reference threshold below 18 for this tree but does not establish the actual subdivision rule.",
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 17039360,
+    "cleanupConfirmed": true
+  },
+  "sourceReceipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-source-cache-inspection-20261029.json",
+  "sourceReceiptSha256": "a5be56cd12a4dfbc9a23c44d21d102aafa3c338092bcb07759eb37f8819633fc",
+  "limitations": [
+    "Existing cached tree; no new live query or tree construction observed.",
+    "The split output is not a pinned independent source fixture in this receipt.",
+    "Depth, duplicate-reference effects, coordinate tolerances, and criteria on other meshes remain unknown."
+  ]
+}

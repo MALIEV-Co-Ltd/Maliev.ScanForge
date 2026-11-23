@@ -1,0 +1,47 @@
+{
+  "scope": "Original PLY-3 GUI Split and component Extract lifecycle; application evidence only",
+  "inputFaces": 3691133,
+  "splitFaces": 3700757,
+  "extractedFaces": 1779171,
+  "aggregateJobLimitBytes": 4294967296,
+  "sampledProcessRun": {
+    "build": "scanforge-4909f8d7765048df",
+    "outcome": "failed during the MCP result digest after GUI Extract and Undo",
+    "guardPeakBytes": 4422909952,
+    "sampledLargestRendererPrivateBytesApprox": 3766484992,
+    "sampling": "Private process bytes sampled about once per second; not a complete allocation profile or exact job peak.",
+    "cleanupConfirmed": true
+  },
+  "cdpStageRun": {
+    "build": "scanforge-4909f8d7765048df",
+    "outcome": "failed during the MCP result digest",
+    "guardPeakBytes": 4357849088,
+    "stages": [
+      {
+        "stage": "gui-extract-committed",
+        "usedHeapBytes": 876980648,
+        "backingStorageBytes": 403147532
+      },
+      {
+        "stage": "gui-extract-undone",
+        "usedHeapBytes": 1028726124,
+        "backingStorageBytes": 642556081
+      },
+      {
+        "stage": "mcp-extract-committed",
+        "usedHeapBytes": 1090884440,
+        "backingStorageBytes": 725709874
+      }
+    ],
+    "limitations": "CDP heap usage describes the inspected renderer context and is not equivalent to total renderer private bytes or peak job memory.",
+    "cleanupConfirmed": true
+  },
+  "separateGuiRun": {
+    "build": "scanforge-4909f8d7765048df",
+    "functionalResult": "GUI Extract, Undo, Redo and geometry digests completed without page or console errors",
+    "guardPeakBytes": 4358275072,
+    "acceptedUnderLimit": false,
+    "cleanupConfirmed": true
+  },
+  "next": "Reduce renderer allocations without changing selection, Undo/Redo, geometry precision or MCP behavior; rerun the combined lifecycle and check actual peak against the 4 GiB limit."
+}

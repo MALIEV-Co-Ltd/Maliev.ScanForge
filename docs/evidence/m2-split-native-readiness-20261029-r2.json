@@ -1,0 +1,12 @@
+{
+  "scope": "Fresh native Split readiness after M5 lane release; no modeling input or output.",
+  "timestampUtc": "2026-10-28T22:49:19.310364+00:00",
+  "previousLaneHandoff": "docs/evidence/m2-split-native-readiness-20261029.json",
+  "inventoryBefore": "QUICKSURFACE 2026 reported not running and no windows.",
+  "launch": "Computer Use launch of the returned QuickSurface app id failed with GetCursorPos failed: Access is denied (0x80070005).",
+  "inventoryAfter": "QUICKSURFACE 2026 reported not running and no windows.",
+  "limitations": [
+    "No Split command, native geometry or result observed.",
+    "This is a readiness failure, not evidence of parity."
+  ]
+}

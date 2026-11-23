@@ -1,0 +1,124 @@
+{
+  "scope": "Compare triangle versus bounding-box membership against captured native cutter-tree leaves.",
+  "nativeTreeEvidence": "m2-split-live-cutter-trees-20261029.json",
+  "method": "Reconstruct triangles from each pinned STL and use the captured leaf bounds. Compare file-order triangle-box intersections via Three.js Box3.intersectsTriangle with native leaf facet indices; separately compare inclusive facet-AABB overlap.",
+  "triangleBoxMatchedLeaves": 16,
+  "triangleBoxTotalLeaves": 16,
+  "aabbComparison": [
+    {
+      "control": "convex",
+      "path": [0],
+      "extra": [],
+      "missing": []
+    },
+    {
+      "control": "convex",
+      "path": [1],
+      "extra": [],
+      "missing": []
+    },
+    {
+      "control": "convex",
+      "path": [2],
+      "extra": [],
+      "missing": []
+    },
+    {
+      "control": "convex",
+      "path": [3],
+      "extra": [],
+      "missing": []
+    },
+    {
+      "control": "convex",
+      "path": [4],
+      "extra": [],
+      "missing": []
+    },
+    {
+      "control": "convex",
+      "path": [5],
+      "extra": [],
+      "missing": []
+    },
+    {
+      "control": "convex",
+      "path": [6],
+      "extra": [],
+      "missing": []
+    },
+    {
+      "control": "convex",
+      "path": [7],
+      "extra": [],
+      "missing": []
+    },
+    {
+      "control": "concave",
+      "path": [0],
+      "extra": [24],
+      "missing": []
+    },
+    {
+      "control": "concave",
+      "path": [1],
+      "extra": [6, 10],
+      "missing": []
+    },
+    {
+      "control": "concave",
+      "path": [2],
+      "extra": [21, 22],
+      "missing": []
+    },
+    {
+      "control": "concave",
+      "path": [3],
+      "extra": [12, 22],
+      "missing": []
+    },
+    {
+      "control": "concave",
+      "path": [4],
+      "extra": [15],
+      "missing": []
+    },
+    {
+      "control": "concave",
+      "path": [5],
+      "extra": [8, 17],
+      "missing": []
+    },
+    {
+      "control": "concave",
+      "path": [6],
+      "extra": [5, 19],
+      "missing": []
+    },
+    {
+      "control": "concave",
+      "path": [7],
+      "extra": [17, 27],
+      "missing": []
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-tree-triangle-box-control-20261029.mjs",
+      "sha256": "c3daf4933c958261914ee0f1bf737859ace87bc54f08964621dc8ba6f86b1e73"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-tree-triangle-box-control-20261029.json",
+      "sha256": "721f7529900da2fc66434f91c06d008db176ee6bd280cf6123d10fb1a9d72b73"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-tree-triangle-box-control-guard-20261029.json",
+      "sha256": "91dfca13aa246af077dd5f57295103c033a5ecc310cd7b887f3299514a3fd8e6"
+    }
+  ],
+  "limitations": [
+    "Native node bounds were captured rather than independently constructed.",
+    "Two simple fixture trees only; this does not establish general intersection precision, subdivision thresholds, insertion order for arbitrary imports, or runtime query behavior.",
+    "No production, GUI or MCP behavior changed."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "scope": "Delaunator comparison using projected coordinates and index triples captured in separate native previews for the convex control.",
+  "result": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-delaunator-comparison-20261029.json",
+  "resultSha256": "f9462f46e001f644363793bd3ffbb682419d24bb4d3192a0cc0cca02ce42fe1f",
+  "script": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-delaunator-comparison-20261029.mjs",
+  "scriptSha256": "c851c4f98d0ccac30c8fa54c01ef19b8b5f37a0d388ca40737d2822d983d93f7",
+  "guard": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-delaunator-comparison-guard-20261029.json",
+  "guardSha256": "f133e0c092bc5665f0ecde2567d99c7388f47bbe524d2e66fd56ed2dfcd5fc16",
+  "observations": "Face 0 matches 7 of 9 native index triples; face 1 matches all 9. On face 0, the remaining four points at indices 3, 4, 6, 7 are exactly cocircular: the rational incircle determinant is zero. Delaunator chooses diagonal (4,6), native chooses (3,7).",
+  "limitations": [
+    "Input and output were recorded in separate previews; prior exported-facet comparison corroborates this case only.",
+    "One matching Delaunay control does not establish native Delaunay implementation or general tie rules.",
+    "No production change or GUI/MCP acceptance is claimed."
+  ]
+}

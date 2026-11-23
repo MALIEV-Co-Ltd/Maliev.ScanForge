@@ -1,0 +1,22 @@
+{
+  "scope": "Isolated candidate diagnosis and rejected connected-cavity experiment, not native behavior or an application change",
+  "trace": "In the second rotated source face, duplicate directed edges first appear after inserting point 10. At that insertion the candidate's incircle test selected two triangles that share only one vertex. Later insertions also show duplicate directed edges, and the existing fallback detects five at the final face triangulation.",
+  "tracePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-rotated-edge-trace-20261029/rotated-branch-trace.json",
+  "traceSha256": "aa65d4909a4ff0d6e2b64d2c13630a3e7e265c135597128e497235cd8a2b89d7",
+  "instrumentedSourceSha256": "b3402fecf977e0d90bad568940c6b798452afeb7a351fe11313075f015b5800f",
+  "traceGuardSha256": "9c5aa186f402d6195a49feb3a2523737a6ec5ca656be01a918bfba540eb8bcb6",
+  "tracePeakBytes": 345997312,
+  "experiment": "In a separate copy, restrict candidate incircle triangles to the edge-connected component containing the triangle that contains the inserted point. Keep the existing topology checks.",
+  "result": "The original candidate fails a test demanding no fallback. The connected-component experiment fails earlier with Finite assembly has an interior boundary edge; it is rejected.",
+  "experimentalSourceSha256": "0342397a2700da6df3298d437b7b6ddbe0f52cfe4199987b606867e1b8ba69c6",
+  "testSha256": "447f75e8d6f2a91e3de1be12efff71bc82d1143d372bf93bbd55a987498cfb5c",
+  "redGuardSha256": "f32c43637fb909a30135cbefb4c61a35cf477da23ae1c570fb94084afb7ad44f",
+  "experimentGuardSha256": "9cac588a2d38bbe6c1dda61ab78040d1a277a1b50fff5d3ac47fe518f93e2735",
+  "experimentPeakBytes": 344240128,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The trace is of the experimental application candidate, not QuickSurface's internals.",
+    "A simple connected cavity does not preserve valid assembly here; no production fix or native parity follows.",
+    "The candidate is isolated and the GUI/MCP shared operation was not modified."
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "scope": "Three native Split exports around a candidate radius on QuickSurface Pro 8.0.123",
+  "units": "mm",
+  "settings": "Split with another body or a mesh; Envelope unchecked; preview then apply",
+  "sourceSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+  "nativeOutputs": [
+    {
+      "case": "below",
+      "cutterSha256": "f1934caa75204704f3b1a37ad37d251689be2341b7899227c9510a9873f49ccf",
+      "x": 9.000000136438757e-5,
+      "sha256": "adb567e7a9b37e60292749e9fe4a002c4d462653259924b3dbe6f0be45337971",
+      "facets": 2
+    },
+    {
+      "case": "at",
+      "cutterSha256": "90694b7b19cde7b02bc71ea500c0213da4004142162855e66502350682be0323",
+      "x": 9.999999747378752e-5,
+      "sha256": "42a605d8460e99a367abaef2efbe52d45a69380196f07cc6e2facf91f3a5dfc6",
+      "facets": 2
+    },
+    {
+      "case": "above",
+      "cutterSha256": "df8c162f55c96600c9f223c131d98b7ce7e3a43eb85136b8790c08a9487ea29f",
+      "x": 0.00011000000085914508,
+      "sha256": "225f62796f16f8e249b15df46c16c07f32473cc17fad5e8753c742a389914313",
+      "facets": 2
+    }
+  ],
+  "observation": "Each output has the same two-triangle arrangement, with the diagonal intersection at (x, 0.5, 0).",
+  "limitations": [
+    "Native viewport was white; geometry is from exported binary STL",
+    "Native intermediate intersection and threshold logic remain unobserved",
+    "Application produces five facets on these fixtures and differs from native"
+  ],
+  "focusedTests": "7 passed, 3 expected native mismatches, including two wider input controls",
+  "guardPeakBytes": 347037696,
+  "guardCleanupConfirmed": true
+}

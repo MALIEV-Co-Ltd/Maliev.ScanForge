@@ -1,0 +1,23 @@
+{
+  "scope": "Instrumented isolated candidate projection for one rotated Split edge-recovery event; not a native runtime observation",
+  "faceCoordinates": {
+    "inserted": [0.49999999521023164, 4.78977660850838e-9],
+    "edgeEndpoint": [0.5000000000000081, 0]
+  },
+  "candidateProjectedCoordinates": {
+    "inserted": [0.5000000440836132, 3.10040520064457e-9],
+    "edgeEndpoint": [0.5000000440836132, -6.479132199316757e-9]
+  },
+  "observation": "The candidate's projected first coordinate is equal for these two points, but its second coordinate differs by approximately 9.58e-9 in this normalized projected frame. They are not exactly coincident in the candidate projection.",
+  "tracePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-projection-trace-20261029/rotated-branch-trace.json",
+  "traceSha256": "b621b44f10405f2db7314b87c7126f8b3fb49ab74a56026a6cf7dda3598bc3e3",
+  "instrumentedSourceSha256": "a145d1454c5607655cea3371025e77bc8c16f0ce953ccc7b1542891df4b92afc",
+  "guardSha256": "d27110197c5bc77bbb3224ce11c21cbb432911c5dd9903e7a42bdee2093b8e37",
+  "guardPeakBytes": 338210816,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The projected metric is an experimental reconstruction, not a captured native value for this fixture.",
+    "Native point identity and any merge rule remain unobserved; proximity alone does not justify welding the distinct input segment.",
+    "The candidate is not integrated and its oracle-directed vertex replacement does not establish native parity."
+  ]
+}

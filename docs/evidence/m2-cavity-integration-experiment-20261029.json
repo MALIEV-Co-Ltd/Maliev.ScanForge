@@ -1,0 +1,58 @@
+{
+  "scope": "Isolated mixed cavity insertion experiment against current M2 finite-face implementation.",
+  "method": "Copy current source/tests to an isolated directory; replace only interior-point insertion with a sequential exact-binary64 incircle cavity that includes zero, retaining existing boundary insertion and constraint recovery. Convert three native it.fails assertions to ordinary assertions in the copy. Measure unordered facet multiset intersection against the same pinned native exports before and after; no main-worktree implementation was changed.",
+  "baseline": [
+    {
+      "name": "convex",
+      "native": 18,
+      "application": 18,
+      "matches": 12
+    },
+    {
+      "name": "concave",
+      "native": 34,
+      "application": 34,
+      "matches": 22
+    },
+    {
+      "name": "cyclic",
+      "native": 18,
+      "application": 18,
+      "matches": 10
+    }
+  ],
+  "candidate": [
+    {
+      "name": "convex",
+      "native": 18,
+      "application": 18,
+      "matches": 11
+    },
+    {
+      "name": "concave",
+      "native": 34,
+      "application": 34,
+      "matches": 15
+    },
+    {
+      "name": "cyclic",
+      "native": 18,
+      "application": 18,
+      "matches": 11
+    }
+  ],
+  "nativeAssertions": "All three native facet assertions failed both before and after; facet counts matched.",
+  "focusedConstraints": "144 tests across eight finite-face, assembly, collector, edge, candidate and coverage files passed for the experimental candidate.",
+  "baselineSourceSha256": "b73ccd73df45d1084a338edeb305cd4c3cdbc5f116461d02e72f361dab21510a",
+  "candidateSource": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-cavity-integration-candidate-20261029.ts",
+  "candidateSourceSha256": "156f86da34df6e54a534385b7bb71f6dd99587e1beba7314085fddb946aa30e3",
+  "diagnosticSha256": "bfe16001dd01ff51604fa122edea20c5f86b105010a0dd2a9ee65a22d1df66d4",
+  "maxGuardPeakBytes": 410341376,
+  "cleanupConfirmed": true,
+  "decision": "Do not apply the candidate: it reduces native matching facets on two of three controls and does not resolve the mismatch.",
+  "limitations": [
+    "The candidate does not reconstruct native tree/point order, exact orientation, or native constrained triangulation.",
+    "The 144 focused tests do not establish general safety, performance, GUI/MCP lifecycle or native parity.",
+    "The experiment ran in an isolated copied tree; the actual application and 5173 preview were not changed."
+  ]
+}

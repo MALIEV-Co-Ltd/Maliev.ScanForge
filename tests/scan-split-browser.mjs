@@ -295,8 +295,22 @@ try {
     return out;
   };
   const radiusDirectory = process.env.SCANFORGE_SPLIT_RADIUS_INPUT_DIR;
+  const wideRadius = process.env.SCANFORGE_SPLIT_WIDE_RADIUS === "1";
+  const scaledRadius = process.env.SCANFORGE_SPLIT_SCALED_RADIUS === "1";
+  if (wideRadius && !radiusDirectory)
+    throw Error("Wide radius Split requires the radius fixture directory.");
+  if (scaledRadius && (!radiusDirectory || wideRadius))
+    throw Error("Scaled radius Split requires its own fixture directory.");
+  const denseDirectory = process.env.SCANFORGE_SPLIT_DENSE_INPUT_DIR;
+  const rotatedDense = process.env.SCANFORGE_SPLIT_ROTATED_DENSE === "1";
+  if (rotatedDense && !denseDirectory)
+    throw Error("Rotated dense Split requires the dense fixture directory.");
+  if (radiusDirectory && denseDirectory)
+    throw Error("Choose one Split fixture directory at a time.");
   const readStlPositions = async (file) => {
-    const bytes = await readFile(`${radiusDirectory}/${file}`);
+    const bytes = await readFile(
+      `${radiusDirectory ?? denseDirectory}/${file}`,
+    );
     const count = bytes.readUInt32LE(80),
       positions = [];
     assert.equal(bytes.length, 84 + count * 50);
@@ -306,19 +320,44 @@ try {
     return positions;
   };
   const radiusCases = radiusDirectory
-    ? await Promise.all(
-        ["below", "at", "above"].map(async (label) => ({
-          name: `point-radius-${label}`,
-          source: await readStlPositions("source-triangle.stl"),
-          target: await readStlPositions(`cutter-${label}.stl`),
-          kind: "mesh",
-          parts: 2,
-          method: "open surface signed nearest grouping",
-        })),
-      )
+    ? scaledRadius
+      ? [
+          {
+            name: "point-radius-scaled",
+            source: await readStlPositions("scaled-source-triangle.stl"),
+            target: await readStlPositions("scaled-cutter-above.stl"),
+            kind: "mesh",
+            parts: 2,
+            method: "open surface signed nearest grouping",
+          },
+        ]
+      : await Promise.all(
+          (wideRadius
+            ? ["near-0p001-below", "near-0p001-above"]
+            : ["below", "at", "above"]
+          ).map(async (label) => ({
+            name: `point-radius-${label}`,
+            source: await readStlPositions("source-triangle.stl"),
+            target: await readStlPositions(`cutter-${label}.stl`),
+            kind: "mesh",
+            parts: 2,
+            method: "open surface signed nearest grouping",
+          })),
+        )
     : [];
   const cases = [
     ...radiusCases,
+    ...(denseDirectory
+      ? [
+          {
+            name: "dense-tree-cutter",
+            source: await readStlPositions("vertical-source.stl"),
+            target: await readStlPositions("grid-128.stl"),
+            kind: "mesh",
+            originalFaceWinding: true,
+          },
+        ]
+      : []),
     {
       name: "original-scan-face-7207",
       source: [
@@ -485,13 +524,20 @@ try {
     cutterId = "cutter";
   const results = [];
   const inputDirectory =
-    radiusDirectory ?? process.env.SCANFORGE_SPLIT_INPUT_DIR;
+    radiusDirectory ?? denseDirectory ?? process.env.SCANFORGE_SPLIT_INPUT_DIR;
   const fileInputs = {
+    "dense-tree-cutter": ["vertical-source.stl", "grid-128.stl"],
+    "point-radius-scaled": [
+      "scaled-source-triangle.stl",
+      "scaled-cutter-above.stl",
+    ],
     ...Object.fromEntries(
-      ["below", "at", "above"].map((label) => [
-        `point-radius-${label}`,
-        ["source-triangle.stl", `cutter-${label}.stl`],
-      ]),
+      ["below", "at", "above", "near-0p001-below", "near-0p001-above"].map(
+        (label) => [
+          `point-radius-${label}`,
+          ["source-triangle.stl", `cutter-${label}.stl`],
+        ],
+      ),
     ),
     "finite-interior-cut": ["source.stl", "cutter.stl"],
     "finite-planar-mesh": ["disjoint-source.stl", "finite-plane-cutter.stl"],
@@ -502,6 +548,16 @@ try {
     inputDirectory &&
     JSON.parse(await readFile(`${inputDirectory}/manifest.json`, "utf8"));
   const expectedFileHashes = {
+    "scaled-source-triangle.stl":
+      "801dceabede6cb79df0d9bc0c9855edc5b1131fabe3e56ff7c746b6c6bbaa04e",
+    "scaled-cutter-above.stl":
+      "13f6e668866e0585394359d2dc2bb86ac1bdce9e1c89ceac13db7ef4c1a1d7ee",
+    "vertical-source.stl": rotatedDense
+      ? "b33ffb30fdc5704165f1017584c93f8ff68628c733ae05309e8cf7e07fa2f1a6"
+      : "930d69565f9b94989a465b7a5f4b4b79f48da8f0d1410c2b21134eea504b057e",
+    "grid-128.stl": rotatedDense
+      ? "eec41aa1580de2960509d206379fe9c5ae0a79b5b6a248ccf2f218a2efecdf01"
+      : "e8609260000042e973da8557b7c53c3ebccf6193918768f8f4505791d14b3ec0",
     "source-triangle.stl":
       "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
     "cutter-below.stl":
@@ -510,6 +566,10 @@ try {
       "90694b7b19cde7b02bc71ea500c0213da4004142162855e66502350682be0323",
     "cutter-above.stl":
       "df8c162f55c96600c9f223c131d98b7ce7e3a43eb85136b8790c08a9487ea29f",
+    "cutter-near-0p001-below.stl":
+      "c7eb2ecef247eb1679157622cf315a6873f8d949e3bb2eecb8572df58ab98f1f",
+    "cutter-near-0p001-above.stl":
+      "4b58488fd59bb876bc4acd6891bfbe9fa30d25128baeadeedb95db69c65ac1b5",
     "source.stl":
       "126431c2e8a871619b5bb055df2833fdb762f7a7dabd3f54fe8346446473a75d",
     "cutter.stl":
@@ -843,6 +903,7 @@ try {
   };
   for (const c of cases) {
     if (radiusDirectory && !c.name.startsWith("point-radius-")) continue;
+    if (denseDirectory && c.name !== "dense-tree-cutter") continue;
     if (
       process.env.SCANFORGE_SPLIT_CASE &&
       c.name !== process.env.SCANFORGE_SPLIT_CASE
@@ -850,6 +911,14 @@ try {
       continue;
     if (inputDirectory && !fileInputs[c.name]) continue;
     const baseline = await load(c);
+    if (c.name === "dense-tree-cutter")
+      await mutate("viewport_control", {
+        action: "camera",
+        position: [0, -8, 0.5],
+        target: [0, 0.125, 0.5],
+        up: [0, 0, 1],
+        zoom: 1,
+      });
     if (radiusDirectory)
       await mutate("viewport_control", {
         action: "camera",
@@ -1189,6 +1258,35 @@ try {
           });
       };
       const initialImage = await render("initial");
+      if (
+        c.name === "dense-tree-cutter" &&
+        process.env.SCANFORGE_SPLIT_NATIVE_DENSE_COMPARE === "1"
+      ) {
+        const bytes = await readFile(
+          `${denseDirectory}/native-dense-result-20261029.stl`,
+        );
+        assert.equal(
+          createHash("sha256").update(bytes).digest("hex"),
+          "da52d7afd8d4e9b1cb316e8598cd213422680381b56280008ae53c5de40381f7",
+        );
+        const native = await readStlPositions(
+          "native-dense-result-20261029.stl",
+        );
+        const facets = (p) =>
+          Array.from({ length: p.length / 9 }, (_, i) =>
+            [0, 3, 6]
+              .map((k) =>
+                [0, 1, 2].map((j) => Math.fround(p[i * 9 + k + j])).join(","),
+              )
+              .sort()
+              .join("|"),
+          ).sort();
+        assert.deepEqual(
+          facets(guiPositions),
+          facets(native),
+          "GUI facets differ from native dense Split",
+        );
+      }
       const reference = c.originalFaceWinding
         ? sourceNormal(c.source)
         : undefined;

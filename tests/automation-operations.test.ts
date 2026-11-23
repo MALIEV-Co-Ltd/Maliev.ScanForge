@@ -36,6 +36,7 @@ import { analyzeIndexedMesh, analyzeMesh } from "../src/mesh-processing";
 import partialTangentNative from "./fixtures/hole-observed-semi-tangent-curved.json";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import { indexedMeshMatches } from "../src/indexed-mesh";
+import { encodeProjectFileLocally } from "../src/project-file-codec";
 import { withCurvatureKernel } from "./helpers/curvature-kernel-vm";
 import type {
   ProcessingRequest,
@@ -276,6 +277,33 @@ it("imports a CAD batch through MCP in order, preserving undo steps and waiting 
   ]);
   expect(state.history).toHaveLength(2);
   expect(presented).toEqual([1, 2]);
+});
+it("does not retain the old workspace snapshot while replacing a project", async () => {
+  const h = harness();
+  const oldSnapshot = vi.fn(() => h.state);
+  h.host.snapshot = oldSnapshot;
+  const source = entity({ id: "restored" });
+  const file = await encodeProjectFileLocally({
+    project: {
+      format: "maliev-scanforge",
+      version: 1,
+      name: "Restored",
+      units: "mm",
+      entities: [source],
+    },
+    history: [],
+    future: [],
+  });
+  vi.mocked(h.context.artifactBlob).mockReturnValue(
+    new File([file], "saved.scanforge"),
+  );
+  const result = await h.ops.project_import(
+    { artifactId: "saved", replace: true },
+    h.context,
+  );
+  expect(result).toEqual({ objects: 1 });
+  expect(oldSnapshot).not.toHaveBeenCalled();
+  expect(h.host.replace).toHaveBeenCalledOnce();
 });
 function entity(patch: Partial<Entity> = {}): Entity {
   return {

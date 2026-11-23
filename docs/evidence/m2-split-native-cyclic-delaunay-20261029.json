@@ -1,0 +1,24 @@
+{
+  "scope": "Same-preview native cyclic control input and constructor comparison with Delaunator.",
+  "capture": "docs/evidence/m2-split-native-cyclic-triangulation-20261029.json",
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-cyclic-delaunay-20261029.json",
+      "sha256": "ddf49d535ea8a07e9d99a332871cc722abd7805017cd3db847e1050dd708320e"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-cyclic-delaunay-20261029.mjs",
+      "sha256": "6fb51593154c1020964c6a8ad252cda674045973b2295a5e25100c67ebb713d7"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-cyclic-delaunay-guard-20261029.json",
+      "sha256": "f6221bbc92de4b17dc640769e2fce5ece62b68c9f3700de2e463cb7042c3cedd"
+    }
+  ],
+  "observations": "Delaunator matched seven of nine native triangles in each face. Both differences are diagonals through points 3,4,6,7, whose exact rational incircle determinant is zero. The same-run native 3D points and index triples reconstruct all 18 facets of the earlier cyclic STL export as an unordered multiset.",
+  "limitations": [
+    "This is a cyclic reordering of the same geometry, not an independent shape.",
+    "No general native tie rule or constraint handling is established.",
+    "No product change or GUI/MCP parity acceptance is claimed."
+  ]
+}

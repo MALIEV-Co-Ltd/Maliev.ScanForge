@@ -1,0 +1,227 @@
+{
+  "scope": "Read-only snapshots of live native convex and concave cutter spatial trees, compared with pinned STL facets and previously captured intersection records.",
+  "pid": 10796,
+  "convex": {
+    "scope": "Read-only live convex-cutter PointEvaluator tree, associated with named object and matching pinned input triangles.",
+    "pid": 10796,
+    "objectName": "convex-cutter",
+    "sourceStl": "C:\\repo\\alignment-example-files\\m2-native-split-controls-20261027-r1\\convex-cutter.stl",
+    "sourceSha256": "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
+    "rootBounds": [
+      -0.009999990463256836, -0.009999990463256836, -0.009999990463256836,
+      1.0099999904632568, 1.0099999904632568, 1.0099999904632568
+    ],
+    "children": [
+      {
+        "slot": 0,
+        "bounds": [
+          0.5, 0.5, 0.5, 1.0099999904632568, 1.0099999904632568,
+          1.0099999904632568
+        ],
+        "inputFacetIndices": [2, 3, 6, 7, 8, 9]
+      },
+      {
+        "slot": 1,
+        "bounds": [
+          -0.009999990463256836, 0.5, 0.5, 0.5, 1.0099999904632568,
+          1.0099999904632568
+        ],
+        "inputFacetIndices": [2, 3, 8, 9, 10, 11]
+      },
+      {
+        "slot": 2,
+        "bounds": [
+          0.5, -0.009999990463256836, 0.5, 1.0099999904632568, 0.5,
+          1.0099999904632568
+        ],
+        "inputFacetIndices": [2, 3, 4, 5, 6, 7]
+      },
+      {
+        "slot": 3,
+        "bounds": [
+          -0.009999990463256836, -0.009999990463256836, 0.5, 0.5, 0.5,
+          1.0099999904632568
+        ],
+        "inputFacetIndices": [2, 3, 4, 5, 10, 11]
+      },
+      {
+        "slot": 4,
+        "bounds": [
+          0.5, 0.5, -0.009999990463256836, 1.0099999904632568,
+          1.0099999904632568, 0.5
+        ],
+        "inputFacetIndices": [0, 1, 6, 7, 8, 9]
+      },
+      {
+        "slot": 5,
+        "bounds": [
+          -0.009999990463256836, 0.5, -0.009999990463256836, 0.5,
+          1.0099999904632568, 0.5
+        ],
+        "inputFacetIndices": [0, 1, 8, 9, 10, 11]
+      },
+      {
+        "slot": 6,
+        "bounds": [
+          0.5, -0.009999990463256836, -0.009999990463256836, 1.0099999904632568,
+          0.5, 0.5
+        ],
+        "inputFacetIndices": [0, 1, 4, 5, 6, 7]
+      },
+      {
+        "slot": 7,
+        "bounds": [
+          -0.009999990463256836, -0.009999990463256836, -0.009999990463256836,
+          0.5, 0.5, 0.5
+        ],
+        "inputFacetIndices": [0, 1, 4, 5, 10, 11]
+      }
+    ],
+    "queryAllChildrenFirstOccurrenceFacetOrder": [
+      2, 3, 6, 7, 8, 9, 10, 11, 4, 5, 0, 1
+    ],
+    "method": "Resolve the previously observed cutter object, identify its PointEvaluator interface, read the tree pointer used by the static worker/query data flow, then match each leaf triangle by unordered exact Float32 vertices to the unique pinned STL facet. Query order is inferred from static child traversal; source-triangle bbox intersects all eight leaves.",
+    "limitations": [
+      "Read-only snapshot after preview, not a new observed native query execution.",
+      "Pointer identities, tree lifetime, data flow and branch remain tied to this process and fixture; no general construction rule is established.",
+      "This captures convex cutter only; endpoint orientation and point pooling still need verification."
+    ]
+  },
+  "concave": {
+    "scope": "Read-only live concave-cutter spatial tree; match native captured facet-record order.",
+    "pid": 10796,
+    "objectName": "concave-cutter",
+    "sourceStl": "C:\\repo\\alignment-example-files\\m2-native-split-controls-20261027-r1\\concave-cutter.stl",
+    "sourceSha256": "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+    "rootBounds": [
+      -0.009999990463256836, -0.009999990463256836, -0.5099999904632568,
+      2.009999990463257, 2.009999990463257, 1.5099999904632568
+    ],
+    "visitedNodes": 9,
+    "leaves": [
+      {
+        "path": [0],
+        "bounds": [
+          1.0, 1.0, 0.5, 2.009999990463257, 2.009999990463257,
+          1.5099999904632568
+        ],
+        "inputFacetIndices": [2, 3, 10, 11, 14, 15, 16, 17, 20, 21, 22, 23, 25]
+      },
+      {
+        "path": [1],
+        "bounds": [
+          -0.009999990463256836, 1.0, 0.5, 1.0, 2.009999990463257,
+          1.5099999904632568
+        ],
+        "inputFacetIndices": [
+          2, 3, 7, 11, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27
+        ]
+      },
+      {
+        "path": [2],
+        "bounds": [
+          1.0, -0.009999990463256836, 0.5, 2.009999990463257, 1.0,
+          1.5099999904632568
+        ],
+        "inputFacetIndices": [
+          2, 3, 4, 5, 10, 11, 12, 13, 14, 15, 16, 17, 20, 23
+        ]
+      },
+      {
+        "path": [3],
+        "bounds": [
+          -0.009999990463256836, -0.009999990463256836, 0.5, 1.0, 1.0,
+          1.5099999904632568
+        ],
+        "inputFacetIndices": [
+          2, 3, 4, 5, 6, 7, 10, 11, 13, 16, 17, 20, 21, 23, 26, 27
+        ]
+      },
+      {
+        "path": [4],
+        "bounds": [
+          1.0, 1.0, -0.5099999904632568, 2.009999990463257, 2.009999990463257,
+          0.5
+        ],
+        "inputFacetIndices": [0, 1, 8, 9, 14, 16, 17, 18, 19, 22, 23, 24, 25]
+      },
+      {
+        "path": [5],
+        "bounds": [
+          -0.009999990463256836, 1.0, -0.5099999904632568, 1.0,
+          2.009999990463257, 0.5
+        ],
+        "inputFacetIndices": [0, 1, 6, 7, 9, 16, 18, 19, 22, 23, 24, 25, 26, 27]
+      },
+      {
+        "path": [6],
+        "bounds": [
+          1.0, -0.009999990463256836, -0.5099999904632568, 2.009999990463257,
+          1.0, 0.5
+        ],
+        "inputFacetIndices": [0, 1, 4, 8, 9, 12, 13, 14, 15, 16, 17, 18, 22, 23]
+      },
+      {
+        "path": [7],
+        "bounds": [
+          -0.009999990463256836, -0.009999990463256836, -0.5099999904632568,
+          1.0, 1.0, 0.5
+        ],
+        "inputFacetIndices": [
+          0, 1, 4, 5, 6, 7, 8, 9, 12, 13, 16, 18, 19, 22, 23, 26
+        ]
+      }
+    ],
+    "firstOccurrenceFacetOrder": [
+      2, 3, 10, 11, 14, 15, 16, 17, 20, 21, 22, 23, 25, 7, 24, 26, 27, 4, 5, 12,
+      13, 6, 0, 1, 8, 9, 18, 19
+    ],
+    "nativeRecordOrders": [
+      [14, 15, 16, 17, 23, 4, 5, 12, 13, 6],
+      [16, 22, 23, 25, 7, 24, 26, 27, 5, 6]
+    ],
+    "filteredOrders": [
+      [14, 15, 16, 17, 23, 4, 5, 12, 13, 6],
+      [16, 22, 23, 25, 7, 24, 26, 27, 5, 6]
+    ],
+    "matchesNativeOrders": [true, true],
+    "method": "Resolve named object and PointEvaluator interface, read the query tree, traverse overlapping nodes in the statically observed child order, deduplicate by native face pointer and identify each facet via its pinned STL Float32 coordinates. Filter to independently captured intersecting facet sets per source face.",
+    "limitations": [
+      "Read-only snapshot after preview; this is a reconstruction of query traversal, not a direct observation of a new query.",
+      "Native face identity, tree lifetime and source box are tied to this process and fixture.",
+      "Facet intersection endpoint orientation, point pooling, generic tree construction and multi-worker behavior remain unverified."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-convex-live-tree-read-20261029.json",
+      "sha256": "a8fc78c325036c0c8d91a9ac8ccc71db890ea4ed1769b9d37e21dfda7ef3f3a0"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-concave-live-tree-read-20261029.json",
+      "sha256": "bf47bc55d1758ebfa3f42396ff284b15f08f4775d26a81141719c87b12402b14"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-convex-live-tree-read-guard-20261029-r3.json",
+      "sha256": "1d1c2c2142ffdce4b0675e0b4c052a9fa5885c6ea0687d79c6c0e39c1c7c9e2d"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-concave-live-tree-read-guard-20261029.json",
+      "sha256": "bf8ce0a9a3a38b1f2a07bbbfee01ad2524b56a7e97ba77fea3fec22de0a091b8"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-convex-live-tree-read-20261029.py",
+      "sha256": "68a083997921253146b9d271f9c5742c65bebe8a9388eec5f45e42ec40ba0cd5"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-concave-live-tree-read-20261029.py",
+      "sha256": "71ef7a8c7dd1a086568a85b6606f26ebc90448519323d7ebf821d6fb7f223e3a"
+    }
+  ],
+  "binding": "Entry bytes and executable identity are bound separately by m2-native-worker-query-binding-20261029.json. Tree pointers were followed read-only from named object and PointEvaluator entries.",
+  "limitations": [
+    "These are live snapshots after earlier previews, combined with statically inferred query traversal; no new query execution was observed.",
+    "Only two cutters and a single process were examined. Matching facet records does not establish the generic tree construction, endpoint orientation, point pooling or multi-worker ordering.",
+    "The application still differs on native output and no GUI/MCP behavior changed."
+  ]
+}

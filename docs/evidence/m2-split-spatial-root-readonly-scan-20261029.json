@@ -1,0 +1,27 @@
+{
+  "scope": "Read-only search in the existing QuickSurface process for exact native cutter fixture bounding-box byte patterns.",
+  "pid": 10796,
+  "bytesReadAttempted": 293042840,
+  "privateRegionsVisited": 340,
+  "exactMatches": 0,
+  "guardCleanupConfirmed": true,
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-spatial-root-memory-scan-20261029.py",
+      "sha256": "012a782d60589e874fce11df366ae8583d0b8af9ae33b99e655f159c4c3ef3dc"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-spatial-root-memory-scan-20261029.json",
+      "sha256": "39b858ad5fe2e85806ac798554ed89d94bc42b134e1f9b5f2dd688fab77f9e50"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-spatial-root-memory-scan-guard-20261029.json",
+      "sha256": "708e6f890c265a1eacd9b3217efc3677cbdea88c35a0a9b4ab8954f0f1c9ddea"
+    }
+  ],
+  "limitations": [
+    "Only committed readable private regions and exact eight-byte-aligned six-double patterns were examined; failed reads, mapped regions, other alignments and bounding-box padding were not resolved.",
+    "Zero hits does not prove absence of a spatial tree or identify its representation.",
+    "This did not invoke or mutate the native application and does not establish native facet parity."
+  ]
+}

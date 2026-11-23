@@ -1,0 +1,71 @@
+{
+  "scope": "Offline cavity triangulation of app-collected endpoints reordered by native-observed facet order for the concave control.",
+  "results": [
+    {
+      "endpointOrdering": "app_endpoints",
+      "face": 0,
+      "error": null,
+      "nativeFacets": 17,
+      "prototypeFacets": 17,
+      "matching": 17,
+      "exact": true
+    },
+    {
+      "endpointOrdering": "app_endpoints",
+      "face": 1,
+      "error": null,
+      "nativeFacets": 17,
+      "prototypeFacets": 17,
+      "matching": 17,
+      "exact": true
+    },
+    {
+      "endpointOrdering": "reversed_app_endpoints",
+      "face": 0,
+      "error": null,
+      "nativeFacets": 17,
+      "prototypeFacets": 17,
+      "matching": 17,
+      "exact": true
+    },
+    {
+      "endpointOrdering": "reversed_app_endpoints",
+      "face": 1,
+      "error": null,
+      "nativeFacets": 17,
+      "prototypeFacets": 17,
+      "matching": 17,
+      "exact": true
+    },
+    {
+      "endpointOrdering": "lexical_endpoints",
+      "face": 0,
+      "error": null,
+      "nativeFacets": 17,
+      "prototypeFacets": 17,
+      "matching": 17,
+      "exact": true
+    },
+    {
+      "endpointOrdering": "lexical_endpoints",
+      "face": 1,
+      "error": null,
+      "nativeFacets": 17,
+      "prototypeFacets": 17,
+      "matching": 17,
+      "exact": true
+    }
+  ],
+  "method": "Map app-collected points to corresponding captured native projected coordinates, retain app endpoint-order variants and native source corners, run the earlier exact-incircle sequential cavity prototype, and compare unordered triangles with captured native initial triangulations.",
+  "limitations": [
+    "Uses captured native projection and facet order, not an application tree or projection implementation.",
+    "Compares initial triangulation only; constraints, seams, production behavior and full output parity are not established.",
+    "Only one concave control; endpoint rules remain unknown."
+  ],
+  "sourceReceipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-app-reordered-cavity-20261029.json",
+  "sourceReceiptSha256": "b0e757ac634314a5a43ff4cb233a3cb435dca84acec09b5826b2ef2dd7d0a935",
+  "scriptSha256": "d6a1171e8c8153e1c182ec02122bfe5674b5d54d946087a574e5285ca3390a9f",
+  "guardPeakBytes": 20262912,
+  "cleanupConfirmed": true,
+  "interpretation": "Although point vectors differ, the three tested endpoint orderings all yield the captured initial facets on both concave faces in this prototype. Endpoint ordering is not established as a cause of this control\u2019s facet mismatch."
+}

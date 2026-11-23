@@ -1,0 +1,46 @@
+{
+  "scope": "Node worker-thread memory model of decoder numeric transfer; not a browser acceptance run",
+  "script": "tests/m2-reopen-transfer-probe-local.cjs",
+  "scriptSha256": "2066975db9d7834aaf6e1aaf514416a0af19b01ebdffaec26d85292a323628e2",
+  "numericSizesBytes": [266454504, 45011616, 128100312, 21598488],
+  "verified": "Both modes compare every restored value with Object.is, including signed zero.",
+  "model": "A worker retains four ordinary numeric arrays and matching Float64 buffers. Baseline transfers all buffers, waits for worker exit, then rebuilds arrays. Streaming transfers one buffer at a time and rebuilds it while the worker retains its arrays.",
+  "baseline": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1017249792,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "elapsedSeconds": 1.0488157999934629
+  },
+  "stream": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1526923264,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "elapsedSeconds": 1.0450139000022318
+  },
+  "replicateBaseline": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1017270272,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "elapsedSeconds": 1.03744009998627
+  },
+  "replicateStream": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1525743616,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "elapsedSeconds": 1.0638004000065848
+  },
+  "limitations": [
+    "Node worker threads and synthetic arrays are not Chromium workers, real project decoding, rendering or public MCP.",
+    "The model does not hold an old project, exercise validation, aliases, cancellation or compressed input.",
+    "Streaming with earlier ownership release or a different representation was not tested.",
+    "Separate sequential runs do not establish the allocation source of the real browser peak."
+  ]
+}

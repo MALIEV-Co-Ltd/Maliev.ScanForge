@@ -1,0 +1,45 @@
+{
+  "scope": "Seam change in current M2 worktree; dense Split GUI and public MCP lifecycle, not full native triangulation parity",
+  "sourceSha256": "7b79b21ce40ac7a204dc637a3c9bb87a54304c070215c6f4bf9339b45faec654",
+  "buildId": "scanforge-a00193930136ca3d",
+  "unitSuite": "329 passed, 5 expected failures, 5 skipped",
+  "denseLifecycle": {
+    "guiMcpGeometry": true,
+    "facets": 36,
+    "area": 13.5,
+    "cutEdges": 16,
+    "undoRedo": true,
+    "binaryReopen": true,
+    "mcpHeldResultCancellation": true,
+    "guiCloseCancellation": true,
+    "redoCanvasIdentical": true,
+    "pageErrors": []
+  },
+  "screenshot": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-seam-dense-browser-20261029\\dense-tree-cutter-initial.png",
+    "sha256": "b25338153da0cb291f4e30ec607286dfbeb734fbb381c37e044ebf0b8bf73e61",
+    "observation": "solid rectangle visible; seam itself not visible"
+  },
+  "guards": {
+    "m2-seam-production-split-guard-20261029.json": {
+      "peakJobBytes": 403619840,
+      "cleanupConfirmed": true,
+      "sha256": "ff4da88dd6a03147a9ff5ca1b51d8dcf4f7dd352c6326d103cc8bc607daa0286"
+    },
+    "m2-seam-browser-build-guard-20261029.json": {
+      "peakJobBytes": 1737367552,
+      "cleanupConfirmed": true,
+      "sha256": "0b37b5866f6b32e3ded26da2c63d037dca8574e240626edd60d2409952c3e569"
+    },
+    "m2-seam-dense-browser-guard-20261029.json": {
+      "peakJobBytes": 912252928,
+      "cleanupConfirmed": true,
+      "sha256": "102599348329f024e5367cba4c9efc7698f55d7c6f043f73f25bfc45b34a2380"
+    }
+  },
+  "limitations": [
+    "Dense native unordered facets still differ despite equal counts",
+    "Native rendered viewport unavailable",
+    "Broader native and milestone acceptance remains open"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "scope": "Original PLY-3 Split/Extract in-place reopen with page heartbeat and job-stage logging.",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "build": "m2-shared-brep-build-20261029-r1",
+  "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-inplace-heartbeat-20261029-r1\\split-lifecycle-browser-ledger.json",
+  "ledgerSha256": "39b7525c1b4571e8e42d9ae7ef73b9a3c43a5656673497e0bdd7561d2c57c083",
+  "guardPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-inplace-heartbeat-guard-20261029-r1.json",
+  "guardSha256": "39e9516dc2d03da2e62f5004da61fdce4364e83587226aa42a8afd7b7f02cd38",
+  "logPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-inplace-heartbeat-20261029-r1.log",
+  "logSha256": "ac23d67b9b5803fd5a35df2afca040022ba339c879871a021b387462c0c74592",
+  "lastRecordedStage": "gui-extract-reopen-part-digest-started",
+  "lastJobStage": {
+    "stage": "Hashing geometry",
+    "status": "running",
+    "progress": 0.03612253395144133
+  },
+  "heartbeatTimeout": {
+    "status": "timeout",
+    "started": 1793245387439
+  },
+  "lastHeartbeat": {
+    "status": "error",
+    "message": "page.evaluate: Target page, context or browser has been closed"
+  },
+  "heartbeatResponses": 80,
+  "failedBridgeCommand": "job_get",
+  "aggregateLimitBytes": 4294967296,
+  "peakJobBytes": 4313718784,
+  "cleanupConfirmed": true,
+  "result": "The digest job reported Hashing geometry at approximately 3.6% and the page answered two heartbeats after that observation before a subsequent 3-second heartbeat timed out. A job_get bridge call then timed out. The job-level peak exceeded the 4 GiB cap; cleanup completed.",
+  "limitations": [
+    "The heartbeat timeout shows lack of response within three seconds, not whether the renderer was blocked, terminated, paused, or under memory pressure.",
+    "Instrumentation changes timing and may itself affect resource use.",
+    "No post-reopen digest equality or full M2 acceptance established."
+  ],
+  "buildQualification": "This older 03:56 build does not contain the later numeric reuse candidate. Search for its unique Invalid numeric reuse limits diagnostic string finds it in the 10:xx current-source build and not in this build. This is not a validation of current source."
+}

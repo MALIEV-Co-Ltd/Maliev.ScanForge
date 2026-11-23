@@ -1,0 +1,58 @@
+{
+  "scope": "Isolated collector-order finite-face experiments on three native Split fixtures.",
+  "method": "In copied M2 source, remove sorting of segment records and candidate points, while retaining canonical endpoint order; first retain existing insertion, then substitute the prior mixed exact-incircle cavity experiment. Compare unordered facets against pinned native exports.",
+  "baseline": [
+    {
+      "name": "convex",
+      "native": 18,
+      "application": 18,
+      "matches": 12
+    },
+    {
+      "name": "concave",
+      "native": 34,
+      "application": 34,
+      "matches": 22
+    },
+    {
+      "name": "cyclic",
+      "native": 18,
+      "application": 18,
+      "matches": 10
+    }
+  ],
+  "collectorOrderExistingInsertion": [
+    {
+      "name": "convex",
+      "native": 18,
+      "application": 18,
+      "matches": 11
+    },
+    {
+      "name": "concave",
+      "native": 34,
+      "application": 34,
+      "matches": 16
+    },
+    {
+      "name": "cyclic",
+      "native": 18,
+      "application": 18,
+      "matches": 11
+    }
+  ],
+  "collectorOrderCavity": {
+    "convex": "processed but no separate facet result retained",
+    "concave": "rejected by finite assembly as overlapping or non-manifold edges",
+    "cyclic": "not reached after concave failure"
+  },
+  "candidateSourceSha256": "e8ca5f8ad691d62162767a212fc9e5d7dceba01053958f8f74466f1e8377d2f0",
+  "maxGuardPeakBytes": 348508160,
+  "cleanupConfirmed": true,
+  "decision": "Do not apply either experiment; preserving collector order alone worsens two controls, and its combination with the mixed cavity path fails an existing assembly invariant.",
+  "limitations": [
+    "Collector order here is current application order, not the recovered native tree order; canonical endpoint sorting remains.",
+    "The rejected candidate was not validated in GUI, MCP, native execution or performance workloads.",
+    "The application worktree was not changed."
+  ]
+}

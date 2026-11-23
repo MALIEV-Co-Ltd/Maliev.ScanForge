@@ -1,0 +1,130 @@
+{
+  "scope": "Analysis of one native convex fixture versus an earlier exhaustive disposable ScanForge insertion-order experiment. No production modification.",
+  "nativeEvidence": "docs/evidence/m2-split-native-paired-point-order-20261029.json",
+  "nativeEvidenceSha256": "fc8784956bd9c6394e5e00b74cd5a56155fa757bad9f6cef350a814accf162a5",
+  "exhaustiveResults": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-exhaustive-convex-order-20261029.json",
+  "exhaustiveResultsSha256": "9cac80ab1710e1f291d438a4e55280dbfff219fb5b651ddbad4ec55378855fc7",
+  "harnessSha256": "757478ebb55136a04231cf9b6d40a8e8e84df1995b229ab5f04b148c9a09288c",
+  "prototypeSha256": "d4a76d9e7fd1387d6729cec9a8b34b826bdacd79c6cb86db8f44af173cd660d9",
+  "method": "Convert native 3D points after the three source corners to the shared prototype local barycentric coordinates and rank them in the same lexicographic order used by the exhaustive harness. Compare each face with every reported perfect facet match from 120 common permutations.",
+  "faces": [
+    {
+      "face": 0,
+      "sourceXY": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          0.5
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0.5,
+          0
+        ]
+      ],
+      "localBarycentric": [
+        [
+          0.0,
+          0.5
+        ],
+        [
+          0.125,
+          0.375
+        ],
+        [
+          0.25,
+          0.25
+        ],
+        [
+          0.0,
+          0.25
+        ],
+        [
+          0.125,
+          0.25
+        ]
+      ],
+      "nativeRanks": [
+        1,
+        3,
+        4,
+        0,
+        2
+      ],
+      "perfectFacetOrders": 3,
+      "nativeRankAmongPerfect": false
+    },
+    {
+      "face": 1,
+      "sourceXY": [
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0.5,
+          1
+        ],
+        [
+          0,
+          0.5
+        ]
+      ],
+      "localBarycentric": [
+        [
+          0.5,
+          0.0
+        ],
+        [
+          0.25,
+          0.0
+        ],
+        [
+          0.25,
+          0.25
+        ],
+        [
+          0.375,
+          0.125
+        ],
+        [
+          0.25,
+          0.125
+        ]
+      ],
+      "nativeRanks": [
+        4,
+        0,
+        2,
+        3,
+        1
+      ],
+      "perfectFacetOrders": 12,
+      "nativeRankAmongPerfect": false
+    }
+  ],
+  "inference": "For this one control, inserting intersection points into the current prototype in the observed native sequence cannot alone yield a perfect per-face match; a difference in triangulation or other handling remains.",
+  "limitations": [
+    "The experiment and trace ran separately; instrumentation and allocator state can affect native ordering.",
+    "The prototype may differ from native in initial triangle or constraint processing, precision, edge identities or other behavior.",
+    "No general native point-order rule or application parity established."
+  ]
+}

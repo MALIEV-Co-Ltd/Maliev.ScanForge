@@ -1,0 +1,21 @@
+{
+  "scope": "Oracle-directed rotated Split diagnostic, not an implemented algorithm or native parity claim",
+  "method": "Take the previously recorded candidate after replacing its one extra Float32 vertex with the nearest native vertex and dropping facets with duplicate corners. Remove the 32 matching unordered facet multisets; count exact-coordinate undirected edges of the four remaining facets on each side.",
+  "candidateRemainingFacets": 4,
+  "nativeRemainingFacets": 4,
+  "sameExactBoundary": true,
+  "boundaryEdges": 6,
+  "interpretation": "The four residual facet differences have the same six-edge boundary after oracle-directed replacement, consistent with different triangulations of that region. This does not establish which native operation chose the diagonals or how it handled the original short segment.",
+  "diagnosticPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-integration-experiment-20261029/tests/m2-rotated-facet-difference.test.ts",
+  "diagnosticSha256": "6fdf5d319e03c82e097bb554ee961209458889fed0d9a6822955603a50932192",
+  "differencePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-integration-experiment-20261029/rotated-facet-differences.json",
+  "differenceSha256": "b6d1f4dab4c643b781a7328030c2c951e7acb825407430bac9f2a1f433bdaafb",
+  "guardSha256": "f88b74c3100c8df5b701f895ec8091d431dc6afd2df1551773e470fbc68ac65b",
+  "guardPeakBytes": 357257216,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The point replacement was selected from the native result and is not a general or independently validated merge rule.",
+    "Boundary equality does not establish native intermediate arithmetic, selection rules, or general coverage.",
+    "The candidate is isolated; shared GUI/MCP behavior is unchanged and native parity remains unverified."
+  ]
+}

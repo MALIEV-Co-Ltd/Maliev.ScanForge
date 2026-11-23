@@ -1,0 +1,916 @@
+{
+  "scope": "Original PLY-3 GUI Split, GUI component Extract, Undo, and public-MCP Extract",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "aggregateJobLimitBytes": 4294967296,
+  "diagnostic": {
+    "build": "scanforge-bd445525d73e4d0a",
+    "method": "CDP heap sampling and explicit garbage collection at extract and undo stages; diagnostic only",
+    "guiExtractHeapBeforeGc": 877220836,
+    "guiExtractHeapAfterGc": 471455968,
+    "mcpExtractHeapBeforeGc": 1133426360,
+    "mcpExtractHeapAfterGc": 471664624,
+    "allocationHotspots": [
+      "indexedExactAdmission",
+      "selection boundary quantization",
+      "geometry digest"
+    ],
+    "samplingLimitations": "Sampled allocations include collected objects and are estimates, not retained-byte totals. Minified functions were mapped to current bundle source.",
+    "guiMcpDigestMatched": true,
+    "guardPeakBytes": 4332318720,
+    "underLimit": false,
+    "cleanupConfirmed": true
+  },
+  "normalReplayAfterOutlineChange": {
+    "build": "scanforge-297dfe2980e503b1",
+    "outcome": "Browser command timed out after component inventory and before GUI Extract verification",
+    "guardPeakBytes": 4311433216,
+    "underLimit": false,
+    "cleanupConfirmed": true
+  },
+  "admissionComparisonProbe": {
+    "scope": "Three million finite double coordinates in an isolated browser, preserving signed-zero comparison",
+    "samplingIntervalBytes": 262144,
+    "objectIsSampledBytes": 69469752,
+    "numericComparisonSampledBytes": 1835052,
+    "limitation": "Sampled allocation estimates from a manufactured microprofile are not a measure of total application memory."
+  },
+  "normalReplayAfterAdmissionChange": {
+    "build": "scanforge-ab64f5f92f193f8e",
+    "outcome": "Browser command timed out after component inventory and before GUI Extract verification",
+    "guardPeakBytes": 4311244800,
+    "underLimit": false,
+    "cleanupConfirmed": true
+  },
+  "typedFiniteProbe": {
+    "scope": "Three million finite Float32 values in an isolated browser",
+    "samplingIntervalBytes": 262144,
+    "everySampledBytes": 35652396,
+    "indexedLoopSampledBytes": 1048596,
+    "limitation": "Sampled allocations are estimates on a manufactured input and do not measure full application memory."
+  },
+  "inventoryDiagnosticCollection": {
+    "build": "scanforge-0ab35f091c0584bc",
+    "heapBeforeBytes": 552365236,
+    "heapAfterBytes": 336481652,
+    "backingBeforeBytes": 633288557,
+    "backingAfterBytes": 246868385,
+    "limitation": "Explicit diagnostic collection changes runtime behavior; these renderer measurements are not peak owned-job memory."
+  },
+  "normalReplayAfterIndexedInventory": {
+    "build": "scanforge-162556494cd129aa",
+    "outcome": "GUI Extract, Undo and MCP Extract completed; browser timed out during MCP output digest",
+    "guardPeakBytes": 4350103552,
+    "underLimit": false,
+    "cleanupConfirmed": true
+  },
+  "digestSampling": {
+    "build": "scanforge-162556494cd129aa",
+    "scope": "Original-scan diagnostic replay with explicit collection before digest; sampled allocation includes collected objects",
+    "digestValidationSampledBytes": 846205668,
+    "arrayEverySampledBytes": 171967452,
+    "aggregatePeakBytes": 4350959616,
+    "limitation": "Samples are estimates, and diagnostic collection changes runtime behavior."
+  },
+  "digestSamplingAfterValidationChange": {
+    "build": "scanforge-74bba52674994711",
+    "scope": "Same original-scan diagnostic sequence with explicit collection before digest",
+    "digestValidationSampledBytes": 3145752,
+    "aggregatePeakBytes": 4310507520,
+    "guiMcpDigestMatched": true,
+    "underLimit": false,
+    "cleanupConfirmed": true,
+    "limitation": "Samples are estimates and do not establish normal-run memory acceptance; collection and browser allocation timing differ."
+  },
+  "normalReplayAfterDigestValidationChange": {
+    "build": "scanforge-74bba52674994711",
+    "outcome": "Browser command timed out after component inventory and before GUI Extract verification",
+    "guardPeakBytes": 4346515456,
+    "underLimit": false,
+    "cleanupConfirmed": true
+  },
+  "arrayFiniteProbe": {
+    "scope": "Three million ordinary numeric-array values in an isolated browser",
+    "samplingIntervalBytes": 262144,
+    "everySampledBytes": 34603800,
+    "sparsePreservingLoopSampledBytes": 1048596,
+    "limitation": "Sampled allocation estimates are not total application memory."
+  },
+  "normalReplayAfterArrayValidationChange": {
+    "build": "scanforge-cf2fb30d9d20230e",
+    "outcome": "Browser command timed out after component inventory and before GUI Extract verification",
+    "guardPeakBytes": 4329013248,
+    "underLimit": false,
+    "cleanupConfirmed": true
+  },
+  "encoderTimelineDiagnostic": {
+    "build": "scanforge-cf2fb30d9d20230e",
+    "scope": "Normal original-scan run through first Extract timeout",
+    "encoderStartsObserved": 0,
+    "traceControl": "A separate small project export reported encoder start, result and termination.",
+    "limitation": "This observation does not prove backups never overlap other workflows."
+  },
+  "normalReplayAfterSelectionDeduplication": {
+    "build": "scanforge-d34fb87bd26941c8",
+    "outcome": "Browser command timed out after component inventory and before GUI Extract verification",
+    "guardPeakBytes": 4332331008,
+    "underLimit": false,
+    "cleanupConfirmed": true
+  },
+  "normalReplayWithWorkerPreparedExtractDisplay": {
+    "build": "scanforge-d0fd2a36abbeecc2",
+    "inputFaces": 3691133,
+    "splitFaces": 3700757,
+    "extractedFaces": 1779171,
+    "guiMcpGeometryDigestEqual": true,
+    "guiUndoRestoresSource": true,
+    "cutterPreserved": true,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "browserReportedHeapAfterGuiExtractBytes": 673710998,
+    "guardPeakBytes": 4382154752,
+    "underLimit": false,
+    "cleanupConfirmed": true,
+    "limitations": "The browser heap is one stage observation, not total job memory. The large-scan run did not verify Extract Redo or save/reopen."
+  },
+  "workerSourceReleaseExperiment": {
+    "build": "scanforge-81d12d01bef364f6",
+    "outcome": "GUI Extract, Undo and MCP Extract completed; the final MCP digest timed out",
+    "guardPeakBytes": 4382187520,
+    "underLimit": false,
+    "cleanupConfirmed": true,
+    "disposition": "Source-reference deletion was reverted because this run did not demonstrate a useful reduction; the separately tested monotonic progress correction was retained."
+  },
+  "outerJobPeakTimeline": {
+    "sampling": "A copy of the existing guard queried its own outer Job peak every 0.5 seconds, reporting increases of at least 32 MiB. It preserved the 4 GiB Job limit, 25% CPU, mutex and cleanup policy.",
+    "beforeOutlineTableChange": {
+      "build": "scanforge-00187de99aa9f95a",
+      "peakByInventoryReadyAtLeastBytes": 3818070016,
+      "peakNearGuiExtractDigestBytes": 4395835392,
+      "guiMcpGeometryDigestEqual": true
+    },
+    "afterOutlineTableChange": {
+      "build": "scanforge-1295353c775ff282",
+      "peakByInventoryReadyAtLeastBytes": 3705757696,
+      "peakNearGuiExtractDigestBytes": 4405010432,
+      "guiMcpGeometryDigestEqual": true
+    },
+    "limitation": "High-water samples, not live memory; stage alignment is approximate and separate runs are subject to timing and garbage-collection variance. Both runs exceeded 4 GiB and cleaned up."
+  },
+  "normalReplayAfterTypedFiniteChange": {
+    "build": "scanforge-0ab35f091c0584bc",
+    "outcome": "Browser command timed out after component inventory and before GUI Extract verification",
+    "guardPeakBytes": 4309864448,
+    "underLimit": false,
+    "cleanupConfirmed": true
+  },
+  "limitation": "Neither diagnostic collection nor the manufactured browser control establishes acceptance under the 4 GiB aggregate limit or native equivalence.",
+  "processMemorySamples": {
+    "build": "scanforge-1295353c775ff282",
+    "method": "Outer Job threshold snapshots of process private bytes; values sampled after the high-water threshold, not simultaneous peak breakdowns.",
+    "threshold4000000000": {
+      "jobHighWaterBytes": 4025819136,
+      "rendererPrivateBytes": 3001376768,
+      "gpuPrivateBytes": 580603904
+    },
+    "threshold4294967296": {
+      "jobHighWaterBytes": 4391690240,
+      "rendererPrivateBytes": 2443911168,
+      "gpuPrivateBytes": 645390336
+    },
+    "guiMcpGeometryDigestEqual": true,
+    "guardPeakBytes": 4391690240,
+    "underLimit": false
+  },
+  "hiddenGpuDisposalExperiment": {
+    "build": "scanforge-008c34a451f03371",
+    "guardPeakBytes": 4397899776,
+    "outcome": "Final MCP digest timed out",
+    "disposition": "Reverted; no observed reduction in peak and broader viewport behavior risk."
+  },
+  "transferredInventoryReplay": {
+    "build": "scanforge-53a4d1abf2bf34e7",
+    "inputFaces": 3691133,
+    "splitFaces": 3700757,
+    "extractedFaces": 1779171,
+    "guiMcpGeometryDigestEqual": true,
+    "guiUndoRestoresSource": true,
+    "cutterPreserved": true,
+    "pageErrors": 0,
+    "guardPeakBytes": 4380844032,
+    "underLimit": false,
+    "cleanupConfirmed": true,
+    "limitations": "No original-scan Extract Redo or save/reopen; this run did not test a public MCP inventory report."
+  },
+  "publicMcpTransferredInventoryControl": {
+    "triangles": 66048,
+    "area": 33024,
+    "artifactTriangleIndices": "JSON array",
+    "guardPeakBytes": 1184595968,
+    "underLimit": true,
+    "cleanupConfirmed": true,
+    "scope": "Manufactured indexed grid via public MCP; real-worker transfer has separate focused coverage."
+  },
+  "typedInventoryAllocationSampling": {
+    "build": "scanforge-53a4d1abf2bf34e7",
+    "scope": "Original PLY-3 sampled from Split publication to GUI Extract and from Undo to MCP Extract; sampled sizes include collected objects.",
+    "guiExtractTopSamplesBytes": {
+      "iteratorNext": 382733796,
+      "restorePreciseCoordinates": 213748980,
+      "setTriangleSelection": 176161776,
+      "every": 167773116,
+      "from": 139022740
+    },
+    "mcpExtractTopSamplesBytes": {
+      "finiteArrayValues": 315623184,
+      "every": 205522068,
+      "restorePreciseCoordinates": 149698816,
+      "iteratorNext": 133170320
+    },
+    "guardPeakBytes": 4409139200,
+    "underLimit": false,
+    "guiMcpGeometryDigestEqual": true,
+    "cleanupConfirmed": true,
+    "limitations": "Samples are estimates and must not be summed as live memory. Diagnostic sampling can change timing."
+  },
+  "selectionIteratorExperiment": {
+    "scope": "Replaced large selection and boundary typed-array iterator loops with indexed loops",
+    "originalReplay": "GUI Extract committed but GUI geometry digest timed out",
+    "guardPeakBytes": 4333174784,
+    "underLimit": false,
+    "cleanupConfirmed": true,
+    "disposition": "Reverted because the replay did not establish an acceptance improvement."
+  },
+  "allocationCallers": {
+    "build": "scanforge-53a4d1abf2bf34e7",
+    "scope": "Original PLY-3 sampled caller stacks during GUI and MCP Extract; sampled values include collected objects.",
+    "guiPublicationValidatePositionsEveryBytes": 165675960,
+    "mcpPublicationValidatePositionsEveryBytes": 203424912,
+    "guiSelectionMaskFromIteratorBytes": 130024660,
+    "guardPeakBytes": 4379856896,
+    "underLimit": false,
+    "guiMcpGeometryDigestEqual": true,
+    "cleanupConfirmed": true,
+    "limitation": "Sample sizes are estimates, not live memory or a normal-run acceptance measurement."
+  },
+  "publicationMaskDiagnostic": {
+    "build": "scanforge-9e3f489f18428520",
+    "scope": "Original PLY-3 sampling without explicit garbage collection",
+    "guiMcpGeometryDigestEqual": true,
+    "guardPeakBytes": 4220538880,
+    "underLimit": true,
+    "overallResult": "Failed on browser console error because temporary bundle lacked its offline service worker; worker generated afterward.",
+    "guiEveryAndSelectionFrom": "Not present among top 20 samples after changing publication validation and selection mask loops",
+    "mcpFiniteArrayValuesSampledBytes": 494930712,
+    "limitations": "A sampled run and isolated fixture cannot establish normal-run resource acceptance. The finite-array helper still has a substantial sampled allocation; sampled sizes are estimates."
+  },
+  "publicationMaskNormalFirstRun": {
+    "build": "same code; temporary bundle missing offline worker",
+    "outcome": "GUI Extract committed; GUI output digest timed out",
+    "guardPeakBytes": 4332089344,
+    "underLimit": false,
+    "cleanupConfirmed": true
+  },
+  "publicationMaskNormalRepairedBundle": {
+    "build": "scanforge-9e3f489f18428520",
+    "inputFaces": 3691133,
+    "splitFaces": 3700757,
+    "extractedFaces": 1779171,
+    "guiMcpGeometryDigestEqual": true,
+    "guiUndoRestoresSource": true,
+    "sourceAndCutterPreserved": true,
+    "browserErrors": 0,
+    "guardPeakBytes": 4356243456,
+    "underLimit": false,
+    "cleanupConfirmed": true,
+    "limitations": "The large-scan run does not verify Extract Redo or save/reopen."
+  },
+  "finiteArrayConditionProbe": {
+    "scope": "Three million dense doubles in an isolated browser; diagnostic sampling with explicit collection between variants.",
+    "currentSampledBytes": 524304,
+    "readBeforePresenceCheckSampledBytes": 524304,
+    "arrayEverySampledBytes": 38536056,
+    "disposition": "No helper change; the probe does not explain the much larger application-level helper sample.",
+    "limitation": "Sampled sizes are estimates from a manufactured isolated probe, not application peak memory."
+  },
+  "localDisplayCoordinateProbe": {
+    "scope": "Three million precise coordinates in isolated browser; explicit collection between variants",
+    "fromCallbackSampledBytes": 194671220,
+    "indexedLoopSampledBytes": 0,
+    "float32OutputsEqual": true,
+    "limitation": "Sampled allocation estimates from a manufactured microprofile, not total or peak application memory."
+  },
+  "localDisplayCoordinateOriginalReplay": {
+    "build": "scanforge-7bbc1c3e2e224cd4",
+    "outcome": "MCP connection closed during GUI Extract; no large Extract geometry result verified",
+    "guardPeakBytes": 4295876608,
+    "underLimit": false,
+    "cleanupConfirmed": true,
+    "limitation": "Single run; peak and process timing vary. Extract Redo, save/reopen and native comparison remain unverified."
+  },
+  "guardPeakReceiptCorrection": {
+    "scope": "Local ignored diagnostic guard copy, not application code",
+    "issue": "Previously the passed field did not consider the measured outer Job peak, so exit code zero could be labeled passed above the agreed 4 GiB threshold.",
+    "change": "The guard requires a measured nonnegative peak at or below its unchanged 4 GiB Job limit before reporting passed.",
+    "unitCases": [
+      "zero",
+      "exact limit",
+      "one byte over",
+      "missing peak",
+      "negative peak",
+      "boolean peak"
+    ],
+    "underLimitGuardSelfTest": true,
+    "limitation": "The over-limit boundary was tested in the pure check, not by allocating beyond the limit; previous receipts remain unchanged."
+  },
+  "selectionTriplesProbe": {
+    "scope": "Three million precise coordinates in isolated browser, one-third million selected triangles",
+    "currentSampledBytes": 1572912,
+    "groupedSampledBytes": 262152,
+    "outputEqual": true,
+    "disposition": "No application change; small isolated difference does not explain the much larger application-level sample.",
+    "limitation": "Sampled allocation estimates do not measure application peak."
+  },
+  "holeyFiniteProbe": {
+    "scope": "Three million precise coordinates restored from Float64 into a preallocated ordinary array in an isolated browser",
+    "currentSampledBytes": 1310748,
+    "numberIsFiniteSampledBytes": 32244456,
+    "arrayEverySampledBytes": 33030908,
+    "disposition": "No helper change; the existing bounds check sampled less in this isolated probe.",
+    "limitation": "Sampled allocation estimates do not explain application-level sample or establish peak memory."
+  },
+  "peakEnforcedOriginalReplay": {
+    "build": "scanforge-7bbc1c3e2e224cd4",
+    "outcome": "GUI Extract committed; browser bridge timed out during GUI output digest",
+    "guardPeakBytes": 4295593984,
+    "peakWithinLimit": false,
+    "passed": false,
+    "cleanupConfirmed": true,
+    "limitation": "This run did not verify GUI/MCP output equality, large Extract history or native comparison."
+  },
+  "preciseRestoreProbe": {
+    "scope": "Three million Float64 values restored into ordinary arrays in an isolated browser",
+    "currentLoopSampledBytes": 36262168,
+    "arrayFromSampledBytes": 169433632,
+    "pushSampledBytes": 105187632,
+    "float64ValuesAndSignedZeroMatch": true,
+    "disposition": "Retain the current preallocated restore loop.",
+    "limitation": "Sampled allocation estimates from a manufactured probe, not application peak."
+  },
+  "transportReleaseProbe": {
+    "scope": "Browser diagnostic: 20 million Float64 values copied into an ordinary array, then source ArrayBuffer transferred to size zero",
+    "backingStorageBeforeBytes": 160000019,
+    "backingStorageAfterBytes": 19,
+    "copiedValuePreserved": true,
+    "limitation": "CDP renderer backing-storage snapshots are not aggregate job peak memory."
+  },
+  "indexedExtractTransportRelease": {
+    "build": "scanforge-75ec4ba8f805e619",
+    "scope": "Exact indexed Extract releases unreferenced owned worker buffers after restoration and result validation; referenced buffers and unsupported transfer implementations remain intact.",
+    "ownershipTests": "Unshared, result alias and unsupported transfer pass",
+    "publicMcpControl": {
+      "triangles": 66048,
+      "sourcePreserved": true,
+      "extractUndoRedo": true,
+      "guardPeakBytes": 1281605632,
+      "underLimit": true
+    },
+    "originalReplay": {
+      "outcome": "GUI Extract committed, GUI digest timed out",
+      "guardPeakBytes": 4295229440,
+      "underLimit": false,
+      "cleanupConfirmed": true
+    },
+    "limitation": "The manufactured control and targeted ownership tests do not establish original-scan memory acceptance, large-scan history, or native equivalence."
+  },
+  "selectionOverlayRetirement": {
+    "build": "scanforge-4045762aeccdf304",
+    "scope": "Retire old selection display before publishing a different selected mesh; retain it when the next entity shares the same positions.",
+    "viewportTests": "Different-position retirement, disposal, rebuilding, and shared-position retention pass.",
+    "guiMcpManufacturedControl": {
+      "componentLifecycle": true,
+      "largePublicMcpExtractUndoRedo": true,
+      "guardPeakBytes": 1266233344,
+      "underLimit": true
+    },
+    "originalReplay": {
+      "outcome": "GUI Extract committed; browser bridge timed out during GUI output digest",
+      "guardPeakBytes": 4295630848,
+      "underLimit": false,
+      "cleanupConfirmed": true
+    },
+    "limitation": "The single original replay does not demonstrate memory acceptance, large-scan parity/history, or native equivalence."
+  },
+  "selectionScratchReleaseExperiment": {
+    "build": "scanforge-2433738bbd1e474a",
+    "scope": "Immediately transfer exclusively owned boundary scratch buffers to zero length after each use, with a no-transfer fallback.",
+    "focusedTests": "Outline oracle, input preservation, transfer and fallback controls passed.",
+    "originalReplay": {
+      "outcome": "GUI Extract committed, browser bridge timed out during GUI output digest",
+      "guardPeakBytes": 4295610368,
+      "underLimit": false,
+      "cleanupConfirmed": true
+    },
+    "disposition": "Reverted; the original replay did not demonstrate an end-to-end resource improvement.",
+    "limitation": "This single replay does not establish large-scan geometry, history, native behavior, or memory acceptance."
+  },
+  "polymorphicValidatorProbe": {
+    "scope": "Three million restored double coordinates in isolated browser; same validator after mixed-array warmup versus a separate validator",
+    "polymorphicSampledBytes": 30933716,
+    "separateSampledBytes": 1572900,
+    "limitation": "Sampling estimates and synthetic warmup do not measure normal application peak."
+  },
+  "restoredValidatorCandidate": {
+    "build": "scanforge-b724c55c857a1fea",
+    "scope": "Worker-restored arrays use a separate finite validator; all entries are still rechecked and sparse semantics preserved.",
+    "focusedTests": "Validation after mutation and sparse-slot behavior, worker and MCP tests pass.",
+    "manufacturedBrowser": {
+      "guiMcpLifecycle": true,
+      "largePublicMcpExtractUndoRedo": true,
+      "peakJobBytes": 1287802880,
+      "underLimit": true
+    },
+    "normalOriginalReplay": {
+      "outcome": "GUI Extract committed; GUI digest timed out",
+      "peakJobBytes": 4295577600,
+      "underLimit": false,
+      "cleanupConfirmed": true
+    },
+    "diagnosticOriginalReplay": {
+      "explicitGarbageCollection": true,
+      "guiMcpGeometryDigestEqual": true,
+      "peakJobBytes": 3864371200,
+      "underLimit": true,
+      "validatorSample": "No sampled allocation attributed to either finite-array validator in MCP Extract profile",
+      "limitation": "Explicit collection changes execution and is not resource acceptance; profiling samples are estimates and earlier profiles used different collection timing."
+    },
+    "limitation": "Large-scan normal memory, Extract Redo/save-reopen and native acceptance remain open."
+  },
+  "scalarSelectionCorner": {
+    "build": "scanforge-5bf5da7b96bfba8d",
+    "scope": "Selection overlay triangle corners use one byte per vertex instead of three; vertex shader reconstructs the same one-hot barycentric values.",
+    "focusedTests": "Boundary ordering and shader attribute tests pass.",
+    "renderedComparison": {
+      "baselineBuild": "scanforge-b724c55c857a1fea",
+      "scenario": "GUI component operation held with reduced motion",
+      "imageSize": [1140, 694],
+      "selectionRegion": [500, 300, 610, 420],
+      "changedPixels": 0,
+      "maxChannelDifference": 0,
+      "limitation": "One small rendered control; not all cameras, hardware or motion states."
+    },
+    "guiMcpManufacturedControl": {
+      "lifecycle": true,
+      "largePublicMcpExtractUndoRedo": true,
+      "guardPeakBytes": 1291857920,
+      "underLimit": true
+    },
+    "originalReplay": {
+      "outcome": "GUI Extract committed; browser bridge timed out during GUI output digest",
+      "guardPeakBytes": 4295598080,
+      "underLimit": false,
+      "cleanupConfirmed": true
+    },
+    "limitation": "The original replay does not establish large-scan geometry, history, native behavior or 4 GiB acceptance."
+  },
+  "digestStallTrace": {
+    "build": "scanforge-5bf5da7b96bfba8d",
+    "scope": "Original PLY-3 GUI Extract followed by public-MCP geometry digest with job-stage and browser-event logging.",
+    "lastJobStage": "Hashing geometry",
+    "lastReportedProgress": 0.0429119044891339,
+    "outcome": "Subsequent job_get timed out; no page-crash event was reported before cleanup.",
+    "rendererProcessObservation": "Renderer process remained present and reported Responding in Windows during the wait; this does not establish that its page event loop was responsive.",
+    "guardPeakBytes": 4295229440,
+    "underLimit": false,
+    "cleanupConfirmed": true,
+    "limitation": "The cause of the stalled bridge is not established; no large-scan digest equality or native acceptance is shown."
+  },
+  "digestResponsivenessComparison": {
+    "build": "scanforge-5bf5da7b96bfba8d",
+    "normal": {
+      "digestProgressObserved": 0.0429119044891339,
+      "pageHeartbeat": "no response within 3 seconds; later closed during cleanup",
+      "guardPeakBytes": 4295561216,
+      "underLimit": false,
+      "cleanupConfirmed": true
+    },
+    "diagnosticCollection": {
+      "inventoryBackingBeforeBytes": 621567958,
+      "inventoryBackingAfterBytes": 247298567,
+      "pageHeartbeat": "23 responses, maximum 1888 ms",
+      "guiMcpGeometryDigestEqual": true,
+      "guardPeakBytes": 3745001472,
+      "underLimit": true,
+      "cleanupConfirmed": true
+    },
+    "limitation": "Explicit collection and heartbeat instrumentation change execution; the diagnostic is not a normal-run acceptance pass. No page crash was observed before cleanup, and the precise cause of the stall is not proven."
+  },
+  "splitTransportRelease": {
+    "build": "scanforge-8c7a6481c8d1f97a",
+    "scope": "After precise Split restoration, release unreferenced worker transport buffers; preserve result and input aliases and fall back if transfer is unavailable.",
+    "ownershipTests": "Unshared, result-alias, input-alias, aliased coordinates, and no-transfer cases pass.",
+    "finiteSplitGuiMcpLifecycle": true,
+    "manufacturedComponentGuiMcpLifecycle": true,
+    "normalOriginalReplay": {
+      "guiSplitOutputDigestCompleted": true,
+      "inventoryBrowserHeapBytes": 659269383,
+      "outcome": "GUI Extract committed; GUI digest timed out",
+      "guardPeakBytes": 4295593984,
+      "underLimit": false,
+      "cleanupConfirmed": true
+    },
+    "comparison": "The preceding baseline reported approximately 971 MB browser heap at inventory; separate runs and browser memory accounting vary.",
+    "limitation": "Browser heap is not aggregate job memory. Large Extract digest, Redo/save/reopen, memory and native acceptance remain open."
+  },
+  "guiDigestAllocationProfile": {
+    "build": "scanforge-8c7a6481c8d1f97a",
+    "scope": "Original PLY-3 GUI Extract digest sampled after diagnostic garbage collection.",
+    "topSampleBytes": 4194336,
+    "nextSampleBytes": 1048800,
+    "guiMcpGeometryDigestEqual": true,
+    "guardPeakBytes": 3975241728,
+    "underLimit": true,
+    "limitation": "Explicit collection and sampling change execution; sampled allocations are estimates, and this is not normal-run memory acceptance."
+  },
+  "selectionOwnedBufferRelease": {
+    "build": "scanforge-5f1c43970a02fe59",
+    "scope": "Release only private selection overlay position, corner and line-instance buffers after removal and disposal.",
+    "tests": "Source geometry and shared wide-line base buffers retained; unsupported-transfer fallback passes.",
+    "renderedControl": {
+      "scenario": "GUI component operation held with reduced motion",
+      "selectionRegion": [500, 300, 610, 420],
+      "changedPixels": 0,
+      "maxChannelDifference": 0,
+      "guiMcpLifecycle": true,
+      "largePublicMcpExtractUndoRedo": true,
+      "guardPeakBytes": 1271189504
+    },
+    "normalOriginalReplay": {
+      "guiExtractBrowserReportedHeapBytes": 861688170,
+      "outcome": "GUI Extract committed; browser bridge timed out during GUI output digest",
+      "guardPeakBytes": 4295180288,
+      "underLimit": false,
+      "cleanupConfirmed": true
+    },
+    "comparison": "The immediately preceding candidate reported approximately 932 MB browser heap at the same stage in a separate run; timings and memory accounting vary.",
+    "limitation": "One rendered fixture, browser heap readings and a failed normal original replay do not establish general visual equivalence, large-scan acceptance or native equivalence."
+  },
+  "selectionScratchReleaseAfterSplitTransport": {
+    "build": "scanforge-52cebf203ff84775",
+    "baselinePreGcBackingBytes": 310102034,
+    "candidatePreGcBackingBytes": 308323616,
+    "candidatePostGcBackingBytes": 247299516,
+    "diagnosticExplicitGc": true,
+    "guiMcpGeometryDigestEqual": true,
+    "guardPeakBytes": 3950784512,
+    "disposition": "Reverted final scratch release alone; the small difference between separate diagnostic runs did not explain the remaining collectible storage."
+  },
+  "selectionBufferTrace": {
+    "diagnosticExplicitGc": true,
+    "constructorInstrumentation": true,
+    "tracerSelfCheckPassed": true,
+    "trackedLiveBeforeBytes": 266795642,
+    "trackedLiveAfterBytes": 173288863,
+    "trackedCollectedBytes": 93506779,
+    "guardPeakBytes": 3785330688,
+    "observation": "The largest collected tracked arrays originated in selection boundary table creation and growth. The previous experiment released only final tables, not superseded growth allocations.",
+    "limitations": "Only instrumented main-thread constructors and selected worker transfers were tracked. Explicit collection and instrumentation perturb the run; this is not normal-run acceptance."
+  },
+  "selectionGrowthReleaseNormalRun": {
+    "build": "scanforge-6ec4adf87f98229e",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4295229440,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "result": "GUI Extract committed; the GUI geometry digest timed out after progress began. The full GUI/MCP workflow did not pass.",
+    "note": "The build predates restoration of two zero-length fallback assignments; supported transfer behavior is the same."
+  },
+  "selectionGrowthReleaseTrace": {
+    "build": "scanforge-6ec4adf87f98229e",
+    "baselineTrackedBeforeBytes": 266795642,
+    "candidateTrackedBeforeBytes": 190919638,
+    "baselineTrackedAfterGcBytes": 173288863,
+    "candidateTrackedAfterGcBytes": 173288863,
+    "candidateDetachedBufferCount": 20,
+    "diagnosticExplicitGc": true,
+    "constructorInstrumentation": true,
+    "limitations": "Separate instrumented runs; tracked constructors and selected transfers only. Not normal-run acceptance.",
+    "guardPeakBytes": 3802939392,
+    "guiMcpGeometryDigestEqual": true,
+    "cleanupConfirmed": true
+  },
+  "extractBufferTrace": {
+    "build": "scanforge-6ec4adf87f98229e",
+    "diagnosticGcStages": ["gui-extract-committed"],
+    "constructorInstrumentation": true,
+    "trackedLiveBeforeBytes": 137668726,
+    "trackedLiveAfterBytes": 96065882,
+    "trackedCollectedBytes": 41602844,
+    "cdpUsedBeforeBytes": 573768844,
+    "cdpUsedAfterBytes": 471803700,
+    "cdpBackingBeforeBytes": 292216470,
+    "cdpBackingAfterBytes": 201727533,
+    "observation": "Tracked buffers collected at this stage include component inventory triangle lists and selection masks. Tracing covers only instrumented constructors and selected worker transfers.",
+    "limitation": "Forced collection and instrumentation perturb the workflow; this is not normal-run acceptance.",
+    "guardPeakBytes": 4161134592,
+    "guiMcpGeometryDigestEqual": true,
+    "cleanupConfirmed": true
+  },
+  "indexedSelectionIterationNormalRun": {
+    "build": "scanforge-f21a1fe3d84e8d59",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4171862016,
+    "peakWithinLimit": true,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "constructorInstrumentation": false,
+    "result": "Original PLY-3 GUI Split, GUI Extract, Undo, and public MCP Extract completed with matching geometry digests.",
+    "limitation": "This does not cover large Extract Redo/save/reopen or native acceptance."
+  },
+  "indexedSelectionIterationGuiRedo": {
+    "build": "scanforge-f21a1fe3d84e8d59",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 3960418304,
+    "peakWithinLimit": true,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Original PLY-3 GUI Extract Undo and Redo preserve extracted, source and cutter geometry digests.",
+    "limitation": "Project save/reopen and native comparison remain separate."
+  },
+  "largeExtractSaveReopen": {
+    "build": "scanforge-f21a1fe3d84e8d59",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4425740288,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Binary project export completed; project import failed with Array buffer allocation failed. Reopening is not accepted."
+  },
+  "largeExtractFreshReopen": {
+    "build": "scanforge-f21a1fe3d84e8d59",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4371480576,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Fresh project import completed and extracted mesh, source, and cutter digests matched. The job exceeded the memory cap and is not a resource pass."
+  },
+  "projectReopenWorkerBoundary": {
+    "build": "scanforge-f21a1fe3d84e8d59",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4403048448,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Project export completed; decoding worker returned Array buffer allocation failed before returning a numeric transport packet.",
+    "limitation": "Test-only worker event logging and CDP heap inspection may affect timing. The internal worker phase remains unknown in this run."
+  },
+  "projectReopenWorkerPhase": {
+    "build": "scanforge-2a1eed2abfdb731b",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4420530176,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Instrumented worker reported Array buffer allocation failed while packing numeric transport after decoding and display preparation.",
+    "limitation": "Diagnostic-only worker phase labels and event logging may change timing; this is not production acceptance."
+  },
+  "projectReopenReuseFirstCandidate": {
+    "build": "scanforge-8f039a05a510b8c0",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4345282560,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Worker returned and in-place import completed, but the extracted geometry digest timed out after exceeding the limit.",
+    "limitation": "Worker event and CDP inspection were enabled; geometry equality was not established."
+  },
+  "projectReopenPrivateStaging": {
+    "build": "scanforge-b77f6a53f3277b31",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4379009024,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "numericBuffers": 4,
+    "numericBytes": 461164920,
+    "result": "Decoder worker returned and in-place import completed, but extracted geometry digest timed out after the job exceeded the limit.",
+    "limitations": "Test-only worker event logging and CDP heap sampling may change timing; the run does not prove geometry equality or resource acceptance."
+  },
+  "projectReopenPrivateFresh": {
+    "build": "scanforge-b77f6a53f3277b31",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 3997863936,
+    "peakWithinLimit": true,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Original PLY-3 GUI Extract Undo/Redo and binary export followed by fresh-project public MCP import completed; extracted mesh, source and cutter geometry digests matched.",
+    "limitation": "In-place replacement remains above the cap. This build predates additional cancellation checks in transport ownership scanning."
+  },
+  "projectReopenCombinedPreviewControl": {
+    "result": "Browser project worker round trip preserved precise numeric-array values, signed zero, history aliases, existing shared backing and cancellation behavior on the combined preview.",
+    "guardPeakBytes": 421228544,
+    "cleanupConfirmed": true,
+    "scope": "Small browser control; not original-scan in-place acceptance."
+  },
+  "projectDecoderRegressionChecks": {
+    "focusedTestsPassed": 134,
+    "focusedPeakBytes": 1118040064,
+    "componentBrowserPeakBytes": 908562432,
+    "combinedPreviewWorkerControlPeakBytes": 421228544,
+    "checks": "Project codec and transport including private/shared/mixed aliases, mutation fallback, signed zero, cancellation and backup; GUI/public MCP component lifecycle and binary reopening; precise worker round trip on combined preview.",
+    "limitations": "Small controls and component fixtures do not resolve original-scan in-place resource acceptance."
+  },
+  "projectReopenWithoutOldSnapshot": {
+    "build": "scanforge-f3a3583977dfc488",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4316708864,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Original PLY-3 Extract Undo/Redo, binary export and in-place public MCP project import completed; extracted mesh, source and cutter geometry digests matched. The guarded peak exceeded the 4 GiB cap.",
+    "limitation": "Functional success does not satisfy the in-place resource gate."
+  },
+  "projectPostImportBufferTrace": {
+    "build": "scanforge-f3a3583977dfc488",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4363141120,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": true,
+    "constructorInstrumentation": true,
+    "trackedBeforeBytes": 156343329,
+    "trackedAfterBytes": 44397699,
+    "trackedCollectedBytes": 111945630,
+    "cdpUsedBeforeBytes": 937199816,
+    "cdpUsedAfterBytes": 472511852,
+    "cdpBackingBeforeBytes": 264184993,
+    "cdpBackingAfterBytes": 46416928,
+    "observation": "Collected tracked buffers included old indexed geometry and recentered display coordinates. Ownership checks are required before releasing any buffer.",
+    "limitations": "Explicit collection, constructor proxies, and CDP inspection change timing; not a normal-run or memory-gate pass."
+  },
+  "projectReopenRetiredDisplay": {
+    "build": "scanforge-d5ce48c41b1d48bb",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4315508736,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Original PLY-3 Extract Undo/Redo, binary export and in-place public MCP project import completed with matching extracted, source and cutter geometry digests. The guarded peak exceeded the cap.",
+    "limitation": "Functional success does not satisfy the in-place resource gate; the contribution of display release to peak has not been isolated."
+  },
+  "retiredDisplayBufferTrace": {
+    "build": "scanforge-d5ce48c41b1d48bb",
+    "guardPeakBytes": 4295229440,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "constructorInstrumentation": true,
+    "earlySelfCheckGc": true,
+    "detachedRecenteredBytes": [22505808, 10799244],
+    "result": "Two tracked recentered viewport buffers were detached by the time project replacement completed.",
+    "limitations": "Diagnostic proxies and an initial explicit collection change timing; the run is not a memory-gate pass."
+  },
+  "decoderArrayRetirementExperiment": {
+    "build": "scanforge-34e6222b74bc8934",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4360462336,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Project import completed but the extracted geometry digest timed out after the guarded peak exceeded the limit.",
+    "disposition": "Reverted worker-array retirement because this run did not establish a resource improvement."
+  },
+  "projectReopenRetiredDisplayRepeat": {
+    "build": "scanforge-d5ce48c41b1d48bb",
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4353433600,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "explicitGc": false,
+    "result": "Project import completed but the extracted geometry digest timed out after the guarded peak exceeded the limit.",
+    "comparison": "The earlier run on this same build matched geometry but also exceeded the cap; neither run establishes in-place resource acceptance."
+  },
+  "projectReopenNumericBufferSizes": {
+    "build": "scanforge-d5ce48c41b1d48bb",
+    "numericSizesBytes": [266454504, 45011616, 128100312, 21598488],
+    "allPrivateArrayBuffers": true,
+    "totalBytes": 461164920,
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4336345088,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "result": "Worker returned four numeric buffers; project import completed but the extracted-geometry digest timed out after the process exceeded the cap.",
+    "limitations": "Worker-event logging was enabled. This is not a resource pass."
+  },
+  "resizableReverseStagingProbe": {
+    "inputBytes": 83886080,
+    "count": 10485760,
+    "baselinePeakBytes": 272138240,
+    "incrementalPeakBytes": 342990848,
+    "baselineElapsedMs": 128.4593,
+    "incrementalElapsedMs": 159.8122,
+    "explicitGcBeforeMeasurement": true,
+    "result": "Both Node probes compared every value including signed zero; reverse-push with incremental resizable-buffer shrink had a higher measured job peak and took longer. This approach was not implemented.",
+    "limitations": "Isolated Node/V8 probe with one input size, not a Chromium application benchmark. Timing includes the full verification pass; peak includes runtime and job overhead."
+  },
+  "projectExportPayloadLayout": {
+    "build": "scanforge-d5ce48c41b1d48bb",
+    "fileBytes": 475929265,
+    "payloadGroupsBytes": [80561661, 81551989, 76624228, 115279434, 101423559],
+    "pendingBytes": 20479211,
+    "chunkCount": 18,
+    "guardLimitBytes": 4294967296,
+    "guardPeakBytes": 4308856832,
+    "peakWithinLimit": false,
+    "cleanupConfirmed": true,
+    "result": "Test-only worker event tracing identified five completed checkpoint groups and a final uncheckpointed payload tail; geometry digests matched but the guard failed.",
+    "limitations": "File-layout instrumentation may change timing and does not establish actual in-memory residency."
+  },
+  "projectExportTailCheckpointExperiment": {
+    "build": "scanforge-73485dd1cf76309f",
+    "guardLimitBytes": 4294967296,
+    "peaksBytes": [4302630912, 4337844224],
+    "peakWithinLimit": [false, false],
+    "cleanupConfirmed": [true, true],
+    "results": [
+      "Import and all geometry digests completed, but the job exceeded the cap.",
+      "Import completed; extracted-geometry digest timed out after the job exceeded the cap."
+    ],
+    "disposition": "Reverted because the tail checkpoint did not establish reliable in-place acceptance.",
+    "limitations": "Separate runs are not controlled proof of physical memory attribution."
+  },
+  "currentInPlaceReopenTwoGiBChromeHeap": {
+    "build": "m2-shared-brep-build-20261029-r1",
+    "scanSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "component-inventory-opened",
+      "component-inventory-ready",
+      "gui-extract-committed",
+      "gui-extract-undone",
+      "gui-extract-undo-digest-verified",
+      "gui-extract-project-exported",
+      "gui-extract-project-imported"
+    ],
+    "failure": "{\"ok\":false,\"error\":{\"code\":\"BRIDGE_UNAVAILABLE\",\"message\":\"Browser command timed out\"}}",
+    "guard": {
+      "passed": false,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 4295847936,
+      "cleanupConfirmed": true,
+      "activeAfter": 0,
+      "peakWithinLimit": false,
+      "error": "Owned descendants remained after the parent exited"
+    },
+    "chromeJsHeapFlagMiB": 2048,
+    "limitations": [
+      "Browser command timed out after project import and before the next recorded stage; the artifact deletion and Extract digest were not separately instrumented, so geometry equality was not re-established.",
+      "The job exceeded the aggregate cap; a separate browser V8 heap setting was 2048 MiB. The timeout does not identify which limit caused unresponsiveness.",
+      "The 4 GiB aggregate job guard terminated remaining owned descendants and confirmed cleanup."
+    ],
+    "failureAttributionCorrection": "The last recorded stage was project import. The harness next deletes the export artifact and then requests the Extract digest, but did not separately record either call. The retained timeout therefore cannot identify which operation stalled.",
+    "buildQualification": "The referenced older m2-shared-brep build predates and does not contain the later numeric-reuse candidate; this does not validate current source."
+  },
+  "currentInPlaceReopenThreeGiBChromeHeap": {
+    "build": "m2-shared-brep-build-20261029-r1",
+    "scanSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "component-inventory-opened",
+      "component-inventory-ready",
+      "gui-extract-committed",
+      "gui-extract-undone",
+      "gui-extract-undo-digest-verified",
+      "gui-extract-project-exported",
+      "gui-extract-project-imported"
+    ],
+    "failure": "{\"ok\":false,\"error\":{\"code\":\"BRIDGE_UNAVAILABLE\",\"message\":\"Browser command timed out\"}}",
+    "guard": {
+      "passed": false,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 4295229440,
+      "cleanupConfirmed": true,
+      "activeAfter": 0,
+      "peakWithinLimit": false,
+      "error": "Owned descendants remained after the parent exited"
+    },
+    "chromeJsHeapFlagMiB": 3072,
+    "browserReportedHeapLimitBytes": 3321888768,
+    "limitations": [
+      "Browser command timed out after project import and before the next recorded stage; the artifact deletion and Extract digest were not separately instrumented, so geometry equality was not re-established.",
+      "The job exceeded the aggregate 4 GiB limit. Raising the browser V8 heap setting alone did not produce acceptance; the timeout does not isolate its cause.",
+      "The guard terminated remaining owned descendants and confirmed cleanup."
+    ],
+    "failureAttributionCorrection": "The last recorded stage was project import. The harness next deletes the export artifact and then requests the Extract digest, but did not separately record either call. The retained timeout therefore cannot identify which operation stalled.",
+    "buildQualification": "The referenced older m2-shared-brep build predates and does not contain the later numeric-reuse candidate; this does not validate current source."
+  }
+}

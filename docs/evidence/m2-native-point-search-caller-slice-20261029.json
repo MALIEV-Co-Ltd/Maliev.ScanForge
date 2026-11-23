@@ -1,0 +1,25 @@
+{
+  "scope": "Static, digest-bound native candidate caller slice; no execution or rotated-fixture observation",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "method": "Independently decode 89 sequential instructions from 0x14032aa2d with Capstone 5.0.6 and compare the returned-value control flow with the retained Ghidra decompilation.",
+  "observations": [
+    "At 0x14032aa43 the caller invokes candidate 0x1403342c0, saves the returned value, and branches on whether it is nonzero.",
+    "A nonzero return skips the construction path and is stored at record offset 0x30 at 0x14032aad9.",
+    "The null-return path converts three input doubles to Float32, calls candidate object methods, calls 0x1403339b0 with the resulting value, and stores that value at the same offset.",
+    "A similar search and conditional path begins at 0x14032aaff for the second endpoint."
+  ],
+  "interpretation": "Together with the retained helper decompilation, this is consistent with reusing a nearby point record or creating and inserting a new one. These are static candidate-path observations, not proof that the rotated points reached this path or were present in its tree.",
+  "slicePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-point-search-caller-slice-20261029.json",
+  "sliceSha256": "2b1af9270c04b4ffddb495a716373b39052ab95f451853d9677dc35bd24e2d67",
+  "scriptSha256": "35d258f2d0aaaa8293ae05cb7be4a38254a82696bc40db6ffbf40a89706c98c1",
+  "kernelDecompileSha256": "9b0ac4bfb8bf61b888573c043210847edd798639afe2a54c9ce28560201f4ff1",
+  "guardSha256": "d67e5fd8067d5ad7601af789bdd704146a2dd306046e0175dc20068ca514603f",
+  "guardPeakBytes": 66334720,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The analysis image is runtime-derived and differs from the installed executable; the earlier provenance binding applies.",
+    "Record types, the complete tree contents and runtime behavior on the rotated fixture are not established.",
+    "The earlier radius was inferred for a conditional path and does not establish a global merge tolerance.",
+    "No application change, GUI/MCP verification, or native parity is claimed."
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "scope": "Disposable sequential triangulation with application-style ordering of captured native points.",
+  "method": "Match native source corners to the original STL source triangle; sort remaining captured intersection points lexicographically by barycentric coordinates as in the current face triangulator. Preserve the three captured seed corners, run the inclusive exact-incircle cavity prototype, remap triangle indices back to native order, and compare native initial triangulation sets.",
+  "results": [
+    {
+      "control": "convex",
+      "face": 0,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 7,
+      "exact": false
+    },
+    {
+      "control": "convex",
+      "face": 1,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 9,
+      "exact": true
+    },
+    {
+      "control": "cyclic",
+      "face": 0,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 9,
+      "exact": true
+    },
+    {
+      "control": "cyclic",
+      "face": 1,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 9,
+      "exact": true
+    },
+    {
+      "control": "concave",
+      "face": 0,
+      "error": null,
+      "nativeCount": 17,
+      "actualCount": 17,
+      "matched": 17,
+      "exact": true
+    },
+    {
+      "control": "concave",
+      "face": 1,
+      "error": null,
+      "nativeCount": 17,
+      "actualCount": 17,
+      "matched": 17,
+      "exact": true
+    }
+  ],
+  "result": "Five faces match; the convex first face has one differing diagonal (7 of 9 facets match).",
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-app-order-20261029.mjs",
+      "sha256": "27c5785554e1b6d6369f2e429e2c2066b65f76c5f1b044a18e6582a4e3b1e020"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-app-order-20261029.json",
+      "sha256": "cf3d1043ede03ad4b837f1c7f93876fb7c2eb91e4b68fad0109b7cb23a52e8a9"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-app-order-guard-20261029-r2.json",
+      "sha256": "a5bebf46d375509f7cf6c1a54aa3b9868f7ec12b03e91ec68d2ca36a4c3b9511"
+    }
+  ],
+  "limitations": [
+    "Sorting captured unique points approximates the application ordering but does not run the complete application collector, face-input builder or constraint recovery.",
+    "Native seeds, floating orientation, and captured points remain from the native control; this does not prove native tree order or arbitrary-geometry behavior.",
+    "No application behavior changed; the exact predicate prototype has no production resource, cancellation or lifecycle validation."
+  ]
+}

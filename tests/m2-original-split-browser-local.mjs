@@ -59,6 +59,7 @@ function processIdentity(pid) {
   };
 }
 let server, reserve, browserServer, browser, client, transport, failed, page;
+let heartbeatTimer, heartbeatTimeout;
 const fixturePath = fileURLToPath(new URL("split-lifecycle-panel.stl", out));
 const deadline = setTimeout(() => {
   failed = Error("Browser validation lease expired");
@@ -135,7 +136,7 @@ try {
     headless: true,
     args: [
       "--enable-unsafe-swiftshader",
-      "--js-flags=--max-old-space-size=2048",
+      "--js-flags=--max-old-space-size=3072",
     ],
   });
   ledger.resources.push({
@@ -155,17 +156,177 @@ try {
   const errors = [];
   const consoleErrors = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  if (process.env.SCANFORGE_M2_LOG_JOB === "1") {
+    page.on("crash", () => {
+      (ledger.browserEvents ??= []).push({
+        event: "crash",
+        at: new Date().toISOString(),
+      });
+      console.log(JSON.stringify({ browserEvent: "crash" }));
+    });
+    page.on("close", () => {
+      (ledger.browserEvents ??= []).push({
+        event: "close",
+        at: new Date().toISOString(),
+      });
+      console.log(JSON.stringify({ browserEvent: "close" }));
+    });
+  }
   page.on("console", (message) => {
     if (message.type() === "error") consoleErrors.push(message.text());
+    if (
+      process.env.SCANFORGE_M2_WORKER_TRACE === "1" &&
+      message.text().startsWith("M2_WORKER_TRACE ")
+    )
+      console.log(message.text());
   });
+  if (process.env.SCANFORGE_M2_TRACE_BUFFERS === "1") {
+    await page.addInitScript(() => {
+      const entries = [],
+        seen = new WeakMap();
+      window.__m2RememberBuffer = (buffer, origin) => {
+        if (
+          !(buffer instanceof ArrayBuffer) ||
+          buffer.byteLength < 1048576 ||
+          seen.has(buffer)
+        )
+          return;
+        const entry = {
+          ref: new WeakRef(buffer),
+          bytes: buffer.byteLength,
+          origin,
+        };
+        seen.set(buffer, entry);
+        entries.push(entry);
+      };
+      window.__m2BufferSummary = () =>
+        entries.map(({ ref, bytes, origin }) => {
+          const buffer = ref.deref();
+          return { bytes, liveBytes: buffer?.byteLength ?? null, origin };
+        });
+      for (const name of [
+        "Uint8Array",
+        "Uint32Array",
+        "Float32Array",
+        "Float64Array",
+      ]) {
+        const original = window[name];
+        let wrapper;
+        wrapper = new Proxy(original, {
+          construct(target, args, newTarget) {
+            const view = Reflect.construct(
+              target,
+              args,
+              newTarget === wrapper ? target : newTarget,
+            );
+            if (view.byteLength >= 1048576)
+              window.__m2RememberBuffer(
+                view.buffer,
+                `${name}: ${new Error().stack?.split("\n").slice(2, 6).join(" | ")}`,
+              );
+            return view;
+          },
+        });
+        window[name] = wrapper;
+      }
+    });
+  }
+  if (process.env.SCANFORGE_M2_FILE_LAYOUT === "1")
+    await page.addInitScript(() => {
+      window.__m2FileLayoutTrace = true;
+    });
   await page.addInitScript(() => {
     const Original = window.Worker;
     window.__splitTransportSamples = [];
     window.Worker = class extends Original {
       constructor(url, options) {
         super(url, options);
+        if (String(url).includes("project-encoding-worker")) {
+          console.log(
+            `M2_WORKER_TRACE ${JSON.stringify({ event: "encoder-start", at: performance.now() })}`,
+          );
+          this.addEventListener("message", (e) => {
+            console.log(
+              `M2_WORKER_TRACE ${JSON.stringify({ event: "encoder-message", at: performance.now() })}`,
+            );
+            if (window.__m2FileLayoutTrace && e.data?.file instanceof Blob) {
+              void (async () => {
+                const file = e.data.file;
+                const header = await file.slice(0, 16).arrayBuffer();
+                const manifestBytes = new DataView(header).getUint32(8, true);
+                if (manifestBytes > 4 * 1024 * 1024)
+                  throw Error("Manifest too large for layout trace");
+                const manifest = JSON.parse(
+                  await file.slice(16, 16 + manifestBytes).text(),
+                );
+                let pending = 0;
+                const groups = [];
+                for (const chunk of manifest.chunks) {
+                  pending += chunk.bytes;
+                  if (pending >= 64 * 1024 * 1024) {
+                    groups.push(pending);
+                    pending = 0;
+                  }
+                }
+                console.log(
+                  `M2_WORKER_TRACE ${JSON.stringify({ event: "encoder-layout", fileBytes: file.size, payloadGroups: groups, pendingBytes: pending, chunks: manifest.chunks.length })}`,
+                );
+              })().catch((error) =>
+                console.log(
+                  `M2_WORKER_TRACE ${JSON.stringify({ event: "encoder-layout-error", error: String(error) })}`,
+                ),
+              );
+            }
+          });
+          this.addEventListener("error", () =>
+            console.log(
+              `M2_WORKER_TRACE ${JSON.stringify({ event: "encoder-error", at: performance.now() })}`,
+            ),
+          );
+          const terminate = this.terminate.bind(this);
+          this.terminate = () => {
+            console.log(
+              `M2_WORKER_TRACE ${JSON.stringify({ event: "encoder-terminate", at: performance.now() })}`,
+            );
+            terminate();
+          };
+        }
+        if (String(url).includes("project-decoding-worker")) {
+          console.log(
+            `M2_WORKER_TRACE ${JSON.stringify({ event: "decoder-start", at: performance.now() })}`,
+          );
+          this.addEventListener("message", (e) => {
+            const numbers = e.data?.packet?.numbers;
+            console.log(
+              `M2_WORKER_TRACE ${JSON.stringify({ event: "decoder-message", at: performance.now(), error: e.data?.error ?? null, numericBuffers: Array.isArray(numbers) ? numbers.length : null, numericBytes: Array.isArray(numbers) ? numbers.reduce((sum, item) => sum + (item.values?.byteLength ?? 0), 0) : null, numericSizes: Array.isArray(numbers) ? numbers.map((item) => ({ bytes: item.values?.byteLength ?? 0, shared: typeof SharedArrayBuffer !== "undefined" && item.values?.buffer instanceof SharedArrayBuffer })) : null })}`,
+            );
+          });
+          this.addEventListener("error", () =>
+            console.log(
+              `M2_WORKER_TRACE ${JSON.stringify({ event: "decoder-error", at: performance.now() })}`,
+            ),
+          );
+        }
         if (String(url).includes("processing-worker"))
           this.addEventListener("message", (e) => {
+            if (window.__m2RememberBuffer && e.data.packedScanEdit)
+              for (const [name, value] of Object.entries(e.data.packedScanEdit))
+                if (ArrayBuffer.isView(value))
+                  window.__m2RememberBuffer(
+                    value.buffer,
+                    `worker.packedScanEdit.${name}`,
+                  );
+            if (
+              window.__m2RememberBuffer &&
+              e.data.result?.scanEdit?.inventory?.components
+            )
+              for (const component of e.data.result.scanEdit.inventory
+                .components)
+                if (ArrayBuffer.isView(component.triangles))
+                  window.__m2RememberBuffer(
+                    component.triangles.buffer,
+                    "worker.inventory.triangles",
+                  );
             if (e.data.packedScanEdit) {
               const sample = {
                 before: performance.memory?.usedJSHeapSize ?? null,
@@ -186,6 +347,23 @@ try {
     };
   });
   await page.goto(origin);
+  if (process.env.SCANFORGE_M2_TRACE_BUFFERS === "1") {
+    await page.evaluate(() => {
+      const buffer = new ArrayBuffer(2 * 1024 * 1024);
+      window.__m2RememberBuffer(buffer, "self-check");
+    });
+    const probe = await page.context().newCDPSession(page);
+    await probe.send("HeapProfiler.collectGarbage");
+    const check = await page.evaluate(() =>
+      window.__m2BufferSummary().find((item) => item.origin === "self-check"),
+    );
+    assert(
+      check && check.liveBytes === null,
+      "Weak buffer tracking self-check failed",
+    );
+    ledger.bufferTraceSelfCheck = true;
+    await probe.detach();
+  }
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
@@ -202,11 +380,16 @@ try {
     .getByRole("button", { name: "Close settings", exact: true })
     .click();
   const call = async (name, args = {}) => {
-    const response = await client.callTool({ name, arguments: args });
-    const wire =
-      response.structuredContent ?? JSON.parse(response.content[0].text);
-    assert(wire.ok, JSON.stringify(wire));
-    return wire;
+    try {
+      const response = await client.callTool({ name, arguments: args });
+      const wire =
+        response.structuredContent ?? JSON.parse(response.content[0].text);
+      assert(wire.ok, JSON.stringify(wire));
+      return wire;
+    } catch (error) {
+      ledger.failedBridgeCommand = name;
+      throw error;
+    }
   };
   const idle = async () => {
     for (let attempt = 0; attempt < 120; attempt++) {
@@ -295,7 +478,18 @@ try {
   const bounds = JSON.parse(
     await readFile(process.env.SCANFORGE_M2_ORIGINAL_BOUNDS, "utf8"),
   );
+  if (bounds.finiteInteriorControl)
+    assert.equal(
+      createHash("sha256")
+        .update(await readFile(original))
+        .digest("hex"),
+      bounds.sha256,
+    );
   ledger.stages = [];
+  const memoryProfile =
+    process.env.SCANFORGE_M2_MEMORY_PROFILE === "1"
+      ? await page.context().newCDPSession(page)
+      : null;
   const stage = async (name) => {
     const browserHeap = await page.evaluate(() => {
       const memory = performance.memory;
@@ -312,9 +506,131 @@ try {
       at: new Date().toISOString(),
       harness: process.memoryUsage(),
       browserHeap,
+      ...(memoryProfile
+        ? { cdpHeap: await memoryProfile.send("Runtime.getHeapUsage") }
+        : {}),
     };
     ledger.stages.push(entry);
     console.log(JSON.stringify({ stage: entry }));
+    if (
+      [
+        "component-inventory-ready",
+        "gui-extract-committed",
+        "gui-extract-project-imported",
+      ].includes(name) &&
+      process.env.SCANFORGE_M2_TRACE_BUFFERS === "1"
+    ) {
+      const buffers = await page.evaluate(() => window.__m2BufferSummary());
+      const key =
+        name === "component-inventory-ready"
+          ? "inventoryBuffersBeforeGc"
+          : name === "gui-extract-committed"
+            ? "extractBuffersBeforeGc"
+            : "importBuffersBeforeGc";
+      ledger[key] = buffers;
+      console.log(JSON.stringify({ [key]: buffers }));
+    }
+    if (memoryProfile && process.env.SCANFORGE_M2_ALLOCATION_PROFILE === "1") {
+      if (name === "gui-split-committed" || name === "gui-extract-undone")
+        await memoryProfile.send("HeapProfiler.startSampling", {
+          samplingInterval: 1048576,
+          includeObjectsCollectedByMajorGC: true,
+          includeObjectsCollectedByMinorGC: true,
+        });
+      if (
+        name === "gui-extract-committed" ||
+        name === "mcp-extract-committed"
+      ) {
+        const { profile } = await memoryProfile.send(
+          "HeapProfiler.stopSampling",
+        );
+        const totals = new Map();
+        const callers = new Map();
+        const visit = (node, parents = []) => {
+          const key = `${node.callFrame.functionName || "(anonymous)"} ${node.callFrame.url}:${node.callFrame.lineNumber + 1}`;
+          totals.set(key, (totals.get(key) || 0) + node.selfSize);
+          if (["next", "every", "from"].includes(node.callFrame.functionName)) {
+            const path = [...parents.slice(-4), key].join(" <- ");
+            callers.set(path, (callers.get(path) || 0) + node.selfSize);
+          }
+          for (const child of node.children) visit(child, [...parents, key]);
+        };
+        visit(profile.head);
+        console.log(
+          JSON.stringify({
+            allocationSample: name,
+            top: [...totals].sort((a, b) => b[1] - a[1]).slice(0, 20),
+            callers: [...callers].sort((a, b) => b[1] - a[1]).slice(0, 20),
+          }),
+        );
+      }
+    }
+    if (
+      memoryProfile &&
+      process.env.SCANFORGE_M2_DIAGNOSTIC_GC === "1" &&
+      [
+        "component-inventory-ready",
+        "gui-extract-committed",
+        "gui-extract-undone",
+        "mcp-extract-committed",
+        "gui-extract-project-imported",
+      ].includes(name) &&
+      (!process.env.SCANFORGE_M2_DIAGNOSTIC_GC_STAGES ||
+        process.env.SCANFORGE_M2_DIAGNOSTIC_GC_STAGES.split(",").includes(name))
+    ) {
+      await memoryProfile.send("HeapProfiler.collectGarbage");
+      if (
+        [
+          "component-inventory-ready",
+          "gui-extract-committed",
+          "gui-extract-project-imported",
+        ].includes(name) &&
+        process.env.SCANFORGE_M2_TRACE_BUFFERS === "1"
+      ) {
+        const buffers = await page.evaluate(() => window.__m2BufferSummary());
+        const key =
+          name === "component-inventory-ready"
+            ? "inventoryBuffersAfterGc"
+            : name === "gui-extract-committed"
+              ? "extractBuffersAfterGc"
+              : "importBuffersAfterGc";
+        ledger[key] = buffers;
+        console.log(JSON.stringify({ [key]: buffers }));
+      }
+      console.log(
+        JSON.stringify({
+          diagnosticGc: name,
+          cdpHeap: await memoryProfile.send("Runtime.getHeapUsage"),
+        }),
+      );
+    }
+    if (memoryProfile && process.env.SCANFORGE_M2_DIGEST_PROFILE === "1") {
+      if (name === "mcp-extract-committed")
+        await memoryProfile.send("HeapProfiler.startSampling", {
+          samplingInterval: 1048576,
+          includeObjectsCollectedByMajorGC: true,
+          includeObjectsCollectedByMinorGC: true,
+        });
+      if (name === "gui-mcp-extract-verified") {
+        const { profile } = await memoryProfile.send(
+          "HeapProfiler.stopSampling",
+        );
+        const totals = new Map();
+        const visit = (node) => {
+          const key = `${node.callFrame.functionName || "(anonymous)"} ${node.callFrame.url}:${node.callFrame.lineNumber + 1}`;
+          totals.set(key, (totals.get(key) || 0) + node.selfSize);
+          for (const child of node.children) visit(child);
+        };
+        visit(profile.head);
+        console.log(
+          JSON.stringify({
+            digestAllocationSample: [...totals]
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 20),
+          }),
+        );
+      }
+    }
   };
   ledger.crossOriginIsolated = await page.evaluate(() => crossOriginIsolated);
   if (process.env.SCANFORGE_QA_ISOLATED === "1")
@@ -347,7 +663,7 @@ try {
     bounds.max[2] - bounds.min[2],
     1,
   );
-  const vertices = [
+  const vertices = bounds.cutterVertices ?? [
     [x, bounds.min[1] - margin, bounds.min[2] - margin],
     [x, bounds.min[1] - margin, bounds.max[2] + 3 * margin],
     [x, bounds.max[1] + 3 * margin, bounds.min[2] - margin],
@@ -399,6 +715,50 @@ try {
   console.log(JSON.stringify({ transportSamples: ledger.transportSamples }));
   const guiDigest = await geometryDigest(sourceId);
   await stage("gui-output-digest");
+  if (bounds.finiteInteriorControl) {
+    const data = await artifactJson(
+      (await call("object_get", { entityId: sourceId, includeGeometry: true }))
+        .result.geometry,
+    );
+    const { vertices, triangles } = data.indexedMesh;
+    const edges = new Map();
+    for (let i = 0; i < triangles.length; i += 3)
+      for (let side = 0; side < 3; side++) {
+        const a = triangles[i + side],
+          b = triangles[i + ((side + 1) % 3)];
+        const key = a < b ? `${a}:${b}` : `${b}:${a}`;
+        const item = edges.get(key) ?? { a, b, count: 0 };
+        item.count++;
+        edges.set(key, item);
+      }
+    let seamLength = 0;
+    for (const { a, b, count } of edges.values()) {
+      if (count !== 1) continue;
+      const ax = vertices[3 * a],
+        ay = vertices[3 * a + 1];
+      const bx = vertices[3 * b],
+        by = vertices[3 * b + 1];
+      const seam =
+        Math.abs(ax - 0.5) < 1e-8 &&
+        Math.abs(bx - 0.5) < 1e-8 &&
+        Math.min(ay, by) >= 0.1 - 1e-7 &&
+        Math.max(ay, by) <= 0.2 + 1e-7;
+      const perimeter =
+        (ax === 0 && bx === 0) ||
+        (ay === 0 && by === 0) ||
+        (Math.abs(ax + ay - 1) < 1e-8 && Math.abs(bx + by - 1) < 1e-8);
+      assert(
+        seam || perimeter,
+        "Split created an edge outside the finite cutter or source perimeter",
+      );
+      if (seam) seamLength += Math.hypot(ax - bx, ay - by);
+    }
+    assert(
+      Math.abs(seamLength - 0.2) < 1e-6,
+      "Finite seam boundary length changed",
+    );
+    ledger.finiteInteriorBoundaryLength = seamLength;
+  }
   assert.deepEqual(
     await geometryDigest(cutterId),
     cutterDigest,
@@ -407,7 +767,253 @@ try {
   await page.screenshot({
     path: fileURLToPath(new URL("original-split-gui.png", out)),
   });
-  if (process.env.SCANFORGE_M2_ORIGINAL_COMPONENT === "extract") {
+  if (
+    ["gui-extract", "gui-only"].includes(
+      process.env.SCANFORGE_M2_ORIGINAL_COMPONENT,
+    )
+  ) {
+    const core = (records) =>
+      records.filter((record) =>
+        ["positions", "indexedMesh.vertices", "indexedMesh.triangles"].includes(
+          record.path,
+        ),
+      );
+    await panel.getByRole("button", { name: "Close", exact: true }).click();
+    await mutate("command_run", { name: "ribbon:editScan" });
+    await page
+      .getByRole("button", { name: "Edit individual meshes", exact: true })
+      .click();
+    await stage("component-inventory-opened");
+    const controls = page.getByRole("region", {
+      name: "Individual meshes",
+      exact: true,
+    });
+    await controls
+      .getByRole("button", { name: /^Mesh 1 ·/ })
+      .waitFor({ timeout: 180000 });
+    await stage("component-inventory-ready");
+    const before = (await call("project_get")).result.undo;
+    await controls
+      .getByRole("button", { name: "Create new object", exact: true })
+      .click();
+    for (let i = 0; i < 2400; i++) {
+      const current = (await call("project_get")).result;
+      if (current.undo > before) break;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    const guiStateAfter = (await call("project_get")).result;
+    assert.equal(guiStateAfter.undo, before + 1, "GUI Extract did not commit");
+    const guiPart = guiStateAfter.objects.find(
+      (object) => object.id !== sourceId && object.id !== cutterId,
+    );
+    assert(guiPart, "GUI Extract did not create an object");
+    await stage("gui-extract-committed");
+    if (process.env.SCANFORGE_M2_PAGE_HEARTBEAT === "1") {
+      let inFlight = false;
+      heartbeatTimer = setInterval(() => {
+        if (inFlight) return;
+        inFlight = true;
+        const started = Date.now();
+        heartbeatTimeout = setTimeout(() => {
+          console.log(
+            JSON.stringify({
+              pageHeartbeat: "timeout",
+              started,
+              timeoutMs: 3000,
+            }),
+          );
+          (ledger.pageHeartbeats ??= []).push({ status: "timeout", started });
+        }, 3000);
+        page
+          .evaluate(() => performance.now())
+          .then(
+            () => {
+              clearTimeout(heartbeatTimeout);
+              const elapsedMs = Date.now() - started;
+              console.log(
+                JSON.stringify({ pageHeartbeat: "response", elapsedMs }),
+              );
+              (ledger.pageHeartbeats ??= []).push({
+                status: "response",
+                elapsedMs,
+              });
+              inFlight = false;
+            },
+            (error) => {
+              clearTimeout(heartbeatTimeout);
+              console.log(
+                JSON.stringify({
+                  pageHeartbeat: "error",
+                  message: error.message,
+                }),
+              );
+              (ledger.pageHeartbeats ??= []).push({
+                status: "error",
+                message: error.message,
+              });
+              inFlight = false;
+            },
+          );
+      }, 1000);
+    }
+    const profileGuiDigest =
+      memoryProfile && process.env.SCANFORGE_M2_GUI_DIGEST_PROFILE === "1";
+    if (profileGuiDigest)
+      await memoryProfile.send("HeapProfiler.startSampling", {
+        samplingInterval: 1048576,
+        includeObjectsCollectedByMajorGC: true,
+        includeObjectsCollectedByMinorGC: true,
+      });
+    const guiPartDigest = core(await geometryDigest(guiPart.id));
+    if (profileGuiDigest) {
+      const { profile } = await memoryProfile.send("HeapProfiler.stopSampling");
+      const totals = new Map();
+      const visit = (node) => {
+        const key = `${node.callFrame.functionName || "(anonymous)"} ${node.callFrame.url}:${node.callFrame.lineNumber + 1}`;
+        totals.set(key, (totals.get(key) || 0) + node.selfSize);
+        for (const child of node.children) visit(child);
+      };
+      visit(profile.head);
+      const top = [...totals].sort((a, b) => b[1] - a[1]).slice(0, 30);
+      ledger.guiDigestAllocationSample = top;
+      console.log(JSON.stringify({ guiDigestAllocationSample: top }));
+    }
+    assert.equal(guiPartDigest.length, 3, "GUI Extract lost indexed geometry");
+    await mutate("history_undo", {});
+    await stage("gui-extract-undone");
+    assert.deepEqual(
+      core(await geometryDigest(sourceId)),
+      core(guiDigest),
+      "GUI Extract Undo changed source",
+    );
+    await stage("gui-extract-undo-digest-verified");
+    if (process.env.SCANFORGE_M2_ORIGINAL_COMPONENT === "gui-only") {
+      await mutate("history_redo", {});
+      assert.deepEqual(
+        core(await geometryDigest(guiPart.id)),
+        guiPartDigest,
+        "GUI Extract Redo changed geometry",
+      );
+      assert.deepEqual(
+        core(await geometryDigest(sourceId)),
+        core(guiDigest),
+        "GUI Extract changed source",
+      );
+      assert.deepEqual(
+        await geometryDigest(cutterId),
+        cutterDigest,
+        "GUI Extract changed cutter",
+      );
+      if (process.env.SCANFORGE_M2_EXTRACT_REOPEN === "1") {
+        const saved = await job(
+          await call("project_export", { format: "project" }),
+        );
+        await stage("gui-extract-project-exported");
+        if (process.env.SCANFORGE_M2_EXTRACT_REOPEN_FRESH === "1") {
+          await mutate("project_new", { discard: true });
+          await stage("gui-extract-fresh-project");
+        }
+        await job(
+          await mutate("project_import", {
+            artifactId: saved.result.artifactId,
+            replace: true,
+          }),
+        );
+        await stage("gui-extract-project-imported");
+        await stage("gui-extract-artifact-delete-started");
+        await call("artifact_delete", { artifactId: saved.result.artifactId });
+        await stage("gui-extract-artifact-deleted");
+        await stage("gui-extract-reopen-part-digest-started");
+        assert.deepEqual(
+          core(await geometryDigest(guiPart.id)),
+          guiPartDigest,
+          "Reopen changed Extract geometry",
+        );
+        await stage("gui-extract-reopen-part-digest-verified");
+        assert.deepEqual(
+          core(await geometryDigest(sourceId)),
+          core(guiDigest),
+          "Reopen changed Extract source",
+        );
+        assert.deepEqual(
+          await geometryDigest(cutterId),
+          cutterDigest,
+          "Reopen changed cutter",
+        );
+        await stage("gui-extract-reopen-verified");
+      }
+      assert.deepEqual(errors, []);
+      assert.deepEqual(consoleErrors, []);
+      ledger.result = {
+        inputSha256: bounds.sha256,
+        inputFaces: initial.objects[0].triangles,
+        splitFaces: guiState.objects.find((o) => o.id === sourceId).triangles,
+        extractedFaces: guiPart.triangles,
+        guiOutputDigest: guiPartDigest,
+        indexedResult: true,
+        sourcePreserved: true,
+        cutterPreserved: true,
+        guiUndoRedo: true,
+        ...(process.env.SCANFORGE_M2_EXTRACT_REOPEN === "1"
+          ? { binaryReopen: true }
+          : {}),
+        pageErrors: errors,
+        consoleErrors,
+      };
+      await stage("gui-extract-redo-verified");
+      console.log(JSON.stringify(ledger.result));
+    } else {
+      const mcp = await job(
+        await mutate("mesh_process", {
+          entityId: sourceId,
+          operation: {
+            kind: "scanEdit",
+            action: "componentExtract",
+            indices: [0],
+          },
+        }),
+      );
+      const mcpState = (await call("project_get")).result;
+      const mcpPart = mcpState.objects.find(
+        (object) => object.id !== sourceId && object.id !== cutterId,
+      );
+      assert(mcpPart, "MCP Extract did not create an object");
+      await stage("mcp-extract-committed");
+      assert.deepEqual(
+        core(await geometryDigest(mcpPart.id)),
+        guiPartDigest,
+        "GUI and MCP Extract geometry differ",
+      );
+      assert.deepEqual(
+        core(await geometryDigest(sourceId)),
+        core(guiDigest),
+        "Extract changed source",
+      );
+      assert.deepEqual(
+        await geometryDigest(cutterId),
+        cutterDigest,
+        "Extract changed cutter",
+      );
+      await stage("gui-mcp-extract-verified");
+      assert.deepEqual(errors, []);
+      assert.deepEqual(consoleErrors, []);
+      ledger.result = {
+        inputSha256: bounds.sha256,
+        inputFaces: initial.objects[0].triangles,
+        splitFaces: guiState.objects.find((o) => o.id === sourceId).triangles,
+        extractedFaces: guiPart.triangles,
+        diagnostics: mcp.result.diagnostics,
+        guiMcpEqual: true,
+        indexedResult: true,
+        sourcePreserved: true,
+        cutterPreserved: true,
+        guiUndo: true,
+        pageErrors: errors,
+        consoleErrors,
+      };
+      console.log(JSON.stringify(ledger.result));
+    }
+  } else if (process.env.SCANFORGE_M2_ORIGINAL_COMPONENT === "extract") {
     const core = (records) =>
       records.filter((record) =>
         ["positions", "indexedMesh.vertices", "indexedMesh.triangles"].includes(
@@ -472,6 +1078,7 @@ try {
       inputFaces: initial.objects[0].triangles,
       splitFaces: guiState.objects.find((o) => o.id === sourceId).triangles,
       extractedFaces: created.triangles,
+      mcpOutputDigest: extractedDigest,
       diagnostics: extracted.result.diagnostics,
       indexedResult: true,
       sourcePreserved: true,
@@ -625,6 +1232,28 @@ try {
       redoDigest,
       "Repeated Redo changed the geometry or computed normals",
     );
+    if (bounds.finiteInteriorControl) {
+      const saved = await job(
+        await call("project_export", { format: "project" }),
+      );
+      await job(
+        await mutate("project_import", {
+          artifactId: saved.result.artifactId,
+          replace: true,
+        }),
+      );
+      await call("artifact_delete", { artifactId: saved.result.artifactId });
+      assert.deepEqual(
+        core(await geometryDigest(sourceId)),
+        core(redoDigest),
+        "Reopen changed split geometry",
+      );
+      assert.deepEqual(
+        await geometryDigest(cutterId),
+        cutterDigest,
+        "Reopen changed cutter",
+      );
+    }
     assert.deepEqual(errors, []);
     assert.deepEqual(consoleErrors, []);
     ledger.result = {
@@ -637,6 +1266,12 @@ try {
       cutterPreserved: true,
       redo: true,
       redoInitializedComputedNormals: extra,
+      ...(bounds.finiteInteriorControl
+        ? {
+            finiteInteriorBoundaryLength: ledger.finiteInteriorBoundaryLength,
+            binaryReopen: true,
+          }
+        : {}),
       pageErrors: errors,
       consoleErrors,
     };
@@ -650,6 +1285,8 @@ try {
   throw error;
 } finally {
   clearTimeout(deadline);
+  clearInterval(heartbeatTimer);
+  clearTimeout(heartbeatTimeout);
   await browser?.close().catch(() => {});
   await browserServer?.close().catch(() => {});
   await client?.close().catch(() => {});

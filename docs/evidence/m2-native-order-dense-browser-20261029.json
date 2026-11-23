@@ -1,0 +1,44 @@
+{
+  "scope": "Isolated experimental native-order build, not M2 worktree or 5173 preview",
+  "build": "scanforge-12ee1a792c357249",
+  "sourceSha256": {
+    "scan-edit-general-split.ts": "743322211754eddced6a7ed34bf4b0dfd64dbe45ad451b57fbd909b6fcc1ce3d",
+    "scan-split-finite-pipeline.ts": "7fd1f8f238142e99ecd6bf1c9e36bf0f6abf2d7fe0f3a17c97a0e59171beb862",
+    "scan-split-finite-face.ts": "3581d87b6a51efbe430c82d072074495d452246a0a008cdcfb9e57c493a65006",
+    "scan-split-finite-seams.ts": "00c555c921340df8587cf6440454f17387b5f92456cc66f881684a509f934430",
+    "scan-split-native-order-tree.ts": "fc0497bf5cf1882f8fc81684e659d8863fc2f670568d002f00aeb17a79585e96"
+  },
+  "testScriptSha256": "5c3c683e431a725c49ef35c2410864a3772a27f5b25130e9d85feb267d24660c",
+  "nativeExportSha256": "da52d7afd8d4e9b1cb316e8598cd213422680381b56280008ae53c5de40381f7",
+  "positive": "GUI unordered Float32 facets match the native dense export; public MCP geometry equals GUI; undo/redo, cancellation and reopen passed",
+  "negative": "Current seam-only build fails the same native facet assertion as expected",
+  "typecheck": "source-only, with node and vite types; no tests included",
+  "render": "mesh visible but seam not visible in screenshot",
+  "guards": {
+    "m2-experimental-native-types-r2-guard-20261029.json": {
+      "sha256": "a718249b3854f6f51bda276f40843c6480790ac475040c3f3478adce0120aa71",
+      "peakJobBytes": 622129152,
+      "exitCode": 0
+    },
+    "m2-native-order-browser-build-guard-20261029.json": {
+      "sha256": "8c3cc920dd5babb17621e6250c2cfbeeccd42981b88d8a86c0cfe64f86102961",
+      "peakJobBytes": 1714409472,
+      "exitCode": 0
+    },
+    "m2-native-order-dense-browser-guard-20261029.json": {
+      "sha256": "8b79ff20e36ab5740a052db04429e2a491899f99e0a1e2966e5ce77317f799a3",
+      "peakJobBytes": 916467712,
+      "exitCode": 0
+    },
+    "m2-seam-native-negative-browser-guard-20261029.json": {
+      "sha256": "c488cde8226569959244188274c25959ea509e9315cd76324afbeadbca034086",
+      "peakJobBytes": 919146496,
+      "exitCode": 1
+    }
+  },
+  "limits": [
+    "Single dense native fixture; other geometries and ordering unproven",
+    "Candidate has unresolved memory admission, precision aliasing and general native behavior",
+    "Not full M2 acceptance"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "scope": "Below-threshold Split native export and retained seam-change GUI/public MCP lifecycle",
+  "buildId": "scanforge-a00193930136ca3d",
+  "sourceSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+  "cutterSha256": "f1934caa75204704f3b1a37ad37d251689be2341b7899227c9510a9873f49ccf",
+  "nativeSha256": "adb567e7a9b37e60292749e9fe4a002c4d462653259924b3dbe6f0be45337971",
+  "nativeFacets": 2,
+  "appFacets": 5,
+  "nativeArea": 0.4999549999993178,
+  "appArea": 0.5,
+  "guiMcpGeometry": true,
+  "undoRedo": true,
+  "binaryReopen": true,
+  "mcpHeldResultCancellation": true,
+  "guiCloseCancellation": true,
+  "pageErrors": [],
+  "peakJobBytes": 921788416,
+  "cleanupConfirmed": true,
+  "guardSha256": "04db01be7aace46b1f96c198f6f4681b354e61d1cc23fa98fe4b0680f66d939a",
+  "limitations": [
+    "One threshold fixture cannot establish the native tolerance rule",
+    "Native viewport was white; comparison uses exported geometry",
+    "At and above cases remain unobserved",
+    "Retained build predates later unrelated changes"
+  ]
+}

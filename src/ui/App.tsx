@@ -1624,8 +1624,11 @@ export function App() {
     wandRefreshAbort.current?.abort();
     const session = sessionFor(entity);
     const hidden = new Set(session.state.hidden);
+    const visibleMask = new Uint8Array(mask.length);
+    for (let i = 0; i < mask.length; i++)
+      visibleMask[i] = hidden.has(i) ? 0 : mask[i];
     session.set({
-      mask: Uint8Array.from(mask, (v, i) => (hidden.has(i) ? 0 : v)),
+      mask: visibleMask,
       hidden: session.state.hidden,
     });
     applySelectionState(entity, session.state);
@@ -6170,7 +6173,11 @@ export function App() {
                   createSegments(parts, label, undefined, indexedParts)
                 }
                 onSelection={changeSelection}
-                onBoundaryHighlight={setScanBoundaryPaths}
+                onBoundaryHighlight={(paths) =>
+                  setScanBoundaryPaths((current) =>
+                    !current.length && !paths.length ? current : paths,
+                  )
+                }
                 onBridgeSession={setScanBridgeSession}
                 onBridgeDisplay={displayScanBridge}
                 onProject={projectScanBoundaries}

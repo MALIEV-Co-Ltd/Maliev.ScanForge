@@ -1,0 +1,28 @@
+{
+  "scope": "Offline native-oracle diagnostic of the isolated rotated Split candidate; not an implementation or tolerance rule",
+  "input": "Pinned rotated dense source, cutter, and native result described by tests/fixtures/m2-native-rotated-dense-20261029/manifest.json",
+  "observation": "The candidate has 22 distinct Float32-coordinate vertices, compared with 21 native vertices. Every native vertex occurs in the candidate. The only extra candidate vertex is one Float32 step away in y from a native vertex.",
+  "candidateOnlyVertex": [
+    3.2092130184173584, -1.8834590911865234, 5.456369400024414
+  ],
+  "nearestNativeVertex": [
+    3.2092130184173584, -1.8834589719772339, 5.456369400024414
+  ],
+  "distanceMm": 1.1920928955078125e-7,
+  "oracleExperiment": "Replace only that exact candidate vertex with its observed native neighbor, then remove facets having duplicate corners and compare unordered Float32 triangle multisets.",
+  "postSnapFacetCount": 36,
+  "nativeFacetCount": 36,
+  "matchingFacets": 32,
+  "interpretation": "The extra vertex accounts for two facets after this oracle-directed replacement but does not explain the remaining four triangulation differences.",
+  "diagnosticPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-integration-experiment-20261029/tests/m2-rotated-candidate-points-diagnostic.test.ts",
+  "diagnosticSha256": "408bf5a27a01bf87867b41407cf686620e5d57e87139420a3a2b0c4edc9e135d",
+  "guardSha256": "fc4590e478d2c4a59cc91a260c34b46b16ede2a84384628626964a988dcfaea5",
+  "guardPeakBytes": 347213824,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The target point was selected from the native output; this is not an independent prediction.",
+    "The known short input segment is nonzero in exact stored geometry, so globally welding similar points would discard real detail.",
+    "No native intermediate state or general merge threshold was observed.",
+    "The candidate remains isolated and GUI/MCP/native parity is not established."
+  ]
+}

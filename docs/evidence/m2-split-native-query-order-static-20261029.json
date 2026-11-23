@@ -1,0 +1,26 @@
+{
+  "scope": "Bounded static disassembly of the candidate spatial query called by the native Split worker.",
+  "candidate": "0x140336010",
+  "body": "[[140336010, 1403361a7]]",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "evidencePath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-query-static-20261029-r1\\evidence.json",
+  "evidenceSha256": "c88ba2cb6d699fd2cef8ef9ea71788abb9a21e44897f30c247f6aaabb557b608",
+  "launcherPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-query-static-20261029-r1\\launch.json",
+  "launcherSha256": "4622b0fe60d60f46439cf330624c853fc4f48450942f48f54dc92f8aee718318",
+  "guardReceiptPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-query-static-guard-20261029-r1.json",
+  "guardReceiptSha256": "651800cb901b1c06be91711313bf770f12f7954828fb8e24af6d0df09a1ec2a8",
+  "observations": [
+    "The function compares the query box against node bounds and skips nodes without overlap.",
+    "When the node item range is empty it visits up to eight non-null child pointers in ascending slot order recursively.",
+    "Otherwise it appends pointers from the node item range to a collector list in range order."
+  ],
+  "limitations": "Static decompiler inference from one bounded code range. Construction and item insertion order, node layout and leaf criterion require independent validation; no runtime entry binding is claimed for this candidate.",
+  "entryPrefixBinding": {
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-worker-query-binding-20261029.json",
+    "sha256": "8d52cfc74eece262175afad18b42c0b672cb058552c620a93bcbc5ca795d5aec",
+    "pid": 10796,
+    "prefixBytesCompared": 32,
+    "equal": true,
+    "scope": "Both worker and query entry prefixes match the current running process; this does not verify every instruction or prove query invocation."
+  }
+}

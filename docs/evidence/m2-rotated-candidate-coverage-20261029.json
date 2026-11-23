@@ -1,0 +1,41 @@
+{
+  "scope": "Diagnostic of one pinned rotated Split fixture, not a native parity or general coverage proof",
+  "method": "Round result coordinates to Float32; sum three-dimensional triangle areas, count undirected exact-coordinate edge incidences, and sum pairwise triangle intersection areas after projection onto the source face's dominant coordinate plane. The projected intersection sum may contain floating-point noise.",
+  "projectionAxes": [0, 2],
+  "source": {
+    "facets": 2,
+    "area": 13.499999413549828,
+    "minArea": 6.749999701073311,
+    "projectedOverlap": 0,
+    "boundaryEdges": 4,
+    "nonManifoldEdges": 0
+  },
+  "native": {
+    "facets": 36,
+    "area": 13.4999994135503,
+    "minArea": 0.0937497281221448,
+    "projectedOverlap": 0,
+    "boundaryEdges": 4,
+    "nonManifoldEdges": 0
+  },
+  "isolatedCandidate": {
+    "facets": 38,
+    "area": 13.499999656312278,
+    "minArea": 1.5371179350701146e-7,
+    "projectedOverlap": 1.178777180187481e-23,
+    "boundaryEdges": 4,
+    "nonManifoldEdges": 0
+  },
+  "diagnosticPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-integration-experiment-20261029/tests/m2-rotated-candidate-coverage-diagnostic.test.ts",
+  "diagnosticSha256": "24abe5b04d8a37dc800134fc9b6083e08feab247434c53e4f25b7a01520f86e0",
+  "candidateFaceSha256": "b2188e3ec2025ad703631b52b040f026570b78be0b83a7faafc9ee11b13abe1d",
+  "candidateSplitSha256": "ad7ce89d11d389809ac85a4e4047a6286c6709761bf08865928140cf9760b038",
+  "guardSha256": "6732e9fb5f7d6877af10c0568cd168d5d98f82ed0de68b03f25068b07653768c",
+  "guardPeakBytes": 339976192,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The tiny nonzero projected overlap may reflect numerical clipping error; no exact-overlap claim is made.",
+    "Edge incidence at rounded coordinates does not establish manifoldness or seam topology in general.",
+    "The candidate differs from the native facet set and is not adopted in the application."
+  ]
+}

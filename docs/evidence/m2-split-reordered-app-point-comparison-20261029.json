@@ -1,0 +1,184 @@
+{
+  "scope": "Offline point-order comparison using app-collected concave hits reordered by inferred native tree facet order.",
+  "method": "For each source face, sort the captured app hits by observed native facet order, then pool exact endpoints in source-face order and filter globally pooled points to each face. Compare against captured native point vectors after source corners. Test app endpoint direction, reversed direction, and lexical direction.",
+  "variants": {
+    "app_endpoints": [
+      {
+        "face": 0,
+        "matchesNativePointOrder": false,
+        "actual": [
+          [2, 1, 0.5],
+          [2, 0.5, 0.5],
+          [2, 0, 0.5],
+          [1, 1, 0.5],
+          [1.5, 1, 0.5],
+          [1, 0, 0.5],
+          [0.5, 0, 0.5],
+          [0, 0, 0.5],
+          [1.5, 0, 0.5]
+        ],
+        "native": [
+          [2, 1, 0.5],
+          [2, 0.5, 0.5],
+          [2, 0, 0.5],
+          [1.5, 1, 0.5],
+          [1, 1, 0.5],
+          [1, 0, 0.5],
+          [0.5, 0, 0.5],
+          [0, 0, 0.5],
+          [1.5, 0, 0.5]
+        ],
+        "firstMismatch": 3
+      },
+      {
+        "face": 1,
+        "matchesNativePointOrder": false,
+        "actual": [
+          [1, 1, 0.5],
+          [0, 0, 0.5],
+          [1, 2, 0.5],
+          [1, 1.5, 0.5],
+          [0.5, 2, 0.5],
+          [0, 0.5, 0.5],
+          [0, 1, 0.5],
+          [0, 2, 0.5],
+          [0, 1.5, 0.5]
+        ],
+        "native": [
+          [1, 1, 0.5],
+          [0, 0, 0.5],
+          [1, 1.5, 0.5],
+          [1, 2, 0.5],
+          [0.5, 2, 0.5],
+          [0, 1, 0.5],
+          [0, 0.5, 0.5],
+          [0, 2, 0.5],
+          [0, 1.5, 0.5]
+        ],
+        "firstMismatch": 2
+      }
+    ],
+    "reversed_app_endpoints": [
+      {
+        "face": 0,
+        "matchesNativePointOrder": false,
+        "actual": [
+          [2, 0.5, 0.5],
+          [2, 1, 0.5],
+          [2, 0, 0.5],
+          [1.5, 1, 0.5],
+          [1, 1, 0.5],
+          [0.5, 0, 0.5],
+          [1, 0, 0.5],
+          [0, 0, 0.5],
+          [1.5, 0, 0.5]
+        ],
+        "native": [
+          [2, 1, 0.5],
+          [2, 0.5, 0.5],
+          [2, 0, 0.5],
+          [1.5, 1, 0.5],
+          [1, 1, 0.5],
+          [1, 0, 0.5],
+          [0.5, 0, 0.5],
+          [0, 0, 0.5],
+          [1.5, 0, 0.5]
+        ],
+        "firstMismatch": 0
+      },
+      {
+        "face": 1,
+        "matchesNativePointOrder": true,
+        "actual": [
+          [1, 1, 0.5],
+          [0, 0, 0.5],
+          [1, 1.5, 0.5],
+          [1, 2, 0.5],
+          [0.5, 2, 0.5],
+          [0, 1, 0.5],
+          [0, 0.5, 0.5],
+          [0, 2, 0.5],
+          [0, 1.5, 0.5]
+        ],
+        "native": [
+          [1, 1, 0.5],
+          [0, 0, 0.5],
+          [1, 1.5, 0.5],
+          [1, 2, 0.5],
+          [0.5, 2, 0.5],
+          [0, 1, 0.5],
+          [0, 0.5, 0.5],
+          [0, 2, 0.5],
+          [0, 1.5, 0.5]
+        ],
+        "firstMismatch": null
+      }
+    ],
+    "lexical_endpoints": [
+      {
+        "face": 0,
+        "matchesNativePointOrder": false,
+        "actual": [
+          [2, 0.5, 0.5],
+          [2, 1, 0.5],
+          [2, 0, 0.5],
+          [1, 1, 0.5],
+          [1.5, 1, 0.5],
+          [0.5, 0, 0.5],
+          [1, 0, 0.5],
+          [0, 0, 0.5],
+          [1.5, 0, 0.5]
+        ],
+        "native": [
+          [2, 1, 0.5],
+          [2, 0.5, 0.5],
+          [2, 0, 0.5],
+          [1.5, 1, 0.5],
+          [1, 1, 0.5],
+          [1, 0, 0.5],
+          [0.5, 0, 0.5],
+          [0, 0, 0.5],
+          [1.5, 0, 0.5]
+        ],
+        "firstMismatch": 0
+      },
+      {
+        "face": 1,
+        "matchesNativePointOrder": false,
+        "actual": [
+          [1, 1, 0.5],
+          [0, 0, 0.5],
+          [1, 1.5, 0.5],
+          [1, 2, 0.5],
+          [0.5, 2, 0.5],
+          [0, 0.5, 0.5],
+          [0, 1, 0.5],
+          [0, 2, 0.5],
+          [0, 1.5, 0.5]
+        ],
+        "native": [
+          [1, 1, 0.5],
+          [0, 0, 0.5],
+          [1, 1.5, 0.5],
+          [1, 2, 0.5],
+          [0.5, 2, 0.5],
+          [0, 1, 0.5],
+          [0, 0.5, 0.5],
+          [0, 2, 0.5],
+          [0, 1.5, 0.5]
+        ],
+        "firstMismatch": 5
+      }
+    ]
+  },
+  "limitations": [
+    "Uses native-observed facet order rather than executing tree construction in the application.",
+    "The expected point vectors and records come from separate previews.",
+    "Exact-coordinate pooling models this small control only; native tolerance and source corner identity remain unverified.",
+    "No production behavior or native parity is established."
+  ],
+  "sourceReceipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-app-reordered-concave-points-20261029.json",
+  "sourceReceiptSha256": "14089ebe2352814325c24b9eb73e393b9dcbf609e21108dbf8f22255dcbe6478",
+  "guardPeakBytes": 15040512,
+  "cleanupConfirmed": true
+}

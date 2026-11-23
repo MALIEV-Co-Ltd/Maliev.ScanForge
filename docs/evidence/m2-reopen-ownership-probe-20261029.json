@@ -1,0 +1,38 @@
+{
+  "scope": "Node worker-thread memory model of early worker array-reference release; not browser acceptance",
+  "script": "tests/m2-reopen-ownership-probe-local.cjs",
+  "scriptSha256": "5386c70147390342ba2875d8e7c8941c6a8fad59be21dfc28b414a93876e1045",
+  "numericSizesBytes": [266454504, 45011616, 128100312, 21598488],
+  "verified": "All modes compare every reconstructed number with Object.is, including signed zero.",
+  "model": "Worker constructs four numeric arrays and matching Float64 buffers. Baseline transfers all, terminates, and main reconstructs. Streaming retains worker arrays while main reconstructs one buffer at a time. Stream-release drops each worker array reference before sending its buffer; no explicit garbage collection is requested.",
+  "baseline": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1017585664,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "elapsedSeconds": 1.0373490000201855
+  },
+  "stream": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1526140928,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "elapsedSeconds": 1.0462994999834336
+  },
+  "streamRelease": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1526202368,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "elapsedSeconds": 1.041578300006222
+  },
+  "limitations": [
+    "Node synthetic worker model is not Chromium or an application memory test.",
+    "Dropping a reference does not prove its allocation was collected or returned to the operating system.",
+    "No aliases, source graph traversal, old project, validation failures, cancellation or compressed data are modeled.",
+    "A different representation, ownership scheme or garbage-collection timing remains untested."
+  ]
+}

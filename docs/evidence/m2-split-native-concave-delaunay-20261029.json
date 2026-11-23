@@ -1,0 +1,24 @@
+{
+  "scope": "Same-preview native concave control input and constructor comparison with Delaunator.",
+  "capture": "docs/evidence/m2-split-native-concave-triangulation-20261029.json",
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-concave-delaunay-20261029.json",
+      "sha256": "8527ae979177ff7cda5f4379f97250cc01aa06b7434ae1043e38b05efe175d31"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-concave-delaunay-20261029.mjs",
+      "sha256": "0c4a7c82498e0ae538517b812f1e053d34e0e5a00fa7c1d748a4231a42deb307"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-concave-delaunay-guard-20261029.json",
+      "sha256": "9f2f455d096b4a0f6ad111735e8d2005b76bbd1e8ce359bdb8d915254d52dc49"
+    }
+  ],
+  "observations": "Delaunator matches 15/17 and 17/17 native constructor triangles. The differing two first-face triangles are a diagonal choice in the rectangle at indices 6,7,8,11, which is exactly cocircular. Native initial and final index vectors are identical in both faces. The same-run captured 3D coordinates and initial indices reconstruct all 34 facets of the earlier native concave STL export as an unordered multiset.",
+  "limitations": [
+    "One concave fixture does not establish general native tie rule or constraint behavior.",
+    "Index equality does not capture native seam identity, winding, or GUI/MCP lifecycle.",
+    "No product modification or acceptance is claimed."
+  ]
+}

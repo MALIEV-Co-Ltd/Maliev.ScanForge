@@ -1,0 +1,23 @@
+{
+  "scope": "Symbolic algebra check for inferred data flow of native candidate 0x140330db0.",
+  "predicateEvidenceSha256": "476f37198c100fd552f9e4af92bca04a417c7afb8f1e36c5cbe48d00f018cc39",
+  "multiplyEvidenceSha256": "a4054ddd90029aa1cba0c8e06cd8368565aa297fce941c2ffece19c60e6fa54c",
+  "method": "Interpret helpers 0x140330700 and 0x140333630 as subtraction and addition and 0x140330b00 as limb multiplication. Expand the expression assembled by the candidate helper and compare it with the translated 3x3 incircle determinant using symbolic polynomial algebra.",
+  "expression": "dxA*(dyB*zC-dyC*zB)+dxB*(dyC*zA-dyA*zC)+dxC*(dyA*zB-dyB*zA), zQ=Q.x^2+Q.y^2-P.x^2-P.y^2",
+  "symbolicDifference": "0",
+  "conclusion": "Under the stated helper interpretation, the assembled polynomial equals the translated incircle determinant. The native return negates its final sign.",
+  "limitations": [
+    "Static decompiler and assembly analysis only; numeric record representation and all exceptional paths require runtime validation.",
+    "The finding does not prove a particular tie break, point ordering, constraints, or full native triangulation equivalence."
+  ],
+  "symbolicScriptPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-incircle-symbolic-20261029.py",
+  "symbolicScriptSha256": "26953ecf63ecd779db5d6a1c0542c60947ee743ab7cfb93bac98f06ba6d4ffa3",
+  "guardReceiptPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-incircle-symbolic-guard-20261029.json",
+  "guardReceiptSha256": "1ef42bf4f2883b03e932bac8db350f4e28c7f76147c06b70ed6548c320aebe1a",
+  "staticArithmeticPaths": [
+    "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-native-arithmetic-static-20261029-r1\\evidence.json",
+    "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-multiply-static-20261029-r1\\evidence.json",
+    "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-predicate-static-20261029-r2\\evidence.json"
+  ],
+  "status": "Derived from the analyzed instruction and data flow, conditional on the arithmetic record interpretation; native invocation and tie handling remain unverified."
+}

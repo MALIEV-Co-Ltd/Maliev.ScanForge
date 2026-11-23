@@ -1,0 +1,22 @@
+{
+  "scope": "Instrumented isolated application candidate on the pinned rotated Split fixture; no native runtime instrumentation",
+  "method": "Copy the isolated candidate, add observation-only events recording whether experimental point ordering is enabled and when its directed-edge safety fallback is invoked, then run the existing oracle-directed facet diagnostic.",
+  "events": [
+    "The first source face enabled experimental ordering and processed eight segments.",
+    "The second source face enabled experimental ordering and processed nine segments, then triggered the directed-edge safety fallback.",
+    "The fallback reprocessed that second face without experimental ordering."
+  ],
+  "interpretation": "The remaining four post-oracle facet differences lie in the second source face, where the candidate fell back. This is a reason to investigate its cavity topology, not a reason to disable the safety check.",
+  "tracePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-rotated-branch-trace-20261029/rotated-branch-trace.json",
+  "traceSha256": "07f779b145ea30965c4ab38cba7d36987265bb2d35c0b18bab3e55f4326fa2ee",
+  "instrumentedFaceSha256": "6d13991e01554d52b9679478937ca00f8a70d548e50a137896802aa607b6b630",
+  "diagnosticSha256": "a92ffa472e842f73c061ce461ebc618b4493581e44e0f80a3c97266964e88593",
+  "guardSha256": "9161e04c05d9e686f45384720f198145dda65387654aceac9ba4ed4c3693cec1",
+  "guardPeakBytes": 338685952,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The fallback is application behavior, not observed native behavior.",
+    "Instrumentation was applied only in a copied experimental tree.",
+    "The native facet result was used by the diagnostic; no independent merge rule or native equivalence has been established."
+  ]
+}

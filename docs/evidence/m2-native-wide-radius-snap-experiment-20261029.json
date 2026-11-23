@@ -1,0 +1,27 @@
+{
+  "scope": "Isolated native-order and offline postprocessing hypothesis against five native Split controls",
+  "candidate": "m2-cavity-integration-experiment-20261029",
+  "nativeOrder": {
+    "peakJobBytes": 356450304,
+    "wideBelow": "failed: five application facets versus four native facets",
+    "guardSha256": "c2d1fc76051117fe34df762900e76dd7b15ec1f365c78b204bc8b5d07b703c25",
+    "wideAbove": "matched unordered Float32 facets"
+  },
+  "offlineSnap": {
+    "smallAbove": "failed: three facets versus two native facets",
+    "rule": "For each output corner in the isolated candidate, snap within 0.001 mm of a source corner, then discard zero-area triangles; planar fixture only",
+    "peakJobBytes": 348581888,
+    "wideBelow": "matched unordered Float32 facets",
+    "guardSha256": "2c9a67d912599726fcb80fc7e212aa32afbc673d9bcfc33e5eb314d85879353e",
+    "wideAbove": "matched unordered Float32 facets",
+    "smallAt": "failed: three facets versus two native facets",
+    "smallBelow": "failed: three facets versus two native facets"
+  },
+  "cleanupConfirmed": true,
+  "limitations": [
+    "Postprocessing uses a hypothesis and is not an implementation or evidence of native internal logic",
+    "Facet comparisons ignore ordering and use Float32 coordinates",
+    "No geometry, history, ownership, GUI or MCP behavior changed",
+    "Native viewport was white; experimental candidate remains isolated"
+  ]
+}

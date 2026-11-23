@@ -1,0 +1,23 @@
+{
+  "scope": "Bounded static reference scan and instruction slices of a runtime-derived native image; no native operation observed",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "method": "Scan PE-backed sections for the specific F2 0F 10 RIP-relative MOVSD pattern targeting 0x14126aee8; independently decode the matched bytes and two known instruction-start slices around 0x14067bbb6 and 0x14067beff with Capstone 5.0.6.",
+  "patternMatches": 106,
+  "observations": [
+    "The second Split-related caller candidate loads the 0.001 double into XMM6 and passes it in XMM2 to 0x14032a500 at 0x14067bbd0.",
+    "A later instruction slice calls an indirect function using a stored Float32 value, converts its Float32 return to double, and compares it with XMM6 at 0x14067bf1f. If the return is greater, it repeats the call and assigns the converted result to XMM6.",
+    "The retained Ghidra instruction list has no intervening XMM6 writes between the load and comparison, though the code paths and the indirect function's semantics are not established."
+  ],
+  "interpretation": "This supports a separate comparison involving the constant on an alternate Split-related candidate path. It does not establish a 0.001 mm point-search radius or the path used by the scaled fixture.",
+  "slicePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-001-rip-references-20261029.json",
+  "sliceSha256": "1d4bb42e4362e66c50e5115fdcb20bc99842cc876c17cda6aaef0abd5aed18d3",
+  "scriptSha256": "0d0a66bae7a43ff4fb8becf8e9b5356142e008b69fe2a62a9e7a0e0803ecca66",
+  "guardSha256": "7f0325941cfcec788aaed9ebec08790f1c43af542789242e31997aef1f9e39fa",
+  "guardPeakBytes": 89067520,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The pattern scan is not an exhaustive xref analysis and may include bytes outside actual instructions.",
+    "The two focus slices decode from retained Ghidra instruction starts; function boundaries, control-flow reachability, indirect-call behavior and units remain uncertain.",
+    "No production change, native fixture result, GUI/MCP comparison or parity is established."
+  ]
+}

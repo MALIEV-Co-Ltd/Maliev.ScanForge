@@ -1,0 +1,25 @@
+{
+  "scope": "Rotated dense Split lifecycle on the retained seam-change build; GUI/public MCP parity, not native facet equivalence",
+  "buildId": "scanforge-a00193930136ca3d",
+  "sourceFileSha256": "b33ffb30fdc5704165f1017584c93f8ff68628c733ae05309e8cf7e07fa2f1a6",
+  "cutterFileSha256": "eec41aa1580de2960509d206379fe9c5ae0a79b5b6a248ccf2f218a2efecdf01",
+  "nativeResultSha256": "05ea52970253179382885d3ea716b8cc5b88f9e1b68e0c5f796abed39e69b9d3",
+  "applicationFacets": 38,
+  "nativeFacets": 36,
+  "outputArea": 13.499999413549828,
+  "guiMcpGeometry": true,
+  "undoRedo": true,
+  "binaryReopen": true,
+  "mcpHeldResultCancellation": true,
+  "guiCloseCancellation": true,
+  "pageErrors": [],
+  "peakJobBytes": 918712320,
+  "cleanupConfirmed": true,
+  "guardSha256": "a6500810ca91ee0901dd453def6b94e79bf92c85d889fc40b82c439f40f9f0b4",
+  "limitations": [
+    "No native facet equivalence; 36 versus 38 facets",
+    "No rendered seam or GUI file-open verification",
+    "Normal precision diagnostic assumes an axis-aligned normal and is not applicable to this rotated fixture",
+    "The retained build predates later unrelated changes"
+  ]
+}

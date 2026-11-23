@@ -1,0 +1,160 @@
+{
+  "scope": "Independent cyclic square-source native PointEvaluator tree comparison against the cutter-derived construction hypothesis.",
+  "sourceSha256": "683913baca0fe49e7d1ac803030896bcf65d6da418704e9c129084cd323c5a09",
+  "nativeRootBounds": [
+    -1.0099999904632568, -1.0099999904632568, -1.5099999904632568,
+    3.009999990463257, 3.009999990463257, 2.509999990463257
+  ],
+  "nativeLeaves": [
+    {
+      "path": [0],
+      "bounds": [
+        1.0, 1.0, 0.5, 3.009999990463257, 3.009999990463257, 2.509999990463257
+      ],
+      "inputFacetIndices": [0, 1]
+    },
+    {
+      "path": [1],
+      "bounds": [
+        -1.0099999904632568, 1.0, 0.5, 1.0, 3.009999990463257, 2.509999990463257
+      ],
+      "inputFacetIndices": [0, 1]
+    },
+    {
+      "path": [2],
+      "bounds": [
+        1.0, -1.0099999904632568, 0.5, 3.009999990463257, 1.0, 2.509999990463257
+      ],
+      "inputFacetIndices": [0, 1]
+    },
+    {
+      "path": [3],
+      "bounds": [
+        -1.0099999904632568, -1.0099999904632568, 0.5, 1.0, 1.0,
+        2.509999990463257
+      ],
+      "inputFacetIndices": [0, 1]
+    },
+    {
+      "path": [4],
+      "bounds": [
+        1.0, 1.0, -1.5099999904632568, 3.009999990463257, 3.009999990463257, 0.5
+      ],
+      "inputFacetIndices": [0, 1]
+    },
+    {
+      "path": [5],
+      "bounds": [
+        -1.0099999904632568, 1.0, -1.5099999904632568, 1.0, 3.009999990463257,
+        0.5
+      ],
+      "inputFacetIndices": [0, 1]
+    },
+    {
+      "path": [6],
+      "bounds": [
+        1.0, -1.0099999904632568, -1.5099999904632568, 3.009999990463257, 1.0,
+        0.5
+      ],
+      "inputFacetIndices": [0, 1]
+    },
+    {
+      "path": [7],
+      "bounds": [
+        -1.0099999904632568, -1.0099999904632568, -1.5099999904632568, 1.0, 1.0,
+        0.5
+      ],
+      "inputFacetIndices": [0, 1]
+    }
+  ],
+  "predictedComparisons": [
+    {
+      "control": "cyclic-source",
+      "slot": 0,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "cyclic-source",
+      "slot": 1,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "cyclic-source",
+      "slot": 2,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "cyclic-source",
+      "slot": 3,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "cyclic-source",
+      "slot": 4,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "cyclic-source",
+      "slot": 5,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "cyclic-source",
+      "slot": 6,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    },
+    {
+      "control": "cyclic-source",
+      "slot": 7,
+      "rootExact": true,
+      "boundsExact": true,
+      "facetsExact": true
+    }
+  ],
+  "method": "Read the live named source PointEvaluator tree; match each leaf triangle to the hash-pinned cyclic STL. Apply the previously recorded construction hypothesis without changing its parameters and compare its root, child bounds and ordered triangle membership.",
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-cyclic-source-live-tree-read-20261029.py",
+      "sha256": "bea8ca31cc9d0fb3103720849c4fa31174b84092d7a23a7e349b55e6cf626a61"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-cyclic-source-live-tree-read-20261029.json",
+      "sha256": "b70a686d71b85dc1551e911c87292b249598c87bb7480043c6015ac9e98d362e"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-cyclic-source-live-tree-read-guard-20261029.json",
+      "sha256": "5f7f2b6dc317f47a798845d2e080abc61940da3e30b8116311cec9235ec3d4c9"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-tree-construction-independent-20261029.mjs",
+      "sha256": "bdd1986823934ddbbf2894dac6e16f592d1f635f06ef18988b8aca85b0bd3e76"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-tree-construction-independent-20261029.json",
+      "sha256": "eaba55857d0be20dbc6c217cb484392207ca65363cf1c122c877f72f9cf57a11"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-tree-construction-independent-guard-20261029.json",
+      "sha256": "5344cf0cdaad1c4f43817c322630ba7ee2c652dd0acb0b0ebf1617afb9959400"
+    }
+  ],
+  "limitations": [
+    "One independent planar two-triangle fixture, in the same native process; observed tree has only one subdivision.",
+    "No general proof for deeper trees, non-axis-aligned geometry, larger meshes, arbitrary scales, concurrency or native intersection endpoint ordering.",
+    "Read-only observation and offline construction; no application behavior changed."
+  ]
+}

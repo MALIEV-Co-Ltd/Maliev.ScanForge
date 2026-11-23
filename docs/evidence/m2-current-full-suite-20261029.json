@@ -1,0 +1,59 @@
+{
+  "scope": "Full Vitest suite on the current dirty M2 worktree, excluding .resources.",
+  "checkout": "C:/Users/Shoung/.codex/worktrees/m2-split-precision/Maliev.ScanForge",
+  "baseCommit": "b3c23e97660e0a41d6b30327704f3c9217d74410",
+  "sourceAndTestInventory": {
+    "scope": "Sorted source and test paths plus per-file SHA-256 before or after guarded suite; .resources excluded.",
+    "files": 2040,
+    "sha256": "dfba7507218a30e32a1dd8b3689bbd151a405452bc5e792adf4978be79db8be1"
+  },
+  "preAndPostInventoryMatch": true,
+  "vitestReported": {
+    "success": true,
+    "numTotalTestSuites": 1041,
+    "numPassedTestSuites": 1041,
+    "numFailedTestSuites": 0,
+    "numTotalTests": 50608,
+    "numPassedTests": 50532,
+    "numFailedTests": 0,
+    "numPendingTests": 76
+  },
+  "expectedFailures": {
+    "count": 4,
+    "sourceFiles": [
+      {
+        "path": "tests/m2-native-cyclic-split.test.ts",
+        "sha256": "0385dddacdf9012aaa7598c112d656289980033abcf906188671835bf9db64f1"
+      },
+      {
+        "path": "tests/m2-native-concave-split.test.ts",
+        "sha256": "eea70447ce8a438f17e770f7184ecd0854de9109ccccb549c8c7af60f486a1d2"
+      },
+      {
+        "path": "tests/m2-native-convex-split.test.ts",
+        "sha256": "9c828b558757ea0c10fc924cdb17645a3ff6309a247e8afd317799bf9e6016d5"
+      },
+      {
+        "path": "tests/scan-split-finite-seams.test.ts",
+        "sha256": "d71b5db9f4dbdca3009d158d527a5597c5a8841ef25b6a487c238660a51935ae"
+      }
+    ],
+    "interpretation": "Vitest reports these it.fails assertions as passed because each still fails. Three compare native Split facets and one covers Float32 seam behavior; they are not successful parity or seam assertions."
+  },
+  "guard": {
+    "peakJobBytes": 1365278720,
+    "jobLimitBytes": 4294967296,
+    "elapsedSeconds": 343.89959929999986,
+    "cleanupConfirmed": true
+  },
+  "resultReceipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-current-full-suite-result-20261029.json",
+  "resultReceiptSha256": "ec2cc9e3c6f665254875885283c4a5274e266c7bd5889e49094f8c75794458fe",
+  "guardReceipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-current-full-suite-guard-20261029.json",
+  "guardReceiptSha256": "3e8efbf8ef40bd07406048e49a3649abfb1ab63e72db2aea0fc951368ec0ba9d",
+  "limitations": [
+    "Dirty working tree; identity is the source/test inventory, not a clean commit.",
+    "76 skipped cases and four expected failures are not passing acceptance evidence.",
+    "Suite report suite totals follow the Vitest JSON reporter and are not a count of unique test files.",
+    "The unit suite does not prove native Split equivalence, current rendered GUI/MCP lifecycle, hosted CI, or M2 closure."
+  ]
+}

@@ -2,6 +2,8 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { writeAutomaticProjectBackup } from "../src/automatic-project-backup";
 import { writeBackup, IntervalBackupController } from "../src/project-backup";
 import { encodeProjectInBackground } from "../src/project-encoding-client";
+import { digestEntityGeometry } from "../src/geometry-digest";
+import type { Entity } from "../src/types";
 import type { ProjectSession } from "../src/project-file";
 import {
   beginPriorityScanPreparation,
@@ -121,6 +123,25 @@ it("holds speculation behind its own lease without self cancellation, and yields
   await vi.advanceTimersByTimeAsync(250);
   expect(observe).toHaveBeenCalledOnce();
   stop();
+});
+
+it("preempts an automatic backup while an agent hashes geometry", async () => {
+  const saving = writeAutomaticProjectBackup("project", session, () => true);
+  await flush();
+  expect(Encoder.instances).toHaveLength(1);
+  const digest = digestEntityGeometry({
+    id: "scan",
+    kind: "mesh",
+    positions: [0, 1, 2],
+    color: "#fff",
+    opacity: 1,
+    visible: true,
+  } as Entity);
+  expect(await saving).toBe(false);
+  expect(Encoder.instances[0].terminate).toHaveBeenCalledOnce();
+  expect(writeBackup).not.toHaveBeenCalled();
+  await vi.runAllTimersAsync();
+  expect((await digest).buffers[0].elements).toBe(3);
 });
 
 it("abandons an unresolved thumbnail on priority and removes the subscription", async () => {

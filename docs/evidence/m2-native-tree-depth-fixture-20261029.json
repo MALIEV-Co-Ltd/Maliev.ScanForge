@@ -1,0 +1,50 @@
+{
+  "scope": "Prepared native Split depth fixture and offline root-child prediction.",
+  "fixtureDirectory": "C:/repo/alignment-example-files/m2-native-tree-depth-control-20261029",
+  "manifest": {
+    "name": "grid-128.stl",
+    "facets": 128,
+    "bounds": [-2, -2, 0.5, 2, 2, 0.5],
+    "sha256": "e8609260000042e973da8557b7c53c3ebccf6193918768f8f4505791d14b3ec0",
+    "purpose": "Exercise a cached native facet tree with more than 25 intersecting references per root child; actual construction and settings must be observed.",
+    "source": {
+      "name": "vertical-source.stl",
+      "facets": 2,
+      "sha256": "930d69565f9b94989a465b7a5f4b4b79f48da8f0d1410c2b21134eea504b057e",
+      "bounds": [-2.25, 0.125, -1, 2.25, 0.125, 2]
+    }
+  },
+  "predictedChildFacetReferences": [50, 49, 49, 50, 50, 49, 49, 50],
+  "predictedRootBounds": [
+    -2.009999990463257, -2.009999990463257, -1.5099999904632568,
+    2.009999990463257, 2.009999990463257, 2.509999990463257
+  ],
+  "method": "Static Float32 root-cube hypothesis and Three.js triangle-box intersection; no native execution.",
+  "inputReadiness": "Window accessibility exposed the expected existing scene; a single attempt to close its Edit dialog failed with GetCursorPos access denied. No import or native operation was performed.",
+  "guardPeakBytes": 28106752,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "Offline prediction uses inferred rounding, triangle-box and subdivision rules; it is not a native observation.",
+    "No claim of fixture suitability, native processing, or output parity until the actual import and preview are observed.",
+    "No application or MCP behavior changed."
+  ],
+  "applicationControl": {
+    "test": "C:/Users/Shoung/.codex/worktrees/m2-split-precision/Maliev.ScanForge/tests/m2-split-dense-cutter.test.ts",
+    "result": "The shared Split operation passed the pinned dense-cutter control with one component, no nonmanifold edges, positive oriented facets, conserved signed projected area and unchanged inputs.",
+    "guardPeakBytes": 343126016,
+    "cleanupConfirmed": true,
+    "limitation": "Signed area does not prove absence of compensating overlaps or gaps; no GUI/MCP or native comparison was performed.",
+    "testSha256AtOriginalRun": "7bb334a8dc08d8c6e06b6575a439536f85b29c1af8c1797e9ae4c5cf6b738056"
+  },
+  "applicationCoverageFollowup": {
+    "test": "C:/Users/Shoung/.codex/worktrees/m2-split-precision/Maliev.ScanForge/tests/m2-split-dense-cutter.test.ts",
+    "testSha256": "2c3eda2d775ed1392a8bffb2242185855d9d76d769b9d3af5429e9d558e6a9ec",
+    "result": "Two tests pass: the clipping check distinguishes shared edges from identical overlapping triangles, and every output corner lies within the source rectangle and plane, all output facets have positive projected orientation, their signed area equals the rectangle, and every pair has intersection area below 1e-10 square units.",
+    "guardPeakBytes": 349552640,
+    "cleanupConfirmed": true,
+    "limitations": [
+      "Floating-point pairwise clipping uses a per-pair tolerance; this single control is not a proof for arbitrary meshes.",
+      "No native comparison or new rendered GUI/public-MCP replay was performed."
+    ]
+  }
+}

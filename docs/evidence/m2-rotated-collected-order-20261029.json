@@ -1,0 +1,32 @@
+{
+  "scope": "Isolated application collector ordering near one pinned rotated Split contact; no native traversal or point-tree observation",
+  "method": "Deduplicate the pinned source's exact coordinate triples, collect precise cutter hits with the experimental candidate, and enumerate endpoints in the face-then-hit ordering used for its point-order hypothesis. Retain endpoints within the static candidate radius of the previously traced source-edge contact.",
+  "sourceVertices": 4,
+  "candidateRadius": 0.00009999999747378752,
+  "nearbyEndpointOccurrences": 4,
+  "firstOccurrence": {
+    "sourceFace": 0,
+    "cutterFace": 73,
+    "endpoint": 0,
+    "roundsToNativeVertex": true
+  },
+  "secondOccurrence": {
+    "sourceFace": 1,
+    "cutterFace": 70,
+    "endpoint": 0,
+    "separationMm": 2.1553994326607775e-8,
+    "roundsToNativeVertex": false
+  },
+  "interpretation": "The native-matching point appears first in this isolated application's ordering, making first-seen nearby-point reuse a concrete hypothesis. This does not establish native ordering, tree membership, or a correct tolerance policy.",
+  "diagnosticPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-projection-trace-20261029/tests/m2-rotated-collected-order-diagnostic.test.ts",
+  "diagnosticSha256": "629448b5ec675d75b8f784b8b05b50eaf3bfe8d6badf6e002445c451d8a9dc4a",
+  "resultSha256": "833ce0e4d9aaf8e71578ee34802dab1d51c5c0797832ba6c938d5c4e5adf492e",
+  "guardSha256": "5a2cc4559c1a8abaa5090db008ffdfeb90ca589f5957fbbe0cf557953e399c9c",
+  "guardPeakBytes": 336732160,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The collector and traversal ordering are reconstructed hypotheses and may differ from native.",
+    "The matching point is identified using the native output; the stored contact segment is nonzero.",
+    "No application change, GUI/MCP or native equivalence is established."
+  ]
+}

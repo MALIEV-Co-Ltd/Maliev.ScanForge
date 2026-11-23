@@ -475,11 +475,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     c: CommandContext,
     fit = true,
   ) {
-    const s = host.snapshot(),
-      blob = c.artifactBlob(a.artifactId),
+    const blob = c.artifactBlob(a.artifactId),
       name = (blob as File).name ?? a.name ?? "import.stl",
-      extension = name.split(".").pop()?.toLowerCase();
-    if (extension === "scanforge" || extension === "json") {
+      extension = name.split(".").pop()?.toLowerCase(),
+      isProject = extension === "scanforge" || extension === "json",
+      settings = isProject ? undefined : host.snapshot().settings;
+    if (isProject) {
       if (!a.replace) throw new Error("Project import requires replace:true.");
       const session = await decodeProjectFile(blob, c.signal),
         project = session.project,
@@ -566,10 +567,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       entity = await prepareImportedScan(new File([blob], name), {
         unit: a.unit ?? "mm",
         placeAtOrigin:
-          a.placeAtOrigin ?? s.settings?.importPlaceAtOrigin === true,
+          a.placeAtOrigin ?? settings?.importPlaceAtOrigin === true,
         ascAttributes:
           a.ascAttributes ??
-          s.settings?.importAscAttributes ??
+          settings?.importAscAttributes ??
           DEFAULT_ASC_ATTRIBUTES,
         signal: c.signal,
         onProgress: (fraction) => c.progress(fraction, "Importing scan"),

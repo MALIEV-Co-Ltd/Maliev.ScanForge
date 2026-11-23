@@ -1,0 +1,31 @@
+{
+  "scope": "Scaled Split control recorded before native observation; experimental fitted rule is not a production change",
+  "sourceSha256": "801dceabede6cb79df0d9bc0c9855edc5b1131fabe3e56ff7c746b6c6bbaa04e",
+  "cutterSha256": "13f6e668866e0585394359d2dc2bb86ac1bdce9e1c89ceac13db7ef4c1a1d7ee",
+  "fittedPrediction": {
+    "rule": "Snap candidate vertices within 0.001 mm of source corners, then omit triangles with area below 0.0001 square mm",
+    "rawFacets": 5,
+    "predictedFacets": 3,
+    "predictedPositions": [
+      10, 0, 0, 0, 10, 0, 0.00011000000085914508, 5, 0, 0, 10, 0, 0, 0, 0,
+      0.00011000000085914508, 5, 0, 10, 0, 0, 0.00011000000085914508, 5, 0, 0,
+      0, 0
+    ],
+    "guardPeakBytes": 321069056,
+    "cleanupConfirmed": true
+  },
+  "retainedSeamBuild": {
+    "guiMcpGeometry": true,
+    "facets": 5,
+    "outputAreaSquareMm": 50,
+    "undoRedo": true,
+    "binaryReopen": true,
+    "mcpHeldResultCancellation": true,
+    "guiCloseCancellation": true,
+    "pageErrors": [],
+    "guardPeakBytes": 920711168,
+    "cleanupConfirmed": true,
+    "limitation": "Retained test build predates unrelated changes; this is not native parity evidence"
+  },
+  "nativeOutput": "not observed at recording time"
+}

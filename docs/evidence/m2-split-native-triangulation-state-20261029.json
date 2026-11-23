@@ -1,0 +1,474 @@
+{
+  "scope": "Native triangulation index-vector snapshots and constraint arguments on the two-facet convex Split preview.",
+  "sourceEvidence": "docs/evidence/m2-split-native-paired-point-order-20261029.json",
+  "identityReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-triangle-state-binding-20261029.json",
+  "method": "Frida hooks on 0x14032d360, 0x14032c400, and 0x14032c100. Read 32-bit triples from the two pointers at object offsets 0x188 and 0x190 after return, with a 1200-byte bound. Record up to 40 packed constraint inputs. Initial snapshots are after 0x14032d360 returns; final snapshots are after 0x14032c100 returns.",
+  "scriptSha256": "3cd1c2b76b2c35c327aeb8b5b78d84c30e924ba65e339fdcd81d1e115f58dc01",
+  "reaEvidence": {
+    "evidence_id": "ev_3d838a2caff9e104925716c47456ef04072cbfee4d04b93556aa1c316e10ba6a",
+    "subject": null,
+    "provider": {
+      "id": "frida",
+      "name": "Frida",
+      "version": null
+    },
+    "analysis_profile": null,
+    "predicate_type": "rea.frida.instrumentation-observation",
+    "operation": "frida_session_status",
+    "parameters": {
+      "session_id": "6f1b18b8-e887-42f8-ba76-c648a11ec41a"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "session_id": "6f1b18b8-e887-42f8-ba76-c648a11ec41a",
+      "device_id": "local",
+      "state": "running",
+      "target": "QuickSurface.exe (pid 10796)",
+      "pid": 10796,
+      "mode": "attach",
+      "scripts": [
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "name": "rea-591186e6-c492-4b72-a88f-b5fc7a279853"
+        }
+      ],
+      "messages": [
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "ready",
+            "pid": 10796,
+            "base": "0x140000000"
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "final",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                3,
+                2,
+                0
+              ],
+              [
+                5,
+                1,
+                2
+              ],
+              [
+                4,
+                2,
+                3
+              ],
+              [
+                7,
+                4,
+                3
+              ],
+              [
+                5,
+                2,
+                4
+              ],
+              [
+                7,
+                5,
+                4
+              ],
+              [
+                7,
+                1,
+                5
+              ],
+              [
+                7,
+                3,
+                6
+              ],
+              [
+                7,
+                6,
+                1
+              ]
+            ],
+            "bytes": 108
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "initial",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                3,
+                2,
+                0
+              ],
+              [
+                5,
+                1,
+                2
+              ],
+              [
+                4,
+                2,
+                3
+              ],
+              [
+                7,
+                4,
+                3
+              ],
+              [
+                5,
+                2,
+                4
+              ],
+              [
+                7,
+                5,
+                4
+              ],
+              [
+                7,
+                1,
+                5
+              ],
+              [
+                7,
+                3,
+                6
+              ],
+              [
+                7,
+                6,
+                1
+              ]
+            ],
+            "bytes": 108
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x400000003"
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x400000005"
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x700000005"
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x700000006"
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "final",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                3,
+                2,
+                0
+              ],
+              [
+                5,
+                1,
+                2
+              ],
+              [
+                4,
+                2,
+                3
+              ],
+              [
+                7,
+                4,
+                3
+              ],
+              [
+                5,
+                2,
+                4
+              ],
+              [
+                7,
+                5,
+                4
+              ],
+              [
+                7,
+                1,
+                5
+              ],
+              [
+                7,
+                3,
+                6
+              ],
+              [
+                7,
+                6,
+                1
+              ]
+            ],
+            "bytes": 108
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "final",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                5,
+                0,
+                2
+              ],
+              [
+                5,
+                1,
+                0
+              ],
+              [
+                7,
+                6,
+                5
+              ],
+              [
+                6,
+                1,
+                5
+              ],
+              [
+                6,
+                3,
+                1
+              ],
+              [
+                7,
+                3,
+                6
+              ],
+              [
+                7,
+                2,
+                4
+              ],
+              [
+                7,
+                4,
+                3
+              ],
+              [
+                7,
+                5,
+                2
+              ]
+            ],
+            "bytes": 108
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "initial",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                5,
+                0,
+                2
+              ],
+              [
+                5,
+                1,
+                0
+              ],
+              [
+                7,
+                6,
+                5
+              ],
+              [
+                6,
+                1,
+                5
+              ],
+              [
+                6,
+                3,
+                1
+              ],
+              [
+                7,
+                3,
+                6
+              ],
+              [
+                7,
+                2,
+                4
+              ],
+              [
+                7,
+                4,
+                3
+              ],
+              [
+                7,
+                5,
+                2
+              ]
+            ],
+            "bytes": 108
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x600000005"
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x600000003"
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x700000004"
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "constraint",
+            "object": "0x15e110",
+            "packed": "0x700000005"
+          }
+        },
+        {
+          "script_id": "591186e6-c492-4b72-a88f-b5fc7a279853",
+          "type": "send",
+          "payload": {
+            "kind": "final",
+            "object": "0x15e110",
+            "triangles": [
+              [
+                5,
+                0,
+                2
+              ],
+              [
+                5,
+                1,
+                0
+              ],
+              [
+                7,
+                6,
+                5
+              ],
+              [
+                6,
+                1,
+                5
+              ],
+              [
+                6,
+                3,
+                1
+              ],
+              [
+                7,
+                3,
+                6
+              ],
+              [
+                7,
+                2,
+                4
+              ],
+              [
+                7,
+                4,
+                3
+              ],
+              [
+                7,
+                5,
+                2
+              ]
+            ],
+            "bytes": 108
+          }
+        }
+      ],
+      "messages_truncated": false
+    },
+    "confidence": "observed",
+    "authority": "external-service",
+    "environment": null,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "The target operating system and architecture were not reported by this observation."
+    ],
+    "relationship_coverage": null,
+    "locations": [],
+    "evidence_links": []
+  },
+  "observations": "For each of two per-face invocations, the nine index triples observed after constructor return were unchanged after the four observed constraint calls and subsequent finalizer call. Additional finalizer events occur inside construction and precede initial snapshots.",
+  "limitations": [
+    "Object layout and packed constraint interpretation derive from static decompilation and require further controls.",
+    "The paired point mapping was captured during a separate preview; allocator effects and sequence repeatability are not established.",
+    "The instrumented output was not exported; GUI/MCP parity remains open.",
+    "Only one manufactured convex fixture is covered."
+  ]
+}

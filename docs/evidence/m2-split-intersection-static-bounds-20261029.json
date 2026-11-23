@@ -1,0 +1,44 @@
+{
+  "scope": "Bounded static analysis attempts for the native triangle intersection candidate 0x140b3b3c0.",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "attempts": [
+    {
+      "analysisWindow": "full",
+      "instructionCount": 14918,
+      "lastRecordedInstruction": "140b4b3be",
+      "decompileCompleted": false,
+      "decompilerError": "Low-level Error: Flow exceeded maximum allowable instructions",
+      "peakJobBytes": 782331904,
+      "cleanupConfirmed": true,
+      "evidencePath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-intersection-full-static-20261029-r1\\evidence.json",
+      "evidenceSha256": "78cb7f13bbe1b8e9f7747c11893ef25e4f262f3f14650dd0560a04799f67cac0"
+    },
+    {
+      "analysisWindow": "extended",
+      "instructionCount": 44733,
+      "lastRecordedInstruction": "140b6b3be",
+      "decompileCompleted": false,
+      "decompilerError": "Low-level Error: Flow exceeded maximum allowable instructions",
+      "peakJobBytes": 1017151488,
+      "cleanupConfirmed": true,
+      "evidencePath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-intersection-extended-static-20261029-r1\\evidence.json",
+      "evidenceSha256": "ecc2e9e488648fd3e61f3cbb05d89c90b56a6214fd7c6ffc3286a968da84fa48"
+    },
+    {
+      "analysisWindow": "wide",
+      "instructionCount": 89468,
+      "lastRecordedInstruction": "140b9b3bc",
+      "decompileCompleted": false,
+      "decompilerError": "Low-level Error: Flow exceeded maximum allowable instructions",
+      "peakJobBytes": 1506140160,
+      "cleanupConfirmed": true,
+      "evidencePath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-intersection-wide-static-20261029-r1\\evidence.json",
+      "evidenceSha256": "4ec31c882b08cccbd34a1f9b242d24adc07af4eac56742ce86f266b96bbf4b5d"
+    }
+  ],
+  "observation": "Even the widest bounded disassembly records 89,468 instructions and the decompiler still reports that flow exceeds its limit. The successful launcher exit indicates completed analysis attempts, not successful decompilation.",
+  "limitations": [
+    "Function boundaries and uncovered paths are not established; bounded ranges may truncate reachable control flow.",
+    "No endpoint-order rule, native runtime call, application change or parity was established."
+  ]
+}

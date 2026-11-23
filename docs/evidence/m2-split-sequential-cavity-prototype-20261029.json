@@ -1,0 +1,226 @@
+{
+  "scope": "Disposable sequential cavity triangulation over six captured native point sequences.",
+  "method": "Initialize the first three native projected points as one triangle, insert later points in captured order, remove triangles whose exact binary64 incircle sign includes the inserted point, and join the cavity boundary. Compare unordered index triples with native constructor snapshots. Run a strict-positive variant as control.",
+  "inclusive": [
+    {
+      "control": "convex",
+      "face": 0,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 9,
+      "exact": true
+    },
+    {
+      "control": "convex",
+      "face": 1,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 9,
+      "exact": true
+    },
+    {
+      "control": "cyclic",
+      "face": 0,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 9,
+      "exact": true
+    },
+    {
+      "control": "cyclic",
+      "face": 1,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 9,
+      "exact": true
+    },
+    {
+      "control": "concave",
+      "face": 0,
+      "error": null,
+      "nativeCount": 17,
+      "actualCount": 17,
+      "matched": 17,
+      "exact": true
+    },
+    {
+      "control": "concave",
+      "face": 1,
+      "error": null,
+      "nativeCount": 17,
+      "actualCount": 17,
+      "matched": 17,
+      "exact": true
+    }
+  ],
+  "strictPositive": [
+    {
+      "control": "convex",
+      "face": 0,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 7,
+      "exact": false
+    },
+    {
+      "control": "convex",
+      "face": 1,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 9,
+      "exact": true
+    },
+    {
+      "control": "cyclic",
+      "face": 0,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 7,
+      "exact": false
+    },
+    {
+      "control": "cyclic",
+      "face": 1,
+      "error": null,
+      "nativeCount": 9,
+      "actualCount": 9,
+      "matched": 7,
+      "exact": false
+    },
+    {
+      "control": "concave",
+      "face": 0,
+      "error": null,
+      "nativeCount": 17,
+      "actualCount": 17,
+      "matched": 15,
+      "exact": false
+    },
+    {
+      "control": "concave",
+      "face": 1,
+      "error": null,
+      "nativeCount": 17,
+      "actualCount": 17,
+      "matched": 17,
+      "exact": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-prototype-20261029.mjs",
+      "sha256": "193336dda0f8a5b1e6662bc673b358ae5121d1998ed6f5613513581c57cb1a7c"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-prototype-20261029.json",
+      "sha256": "b13e7c6d91b7bc62d86bedd3ff2ea553d46b735a253c0f457257770d30dec0b5"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-prototype-guard-20261029.json",
+      "sha256": "b6ae8a1794a99a65e2a38831cdf1bcced0c3430386c91dc268fedeb6307b563f"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-strict-20261029.mjs",
+      "sha256": "bb58d905a47bfd1832df2b06caacce76e728e46826a66d90de22327248dbb8dd"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-strict-20261029.json",
+      "sha256": "85fc710074be12f9cb1a68b599445848a35f5d43dc9d142ab141414cf8295e94"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-strict-guard-20261029.json",
+      "sha256": "741567aaf3bec04ab7e904e949cd1c07ffa9536940616bcb6eb007ed66384f7b"
+    }
+  ],
+  "conclusion": "Inclusive zero matches all six recorded faces; excluding zero changes one diagonal in four faces. This observation is consistent with the native non-positive branch but does not establish that the algorithms are equivalent.",
+  "limitations": [
+    "The same six native captures informed and evaluated this hypothesis.",
+    "Prototype uses captured point order, floating orientation tests and exact-sign BigInt only for incircle.",
+    "No native tree order, constraints, duplicates, arbitrary degenerate cases, correctness bounds, performance, cancellation, GUI or MCP behavior was verified.",
+    "Prototype is not integrated into the application."
+  ],
+  "exactOrientationControl": {
+    "result": "Replacing floating orientation in the disposable prototype with a BigInt determinant retains all six captured-face matches.",
+    "faces": [
+      {
+        "control": "convex",
+        "face": 0,
+        "error": null,
+        "nativeCount": 9,
+        "actualCount": 9,
+        "matched": 9,
+        "exact": true
+      },
+      {
+        "control": "convex",
+        "face": 1,
+        "error": null,
+        "nativeCount": 9,
+        "actualCount": 9,
+        "matched": 9,
+        "exact": true
+      },
+      {
+        "control": "cyclic",
+        "face": 0,
+        "error": null,
+        "nativeCount": 9,
+        "actualCount": 9,
+        "matched": 9,
+        "exact": true
+      },
+      {
+        "control": "cyclic",
+        "face": 1,
+        "error": null,
+        "nativeCount": 9,
+        "actualCount": 9,
+        "matched": 9,
+        "exact": true
+      },
+      {
+        "control": "concave",
+        "face": 0,
+        "error": null,
+        "nativeCount": 17,
+        "actualCount": 17,
+        "matched": 17,
+        "exact": true
+      },
+      {
+        "control": "concave",
+        "face": 1,
+        "error": null,
+        "nativeCount": 17,
+        "actualCount": 17,
+        "matched": 17,
+        "exact": true
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-exact-orientation-20261029.mjs",
+        "sha256": "2dd1c6ae2e56a478de821d750908152d7e6242ed53ef696522c3e0fc1123e1a1"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-exact-orientation-20261029.json",
+        "sha256": "b13e7c6d91b7bc62d86bedd3ff2ea553d46b735a253c0f457257770d30dec0b5"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-sequential-cavity-exact-orientation-guard-20261029.json",
+        "sha256": "6b96820175c998c80bda922dc3eacf6a4ecadec96ecc5dd59d0123fbf2af6294"
+      }
+    ],
+    "limitations": [
+      "The orientation helper is a disposable prototype and has not been independently tested over broad adversarial inputs.",
+      "Captured point order is supplied, and constraints, performance, cancellation and native equivalence remain unproven."
+    ]
+  }
+}

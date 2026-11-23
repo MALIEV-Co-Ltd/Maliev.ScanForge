@@ -1,0 +1,90 @@
+{
+  "scope": "Exact rational check of cocircular interior edges in six captured native face triangulations.",
+  "faces": [
+    {
+      "control": "convex",
+      "face": 0,
+      "exactCocircularInteriorEdges": [
+        {
+          "diagonal": [
+            3,
+            7
+          ],
+          "opposite": [
+            4,
+            6
+          ],
+          "containsMaxIndex": true
+        }
+      ]
+    },
+    {
+      "control": "convex",
+      "face": 1,
+      "exactCocircularInteriorEdges": []
+    },
+    {
+      "control": "cyclic",
+      "face": 0,
+      "exactCocircularInteriorEdges": [
+        {
+          "diagonal": [
+            3,
+            7
+          ],
+          "opposite": [
+            4,
+            6
+          ],
+          "containsMaxIndex": true
+        }
+      ]
+    },
+    {
+      "control": "cyclic",
+      "face": 1,
+      "exactCocircularInteriorEdges": [
+        {
+          "diagonal": [
+            3,
+            7
+          ],
+          "opposite": [
+            4,
+            6
+          ],
+          "containsMaxIndex": true
+        }
+      ]
+    },
+    {
+      "control": "concave",
+      "face": 0,
+      "exactCocircularInteriorEdges": [
+        {
+          "diagonal": [
+            7,
+            11
+          ],
+          "opposite": [
+            6,
+            8
+          ],
+          "containsMaxIndex": true
+        }
+      ]
+    },
+    {
+      "control": "concave",
+      "face": 1,
+      "exactCocircularInteriorEdges": []
+    }
+  ],
+  "observation": "All four exact ties in these captures choose the diagonal containing the greatest captured input index.",
+  "limitations": [
+    "Four ties from two related shapes do not prove a general tie policy.",
+    "Convex points and indices were captured on separate previews; other controls capture both together.",
+    "This does not establish insertion order, index assignment, projection, handling of non-exact ties, or seam identities.",
+    "No production change or GUI/MCP validation is claimed."
+  ]
+}

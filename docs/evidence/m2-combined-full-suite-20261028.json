@@ -1,0 +1,27 @@
+{
+  "scope": "Full Vitest suite in the combined M1-M6 validation checkout after M2 Split and project-encoding changes",
+  "checkout": "C:/Users/Shoung/.codex/worktrees/m2-combined-check/Maliev.ScanForge",
+  "baseCommit": "b6fcef2c6e99e0bc61c96ae3b9fb512be951ab02",
+  "workingTree": "Contains staged, unstaged and untracked integration changes; this is not a clean commit or the current M2 PR head.",
+  "postRunSourceAndTestInventory": {
+    "files": 2120,
+    "sha256": "87f973a926691fa708b40a54ff4f70eafd3de2263c2aa4b6feef81610196d329",
+    "method": "Sorted src and tests relative paths, each length-prefixed followed by its file SHA-256 digest. Captured after the run; no pre-run manifest was recorded."
+  },
+  "result": {
+    "testFilesPassed": 815,
+    "testFilesSkipped": 29,
+    "testsPassed": 51511,
+    "testsExpectedFailure": 1,
+    "testsSkipped": 76,
+    "durationSeconds": 337.3,
+    "peakJobBytes": 1293115392,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-combined-full-suite-20261028-r1-guard.json"
+  },
+  "limitations": [
+    "The expected Float32 seam coverage failure and all skipped tests remain unresolved or conditional; skipped tests are not counted as passing.",
+    "This unit suite does not establish native Split parity, full M2 acceptance, a clean final-head CI result or merge readiness."
+  ]
+}

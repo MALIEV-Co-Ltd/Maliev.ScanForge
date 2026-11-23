@@ -1,0 +1,128 @@
+{
+  "scope": "Offline exact-sign incircle prototype; no application changes.",
+  "counterexample": {
+    "points": [
+      [38.776669026063516, 9.473538272487804],
+      [3.691833437681055, 44.55837386087026],
+      [-31.393002150701406, 9.473538272487804],
+      [3.691833437681055, -25.61129731589466]
+    ],
+    "floatDeterminant": 0.0,
+    "exactSign": 1,
+    "pointBits": [
+      ["40436369e4016126", "4022f2739bc37a9a"],
+      ["400d88dff828f480", "40464778cb6fb084"],
+      ["c03f649bc9f8852c", "4022f2739bc37a9a"],
+      ["400d88dff828f480", "c0399c7dfb1be670"]
+    ]
+  },
+  "rationalFixtureCount": 603,
+  "rationalExpectedSignCounts": {
+    "-1": 292,
+    "0": 6,
+    "1": 305
+  },
+  "exactPrototypeMatchedAll": true,
+  "capturedNativePointOrderResults": [
+    {
+      "control": "convex",
+      "face": 0,
+      "flips": 1,
+      "matched": 9,
+      "nativeCount": 9,
+      "exact": true
+    },
+    {
+      "control": "convex",
+      "face": 1,
+      "flips": 0,
+      "matched": 9,
+      "nativeCount": 9,
+      "exact": true
+    },
+    {
+      "control": "cyclic",
+      "face": 0,
+      "flips": 1,
+      "matched": 9,
+      "nativeCount": 9,
+      "exact": true
+    },
+    {
+      "control": "cyclic",
+      "face": 1,
+      "flips": 1,
+      "matched": 9,
+      "nativeCount": 9,
+      "exact": true
+    },
+    {
+      "control": "concave",
+      "face": 0,
+      "flips": 1,
+      "matched": 17,
+      "nativeCount": 17,
+      "exact": true
+    },
+    {
+      "control": "concave",
+      "face": 1,
+      "flips": 0,
+      "matched": 17,
+      "nativeCount": 17,
+      "exact": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-incircle-rounding-control-20261029.json",
+      "sha256": "ae48cb2248df2be8315ea80256e5085f83eabcc5f475d470c65a8a09480f793c"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-incircle-rational-fixtures-20261029.json",
+      "sha256": "baa52e8c85ce2fe488de73cd3b643eb5c12128b35e143284348dd04866dc4210"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-incircle-rational-fixtures-20261029.py",
+      "sha256": "3d1c3923db4a8e3a65ba0c7ab0b9a312d054c40946481321c32459ab5899d036"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-incircle-exact-prototype-20261029.mjs",
+      "sha256": "739d6e2f826a5f11ac15541217ceff22e93c5b03373b5d524c5c8c9d74af8a7d"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-incircle-exact-prototype-guard-20261029.json",
+      "sha256": "4cc09f8796de0c1701fc70aed2387b367bf3ba0d33911e6f9ffd1b5e9f33300b"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-tie-exact-hypothesis-control-20261029.mjs",
+      "sha256": "114715f8caefec8b69a576d0dfba6278d8828d2312352ea30e106a3dfb04c3cf"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-tie-exact-hypothesis-control-20261029.json",
+      "sha256": "7eb267306114db002bd3e9afe8f805d19d0a5c7931cbfda8931687008e2d2dd7"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-tie-exact-hypothesis-guard-20261029.json",
+      "sha256": "d8cb8f5038bb8e62fbb48b9668fb6c695d7f90badfa07cfe4ea4f6b8f313325d"
+    }
+  ],
+  "limitations": [
+    "The 603 rational controls are manufactured inputs, not native runtime observations.",
+    "Six face comparisons use the same captured native data that informed the tie rule, so they do not independently validate that rule.",
+    "This implementation always uses BigInt, has no performance, cancellation or constraint-recovery evaluation and is not a production change.",
+    "Observed native point ordering remains unreproduced; GUI/MCP and full M2 acceptance remain open."
+  ],
+  "prototypeTiming": {
+    "scope": "Offline all-BigInt incircle prototype, 603 manufactured rational cases repeated 30 times; not an application or browser benchmark.",
+    "calls": 18090,
+    "elapsedMs": 48.5646,
+    "microsecondsPerCall": 2.6846102819237148,
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-incircle-exact-benchmark-guard-20261029.json",
+    "receiptSha256": "ea1107829bad54410588c8ba5e596783078b755becc42404318b167681af2f9d",
+    "limitations": [
+      "Timing is one Node process on manufactured near-cocircular cases under the shared 25 percent CPU guard.",
+      "No triangulation, workers, GUI/MCP or whole-scan throughput measured."
+    ]
+  }
+}

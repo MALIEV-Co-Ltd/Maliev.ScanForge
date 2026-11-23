@@ -1,0 +1,203 @@
+{
+  "scope": "Native face projection reconstruction and isolated Split integration experiment.",
+  "projectionHypothesis": "Compute a local orthogonal frame from ordered Float32 source corners, cast projected coordinates and two independent axis denominators to Float32, then divide each coordinate by its corresponding denominator.",
+  "capturedFaceComparisons": [
+    {
+      "control": "convex",
+      "face": 0,
+      "points": 8,
+      "maxAbsDifference": 0.0,
+      "exactCount": 8,
+      "samples": [
+        {
+          "source": [3, 3, 0.5],
+          "expected": [1, 1],
+          "actual": [1.0, 1.0]
+        },
+        {
+          "source": [-1, -1, 0.5],
+          "expected": [0, 0],
+          "actual": [0.0, 0.0]
+        },
+        {
+          "source": [3, -1, 0.5],
+          "expected": [1, 0],
+          "actual": [1.0, 0.0]
+        }
+      ]
+    },
+    {
+      "control": "convex",
+      "face": 1,
+      "points": 8,
+      "maxAbsDifference": 0.0,
+      "exactCount": 8,
+      "samples": [
+        {
+          "source": [-1, 3, 0.5],
+          "expected": [0.5, 1],
+          "actual": [0.5, 1.0]
+        },
+        {
+          "source": [3, 3, 0.5],
+          "expected": [1, 0],
+          "actual": [1.0, 0.0]
+        },
+        {
+          "source": [-1, -1, 0.5],
+          "expected": [0, 0],
+          "actual": [0.0, 0.0]
+        }
+      ]
+    },
+    {
+      "control": "concave",
+      "face": 0,
+      "points": 12,
+      "maxAbsDifference": 0.0,
+      "exactCount": 12,
+      "samples": [
+        {
+          "source": [3, 3, 0.5],
+          "expected": [1, 1],
+          "actual": [1.0, 1.0]
+        },
+        {
+          "source": [-1, -1, 0.5],
+          "expected": [0, 0],
+          "actual": [0.0, 0.0]
+        },
+        {
+          "source": [3, -1, 0.5],
+          "expected": [1, 0],
+          "actual": [1.0, 0.0]
+        }
+      ]
+    },
+    {
+      "control": "concave",
+      "face": 1,
+      "points": 12,
+      "maxAbsDifference": 0.0,
+      "exactCount": 12,
+      "samples": [
+        {
+          "source": [-1, 3, 0.5],
+          "expected": [0.5, 1],
+          "actual": [0.5, 1.0]
+        },
+        {
+          "source": [3, 3, 0.5],
+          "expected": [1, 0],
+          "actual": [1.0, 0.0]
+        },
+        {
+          "source": [-1, -1, 0.5],
+          "expected": [0, 0],
+          "actual": [0.0, 0.0]
+        }
+      ]
+    },
+    {
+      "control": "cyclic",
+      "face": 0,
+      "points": 8,
+      "maxAbsDifference": 0.0,
+      "exactCount": 8,
+      "samples": [
+        {
+          "source": [3, 3, 0.5],
+          "expected": [1, 0],
+          "actual": [1.0, 0.0]
+        },
+        {
+          "source": [-1, -1, 0.5],
+          "expected": [0, 1],
+          "actual": [0.0, 1.0]
+        },
+        {
+          "source": [3, -1, 0.5],
+          "expected": [0, 0],
+          "actual": [0.0, 0.0]
+        }
+      ]
+    },
+    {
+      "control": "cyclic",
+      "face": 1,
+      "points": 8,
+      "maxAbsDifference": 0.0,
+      "exactCount": 8,
+      "samples": [
+        {
+          "source": [-1, 3, 0.5],
+          "expected": [1, 0],
+          "actual": [1.0, 0.0]
+        },
+        {
+          "source": [3, 3, 0.5],
+          "expected": [0, 0],
+          "actual": [0.0, 0.0]
+        },
+        {
+          "source": [-1, -1, 0.5],
+          "expected": [1, 1],
+          "actual": [1.0, 1.0]
+        }
+      ]
+    }
+  ],
+  "comparison": [
+    {
+      "name": "convex",
+      "native": 18,
+      "application": 18,
+      "matches": 16
+    },
+    {
+      "name": "concave",
+      "native": 34,
+      "application": 34,
+      "matches": 34
+    },
+    {
+      "name": "cyclic",
+      "native": 18,
+      "application": 18,
+      "matches": 16
+    }
+  ],
+  "noOracleInjection": "The final diagnostic did not supply captured frame samples to the experimental source. Native exports were read only for output comparison.",
+  "nativeAssertions": "Ordinary native assertions pass for concave; convex and cyclic still fail, two of seven tests overall.",
+  "focusedConstraints": "139 passed and five failed: two face constraint input-order determinism tests, two Float32-degenerate frame cases on precise binary64 input, and one short interior slit whose constraint could not be recovered.",
+  "guardPeakBytes": 372502528,
+  "cleanupConfirmed": true,
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-frame-reconstruction-20261029.py",
+      "sha256": "b4442f553afb38d3ed8892e19e4dd4a28691e29708c452e7ff2af81fcbec50d7"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-cavity-integration-experiment-20261029\\src\\scan-split-finite-face.ts",
+      "sha256": "ff0f321d0a02ac91b86304b5c74597c8f750cb17d6ce7e2beaa40ea9d02ca9bd"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-cavity-integration-experiment-20261029\\src\\scan-edit-general-split.ts",
+      "sha256": "83de93bc32a5fac86b2277f265a18c1d375aed3167e2d6853631e1c69f9427e9"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-cavity-integration-experiment-20261029\\tests\\m2-cavity-experiment-diagnostic.test.ts",
+      "sha256": "1c8138b056b8a2757f44bd80d33be95e520248e1657fcf90724397b3bd26dff9"
+    }
+  ],
+  "limitations": [
+    "Six captured planar faces are not independent general projection validation; non-axis-aligned, near-degenerate and large/small coordinate cases remain open.",
+    "The integration uses a one-level candidate tree and an expensive exact-incircle prototype, not a complete or production-ready implementation.",
+    "Unmatched convex facets, native ordering, orientation, constraints, memory and GUI/MCP validation remain open.",
+    "No production code changed."
+  ],
+  "shortSlitDiagnostic": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-general-frame-slit-20261029.log",
+    "sha256": "8557358f104221f66425dfd1d72c5b7f029fab3c0634af42f418ac29fc8d4f63"
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "scope": "Native projected input arrays at candidate 0x14032d360 during original two-facet convex Split preview.",
+  "sourceEvidence": "docs/evidence/m2-split-original-live-trace-20261029.json",
+  "identityReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-point-sequence-binding-20261029.json",
+  "method": "Entry hook reads up to 64 pairs of 64-bit floats from the third register argument, count from the second, based on decompilation of 0x1403290a0. First eight calls retained.",
+  "scriptSha256": "2e9df79c32eeb74462fc058eaeb9c3e2e3290ed63a4de41c1a39fe206d5e2a7b",
+  "reaEvidence": {
+    "evidence_id": "ev_d6c21b6be8d7d57d0e314bf5d4bafcbf31e07b59e031a75a0d95b069db3ea478",
+    "subject": null,
+    "provider": {
+      "id": "frida",
+      "name": "Frida",
+      "version": null
+    },
+    "analysis_profile": null,
+    "predicate_type": "rea.frida.instrumentation-observation",
+    "operation": "frida_session_status",
+    "parameters": {
+      "session_id": "659d9c04-8bb1-4029-864f-7d1b8227f3af"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "session_id": "659d9c04-8bb1-4029-864f-7d1b8227f3af",
+      "device_id": "local",
+      "state": "running",
+      "target": "QuickSurface.exe (pid 10796)",
+      "pid": 10796,
+      "mode": "attach",
+      "scripts": [
+        {
+          "script_id": "03e60eaf-848b-4618-ac30-6b1aaaf6780c",
+          "name": "rea-03e60eaf-848b-4618-ac30-6b1aaaf6780c"
+        }
+      ],
+      "messages": [
+        {
+          "script_id": "03e60eaf-848b-4618-ac30-6b1aaaf6780c",
+          "type": "send",
+          "payload": {
+            "kind": "ready",
+            "pid": 10796,
+            "base": "0x140000000"
+          }
+        },
+        {
+          "script_id": "03e60eaf-848b-4618-ac30-6b1aaaf6780c",
+          "type": "send",
+          "payload": {
+            "kind": "projected-input",
+            "count": 8,
+            "threadId": 16076,
+            "stack": [
+              "0x329a66",
+              "0x32ac30",
+              "0x67d15b",
+              "0x67e276",
+              "0x7ffa69975e14"
+            ],
+            "points": [
+              [
+                1,
+                1
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                0.5,
+                0.5
+              ],
+              [
+                0.5,
+                0.375
+              ],
+              [
+                0.5,
+                0.25
+              ],
+              [
+                0.25,
+                0.25
+              ],
+              [
+                0.375,
+                0.25
+              ]
+            ]
+          }
+        },
+        {
+          "script_id": "03e60eaf-848b-4618-ac30-6b1aaaf6780c",
+          "type": "send",
+          "payload": {
+            "kind": "projected-input",
+            "count": 8,
+            "threadId": 16076,
+            "stack": [
+              "0x329a66",
+              "0x32ac30",
+              "0x67d15b",
+              "0x67e276",
+              "0x7ffa69975e14"
+            ],
+            "points": [
+              [
+                0.5,
+                1
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0.5,
+                0
+              ],
+              [
+                0.25,
+                0
+              ],
+              [
+                0.3749999894632877,
+                0.25
+              ],
+              [
+                0.4375000158050685,
+                0.125
+              ],
+              [
+                0.31250000526835614,
+                0.125
+              ]
+            ]
+          }
+        }
+      ],
+      "messages_truncated": false
+    },
+    "confidence": "observed",
+    "authority": "external-service",
+    "environment": null,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "The target operating system and architecture were not reported by this observation."
+    ],
+    "relationship_coverage": null,
+    "locations": [],
+    "evidence_links": []
+  },
+  "observations": "Two captured arrays of eight finite point pairs. Backtraces show the candidate is invoked from the observed per-face routine at main+0x329a66. Argument interpretation follows the separately retained decompilation.",
+  "limitations": [
+    "Projection coordinates and face association need independent interpretation.",
+    "Native input order and exact triangulation rules are not yet reproduced in ScanForge.",
+    "The prior 18-facet mesh remained hidden in the scene; its effect on allocation order is unknown.",
+    "No instrumented result was exported and no GUI/MCP behavior changed.",
+    "The native viewport remained white."
+  ]
+}

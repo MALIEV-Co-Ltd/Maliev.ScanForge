@@ -1,0 +1,23 @@
+{
+  "scope": "Prepared controls around the separately observed 0.001 native constant; no native output or inferred tolerance rule",
+  "units": "mm",
+  "files": [
+    {
+      "file": "source-triangle.stl",
+      "sha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+      "facets": 1
+    },
+    {
+      "file": "cutter-near-0p001-below.stl",
+      "sha256": "c7eb2ecef247eb1679157622cf315a6873f8d949e3bb2eecb8572df58ab98f1f",
+      "facets": 2,
+      "xFloat32": 0.0008999999845400453
+    },
+    {
+      "file": "cutter-near-0p001-above.stl",
+      "sha256": "4b58488fd59bb876bc4acd6891bfbe9fa30d25128baeadeedb95db69c65ac1b5",
+      "facets": 2,
+      "xFloat32": 0.0010999999940395355
+    }
+  ]
+}

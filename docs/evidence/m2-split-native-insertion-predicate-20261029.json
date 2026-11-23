@@ -1,0 +1,30 @@
+{
+  "scope": "Static candidate point insertion branch and its called arithmetic helper, in retained runtime analysis image.",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "captures": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-point-insert-static-20261029-r1\\evidence.json",
+      "sha256": "03f4c21657231996a6d107f2004505911f8616bd2dbf45c453f62baaa6197211",
+      "body": "[[14032f120, 14032f97e]]",
+      "instructionCount": 557
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-predicate-static-20261029-r2\\evidence.json",
+      "sha256": "476f37198c100fd552f9e4af92bca04a417c7afb8f1e36c5cbe48d00f018cc39",
+      "body": "[[140330db0, 140332116]]",
+      "instructionCount": 968
+    }
+  ],
+  "observations": [
+    "The parent constructor calls 0x14032f120 while processing point indices sequentially.",
+    "The candidate insertion calls 0x140330080, which derives a point address and jumps to 0x140330db0.",
+    "At 0x14032f750 the caller tests EAX and takes its alternate branch only for a positive result; zero follows the non-positive path.",
+    "The candidate helper uses arithmetic on paired point records and maps the sign field of the final computed result to an inverted -1/0/1 return."
+  ],
+  "limitations": [
+    "These are static bounded analysis observations; the helper entry and full body have not been verified against this process at runtime.",
+    "The decompiler inferred some return types incorrectly; cited branch and return observations were checked in assembly.",
+    "The computed expression and the corresponding geometric predicate have not been proven. Zero-branch treatment alone does not establish the proposed maximum-index cocircular rule, complete triangulation behavior, or native facet parity.",
+    "The earlier first listing ended at its imposed bound and was superseded by the longer listing."
+  ]
+}

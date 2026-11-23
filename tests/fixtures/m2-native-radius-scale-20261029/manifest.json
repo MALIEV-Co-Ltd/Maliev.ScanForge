@@ -1,0 +1,16 @@
+{
+  "scope": "Prepared diagnostic fixture: original source enlarged tenfold while cutter x remains 0.00011 mm; no native output",
+  "units": "mm",
+  "files": [
+    {
+      "file": "scaled-source-triangle.stl",
+      "sha256": "801dceabede6cb79df0d9bc0c9855edc5b1131fabe3e56ff7c746b6c6bbaa04e",
+      "facets": 1
+    },
+    {
+      "file": "scaled-cutter-above.stl",
+      "sha256": "13f6e668866e0585394359d2dc2bb86ac1bdce9e1c89ceac13db7ef4c1a1d7ee",
+      "facets": 2
+    }
+  ]
+}

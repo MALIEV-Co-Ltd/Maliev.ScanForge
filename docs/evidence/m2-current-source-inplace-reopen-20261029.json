@@ -1,0 +1,86 @@
+{
+  "scope": "Original PLY-3 GUI Split/Extract, undo/redo, public MCP project export and in-place import, and post-reopen geometry digests.",
+  "build": "scanforge-0c3cfeae80a65b03",
+  "sourceSha256": {
+    "src/project-numeric-reuse.ts": "a6dd046022ac47b2eda4facdb7617e2353ec1eec927c004690250583589a041a",
+    "src/project-transport.ts": "d4302d4d162ee21b900f6907c3ad82bd5b669e33aee41c552aeb427e2e7a507f",
+    "src/project-encoding-client.ts": "b6413e48928b7a786193dc38716ea3cdc87f12b821558b5ffa96a3717e57320c",
+    "src/project-decoding-client.ts": "ff728136c0a00364d4653d5d71779360f921b96fa0cd69ba5ac4b02ef4b1c245",
+    "src/project-file-codec.ts": "240bff8fd70f6bb4649d2e39e9232323ad553781be2ddd59ad8f5170b5b56980",
+    "tests/m2-original-split-browser-local.mjs": "c1ff5bf25f07718cc58110bd67c069faa0c4c094b24cf84d5d57206a1e76e588"
+  },
+  "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-current-source-heartbeat-20261029-r1\\split-lifecycle-browser-ledger.json",
+  "ledgerSha256": "29517abd473be32d08c64e8acc51e5e25a4c63e1a6642ec211aaaef29310b1e5",
+  "logPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-current-source-heartbeat-20261029-r1.log",
+  "logSha256": "4e0795bed561c77ce46b9e71041aca233ad88b8d61e481cb903c1ac757fc44a9",
+  "guardPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-current-source-heartbeat-guard-20261029-r1.json",
+  "guardSha256": "a1452f2854b49bf39f6312604528aad7487e8c8811494e0fcd58d5c77382a80a",
+  "buildGuardPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-current-source-build-guard-20261029.json",
+  "stages": [
+    "source-imported",
+    "source-digest",
+    "cutter-imported",
+    "gui-split-started",
+    "gui-split-committed",
+    "gui-output-digest",
+    "component-inventory-opened",
+    "component-inventory-ready",
+    "gui-extract-committed",
+    "gui-extract-undone",
+    "gui-extract-undo-digest-verified",
+    "gui-extract-project-exported",
+    "gui-extract-project-imported",
+    "gui-extract-artifact-delete-started",
+    "gui-extract-artifact-deleted",
+    "gui-extract-reopen-part-digest-started",
+    "gui-extract-reopen-part-digest-verified",
+    "gui-extract-reopen-verified",
+    "gui-extract-redo-verified"
+  ],
+  "result": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputFaces": 3691133,
+    "splitFaces": 3700757,
+    "extractedFaces": 1779171,
+    "guiOutputDigest": [
+      {
+        "path": "positions",
+        "encoding": "f64",
+        "elements": 16012539,
+        "sha256": "2a42bea10bb294a5981b280e0493fb5e04ad4c58343f12e0b58c273b87fbe92a"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f64",
+        "elements": 2699811,
+        "sha256": "68161b917e672a36b0730b78ff2192ff5f03835eaff8b866347adf4a8b726f66"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 5337513,
+        "sha256": "d51f933ecbb1de60c49a93c0a38e8eb1b5d6ba7cff4e4b31857ada80a2475d4a"
+      }
+    ],
+    "indexedResult": true,
+    "sourcePreserved": true,
+    "cutterPreserved": true,
+    "guiUndoRedo": true,
+    "binaryReopen": true,
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "heartbeatResponses": 88,
+  "heartbeatTimeouts": 1,
+  "guard": {
+    "passed": true,
+    "limitBytes": 4294967296,
+    "peakBytes": 4212957184,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "One instrumented run, not a general resource guarantee.",
+    "This replay uses the GUI for Split and Extract and public MCP for project export and in-place import; it does not establish GUI file-open or post-reopen history for this run.",
+    "Native Split facet equivalence and other M2 acceptance gates remain open."
+  ]
+}
