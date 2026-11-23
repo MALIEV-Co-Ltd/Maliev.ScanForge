@@ -1,0 +1,1 @@
+Historical ignored .resources and .superpowers directories from all available ScanForge worktrees. ZIP contains 45,439 source files plus its README; integrity test passed. Includes generated output and caches, not suitable for direct application integration.

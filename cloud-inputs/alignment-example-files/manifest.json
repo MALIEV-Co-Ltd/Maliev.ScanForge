@@ -48,5 +48,20 @@
     "name": "scan-3.stl",
     "bytes": 166345584,
     "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e"
+  },
+  {
+    "name": "ply-1.qsfbak",
+    "bytes": 4971826,
+    "sha256": "0135e355cc79bbbd9662eb19631350c9953d37d808f06b9e8e72db7217203ad2"
+  },
+  {
+    "name": "ply-2.qsfbak",
+    "bytes": 53852752,
+    "sha256": "fa6a5b66ee24e396ef81f368da0047c208040b2296e95276c433f95f5a34fc33"
+  },
+  {
+    "name": "ply-3.qsfbak",
+    "bytes": 120536998,
+    "sha256": "77859bb8ac932f9bb145f7b91833380497212b02b2d9f99569598ddf102ce263"
   }
 ]
